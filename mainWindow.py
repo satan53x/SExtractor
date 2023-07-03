@@ -1,0 +1,151 @@
+from PyQt5.QtCore import QSettings
+from PyQt5.QtWidgets import QMainWindow, QFileDialog
+from PyQt5.Qt import QThread
+from ui_mainWindow import Ui_MainWindow
+import sys
+sys.path.append('.\src')
+from main_extract_txt import mainExtractTxt
+from main_extract_bin import mainExtractBin
+from main_extract import var
+from merge_json import mergeTool
+
+#设置初始值
+def initValue(setting, name, v):
+	if setting.value(name) == None:
+		setting.setValue(name, v)
+		print('New Config', name, v)
+	else:
+		v = setting.value(name)
+		print('Load Config', name, v)
+	return v
+
+class MainWindow(QMainWindow, Ui_MainWindow):
+	def __init__(self, parent=None):
+		super(MainWindow, self).__init__(parent)
+		self.setupUi(self)
+		#提取
+		self.mainDirButton.clicked.connect(self.chooseMainDir)
+		self.extractButton.clicked.connect(self.extractFileThread)
+		#self.engineNameBox.currentIndexChanged.connect(self.selectEngine)
+		self.outputFileBox.currentIndexChanged.connect(self.selectFormat)
+		self.outputPartBox.currentIndexChanged.connect(self.selectOutputPart)
+		#merge工具
+		self.mergeDirButton.clicked.connect(self.chooseMergeDir)
+		self.mergeButton.clicked.connect(self.mergeFile)
+
+	#初始化
+	def beforeShow(self):
+		self.mainConfig = QSettings('config.ini', QSettings.IniFormat)
+		# 主目录
+		self.mainDirPath = initValue(self.mainConfig, 'mainDirPath', '.')
+		self.mainDirEdit.setText(self.mainDirPath)
+		# 引擎列表
+		self.engineConfig = QSettings('src/engine.ini', QSettings.IniFormat)
+		groupList = self.engineConfig.childGroups()
+		for group in groupList: 
+			#print(group)
+			self.engineConfig.beginGroup(group)
+			if group.startswith('Engine'):
+				value = self.engineConfig.value('name')
+				self.engineNameBox.addItem(value)
+			elif group == 'OutputFormat':
+				for key in self.engineConfig.childKeys():
+					value = self.engineConfig.value(key)
+					self.outputFileBox.addItem(value)
+			self.engineConfig.endGroup()
+		# 当前引擎
+		self.engineCode = int(initValue(self.mainConfig, 'engineCode', 0))
+		#print(self.engineCode)
+		self.engineNameBox.setCurrentIndex(self.engineCode)
+		self.engineNameBox.currentIndexChanged.connect(self.selectEngine)
+		# 当前输出格式
+		self.outputFormat = int(initValue(self.mainConfig, 'outputFormat', 0))
+		#print(self.outputFormat)
+		self.outputFileBox.setCurrentIndex(self.outputFormat)
+		# 单个或多个Json模式
+		self.outputPartMode = int(initValue(self.mainConfig, 'outputPartMode', 0))
+		#print(self.outputPartMode)
+		self.outputPartBox.setCurrentIndex(self.outputPartMode)
+		# 合并目录
+		self.mergeDirPath = initValue(self.mainConfig, 'mergeDirPath', '.')
+		self.mergeDirEdit.setText(self.mergeDirPath)
+
+	#初始化
+	def afterShow(self):
+		pass
+
+	#选择主文件夹
+	def chooseMainDir(self):
+		dirpath = self.mainConfig.value('mainDirPath')
+		dirpath = QFileDialog.getExistingDirectory(None, self.mainDirButton.text(), dirpath)
+		if dirpath != '':
+			self.mainDirPath = dirpath
+			self.mainDirEdit.setText(dirpath)
+			self.mainConfig.setValue('mainDirPath', dirpath)
+
+	#选择引擎
+	def selectEngine(self, index):
+		self.engineCode = index
+		#print('selectEngine', self.engineCode)
+
+	#选择格式
+	def selectFormat(self, index):
+		self.outputFormat = index
+		#print('selectFormat', self.engineCode)
+
+	#选择导出模式
+	def selectOutputPart(self, index):
+		self.outputPartMode = index
+		#print('selectOutputPart', self.outputPartMode)
+
+	#提取
+	def extractFile(self):
+		group = "Engine" + str(self.engineCode)
+		file = self.engineConfig.value(group + '/file')
+		args = [self.mainDirPath, self.engineCode, self.outputFormat, self.outputPartMode]
+		var.window = self
+		print(args)
+		if file == 'txt': 
+			mainExtractTxt(args)
+		elif file == 'bin':
+			mainExtractBin(args)
+		else:
+			print('Error file style.')
+		#保存配置
+		self.mainConfig.setValue('engineCode', self.engineCode)
+		self.mainConfig.setValue('outputFormat', self.outputFormat)
+		self.mainConfig.setValue('outputPartMode', self.outputPartMode)
+
+	def extractFileThread(self):
+		self.thread = extractThread()
+		self.thread.window = self
+		self.thread.start()
+
+	#选择工作目录
+	def chooseMergeDir(self):
+		dirpath = self.mainConfig.value('mergeDirPath')
+		dirpath = QFileDialog.getExistingDirectory(None, self.mainDirButton.text(), dirpath)
+		if dirpath != '':
+			self.mergeDirPath = dirpath
+			self.mergeDirEdit.setText(dirpath)
+			self.mainConfig.setValue('mergeDirPath', dirpath)
+
+	#合并
+	def mergeFile(self):
+		func = self.mergeFuncBox.currentIndex()
+		edit = self.mergeLineEdit.text()
+		lineCount = 0
+		if edit: lineCount = int(edit)
+		if lineCount == 0: lineCount = 1000
+		args = [self.mergeDirPath, func, lineCount]
+		print(args)
+		mergeTool(args)
+
+#import debugpy
+class extractThread(QThread):
+	def __init__(self):
+		super().__init__()
+
+	def run(self):
+		#debugpy.debug_this_thread()
+		self.window.extractFile()
