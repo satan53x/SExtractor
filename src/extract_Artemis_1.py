@@ -22,7 +22,20 @@ def parseImp(content, listCtrl, dealOnce):
 				end = ret.end() - 1
 				text = lineData[start:end]
 				if re.match(r'[&a-zA-Z]', text): continue
-				if text.startswith('背景') or text.startswith('画面') or text.startswith('オープニングムービー') or text.startswith('イベントCG') or text.startswith('スタッフロール'): continue
+				#这些是需要排除的特殊名字
+				if text.startswith('背景') or \
+					text.startswith('画面') or \
+					text.startswith('オープニングムービー') or \
+					text.startswith('イベントCG') or \
+					text.startswith('スタッフロール'): 
+					continue
+				#处理真名
+				ret2 = re.search(r'表示=".*?"', lineData)
+				if ret2:
+					start = ret2.start() + 4
+					end = ret2.end() - 1
+					#print('表示=', lineData)
+					text = lineData[start:end]
 				#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 				ctrl = {'pos':[contentIndex, start, end]}
 				ctrl["isName"] = True #名字标记
