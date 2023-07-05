@@ -47,8 +47,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		for group in groupList: 
 			#print(group)
 			self.engineConfig.beginGroup(group)
-			if group.startswith('Engine'):
-				value = self.engineConfig.value('name')
+			if group.startswith('Engine_'):
+				value = group[len("Engine_"):]
 				self.engineNameBox.addItem(value)
 			elif group == 'OutputFormat':
 				for key in self.engineConfig.childKeys():
@@ -58,8 +58,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		# 当前引擎
 		self.engineCode = int(initValue(self.mainConfig, 'engineCode', 0))
 		#print(self.engineCode)
-		self.engineNameBox.setCurrentIndex(self.engineCode)
 		self.engineNameBox.currentIndexChanged.connect(self.selectEngine)
+		self.engineNameBox.setCurrentIndex(self.engineCode)
 		# 当前输出格式
 		self.outputFormat = int(initValue(self.mainConfig, 'outputFormat', 0))
 		#print(self.outputFormat)
@@ -89,6 +89,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 	def selectEngine(self, index):
 		self.engineCode = index
 		#print('selectEngine', self.engineCode)
+		#显示示例
+		engineName = self.engineNameBox.currentText()
+		self.engineConfig.beginGroup('Engine_' + engineName)
+		value = self.engineConfig.value('sample')
+		if value:
+			self.sampleBrowser.setText(value)
+		else:
+			self.sampleBrowser.setText('')
+		self.engineConfig.endGroup()
 
 	#选择格式
 	def selectFormat(self, index):
@@ -102,9 +111,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 	#提取
 	def extractFile(self):
-		group = "Engine" + str(self.engineCode)
+		engineName = self.engineNameBox.currentText()
+		group = "Engine_" + engineName
 		file = self.engineConfig.value(group + '/file')
-		args = [self.mainDirPath, self.engineCode, self.outputFormat, self.outputPartMode]
+		args = [self.mainDirPath, engineName, self.outputFormat, self.outputPartMode]
 		var.window = self
 		print(args)
 		if file == 'txt': 

@@ -6,7 +6,7 @@ from common import *
 from main_extract import *
 
 #单独处理每个文件的json
-#args = [workpath, engineCode, outputFormat]
+#args = [workpath, engineName, outputFormat]
 def mainExtractPart(args, parseImp):
 	if len(args) < 3:
 		print("main_extract参数错误", args)

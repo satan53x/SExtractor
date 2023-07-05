@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>518</width>
-    <height>303</height>
+    <width>550</width>
+    <height>400</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>500</width>
-    <height>250</height>
+    <width>550</width>
+    <height>400</height>
    </size>
   </property>
   <property name="font">
@@ -165,17 +165,22 @@
          </widget>
         </item>
         <item>
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
+         <widget class="QLabel" name="label">
+          <property name="font">
+           <font>
+            <family>Microsoft YaHei UI</family>
+            <pointsize>9</pointsize>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
+          <property name="text">
+           <string>引擎脚本示例</string>
           </property>
-         </spacer>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextBrowser" name="sampleBrowser"/>
         </item>
        </layout>
       </widget>

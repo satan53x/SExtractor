@@ -7,8 +7,8 @@ from common import *
 # ---------------- Group: AST -------------------
 def parseImp(content, listCtrl, dealOnce):
 	listIndex = 0
-	dealText = 0 # 0不处理 1已读WINDOW 尝试处理 2已进行处理至少一行
-	ctrl = {}
+	dealText = 0 # 0不处理 1已读名字 尝试处理 2已进行处理至少一行
+	ctrl = None
 	text = ''
 	start = 0
 	end = 0
@@ -21,15 +21,17 @@ def parseImp(content, listCtrl, dealOnce):
 		if dealText == 1:
 			if re.match(r'[\[\n]', lineData):
 				dealText = 0 #废弃上一个名字
-				continue
-			else:
+			elif ctrl:
 				if dealOnce(text, listIndex): #保存名字
 					listIndex += 1
 					listCtrl.append(ctrl)
 		if dealText == 0:
+			dealText = 1
+			if lineData == '\n':
+				ctrl = None
+				continue
 			ret = re.match(r'\[.*?[ \]]', lineData)
 			if ret: #控制行 先假设为名字行
-				dealText = 1
 				ret2 = re.search(r'表示=".*?"', lineData)
 				if ret2:
 					start = ret2.start() + 4
@@ -44,8 +46,9 @@ def parseImp(content, listCtrl, dealOnce):
 				#print(ctrl)
 			continue
 		#处理对话
-		if re.match(r'[\n]', lineData):
-			dealText = 0
+		if lineData == '\n':
+			ctrl = None
+			dealText = 1
 			if "notEnd" in listCtrl[-1]:
 				del listCtrl[-1]["notEnd"]
 			continue

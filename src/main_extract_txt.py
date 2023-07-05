@@ -70,7 +70,7 @@ def parse():
 		#if os.path.exists(filepath):
 			#os.remove(filepath)
 
-#args = [workpath, engineCode, outputFormat, outputPartMode]
+#args = [workpath, engineName, outputFormat, outputPartMode]
 def mainExtractTxt(args):
 	outputPartMode = args[3]
 	if outputPartMode == 0:

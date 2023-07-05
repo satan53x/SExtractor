@@ -207,9 +207,9 @@ def createFolder():
 	if not os.path.exists(path):
 		os.makedirs(path)
 
-def chooseEngine(engineCode, outputFormat):
+def chooseEngine(engineName, outputFormat):
 	settings = QSettings('src/engine.ini', QSettings.IniFormat)
-	strEngine = 'Engine'+str(engineCode)
+	strEngine = 'Engine_' + engineName
 	settings.beginGroup(strEngine)
 	var.Postfix = settings.value('postfix')
 	var.EncodeRead = settings.value('encode')
@@ -226,11 +226,10 @@ def chooseEngine(engineCode, outputFormat):
 	#print(s.encode())
 	if s: var.ContentSeprate = s.encode()
 	else: var.ContentSeprate = None
-	name = settings.value('name')
 	settings.endGroup()
 	#导入模块
-	#print(var.EncodeName, var.Postfix, name)
-	module = import_module('extract_' + name)
+	#print(var.EncodeName, var.Postfix, engineName)
+	module = import_module('extract_' + engineName)
 	var.parseImp = getattr(module, 'parseImp')
 	var.replaceOnceImp = getattr(module, 'replaceOnceImp')
 	var.inputCount = 0
