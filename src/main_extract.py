@@ -159,6 +159,9 @@ def writeFormat2():
 
 def keepAllOrig():
 	listIndex = -1
+	if len(var.listCtrl) > 0:
+		if 'isName' in var.listCtrl[-1] or 'notEnd' in var.listCtrl[-1]:
+			print('listCtrl结束行错误', var.filename, var.listCtrl[-1])
 	while(listIndex < len(var.listOrig) - 1):
 		item = {}
 		while(True):
