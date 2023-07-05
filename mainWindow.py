@@ -36,11 +36,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 	#初始化
 	def beforeShow(self):
 		self.mainConfig = QSettings('config.ini', QSettings.IniFormat)
+		self.mainConfig.setIniCodec('utf-8')
 		# 主目录
 		self.mainDirPath = initValue(self.mainConfig, 'mainDirPath', '.')
 		self.mainDirEdit.setText(self.mainDirPath)
 		# 引擎列表
 		self.engineConfig = QSettings('src/engine.ini', QSettings.IniFormat)
+		self.engineConfig.setIniCodec('utf-8')
 		groupList = self.engineConfig.childGroups()
 		for group in groupList: 
 			#print(group)

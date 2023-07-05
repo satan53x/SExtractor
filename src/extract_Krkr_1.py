@@ -18,28 +18,40 @@ def parseImp(content, listCtrl, dealOnce):
 		#print('>>> Line ' + str(contentIndex), ': ', lineData)
 		if lineData.isspace(): continue #空白行
 		if re.match(r'[;\*]', lineData): continue #注释行
-		if re.match(r'\[\w', lineData): continue #控制行
 		tmpDic = {}
-		#名字
-		iter = re.finditer(r'\[【.+】', lineData)
-		for r in iter:
-			start = r.start() + 2
-			end = r.end() - 1
-			text = lineData[start:end]
-			#0行数，1起始字符下标（包含），2结束字符下标（不包含）
-			ctrl = {'pos':[contentIndex, start, end]}
-			ctrl["isName"] = True #名字标记
-			tmpDic[start] = [text, ctrl]
-			#print(text)
-		ret = re.match(r'\[【.+】[^[]*?\]', lineData)
-		findStart = 0
-		if ret:
-			findStart = ret.end()
-		#对话
-		iter = re.finditer(r'[^\[a-zA-Z0-9\]\\]+', lineData[findStart:-1])
-		for r in iter:
-			start = findStart + r.start()
-			end = findStart + r.end()
+		ctrl = {}
+		text = ''
+		#控制段
+		iter = re.finditer(r'\[.*?\]', lineData)
+		for rBrackets in iter:
+			#[]前有文本
+			if start < rBrackets.start():
+				end = rBrackets.start()
+				text = lineData[start:end]
+				#0行数，1起始字符下标（包含），2结束字符下标（不包含）
+				ctrl = {'pos':[contentIndex, start, end]}
+				tmpDic[start] = [text, ctrl]
+				#print("[]前有文本", ctrl, text)
+			#[]中有文本
+			bracketsData = lineData[rBrackets.start():rBrackets.end()]
+			if re.match(r'\[name', bracketsData):
+				#名字
+				rName = re.search(r'text=".*"', bracketsData)
+				if rName:
+					start = rName.start() + 6
+					end = rName.end() - 1
+					text = lineData[start:end]
+					#0行数，1起始字符下标（包含），2结束字符下标（不包含）
+					ctrl = {'pos':[contentIndex, start, end]}
+					ctrl["isName"] = True #名字标记
+					tmpDic[start] = [text, ctrl]
+			elif bracketsData == '[r]':
+				ctrl['notEnd'] = True
+				#print('有[r]换行', ctrl, text)
+			start = rBrackets.end()
+		#行末有文本
+		if start < len(lineData) - 1:
+			end = len(lineData) - 1
 			text = lineData[start:end]
 			#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 			ctrl = {'pos':[contentIndex, start, end]}
