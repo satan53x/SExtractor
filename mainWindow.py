@@ -113,16 +113,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 	def extractFile(self):
 		engineName = self.engineNameBox.currentText()
 		group = "Engine_" + engineName
-		file = self.engineConfig.value(group + '/file')
-		args = [self.mainDirPath, engineName, self.outputFormat, self.outputPartMode]
+		fileType = self.engineConfig.value(group + '/file')
+		mainDirPath = self.mainDirEdit.text()
+		args = [mainDirPath, engineName, self.outputFormat, self.outputPartMode]
 		var.window = self
 		print(args)
-		if file == 'txt': 
+		if fileType == 'txt': 
 			mainExtractTxt(args)
-		elif file == 'bin':
+		elif fileType == 'bin':
 			mainExtractBin(args)
 		else:
-			print('Error file style.')
+			print('extractFile:', 'Error file type.')
 		#保存配置
 		self.mainConfig.setValue('engineCode', self.engineCode)
 		self.mainConfig.setValue('outputFormat', self.outputFormat)

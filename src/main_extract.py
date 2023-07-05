@@ -275,5 +275,7 @@ def mainExtract(args, parseImp):
 		print('读取文件数:', var.inputCount)
 		writeFormat(var.outputFormat)
 		print('新建文件数:', var.outputCount)
-	showMessage("输出完成。")
+	else:
+		print('未找到主目录')
+	showMessage("处理完成。")
 	print('')
