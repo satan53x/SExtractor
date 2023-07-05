@@ -8,7 +8,7 @@ SplitPattern = r'、|。|？|！|――|…|　'
 OldEncodeName = 'cp932'
 NewEncodeName = 'gbk'
 
-# ---------------- Engine: EAGLS PAK -------------------
+# ---------------- Engine: EAGLS -------------------
 def parseImp(content, listCtrl, dealOnce):
 	listIndex = 0
 	#print(len(content))
@@ -49,7 +49,7 @@ def parseImp(content, listCtrl, dealOnce):
 				listIndex += 1
 				listCtrl.append(value[1])
 
-# ---------------- Group: EAGLS PAK -------------------
+# -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
 	#print(lCtrl)
 	#print(lTrans)

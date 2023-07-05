@@ -4,7 +4,7 @@ import os
 import struct
 from common import *
 
-# ---------------- Group: Artemis pfs -------------------
+# ---------------- Group: Artemis  -------------------
 def parseImp(content, listCtrl, dealOnce):
 	listIndex = 0
 	dealText = False
@@ -56,7 +56,7 @@ def parseImp(content, listCtrl, dealOnce):
 			listCtrl.append(ctrl)
 			#break #测试
 
-# ---------------- Group: Artemis pfs -------------------
+# -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
 	#print(lCtrl)
 	#print(lTrans)

@@ -7,7 +7,7 @@ from common import *
 OldEncodeName = 'cp932'
 NewEncodeName = 'gbk'
 
-# ---------------- Group: ADV -------------------
+# ---------------- Group: AST -------------------
 def parseImp(content, listCtrl, dealOnce):
 	listIndex = 0
 	dealText = 0 # 0不处理 1已读WINDOW 尝试处理 2已进行处理至少一行
@@ -58,7 +58,7 @@ def parseImp(content, listCtrl, dealOnce):
 				listIndex += 1
 				listCtrl.append(ctrl)
 
-# ---------------- Group: ADV -------------------
+# -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
 	#print(lCtrl)
 	#print(lTrans)

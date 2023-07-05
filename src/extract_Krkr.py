@@ -63,7 +63,7 @@ def parseImp(content, listCtrl, dealOnce):
 				listIndex += 1
 				listCtrl.append(value[1])
 
-# ---------------- Group:  -------------------
+# -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
 	#print(lCtrl)
 	#print(lTrans)
