@@ -129,7 +129,7 @@ def writeFormat0():
 	#print(filepath)
 	fileTransDic = open(filepath, 'w', encoding='utf-8')
 	#print(var.transDic)
-	json.dump(var.transDic, fileTransDic, ensure_ascii=False, indent=4)
+	json.dump(var.transDic, fileTransDic, ensure_ascii=False, indent=2)
 	fileTransDic.close()
 
 def writeFormat1():
@@ -145,7 +145,7 @@ def writeFormat1():
 			tmpDic[orig] = orig
 		else:
 			tmpDic[orig] = trans
-	json.dump(tmpDic, fileTransDic, ensure_ascii=False, indent=4)
+	json.dump(tmpDic, fileTransDic, ensure_ascii=False, indent=2)
 	fileTransDic.close()
 
 def writeFormat2():

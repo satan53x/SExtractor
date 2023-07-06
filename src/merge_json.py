@@ -23,14 +23,14 @@ def writeMerge():
 	name = re.sub(r'\.[0-9]+', '', filename)
 	filepath = os.path.join(workpath, name + '.merge' + Postfix)
 	fileNew = open(filepath, 'w', encoding=EncodeName)
-	json.dump(allJson[jsonType], fileNew, ensure_ascii=False, indent=4)
+	json.dump(allJson[jsonType], fileNew, ensure_ascii=False, indent=2)
 	fileNew.close()
 	print('Write done.')
 
 def writeSeprate(seq):
 	filepath = os.path.join(workpath, filename + '.' + str(seq) + Postfix)
 	fileNew = open(filepath, 'w', encoding=EncodeName)
-	json.dump(allJson[jsonType], fileNew, ensure_ascii=False, indent=4)
+	json.dump(allJson[jsonType], fileNew, ensure_ascii=False, indent=2)
 	fileNew.close()
 	print('Write done.')
 
@@ -122,5 +122,7 @@ def mergeTool(args):
 				#print(filepath)
 				read(funcIndex)
 				#break
-	if funcIndex == 0:
-		writeMerge()
+		if funcIndex == 0:
+			writeMerge()
+	else:
+		print('未找到主目录')

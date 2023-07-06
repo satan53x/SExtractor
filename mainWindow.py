@@ -114,8 +114,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		engineName = self.engineNameBox.currentText()
 		group = "Engine_" + engineName
 		fileType = self.engineConfig.value(group + '/file')
-		mainDirPath = self.mainDirEdit.text()
-		args = [mainDirPath, engineName, self.outputFormat, self.outputPartMode]
+		dirpath = self.mainDirEdit.text()
+		args = [dirpath, engineName, self.outputFormat, self.outputPartMode]
 		var.window = self
 		print(args)
 		if fileType == 'txt': 
@@ -128,6 +128,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mainConfig.setValue('engineCode', self.engineCode)
 		self.mainConfig.setValue('outputFormat', self.outputFormat)
 		self.mainConfig.setValue('outputPartMode', self.outputPartMode)
+		self.mainConfig.setValue('mainDirPath', dirpath)
 
 	def extractFileThread(self):
 		self.thread = extractThread()
@@ -145,14 +146,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 	#合并
 	def mergeFile(self):
+		dirpath = self.mergeDirEdit.text()
 		func = self.mergeFuncBox.currentIndex()
 		edit = self.mergeLineEdit.text()
 		lineCount = 0
 		if edit: lineCount = int(edit)
 		if lineCount == 0: lineCount = 1000
-		args = [self.mergeDirPath, func, lineCount]
+		args = [dirpath, func, lineCount]
 		print(args)
 		mergeTool(args)
+		#保存配置
+		self.mainConfig.setValue('mergeDirPath', dirpath)
 
 #import debugpy
 class extractThread(QThread):
