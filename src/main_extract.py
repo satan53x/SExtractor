@@ -46,7 +46,7 @@ class ExtractVar():
 
 var = ExtractVar()
 
-def setFileName(formatCode):
+def setIOFileName(formatCode):
 	if var.partMode == 0: #总共一个json
 		if formatCode == 2:
 			var.ouputFileName = 'all.orig.json'
@@ -60,7 +60,9 @@ def setFileName(formatCode):
 
 
 def readFormat(code):
-	setFileName(code)
+	setIOFileName(code)
+	var.isInput = False
+	var.transDic.clear()
 	if code == 2:
 		readFormat2()
 	else:
@@ -68,28 +70,22 @@ def readFormat(code):
 
 def readFormat1():
 	#存在则读入译文
-	var.isInput = False
-	var.transDic.clear()
 	filepath = os.path.join(var.workpath, var.inputDir, var.inputFileName)
 	if os.path.isfile(filepath):
 		fileTransDic = open(filepath, 'r', encoding='utf-8')
 		var.transDic = json.load(fileTransDic)
 		print('读入Json: ', len(var.transDic), var.inputFileName)
 		var.isInput = True
-		#print(list(var.transDic.keys())[0])
 		#print(list(var.transDic.values())[0])
 
 def readFormat2():
 	#存在则读入译文
-	var.isInput = False
-	var.transDic.clear()
 	filepath = os.path.join(var.workpath, var.inputDir, var.inputFileName)
 	if os.path.isfile(filepath):
 		fileAllTrans = open(filepath, 'r', encoding='utf-8')
 		allTrans = json.load(fileAllTrans)
 		print('读入Json:', len(allTrans), var.inputFileName)
 		var.isInput = True
-		#print(list(var.transDic.keys())[0])
 		#print(list(var.transDic.values())[0])
 		filepath = os.path.join(var.workpath, var.outputDir, var.ouputFileName)
 		fileAllOrig = open(filepath, 'r', encoding='utf-8')
