@@ -63,6 +63,7 @@ def readFormat(code):
 	setIOFileName(code)
 	var.isInput = False
 	var.transDic.clear()
+	var.allOrig.clear()
 	if code == 2:
 		readFormat2()
 	else:
@@ -89,11 +90,11 @@ def readFormat2():
 		#print(list(var.transDic.values())[0])
 		filepath = os.path.join(var.workpath, var.outputDir, var.ouputFileName)
 		fileAllOrig = open(filepath, 'r', encoding='utf-8')
-		var.allOrig = json.load(fileAllOrig)
-		print('读入Json:', len(var.allOrig), var.ouputFileName)
+		allOrig = json.load(fileAllOrig)
+		print('读入Json:', len(allOrig), var.ouputFileName)
 		#合并
-		for i in range(len(var.allOrig)):
-			itemOrig = var.allOrig[i]
+		for i in range(len(allOrig)):
+			itemOrig = allOrig[i]
 			itemTrans = allTrans[i]
 			if 'name' in itemOrig: #名字
 				if itemOrig['name'] not in var.transDic:
@@ -112,7 +113,6 @@ def readFormat2():
 						var.transDic[msgOrig] = msgTrans
 		fileAllOrig.close()
 		fileAllTrans.close()
-	var.allOrig.clear()
 
 def writeFormat(code):
 	if code == 2:
