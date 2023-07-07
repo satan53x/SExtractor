@@ -29,6 +29,7 @@ class ExtractVar():
 
 	#-------------------
 	transDic = {}
+	transDicIO = {} #读取写入时的原本字典，不参与write()，模式01则不需要
 	allOrig = []
 
 	#-------------------
@@ -63,11 +64,14 @@ def readFormat(code):
 	setIOFileName(code)
 	var.isInput = False
 	var.transDic.clear()
+	var.transDicIO.clear()
 	var.allOrig.clear()
-	if code == 2:
-		readFormat2()
-	else:
+	if code == 0 or code == 1:
 		readFormat1()
+	elif code == 3 or code == 4:
+		readFormat4()
+	else:
+		readFormat2()
 
 def readFormat1():
 	#存在则读入译文
@@ -78,6 +82,32 @@ def readFormat1():
 		print('读入Json: ', len(var.transDic), var.inputFileName)
 		var.isInput = True
 		#print(list(var.transDic.values())[0])
+
+def readFormat4():
+	#存在则读入译文
+	filepath = os.path.join(var.workpath, var.inputDir, var.inputFileName)
+	if os.path.isfile(filepath):
+		fileTransDic = open(filepath, 'r', encoding='utf-8')
+		var.transDicIO = json.load(fileTransDic)
+		print('读入Json: ', len(var.transDicIO), var.inputFileName)
+		var.isInput = True
+		#print(list(var.transDic.values())[0])
+		#还原transDic
+		for orig,trans in var.transDicIO.items():
+			splitToTransDic(orig, trans)
+
+def splitToTransDic(orig, trans):
+	listMsgOrig = orig.split('\r\n')
+	listMsgTrans = trans.split('\r\n')
+	for j in range(len(listMsgOrig)):
+		msgOrig = listMsgOrig[j]
+		msgTrans = ' '
+		if j<len(listMsgTrans):
+			msgTrans = listMsgTrans[j]
+		if  msgOrig not in var.transDic or \
+			var.transDic[msgOrig] == '' or \
+			var.transDic[msgOrig] == ' ':
+			var.transDic[msgOrig] = msgTrans
 
 def readFormat2():
 	#存在则读入译文
@@ -100,62 +130,45 @@ def readFormat2():
 				if itemOrig['name'] not in var.transDic:
 					var.transDic[itemOrig['name']] = itemTrans['name']
 			if 'message' in itemOrig: #对话
-				listMsgOrig = itemOrig['message'].split('\r\n')
-				listMsgTrans = itemTrans['message'].split('\r\n')
-				for j in range(len(listMsgOrig)):
-					msgOrig = listMsgOrig[j]
-					msgTrans = ' '
-					if j<len(listMsgTrans):
-						msgTrans = listMsgTrans[j]
-					if  msgOrig not in var.transDic or \
-						var.transDic[msgOrig] == '' or \
-						var.transDic[msgOrig] == ' ':
-						var.transDic[msgOrig] = msgTrans
+				splitToTransDic(itemOrig['message'], itemTrans['message'])
 		fileAllOrig.close()
 		fileAllTrans.close()
 
 def writeFormat(code):
-	if code == 2:
-		writeFormat2()
+	if code == 0:
+		writeFormatDirect(var.transDic)
 	elif code == 1:
-		writeFormat1()
-	else:
-		writeFormat0()
+		writeFormatCopyKey(var.transDic)
+	elif code == 2:
+		writeFormatDirect(var.allOrig)
+	elif code == 3:
+		writeFormatDirect(var.transDicIO)
+	elif code == 4:
+		writeFormatCopyKey(var.transDicIO)
 
-def writeFormat0():
+def writeFormatDirect(targetJson):
 	#print(filepath)
-	print('输出Json:', len(var.transDic), var.ouputFileName)
+	print('输出Json:', len(targetJson), var.ouputFileName)
 	filepath = os.path.join(var.workpath, var.outputDir, var.ouputFileName)
-	#print(filepath)
-	fileTransDic = open(filepath, 'w', encoding='utf-8')
-	#print(var.transDic)
-	json.dump(var.transDic, fileTransDic, ensure_ascii=False, indent=2)
-	fileTransDic.close()
+	fileOutput = open(filepath, 'w', encoding='utf-8')
+	#print(targetJson)
+	json.dump(targetJson, fileOutput, ensure_ascii=False, indent=2)
+	fileOutput.close()
 
-def writeFormat1():
+def writeFormatCopyKey(targetJson):
 	#print(filepath)
-	print('输出Json:', len(var.transDic), var.ouputFileName)
+	print('输出Json:', len(targetJson), var.ouputFileName)
 	filepath = os.path.join(var.workpath, var.outputDir, var.ouputFileName)
-	#print(filepath)
-	fileTransDic = open(filepath, 'w', encoding='utf-8')
-	#print(var.transDic)
+	fileOutput = open(filepath, 'w', encoding='utf-8')
+	#print(targetJson)
 	tmpDic = {}
-	for orig,trans in var.transDic.items():
+	for orig,trans in targetJson.items():
 		if trans == '':
 			tmpDic[orig] = orig
 		else:
 			tmpDic[orig] = trans
-	json.dump(tmpDic, fileTransDic, ensure_ascii=False, indent=2)
-	fileTransDic.close()
-
-def writeFormat2():
-	print('输出Json:', len(var.allOrig), var.ouputFileName)
-	filepath = os.path.join(var.workpath, var.outputDir, var.ouputFileName)
-	#print(filepath)
-	fileAllOrig = open(filepath, 'w', encoding='utf-8')
-	#print(var.transDic)
-	json.dump(var.allOrig, fileAllOrig, ensure_ascii=False, indent=2)
-	fileAllOrig.close()
+	json.dump(tmpDic, fileOutput, ensure_ascii=False, indent=2)
+	fileOutput.close()
 
 def keepAllOrig():
 	listIndex = -1
@@ -171,6 +184,9 @@ def keepAllOrig():
 			#print(listIndex, orig, ctrl)
 			if 'isName'in ctrl:
 				item['name'] = orig
+				if orig not in var.transDicIO:
+					#print('Add to transDicIO', orig, listIndex, var.filename)
+					var.transDicIO[orig] = ''
 				continue
 			else:
 				if 'message' not in item:
@@ -180,6 +196,10 @@ def keepAllOrig():
 					item['message'] += '\r\n'
 					continue
 			var.allOrig.append(item)
+			#加入transDicIO
+			if item['message'] not in var.transDicIO:
+				#print('Add to transDicIO', orig, listIndex, var.filename)
+				var.transDicIO[item['message']] = ''
 			break
 
 def dealOnce(text, listIndex):
