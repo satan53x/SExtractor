@@ -240,7 +240,7 @@ def chooseEngine(engineName, outputFormat):
 	var.EncodeRead = settings.value('encode')
 	#输出格式
 	formatList = settings.value('formatList')
-	if str(outputFormat) in formatList:
+	if formatList == None or str(outputFormat) in formatList:
 		var.outputFormat = outputFormat
 	else:
 		var.outputFormat = 0
