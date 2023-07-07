@@ -37,8 +37,8 @@ def parseImp(content, listCtrl, dealOnce):
 				#名字
 				rName = re.search(r'text=".*"', bracketsData)
 				if rName:
-					start = rName.start() + 6
-					end = rName.end() - 1
+					start = rBrackets.start() + rName.start() + 6
+					end = rBrackets.start() + rName.end() - 1
 					text = lineData[start:end]
 					#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 					ctrl = {'pos':[contentIndex, start, end]}
