@@ -16,8 +16,8 @@ def parseImp(content, listCtrl, dealOnce):
 		if dealText == 1:
 			if re.match(r'[<\n]', lineData):
 				dealText = 0 #废弃上一个window
+		if re.match(r'[;]', lineData): continue#注释行
 		if dealText == 0:
-			if re.match(r'[;\n]', lineData): continue#注释行
 			if re.match(r'<WINDOW', lineData): #名字行
 				dealText = 1
 				ret = re.search(r'NAME=".*?"', lineData)

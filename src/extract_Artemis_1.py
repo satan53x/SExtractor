@@ -14,7 +14,7 @@ def parseImp(content, listCtrl, dealOnce):
 		#每行
 		#print('>>> Line ' + str(contentIndex), ': ', lineData)
 		#非对话
-		if re.match(r'[/\*#\n\[;]', lineData):
+		if re.match(r'[/\*#\n\[]', lineData):
 			prelineIsText = False
 			ret = re.match(r'\[.*?[ \]]', lineData)
 			if ret:
