@@ -38,7 +38,7 @@ def parseImp(content, listCtrl, dealOnce):
 					text = lineData[start:end]
 				#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 				ctrl = {'pos':[contentIndex, start, end]}
-				ctrl["isName"] = True #名字标记
+				ctrl['isName'] = True #名字标记
 				if dealOnce(text, listIndex):
 					listIndex += 1
 					listCtrl.append(ctrl)
