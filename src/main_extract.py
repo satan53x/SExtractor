@@ -97,8 +97,8 @@ def readFormat4():
 			splitToTransDic(orig, trans)
 
 def splitToTransDic(orig, trans):
-	listMsgOrig = orig.split('\r\n')
-	listMsgTrans = trans.split('\r\n')
+	listMsgOrig = re.split('\r\n', orig)
+	listMsgTrans = re.split('\r\n', trans)
 	for j in range(len(listMsgOrig)):
 		msgOrig = listMsgOrig[j]
 		msgTrans = ' '
