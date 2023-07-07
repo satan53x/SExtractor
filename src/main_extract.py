@@ -110,7 +110,10 @@ def readFormat2():
 					msgTrans = ' '
 					if j<len(listMsgTrans):
 						msgTrans = listMsgTrans[j]
-					var.transDic[msgOrig] = msgTrans
+					if  msgOrig not in var.transDic or \
+						var.transDic[msgOrig] == '' or \
+						var.transDic[msgOrig] == ' ':
+						var.transDic[msgOrig] = msgTrans
 		fileAllOrig.close()
 		fileAllTrans.close()
 	var.allOrig.clear()
