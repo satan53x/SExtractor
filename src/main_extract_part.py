@@ -31,6 +31,7 @@ def mainExtractPart(args, parseImp):
 			filepath = os.path.join(var.workpath, var.filename+var.Postfix)
 			#print(name, filepath)
 			if os.path.isfile(filepath):
+				SetG('FileName', var.filename)
 				readFormat(var.outputFormat) #读入译文
 				parseImp()
 				keepAllOrig()

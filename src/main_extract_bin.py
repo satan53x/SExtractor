@@ -61,8 +61,11 @@ def write():
 def parse():
 	#print('解析文件: '+var.filename)
 	fileOld = read()
-	data = fileOld.read()
-	var.content = data.split(var.ContentSeprate)
+	if var.readFileDataImp:
+		var.content = var.readFileDataImp(fileOld, var.ContentSeprate)
+	else:
+		data = fileOld.read()
+		var.content = data.split(var.ContentSeprate)
 	fileOld.close()
 	#print(var.content)
 	var.parseImp(var.content, var.listCtrl, dealOnce)
@@ -70,7 +73,7 @@ def parse():
 	num = len(var.listOrig)
 	#print('count:', num, len(transDic))
 	if num == 0:
-		print('No valid content', var.filename)
+		print('该文件没有有效文本', var.filename)
 		#filepath = os.path.join(var.workpath, var.filename+var.Postfix)
 		#if os.path.exists(filepath):
 			#os.remove(filepath)

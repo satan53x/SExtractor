@@ -8,9 +8,8 @@ from common import *
 def parseImp(content, listCtrl, dealOnce):
 	listIndex = 0
 	#print(len(content))
-	for contentIndex in range(len(content) - 1):
+	for contentIndex in range(len(content)):
 		if contentIndex < 1: continue 
-		#if contentIndex > 41: break #测试 
 		lineData = content[contentIndex]
 		start = 0
 		end = 0
@@ -43,7 +42,7 @@ def parseImp(content, listCtrl, dealOnce):
 					text = lineData[start:end]
 					#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 					ctrl = {'pos':[contentIndex, start, end]}
-					ctrl["isName"] = True #名字标记
+					ctrl['isName'] = True #名字标记
 					tmpDic[start] = [text, ctrl]
 			elif bracketsData == '[r]':
 				ctrl['notEnd'] = True

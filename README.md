@@ -6,6 +6,8 @@
 * pyqt5
 
 ### 当前支持的引擎：
+* AST
 * Artemis
 * EAGLS
-* AST
+* Krkr
+* MED

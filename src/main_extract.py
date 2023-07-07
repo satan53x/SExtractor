@@ -13,6 +13,7 @@ class ExtractVar():
 	ContentSeprate = b'\x0D\x0A'
 	parseImp = None
 	replaceOnceImp = None
+	readFileDataImp = None
 	workpath = ''
 	#导出格式:
 	# 0 json {orig:''}
@@ -211,6 +212,8 @@ def createFolder():
 		os.makedirs(path)
 
 def chooseEngine(engineName, outputFormat):
+	var.inputCount = 0
+	var.outputCount = 0
 	settings = QSettings('src/engine.ini', QSettings.IniFormat)
 	strEngine = 'Engine_' + engineName
 	settings.beginGroup(strEngine)
@@ -225,18 +228,20 @@ def chooseEngine(engineName, outputFormat):
 		showMessage("该引擎暂不支持此输出格式。")
 		return 1
 	#分割符
-	s = settings.value('ContentSeprate')
+	s = settings.value('contentSeprate')
 	#print(s.encode())
 	if s: var.ContentSeprate = s.encode()
 	else: var.ContentSeprate = None
-	settings.endGroup()
 	#导入模块
 	#print(var.EncodeName, var.Postfix, engineName)
 	module = import_module('extract_' + engineName)
 	var.parseImp = getattr(module, 'parseImp')
 	var.replaceOnceImp = getattr(module, 'replaceOnceImp')
-	var.inputCount = 0
-	var.outputCount = 0
+	if settings.value('readFileData'):
+		var.readFileDataImp = getattr(module, 'readFileDataImp')
+	else:
+		var.readFileDataImp = None
+	settings.endGroup()
 	return 0
 
 def showMessage(msg):
@@ -264,11 +269,13 @@ def mainExtract(args, parseImp):
 		createFolder()
 		readFormat(var.outputFormat) #读入译文
 		for name in os.listdir(var.workpath):
-			#print(name)
+			#print('File:', name)
 			var.filename = os.path.splitext(name)[0]
 			filepath = os.path.join(var.workpath, var.filename+var.Postfix)
 			#print(name, filepath)
 			if os.path.isfile(filepath):
+				#print('File:', name)
+				SetG('FileName', var.filename)
 				parseImp()
 				keepAllOrig()
 				#break #测试
