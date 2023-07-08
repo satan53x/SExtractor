@@ -102,7 +102,7 @@ def splitToTransDic(orig, trans):
 	for j in range(len(listMsgOrig)):
 		msgOrig = listMsgOrig[j]
 		msgTrans = ' '
-		if j<len(listMsgTrans):
+		if j<len(listMsgTrans) and listMsgTrans[j] != '':
 			msgTrans = listMsgTrans[j]
 		if  msgOrig not in var.transDic or \
 			var.transDic[msgOrig] == '' or \
