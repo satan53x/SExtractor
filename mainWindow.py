@@ -91,7 +91,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		#print('selectEngine', self.engineCode)
 		#显示示例
 		engineName = self.engineNameBox.currentText()
-		self.engineConfig.beginGroup('Engine_' + engineName)
+		group = 'Engine_' + engineName
+		self.engineConfig.beginGroup(group)
 		#示例
 		value = self.engineConfig.value('sample')
 		if value:
@@ -99,8 +100,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		else:
 			self.sampleBrowser.setText('')
 		#名字列表
-		self.nameListConfig = self.engineConfig.value('nameList')
-		if self.nameListConfig == None: self.nameListConfig = ''
+		self.nameListConfig = self.mainConfig.value(group + '_nameList')
+		if self.nameListConfig == None:
+			self.nameListConfig = self.engineConfig.value('nameList')
+		if self.nameListConfig == None:
+			self.nameListConfig = ''
 		self.nameListEdit.setText(self.nameListConfig)
 		self.engineConfig.endGroup()
 
@@ -141,6 +145,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mainConfig.setValue('outputFormat', self.outputFormat)
 		self.mainConfig.setValue('outputPartMode', self.outputPartMode)
 		self.mainConfig.setValue('mainDirPath', workpath)
+		if nameList != '':
+			self.mainConfig.setValue(group+'_nameList', nameList)
+		else:
+			self.mainConfig.remove(group+'_nameList')
 
 	def extractFileThread(self):
 		self.thread = extractThread()
