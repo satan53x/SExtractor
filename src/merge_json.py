@@ -1,7 +1,7 @@
 import sys
 import os
 import json 
-sys.path.append('G:/py/')
+import re
 from common import *
 
 EncodeName = 'utf-8'
