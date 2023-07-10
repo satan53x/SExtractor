@@ -11,6 +11,7 @@ class ExtractVar():
 	Postfix = '.txt'
 	EncodeRead = 'utf-8'
 	ContentSeprate = b'\x0D\x0A'
+	NameList = []
 	parseImp = None
 	replaceOnceImp = None
 	readFileDataImp = None
@@ -263,19 +264,25 @@ def chooseEngine(engineName, outputFormat):
 	settings.endGroup()
 	return 0
 
+def setNameList(str):
+	l = str.split(',')
+	var.NameList = [x for x in l if x != '']
+	SetG('NameList', var.NameList)
+
 def showMessage(msg):
 	if var.window: 
 		var.window.statusBar.showMessage(msg)
 
-#args = [workpath, engineCode, outputFormat]
+#args = [workpath, engineName, outputFormat, nameList]
 def mainExtract(args, parseImp):
-	if len(args) < 3:
+	if len(args) < 4:
 		print("main_extract参数错误", args)
 		return
 	showMessage("开始处理...")
-	path = args[0]
+	path = args['workpath']
 	#print(path)
-	ret = chooseEngine(args[1], args[2])
+	setNameList(args['nameList'])
+	ret = chooseEngine(args['engineName'], args['outputFormat'])
 	if ret != 0:
 		return
 	var.partMode = 0

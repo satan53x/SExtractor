@@ -12,6 +12,7 @@
 * EAGLS
 * Krkr
 * MED
+* SiglusEngine
 
 ### 支持的导出格式：
 * json字典 { 文本 : "" }
@@ -19,3 +20,7 @@
 * json列表 [ { name : 名字, message : 带换行对话 } ]
 * json字典 { 带换行文本 : "" }
 * json字典 { 带换行文本 : 带换行文本 }
+
+### 相关参考项目
+1. [ssynn](https://github.com/ssynn/game_translation)
+2. [SiglusTools](https://github.com/yanhua0518/GALgameScriptTools)

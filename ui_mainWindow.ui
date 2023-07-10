@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>550</width>
-    <height>400</height>
+    <width>560</width>
+    <height>420</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>550</width>
-    <height>400</height>
+    <width>560</width>
+    <height>420</height>
    </size>
   </property>
   <property name="font">
@@ -181,6 +181,16 @@
         </item>
         <item>
          <widget class="QTextBrowser" name="sampleBrowser"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>强制设定名字列表</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="nameListEdit"/>
         </item>
        </layout>
       </widget>

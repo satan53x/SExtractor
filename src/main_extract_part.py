@@ -6,15 +6,16 @@ from common import *
 from main_extract import *
 
 #单独处理每个文件的json
-#args = [workpath, engineName, outputFormat]
+#args = [workpath, engineName, outputFormat, nameList]
 def mainExtractPart(args, parseImp):
-	if len(args) < 3:
+	if len(args) < 4:
 		print("main_extract参数错误", args)
 		return
 	showMessage("开始处理...")
-	path = args[0]
+	path = args['workpath']
 	#print(path)
-	ret = chooseEngine(args[1], args[2])
+	setNameList(args['nameList'])
+	ret = chooseEngine(args['engineName'], args['outputFormat'])
 	if ret != 0:
 		return
 	var.partMode = 1

@@ -16,7 +16,7 @@ def initValue(setting, name, v):
 		print('New Config', name, v)
 	else:
 		v = setting.value(name)
-		print('Load Config', name, v)
+		#print('Load Config', name, v)
 	return v
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -92,11 +92,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		#显示示例
 		engineName = self.engineNameBox.currentText()
 		self.engineConfig.beginGroup('Engine_' + engineName)
+		#示例
 		value = self.engineConfig.value('sample')
 		if value:
 			self.sampleBrowser.setText(value)
 		else:
 			self.sampleBrowser.setText('')
+		#名字列表
+		self.nameListConfig = self.engineConfig.value('nameList')
+		if self.nameListConfig == None: self.nameListConfig = ''
+		self.nameListEdit.setText(self.nameListConfig)
 		self.engineConfig.endGroup()
 
 	#选择格式
@@ -114,8 +119,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		engineName = self.engineNameBox.currentText()
 		group = "Engine_" + engineName
 		fileType = self.engineConfig.value(group + '/file')
-		dirpath = self.mainDirEdit.text()
-		args = [dirpath, engineName, self.outputFormat, self.outputPartMode]
+		workpath = self.mainDirEdit.text()
+		nameList = self.nameListEdit.text()
+		args = {
+			'workpath':workpath,
+			'engineName':engineName,
+			'outputFormat':self.outputFormat,
+			'outputPartMode':self.outputPartMode,
+			'nameList':nameList
+		}
 		var.window = self
 		print(args)
 		if fileType == 'txt': 
@@ -128,7 +140,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mainConfig.setValue('engineCode', self.engineCode)
 		self.mainConfig.setValue('outputFormat', self.outputFormat)
 		self.mainConfig.setValue('outputPartMode', self.outputPartMode)
-		self.mainConfig.setValue('mainDirPath', dirpath)
+		self.mainConfig.setValue('mainDirPath', workpath)
 
 	def extractFileThread(self):
 		self.thread = extractThread()
