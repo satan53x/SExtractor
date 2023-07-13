@@ -19,7 +19,21 @@ def parseImp(content, listCtrl, dealOnce):
 		#每行
 		#print('>>> Line ' + str(contentIndex), ': ', lineData)
 		#if lineData.isspace(): continue #空白行
-		if re.match(rb'[#&]', lineData) == None: continue #无数据行
+		if re.match(rb'[#&]', lineData) == None:
+			if re.match(rb'52', lineData):
+				#提取选择项
+				ret = re.finditer(rb'"_SelStr\d*?","([^"]+?)"', lineData)
+				for r in ret:
+					#print(r.group(1).decode(OldEncodeName))
+					start = r.start(1)
+					end = r.end(1)
+					text = lineData[start:end].decode(OldEncodeName)
+					#0行数，1起始字符下标（包含），2结束字符下标（不包含）
+					ctrl = {'pos':[contentIndex, start, end]}
+					if dealOnce(text, listIndex):
+						listIndex += 1
+						listCtrl.append(ctrl)
+			continue
 		tmpDic = {}
 		#对话
 		iter = re.finditer(rb'"[^a-zA-Z0-9_,][^"]+"', lineData)
