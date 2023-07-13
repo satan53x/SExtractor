@@ -73,7 +73,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		#print('Diff', count)
 		if count < 0:
 			transData = transData[0:lenOrig]
-			print('>>>>>> count warning', lTrans[i])
+			print('\033[32m译文长度超出原文\033[0m', lTrans[i])
 			#print(transData.decode(NewEncodeName))
 		#	print('>>>>>> count warning', count, lCtrl[i], lTrans[i])
 		#	return False
