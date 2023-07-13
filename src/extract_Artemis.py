@@ -38,7 +38,7 @@ def parseImp(content, listCtrl, dealOnce):
 				start = ret.start() + 1
 				end = ret.end() - 1
 			else: continue
-		elif re.match(r'\s*{"rt2"}', lineData): #换行
+		elif re.match(r'\s*{"[r/]', lineData): #换行
 			listCtrl[-1]["notEnd"] = True #换行标记
 			continue
 		else:
