@@ -37,7 +37,8 @@ def write():
 			#开始处理段落
 			ret = var.replaceOnceImp(var.content, lCtrl, lTrans)
 			if ret == False:
-				print('replace false', var.filename)
+				print('\033[31m替换错误，请检查文本\033[0m', var.filename, trans)
+				break
 			lCtrl.clear()
 			lTrans.clear()
 			#break #测试
@@ -65,7 +66,7 @@ def parse():
 	num = len(var.listOrig)
 	#print('count:', num, len(transDic))
 	if num == 0:
-		print('该文件没有有效文本', var.filename)
+		print('\033[32m没有解析到有效内容\033[0m', var.filename)
 		#filepath = os.path.join(var.workpath, var.filename+var.Postfix)
 		#if os.path.exists(filepath):
 			#os.remove(filepath)

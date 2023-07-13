@@ -57,7 +57,12 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		contentIndex = posData[0]
 		start = posData[1]
 		end = posData[2]
-		transData = lTrans[i].encode(NewEncodeName)
+		transData = None
+		try:
+			transData = lTrans[i].encode(NewEncodeName)
+		except Exception as ex:
+			print(ex)
+			return False
 		# 检查长度
 		lenOrig = end - start
 		lenTrans = len(transData)

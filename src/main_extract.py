@@ -49,18 +49,25 @@ class ExtractVar():
 var = ExtractVar()
 
 def setIOFileName(formatCode):
-	if var.partMode == 0: #总共一个json
-		if formatCode == 2:
+	if var.partMode == 0: #总共一个输出文档
+		if formatCode == 5:
+			var.ouputFileName = 'all.orig.txt'
+			var.inputFileName = 'all.trans.txt'
+		elif formatCode == 2:
 			var.ouputFileName = 'all.orig.json'
 			var.inputFileName = 'all.trans.json'
 		else:
 			var.ouputFileName = 'transDic.output.json'
 			var.inputFileName = 'transDic.json'
-	else: #每个文件对应一个json
-		var.ouputFileName = var.filename + '.json'
-		var.inputFileName = var.filename + '.json'
+	else: #每个文件对应一个输出文档
+		if formatCode == 5:
+			var.ouputFileName = var.filename + '.txt'
+			var.inputFileName = var.filename + '.txt'
+		else:
+			var.ouputFileName = var.filename + '.json'
+			var.inputFileName = var.filename + '.json'
 
-
+# --------------------------- 读 ---------------------------------
 def readFormat(code):
 	setIOFileName(code)
 	var.isInput = False
@@ -69,13 +76,15 @@ def readFormat(code):
 	var.allOrig.clear()
 	if code == 0 or code == 1:
 		readFormat1()
+	elif code == 2:
+		readFormat2()
 	elif code == 3 or code == 4:
 		readFormat4()
 	else:
-		readFormat2()
+		readFormat5()
 
 def readFormat1():
-	#存在则读入译文
+	#读入transDic字典
 	filepath = os.path.join(var.workpath, var.inputDir, var.inputFileName)
 	if os.path.isfile(filepath):
 		fileTransDic = open(filepath, 'r', encoding='utf-8')
@@ -85,7 +94,7 @@ def readFormat1():
 		#print(list(var.transDic.values())[0])
 
 def readFormat4():
-	#存在则读入译文
+	#读入带换行文本的transDicIO字典
 	filepath = os.path.join(var.workpath, var.inputDir, var.inputFileName)
 	if os.path.isfile(filepath):
 		fileTransDic = open(filepath, 'r', encoding='utf-8')
@@ -96,6 +105,28 @@ def readFormat4():
 		#还原transDic
 		for orig,trans in var.transDicIO.items():
 			splitToTransDic(orig, trans)
+
+def readFormat5():
+	#读入txt
+	filepath = os.path.join(var.workpath, var.inputDir, var.inputFileName)
+	if os.path.isfile(filepath):
+		#译文
+		fileAllTrans = open(filepath, 'r', encoding='utf-8')
+		allTrans = fileAllTrans.readlines()
+		print('读入Txt:', len(allTrans), var.inputFileName)
+		var.isInput = True
+		#原文
+		filepath = os.path.join(var.workpath, var.outputDir, var.ouputFileName)
+		fileAllOrig = open(filepath, 'r', encoding='utf-8')
+		allOrig = fileAllOrig.readlines()
+		print('读入Txt:', len(allOrig), var.ouputFileName)
+		#合并
+		for i in range(len(allOrig)):
+			itemOrig = re.sub(r'\n$', '', allOrig[i])
+			itemTrans = re.sub(r'\n$', '', allTrans[i])
+			var.transDic[itemOrig] = itemTrans
+		fileAllOrig.close()
+		fileAllTrans.close()
 
 def splitToTransDic(orig, trans):
 	listMsgOrig = re.split('\r\n', orig)
@@ -111,14 +142,15 @@ def splitToTransDic(orig, trans):
 			var.transDic[msgOrig] = msgTrans
 
 def readFormat2():
-	#存在则读入译文
+	#读入带换行文本的all.orig列表和all.trans列表
 	filepath = os.path.join(var.workpath, var.inputDir, var.inputFileName)
 	if os.path.isfile(filepath):
+		#译文
 		fileAllTrans = open(filepath, 'r', encoding='utf-8')
 		allTrans = json.load(fileAllTrans)
 		print('读入Json:', len(allTrans), var.inputFileName)
 		var.isInput = True
-		#print(list(var.transDic.values())[0])
+		#原文
 		filepath = os.path.join(var.workpath, var.outputDir, var.ouputFileName)
 		fileAllOrig = open(filepath, 'r', encoding='utf-8')
 		allOrig = json.load(fileAllOrig)
@@ -135,6 +167,7 @@ def readFormat2():
 		fileAllOrig.close()
 		fileAllTrans.close()
 
+# --------------------------- 写 ---------------------------------
 def writeFormat(code):
 	if code == 0:
 		writeFormatDirect(var.transDic)
@@ -146,6 +179,8 @@ def writeFormat(code):
 		writeFormatDirect(var.transDicIO)
 	elif code == 4:
 		writeFormatCopyKey(var.transDicIO)
+	elif code == 5:
+		writeFormatTxt(var.transDic)
 
 def writeFormatDirect(targetJson):
 	#print(filepath)
@@ -171,6 +206,17 @@ def writeFormatCopyKey(targetJson):
 	json.dump(tmpDic, fileOutput, ensure_ascii=False, indent=2)
 	fileOutput.close()
 
+def writeFormatTxt(targetJson):
+	#print(filepath)
+	print('输出Txt:', len(targetJson), var.ouputFileName)
+	filepath = os.path.join(var.workpath, var.outputDir, var.ouputFileName)
+	fileOutput = open(filepath, 'w', encoding='utf-8')
+	#print(targetJson)
+	for orig in targetJson.keys():
+		fileOutput.write(orig + '\n')
+	fileOutput.close()
+
+# ------------------------------------------------------------
 def keepAllOrig():
 	listIndex = -1
 	if len(var.listCtrl) > 0:

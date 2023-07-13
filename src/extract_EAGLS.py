@@ -22,7 +22,7 @@ def parseImp(content, listCtrl, dealOnce):
 		if re.match(rb'[#&]', lineData) == None: continue #无数据行
 		tmpDic = {}
 		#对话
-		iter = re.finditer(rb'"[^\w,][^"]+"', lineData)
+		iter = re.finditer(rb'"[^a-zA-Z0-9_,][^"]+"', lineData)
 		for r in iter:
 			start = r.start() + 1
 			end = r.end() - 1
@@ -59,7 +59,12 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		contentIndex = posData[0]
 		start = posData[1]
 		end = posData[2]
-		transData = lTrans[i].encode(NewEncodeName)
+		transData = None
+		try:
+			transData = lTrans[i].encode(NewEncodeName)
+		except Exception as ex:
+			print(ex)
+			return False
 		# 检查长度
 		lenOrig = end - start
 		lenTrans = len(transData)
