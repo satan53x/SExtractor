@@ -57,31 +57,9 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		contentIndex = posData[0]
 		start = posData[1]
 		end = posData[2]
-		transData = None
-		try:
-			transData = lTrans[i].encode(NewEncodeName)
-		except Exception as ex:
-			print(ex)
+		transData = generateBytes(lTrans[i], end - start, NewEncodeName)
+		if transData == None:
 			return False
-		# 检查长度
-		lenOrig = end - start
-		lenTrans = len(transData)
-		#print(contentIndex, start, end)
-		count = lenOrig - lenTrans
-		#print('Diff', count)
-		if count < 0:
-			transData = transData[0:lenOrig]
-			print('>>>>>> count warning', lTrans[i])
-			#print(transData.decode(NewEncodeName))
-		#	print('>>>>>> count warning', count, lCtrl[i], lTrans[i])
-		#	return False
-		else:
-			# 右边补足空格
-			#print(transData)
-			empty = bytearray(count)
-			for i in range(int(count)):
-				empty[i] = 0x20
-			transData += empty
 		#写入new
 		strNew = content[contentIndex][:start] + transData + content[contentIndex][end:]
 		content[contentIndex] = strNew

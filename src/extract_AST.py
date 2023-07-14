@@ -76,12 +76,6 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		except Exception as ex:
 			print(ex)
 			return False
-		# 检查长度
-		lenOrig = end - start
-		lenTrans = len(transData)
-		#print(contentIndex, start, end)
-		count = lenOrig - lenTrans
-		#print('Diff', count)
 		#写入new
 		strNew = content[contentIndex][:start] + transData + content[contentIndex][end:]
 		content[contentIndex] = strNew
