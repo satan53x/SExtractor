@@ -39,8 +39,8 @@ def parseImp(content, listCtrl, dealOnce):
 		else:
 			if re.match(rb'[<\n]', lineData):
 				dealText = 0
-				if "notEnd" in listCtrl[-1]:
-					del listCtrl[-1]["notEnd"]
+				if 'unfinish' in listCtrl[-1]:
+					del listCtrl[-1]['unfinish']
 				continue
 			dealText = 2
 			#print(lineData, start, len(lineData))
@@ -52,7 +52,7 @@ def parseImp(content, listCtrl, dealOnce):
 			text = lineData[start:end].decode(OldEncodeName)
 			#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 			ctrl = {'pos':[contentIndex, start, end]}
-			ctrl["notEnd"] = True
+			ctrl['unfinish'] = True
 			#print(ctrl)
 			if dealOnce(text, listIndex):
 				listIndex += 1

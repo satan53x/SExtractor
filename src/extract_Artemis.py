@@ -39,7 +39,7 @@ def parseImp(content, listCtrl, dealOnce):
 				end = ret.end() - 1
 			else: continue
 		elif re.match(r'\s*{"[r/]', lineData): #换行
-			listCtrl[-1]["notEnd"] = True #换行标记
+			listCtrl[-1]['unfinish'] = True #换行标记
 			continue
 		else:
 			continue

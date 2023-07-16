@@ -28,22 +28,22 @@ def parseImp(content, listCtrl, dealOnce):
 			ctrl['isName'] = True #名字标记
 		else: #对话
 			if re.search(r'[^。）』】？」！]$'.encode('cp932'), lineData):
-				ctrl['notEnd'] = True
+				ctrl['unfinish'] = True
 		text = lineData[start:end].decode(OldEncodeName)
 		ctrl['pos'] = [contentIndex, start, end]
 		#print(ctrl)
 		if dealOnce(text, listIndex):
 			listIndex += 1
 			listCtrl.append(ctrl)
-	#结束处理 删除从最后一行开始的notEnd
+	#结束处理 删除从最后一行开始的unfinish
 	pos = listIndex - 1
 	while pos >= 0:
 		ctrl = listCtrl[pos]
 		if 'isName' in ctrl: break
-		if 'notEnd' not in ctrl: break
-		del listCtrl[pos]['notEnd']
+		if 'unfinish' not in ctrl: break
+		del listCtrl[pos]['unfinish']
 		pos -= 1
-		print('删除从该文件最后一行开始的notEnd控制段', ctrl, GetG('FileName'))
+		print('删除从该文件最后一行开始的unfinish控制段', ctrl, GetG('FileName'))
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):

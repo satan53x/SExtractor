@@ -35,7 +35,7 @@ def write():
 				break
 			lCtrl.append(ctrl)
 			lTrans.append(trans)
-			#if 'notEnd' in ctrl:
+			#if 'unfinish' in ctrl:
 			#	continue
 			#开始处理段落
 			ret = var.replaceOnceImp(var.content, lCtrl, lTrans)

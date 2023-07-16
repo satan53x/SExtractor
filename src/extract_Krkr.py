@@ -45,7 +45,7 @@ def parseImp(content, listCtrl, dealOnce):
 					ctrl['isName'] = True #名字标记
 					tmpDic[start] = [text, ctrl]
 			elif bracketsData == '[r]':
-				ctrl['notEnd'] = True
+				ctrl['unfinish'] = True
 				#print('有[r]换行', ctrl, text)
 			start = rBrackets.end()
 		#行末有文本

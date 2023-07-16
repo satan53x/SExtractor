@@ -45,7 +45,7 @@ def parseImp(content, listCtrl, dealOnce):
 			continue
 		#对话
 		if prelineIsText:
-			listCtrl[-1]['notEnd'] = True
+			listCtrl[-1]['unfinish'] = True
 		prelineIsText = True
 		start = 0
 		end = len(lineData) - 1

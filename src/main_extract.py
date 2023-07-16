@@ -221,7 +221,7 @@ def writeFormatTxt(targetJson):
 def keepAllOrig():
 	listIndex = -1
 	if len(var.listCtrl) > 0:
-		if 'isName' in var.listCtrl[-1] or 'notEnd' in var.listCtrl[-1]:
+		if 'isName' in var.listCtrl[-1] or 'unfinish' in var.listCtrl[-1]:
 			print('listCtrl结束行错误', var.filename, var.listCtrl[-1])
 	while(listIndex < len(var.listOrig) - 1):
 		item = {}
@@ -240,7 +240,7 @@ def keepAllOrig():
 				if 'message' not in item:
 					item['message'] = ""
 				item['message'] += orig
-				if 'notEnd' in ctrl:
+				if 'unfinish' in ctrl:
 					item['message'] += '\r\n'
 					continue
 			var.allOrig.append(item)
