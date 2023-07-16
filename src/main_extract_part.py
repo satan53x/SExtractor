@@ -28,7 +28,10 @@ def mainExtractPart(args, parseImp):
 		createFolder()
 		for name in os.listdir(var.workpath):
 			#print(name)
-			var.filename = os.path.splitext(name)[0]
+			if var.Postfix == '':
+				var.filename = name
+			else:
+				var.filename = os.path.splitext(name)[0]
 			filepath = os.path.join(var.workpath, var.filename+var.Postfix)
 			#print(name, filepath)
 			if os.path.isfile(filepath):

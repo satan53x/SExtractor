@@ -12,6 +12,7 @@ class ExtractVar():
 	EncodeRead = 'utf-8'
 	ContentSeprate = b'\x0D\x0A'
 	NameList = []
+	RegDic = {}
 	parseImp = None
 	replaceOnceImp = None
 	readFileDataImp = None
@@ -315,6 +316,17 @@ def setNameList(str):
 	var.NameList = [x for x in l if x != '']
 	SetG('NameList', var.NameList)
 
+def setRegDic(str):
+	var.RegDic.clear()
+	list = re.split('\n', str)
+	for line in list:
+		if line == '' or line.startswith('sample'): 
+			break
+		pair = line.split('=', 1)
+		var.RegDic[pair[0]] = pair[1]
+		print('正则规则:', pair[0], pair[1])
+	SetG('RegDic', var.RegDic)
+
 def showMessage(msg):
 	if var.window: 
 		var.window.statusBar.showMessage(msg)
@@ -327,10 +339,12 @@ def mainExtract(args, parseImp):
 	showMessage("开始处理...")
 	path = args['workpath']
 	#print(path)
-	setNameList(args['nameList'])
 	ret = chooseEngine(args['engineName'], args['outputFormat'])
 	if ret != 0:
 		return
+	setNameList(args['nameList'])
+	if args['engineName'] == 'TXT':
+		setRegDic(args['regDic'])
 	var.partMode = 0
 	var.outputDir = 'ctrl'
 	var.inputDir = 'ctrl'
@@ -342,7 +356,10 @@ def mainExtract(args, parseImp):
 		readFormat(var.outputFormat) #读入译文
 		for name in os.listdir(var.workpath):
 			#print('File:', name)
-			var.filename = os.path.splitext(name)[0]
+			if var.Postfix == '':
+				var.filename = name
+			else:
+				var.filename = os.path.splitext(name)[0]
 			filepath = os.path.join(var.workpath, var.filename+var.Postfix)
 			#print(name, filepath)
 			if os.path.isfile(filepath):

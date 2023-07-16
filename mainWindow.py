@@ -59,7 +59,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.engineCode = int(initValue(self.mainConfig, 'engineCode', 0))
 		#print(self.engineCode)
 		self.engineNameBox.currentIndexChanged.connect(self.selectEngine)
-		self.engineNameBox.setCurrentIndex(self.engineCode)
 		# 当前输出格式
 		self.outputFormat = int(initValue(self.mainConfig, 'outputFormat', 0))
 		#print(self.outputFormat)
@@ -71,11 +70,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		# 合并目录
 		self.mergeDirPath = initValue(self.mainConfig, 'mergeDirPath', '.')
 		self.mergeDirEdit.setText(self.mergeDirPath)
+		# 设置匹配规则
+		self.regConfig = QSettings('src/reg.ini', QSettings.IniFormat)
+		self.regConfig.setIniCodec('utf-8')
+		groupList = self.regConfig.childGroups()
+		for group in groupList: 
+			#print(group)
+			self.regNameBox.addItem(group)
+		self.regNameBox.currentIndexChanged.connect(self.selectReg)
+		# 结束
+		self.engineNameBox.setCurrentIndex(self.engineCode)
 
 	#初始化
 	def afterShow(self):
 		pass
-
+	#---------------------------------------------------------------
 	#选择主文件夹
 	def chooseMainDir(self):
 		dirpath = self.mainConfig.value('mainDirPath')
@@ -104,9 +113,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		if self.nameListConfig == None:
 			self.nameListConfig = self.engineConfig.value('nameList')
 		if self.nameListConfig == None:
+			self.nameListTab.setEnabled(False)
 			self.nameListConfig = ''
+		else:
+			self.nameListTab.setEnabled(True)
 		self.nameListEdit.setText(self.nameListConfig)
 		self.engineConfig.endGroup()
+		#特殊处理通用TXT
+		if engineName == 'TXT':
+			self.regNameTab.setEnabled(True)
+			self.sampleLabel.setText('正则匹配规则')
+			self.extraFuncTabs.setCurrentIndex(1)
+			self.selectReg(self.regNameBox.currentIndex())
+		else:
+			self.regNameTab.setEnabled(False)
+			self.sampleLabel.setText('引擎脚本示例')
 
 	#选择格式
 	def selectFormat(self, index):
@@ -118,6 +139,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.outputPartMode = index
 		#print('selectOutputPart', self.outputPartMode)
 
+	def selectReg(self, index):
+		self.regIndex = index
+		#print('selectReg', self.regIndex)
+		regName = self.regNameBox.currentText()
+		self.regConfig.beginGroup(regName)
+		textPre = ''
+		textPost = ''
+		for key in self.regConfig.childKeys():
+			value = self.regConfig.value(key)
+			text = key + '=' + value + '\n'
+			if key.startswith('skip'):
+				textPre = text + textPre
+			elif key.startswith('search'):
+				textPre += text
+			else:
+				textPost += text
+		self.regConfig.endGroup()
+		self.sampleBrowser.setText(textPre + textPost)
+
 	#提取
 	def extractFile(self):
 		engineName = self.engineNameBox.currentText()
@@ -125,12 +165,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		fileType = self.engineConfig.value(group + '/file')
 		workpath = self.mainDirEdit.text()
 		nameList = self.nameListEdit.text()
+		regDic = self.sampleBrowser.toPlainText()
 		args = {
 			'workpath':workpath,
 			'engineName':engineName,
 			'outputFormat':self.outputFormat,
 			'outputPartMode':self.outputPartMode,
-			'nameList':nameList
+			'nameList':nameList,
+			'regDic':regDic
 		}
 		var.window = self
 		print(args)
@@ -150,6 +192,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		else:
 			self.mainConfig.remove(group+'_nameList')
 
+	#---------------------------------------------------------------
 	def extractFileThread(self):
 		self.thread = extractThread()
 		self.thread.window = self
@@ -178,6 +221,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		#保存配置
 		self.mainConfig.setValue('mergeDirPath', dirpath)
 
+#---------------------------------------------------------------
 #import debugpy
 class extractThread(QThread):
 	def __init__(self):

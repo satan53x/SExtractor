@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>560</width>
-    <height>420</height>
+    <height>450</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>560</width>
-    <height>420</height>
+    <height>450</height>
    </size>
   </property>
   <property name="font">
@@ -165,7 +165,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="sampleLabel">
           <property name="font">
            <font>
             <family>Microsoft YaHei UI</family>
@@ -180,17 +180,56 @@
          </widget>
         </item>
         <item>
-         <widget class="QTextBrowser" name="sampleBrowser"/>
+         <widget class="QTextEdit" name="sampleBrowser"/>
         </item>
         <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>强制设定名字列表</string>
+         <widget class="QTabWidget" name="extraFuncTabs">
+          <property name="enabled">
+           <bool>true</bool>
           </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="nameListTab">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <attribute name="title">
+            <string>强制设定名字</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+             <widget class="QLineEdit" name="nameListEdit">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>30</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="regNameTab">
+           <attribute name="title">
+            <string>选择匹配规则</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <widget class="QComboBox" name="regNameBox"/>
+            </item>
+           </layout>
+          </widget>
          </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="nameListEdit"/>
         </item>
        </layout>
       </widget>

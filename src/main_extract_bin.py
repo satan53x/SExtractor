@@ -79,7 +79,7 @@ def parse():
 		#if os.path.exists(filepath):
 			#os.remove(filepath)
 
-#args = [workpath, engineName, outputFormat, outputPartMode, nameList]
+#args = {workpath, engineName, outputFormat, outputPartMode, nameList, regDic}
 def mainExtractBin(args):
 	outputPartMode = args['outputPartMode']
 	if outputPartMode == 0:

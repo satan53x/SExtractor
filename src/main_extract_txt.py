@@ -58,7 +58,7 @@ def parse():
 	global content
 	#print('解析文件: '+filename)
 	fileOld = read() #判断流程
-	var.content = fileOld.readlines()
+	var.content = fileOld.readlines() #会保留换行符
 	fileOld.close()
 	#print(content)
 	var.parseImp(var.content, var.listCtrl, dealOnce)
@@ -71,7 +71,7 @@ def parse():
 		#if os.path.exists(filepath):
 			#os.remove(filepath)
 
-#args = [workpath, engineName, outputFormat, outputPartMode, nameList]
+#args = {workpath, engineName, outputFormat, outputPartMode, nameList, regDic}
 def mainExtractTxt(args):
 	outputPartMode = args['outputPartMode']
 	if outputPartMode == 0:
