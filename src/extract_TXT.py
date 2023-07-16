@@ -47,7 +47,7 @@ def parseImp(content, listCtrl, dealOnce):
 					tmpDic[start] = [text, ctrl]
 					if key.startswith('name'):
 						ctrl['isName'] = True #名字标记
-					elif key.startswith('unfinished'):
+					elif key.startswith('unfinish'):
 						ctrl['unfinish'] = True
 					matched = True
 			if matched : break #已匹配则停止搜索
