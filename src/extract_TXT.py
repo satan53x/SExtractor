@@ -23,12 +23,12 @@ def parseImp(content, listCtrl, dealOnce):
 		#print('>>> Line ' + str(contentIndex), ': ', lineData)
 		if lineData == '': continue #空白行
 		# 跳过
-		con = False
+		matched = False
 		for value in skipList:
 			if re.search(value, lineData):
-				con = True
+				matched = True
 				break
-		if con : continue
+		if matched : continue
 		tmpDic = {}
 		# 搜索
 		for value in searchList:
@@ -47,6 +47,8 @@ def parseImp(content, listCtrl, dealOnce):
 					tmpDic[start] = [text, ctrl]
 					if key.startswith('name'):
 						ctrl['isName'] = True #名字标记
+					matched = True
+			if matched : break #已匹配则停止搜索
 		#按文本中顺序处理
 		for key in sorted(tmpDic.keys()):
 			value = tmpDic[key]
