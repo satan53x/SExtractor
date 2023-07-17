@@ -122,7 +122,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		#特殊处理通用TXT
 		if engineName == 'TXT':
 			self.regNameTab.setEnabled(True)
-			self.sampleLabel.setText('正则匹配规则')
+			self.sampleLabel.setText('正则匹配规则（可在此编辑）')
 			self.extraFuncTabs.setCurrentIndex(1)
 			self.selectReg(self.regNameBox.currentIndex())
 		else:
