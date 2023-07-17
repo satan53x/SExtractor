@@ -209,17 +209,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 	#合并
 	def mergeFile(self):
-		dirpath = self.mergeDirEdit.text()
-		func = self.mergeFuncBox.currentIndex()
+		workpath = self.mergeDirEdit.text()
+		funcIndex = self.mergeFuncBox.currentIndex()
 		edit = self.mergeLineEdit.text()
 		lineCount = 0
 		if edit: lineCount = int(edit)
-		if lineCount == 0: lineCount = 1000
-		args = [dirpath, func, lineCount]
+		args = {
+			'workpath':workpath,
+			'funcIndex':funcIndex,
+			'lineCount':lineCount
+		}
 		print(args)
 		mergeTool(args)
 		#保存配置
-		self.mainConfig.setValue('mergeDirPath', dirpath)
+		self.mainConfig.setValue('mergeDirPath', workpath)
 
 #---------------------------------------------------------------
 #import debugpy

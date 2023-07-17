@@ -348,7 +348,7 @@
            <item>
             <widget class="QLineEdit" name="mergeLineEdit">
              <property name="text">
-              <string>1000</string>
+              <string>0</string>
              </property>
             </widget>
            </item>
@@ -389,11 +389,14 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Microsoft YaHei UI'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;提取写入：&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;&amp;gt;提取写入：&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;输出原文：&lt;span style=&quot; font-weight:600; color:#00aa00;&quot;&gt;transDic.output.json	&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#000000;&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#00aa00;&quot;&gt; &lt;/span&gt;输入译文：&lt;span style=&quot; font-weight:600; color:#00aa00;&quot;&gt;transDic.json&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;输出原文：&lt;span style=&quot; font-weight:600; color:#ffaa00;&quot;&gt;all.orig.json		&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#000000;&quot;&gt;&amp;gt;&amp;gt; &lt;/span&gt;输入译文：&lt;span style=&quot; font-weight:600; color:#ffaa00;&quot;&gt;all.trans.json&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#ffaa00;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#000000;&quot;&gt;TXT模式支持正则匹配每行，&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#ffaa00;&quot;&gt;skip=&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#000000;&quot;&gt;表示跳过，&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#ffaa00;&quot;&gt;search=&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#000000;&quot;&gt;表示搜索&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#000000;&quot;&gt;  TXT&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;模式支持&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#000000;&quot;&gt;正则匹配&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;每行，&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#ffaa00;&quot;&gt;skip=&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;表示跳过，&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#ffaa00;&quot;&gt;search=&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;表示搜索&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#000000;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;&amp;gt;合并分割：&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;合并时会缓存子文件信息，分割时&lt;span style=&quot; font-weight:600; color:#ff5500;&quot;&gt;行数填0&lt;/span&gt;则表示使用该缓存&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
         </item>
