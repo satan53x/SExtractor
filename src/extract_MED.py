@@ -9,7 +9,7 @@ def parseImp(content, listCtrl, dealOnce):
 	listIndex = 0
 	#print(len(content))
 	for contentIndex in range(len(content)):
-		#if contentIndex < 0: continue 
+		#if contentIndex < 1: continue 
 		lineData = content[contentIndex]
 		#每行
 		#print('>>> Line ' + str(contentIndex), ': ', lineData)
@@ -72,9 +72,10 @@ def readFileDataImp(fileOld, contentSeprate):
 	#print('skip start', skip)
 	if skip >= len(data):
 		#print('skip is too big')
-		return []
+		return [], []
 	#if isShiftJis(data[skip], data[skip+1]) == False:
 		#print('not start with shift-jis')
 	realData = data[skip:]
 	content = realData.split(contentSeprate)
-	return content
+	insertContent = { 0 : data[0:skip] }
+	return content, insertContent

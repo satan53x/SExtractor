@@ -37,6 +37,7 @@ class ExtractVar():
 	#-------------------
 	filename = ''
 	content = None
+	insertContent = {} #需要插入的内容
 	isInput = False #是否写入译文
 	inputCount = 0 #导出文件个数
 	outputCount = 0 #导出文件个数

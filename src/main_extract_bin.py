@@ -52,6 +52,8 @@ def write():
 		fileNew = open(filepath, 'wb')
 		length = len(var.content)
 		for i in range(length):
+			if i in var.insertContent:
+				fileNew.write(var.insertContent[i])
 			fileNew.write(var.content[i])
 			if i < length-1:
 				fileNew.write(var.ContentSeprate)
@@ -63,10 +65,11 @@ def parse():
 	#print('解析文件: '+var.filename)
 	fileOld = read()
 	if var.readFileDataImp:
-		var.content = var.readFileDataImp(fileOld, var.ContentSeprate)
+		var.content, var.insertContent = var.readFileDataImp(fileOld, var.ContentSeprate)
 	else:
 		data = fileOld.read()
 		var.content = data.split(var.ContentSeprate)
+		var.insertContent.clear()
 	fileOld.close()
 	#print(var.content)
 	var.parseImp(var.content, var.listCtrl, dealOnce)
