@@ -8,7 +8,7 @@ from common import *
 def parseImp(content, listCtrl, dealOnce):
 	listIndex = 0
 	#print(len(content))
-	regDic = GetG('RegDic')
+	regDic = GetG('var').regDic
 	skipList = []
 	searchList = []
 	for key, value in regDic.items():

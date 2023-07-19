@@ -125,7 +125,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		if engineName == 'TXT' or engineName == 'BIN':
 			self.regNameTab.setEnabled(True)
 			self.sampleLabel.setText('正则匹配规则（可在此编辑）')
-			self.extraFuncTabs.setCurrentIndex(1)
+			self.extraFuncTabs.setCurrentIndex(2)
 			self.selectReg(self.regNameBox.currentIndex())
 		else:
 			self.regNameTab.setEnabled(False)
@@ -172,13 +172,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		workpath = self.mainDirEdit.text()
 		nameList = self.nameListEdit.text()
 		regDic = self.sampleBrowser.toPlainText()
+		cutoff = self.cutOffCheck.isChecked()
 		args = {
 			'workpath':workpath,
 			'engineName':engineName,
 			'outputFormat':self.outputFormat,
 			'outputPartMode':self.outputPartMode,
 			'nameList':nameList,
-			'regDic':regDic
+			'regDic':regDic,
+			'cutoff':cutoff
 		}
 		var.window = self
 		print(args)

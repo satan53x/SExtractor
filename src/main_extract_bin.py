@@ -56,7 +56,7 @@ def write():
 				fileNew.write(var.insertContent[i])
 			fileNew.write(var.content[i])
 			if i < length-1:
-				fileNew.write(var.ContentSeprate)
+				fileNew.write(var.contentSeprate)
 		fileNew.close()
 		#print('导出:', var.filename+var.Postfix)
 		var.outputCount += 1
@@ -65,10 +65,10 @@ def parse():
 	#print('解析文件: '+var.filename)
 	fileOld = read()
 	if var.readFileDataImp:
-		var.content, var.insertContent = var.readFileDataImp(fileOld, var.ContentSeprate)
+		var.content, var.insertContent = var.readFileDataImp(fileOld, var.contentSeprate)
 	else:
 		data = fileOld.read()
-		var.content = data.split(var.ContentSeprate)
+		var.content = data.split(var.contentSeprate)
 		var.insertContent.clear()
 	fileOld.close()
 	#print(var.content)

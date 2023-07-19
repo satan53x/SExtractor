@@ -17,11 +17,14 @@ def isShiftJis(byte1, byte2):
 
 #编码生成目标长度的字节数组，会截断和填充字节
 def generateBytes(text, lenOrig, NewEncodeName):
+    transData = None
     try:
         transData = text.encode(NewEncodeName)
     except Exception as ex:
         print(ex)
         return None
+    if GetG('Var').cutoff == False:
+         return transData
     # 检查长度
     lenTrans = len(transData)
     #print(contentIndex, start, end)

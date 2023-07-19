@@ -13,11 +13,8 @@ def mainExtractPart(args, parseImp):
 		return
 	showMessage("开始处理...")
 	path = args['workpath']
+	if initCommon(args) != 0: return
 	#print(path)
-	setNameList(args['nameList'])
-	ret = chooseEngine(args['engineName'], args['outputFormat'])
-	if ret != 0:
-		return
 	var.partMode = 1
 	var.outputDir = 'orig'
 	var.inputDir = 'trans'
@@ -35,7 +32,6 @@ def mainExtractPart(args, parseImp):
 			filepath = os.path.join(var.workpath, var.filename+var.Postfix)
 			#print(name, filepath)
 			if os.path.isfile(filepath):
-				SetG('FileName', var.filename)
 				readFormat(var.outputFormat) #读入译文
 				parseImp()
 				keepAllOrig()

@@ -10,9 +10,11 @@ from PyQt5.QtWidgets import QStatusBar
 class ExtractVar():
 	Postfix = '.txt'
 	EncodeRead = 'utf-8'
-	ContentSeprate = b'\x0D\x0A'
-	NameList = []
-	RegDic = {}
+	contentSeprate = b'\x0D\x0A'
+	nameList = []
+	regDic = {}
+	cutoff = {}
+	#
 	parseImp = None
 	replaceOnceImp = None
 	readFileDataImp = None
@@ -298,8 +300,8 @@ def chooseEngine(engineName, outputFormat):
 	#分割符
 	s = settings.value('contentSeprate')
 	#print(s.encode())
-	if s: var.ContentSeprate = s.encode()
-	else: var.ContentSeprate = None
+	if s: var.contentSeprate = s.encode()
+	else: var.contentSeprate = None
 	#导入模块
 	#print(var.EncodeName, var.Postfix, engineName)
 	module = import_module('extract_' + engineName)
@@ -314,8 +316,7 @@ def chooseEngine(engineName, outputFormat):
 
 def setNameList(str):
 	l = str.split(',')
-	var.NameList = [x for x in l if x != '']
-	SetG('NameList', var.NameList)
+	var.nameList = [x for x in l if x != '']
 
 def setRegDic(str):
 	list = re.split('\n', str)
@@ -327,16 +328,33 @@ def setRegDic(str):
 		# 控制
 		if pair[0].startswith('seprate'):
 			s = bytearray.fromhex(pair[1])
-			var.ContentSeprate = bytes(s)
+			var.contentSeprate = bytes(s)
 			continue
 		# 规则
-		var.RegDic[pair[0]] = pair[1]
+		var.regDic[pair[0]] = pair[1]
 		print('正则规则:', pair[0], pair[1])
-	SetG('RegDic', var.RegDic)
 
 def showMessage(msg):
 	if var.window: 
 		var.window.statusBar.showMessage(msg)
+
+def initCommon(args):
+	SetG('Var', var)
+	ret = chooseEngine(args['engineName'], args['outputFormat'])
+	if ret != 0:
+		return ret
+	# 匹配
+	setNameList(args['nameList'])
+	# 正则
+	var.regDic.clear()
+	if args['engineName'] == 'TXT' or args['engineName'] == 'BIN':
+		setRegDic(args['regDic'])
+	# 截断
+	if args['cutoff']:
+		var.cutoff = True
+	else:
+		var.cutoff = False
+	return 0
 
 #args = [workpath, engineName, outputFormat, nameList]
 def mainExtract(args, parseImp):
@@ -345,14 +363,8 @@ def mainExtract(args, parseImp):
 		return
 	showMessage("开始处理...")
 	path = args['workpath']
+	if initCommon(args) != 0: return
 	#print(path)
-	ret = chooseEngine(args['engineName'], args['outputFormat'])
-	if ret != 0:
-		return
-	setNameList(args['nameList'])
-	var.RegDic.clear()
-	if args['engineName'] == 'TXT' or args['engineName'] == 'BIN':
-		setRegDic(args['regDic'])
 	var.partMode = 0
 	var.outputDir = 'ctrl'
 	var.inputDir = 'ctrl'
@@ -372,7 +384,6 @@ def mainExtract(args, parseImp):
 			#print(name, filepath)
 			if os.path.isfile(filepath):
 				#print('File:', name)
-				SetG('FileName', var.filename)
 				parseImp()
 				keepAllOrig()
 				#break #测试

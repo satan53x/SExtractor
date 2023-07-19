@@ -4,7 +4,7 @@ from common import *
 # ---------------- Group: SiglusEngine -------------------
 def parseImp(content, listCtrl, dealOnce):
 	listIndex = 0
-	nameList = GetG('NameList')
+	nameList = GetG('Var').nameList
 	for contentIndex in range(len(content)):
 		#if contentIndex < 0: continue #起始跳过行数
 		lineData = content[contentIndex]
