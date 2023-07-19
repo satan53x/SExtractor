@@ -125,7 +125,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		if engineName == 'TXT' or engineName == 'BIN':
 			self.regNameTab.setEnabled(True)
 			self.sampleLabel.setText('正则匹配规则（可在此编辑）')
-			self.extraFuncTabs.setCurrentIndex(2)
+			self.extraFuncTabs.setCurrentIndex(1)
 			self.selectReg(self.regNameBox.currentIndex())
 		else:
 			self.regNameTab.setEnabled(False)
@@ -162,7 +162,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 				textCtrl += text
 		self.regConfig.endGroup()
 		self.sampleBrowser.setText(textReg + textCtrl + textEnd)
-		self.mainConfig.setValue('regIndex', self.regIndex)
 
 	#提取
 	def extractFile(self):
@@ -199,6 +198,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			self.mainConfig.setValue(group+'_nameList', nameList)
 		else:
 			self.mainConfig.remove(group+'_nameList')
+		self.mainConfig.setValue('regIndex', self.regIndex)
 
 	#---------------------------------------------------------------
 	def extractFileThread(self):
@@ -235,6 +235,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 #---------------------------------------------------------------
 #import debugpy
 class extractThread(QThread):
+	def __init__(self):
+		super().__init__()
+
+	def run(self):
+		#debugpy.debug_this_thread()
+		self.window.extractFile()
+
+#import debugpy
+class saveThread(QThread):
 	def __init__(self):
 		super().__init__()
 
