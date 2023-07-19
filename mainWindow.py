@@ -77,6 +77,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		for group in groupList: 
 			#print(group)
 			self.regNameBox.addItem(group)
+		self.regIndex = int(initValue(self.mainConfig, 'regIndex', 0))
+		self.regNameBox.setCurrentIndex(self.regIndex)
 		self.regNameBox.currentIndexChanged.connect(self.selectReg)
 		# 结束
 		self.engineNameBox.setCurrentIndex(self.engineCode)
@@ -119,8 +121,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			self.nameListTab.setEnabled(True)
 		self.nameListEdit.setText(self.nameListConfig)
 		self.engineConfig.endGroup()
-		#特殊处理通用TXT
-		if engineName == 'TXT':
+		#特殊处理通用
+		if engineName == 'TXT' or engineName == 'BIN':
 			self.regNameTab.setEnabled(True)
 			self.sampleLabel.setText('正则匹配规则（可在此编辑）')
 			self.extraFuncTabs.setCurrentIndex(1)
@@ -144,19 +146,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		#print('selectReg', self.regIndex)
 		regName = self.regNameBox.currentText()
 		self.regConfig.beginGroup(regName)
-		textPre = ''
-		textPost = ''
+		textReg = ''
+		textCtrl = ''
+		textEnd = ''
 		for key in self.regConfig.childKeys():
 			value = self.regConfig.value(key)
 			text = key + '=' + value + '\n'
 			if key.startswith('skip'):
-				textPre = text + textPre
+				textReg = text + textReg
 			elif key.startswith('search'):
-				textPre += text
+				textReg += text
+			elif key.startswith('sample'):
+				textEnd += text
 			else:
-				textPost += text
+				textCtrl += text
 		self.regConfig.endGroup()
-		self.sampleBrowser.setText(textPre + textPost)
+		self.sampleBrowser.setText(textReg + textCtrl + textEnd)
+		self.mainConfig.setValue('regIndex', self.regIndex)
 
 	#提取
 	def extractFile(self):

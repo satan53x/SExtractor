@@ -318,12 +318,18 @@ def setNameList(str):
 	SetG('NameList', var.NameList)
 
 def setRegDic(str):
-	var.RegDic.clear()
 	list = re.split('\n', str)
 	for line in list:
+		# 结束
 		if line == '' or line.startswith('sample'): 
 			break
 		pair = line.split('=', 1)
+		# 控制
+		if pair[0].startswith('seprate'):
+			s = bytearray.fromhex(pair[1])
+			var.ContentSeprate = bytes(s)
+			continue
+		# 规则
 		var.RegDic[pair[0]] = pair[1]
 		print('正则规则:', pair[0], pair[1])
 	SetG('RegDic', var.RegDic)
@@ -344,7 +350,8 @@ def mainExtract(args, parseImp):
 	if ret != 0:
 		return
 	setNameList(args['nameList'])
-	if args['engineName'] == 'TXT':
+	var.RegDic.clear()
+	if args['engineName'] == 'TXT' or args['engineName'] == 'BIN':
 		setRegDic(args['regDic'])
 	var.partMode = 0
 	var.outputDir = 'ctrl'

@@ -4,7 +4,10 @@ import os
 import struct
 from common import *
 
-# ---------------- Group: TXT -------------------
+OldEncodeName = 'cp932'
+NewEncodeName = 'gbk'
+
+# ---------------- Group: BIN -------------------
 def parseImp(content, listCtrl, dealOnce):
 	listIndex = 0
 	#print(len(content))
@@ -12,16 +15,16 @@ def parseImp(content, listCtrl, dealOnce):
 	skipList = []
 	searchList = []
 	for key, value in regDic.items():
+		value = value.encode(OldEncodeName)
 		if key.startswith('skip'):
 			skipList.append(value)
 		elif key.startswith('search'):
 			searchList.append(value)
 	for contentIndex in range(len(content)):
-		#if contentIndex < 1: continue 
-		lineData = content[contentIndex][:-1] #不检查末尾换行
+		lineData = content[contentIndex]
 		# 每行
 		#print('>>> Line ' + str(contentIndex), ': ', lineData)
-		if lineData == '': continue #空白行
+		if lineData == b'': continue #空白行
 		# 跳过
 		matched = False
 		for value in skipList:
@@ -41,7 +44,7 @@ def parseImp(content, listCtrl, dealOnce):
 					if r.group(i) == None: continue
 					start = r.start(i)
 					end = r.end(i)
-					text = lineData[start:end]
+					text = lineData[start:end].decode(OldEncodeName)
 					#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 					ctrl = {'pos':[contentIndex, start, end]}
 					tmpDic[start] = [text, ctrl]
@@ -70,9 +73,10 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		contentIndex = posData[0]
 		start = posData[1]
 		end = posData[2]
-		trans = lTrans[i]
+		transData = generateBytes(lTrans[i], end - start, NewEncodeName)
+		if transData == None:
+			return False
 		#写入new
-		strNew = content[contentIndex][:start] + trans + content[contentIndex][end:]
-		#print(strNew)
+		strNew = content[contentIndex][:start] + transData + content[contentIndex][end:]
 		content[contentIndex] = strNew
 		return True
