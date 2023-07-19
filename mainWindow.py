@@ -241,12 +241,3 @@ class extractThread(QThread):
 	def run(self):
 		#debugpy.debug_this_thread()
 		self.window.extractFile()
-
-#import debugpy
-class saveThread(QThread):
-	def __init__(self):
-		super().__init__()
-
-	def run(self):
-		#debugpy.debug_this_thread()
-		self.window.extractFile()
