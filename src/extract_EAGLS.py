@@ -34,7 +34,7 @@ def parseImp(content, listCtrl, dealOnce):
 			continue
 		tmpDic = {}
 		#对话
-		iter = re.finditer(rb'"[^a-zA-Z0-9_,][^"]+"', lineData)
+		iter = re.finditer(rb'"[^a-zA-Z0-9_,\)&][^"]+"', lineData)
 		for r in iter:
 			start = r.start() + 1
 			end = r.end() - 1
