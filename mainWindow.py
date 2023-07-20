@@ -7,7 +7,7 @@ sys.path.append('.\src')
 from main_extract_txt import mainExtractTxt
 from main_extract_bin import mainExtractBin
 from main_extract import var
-from merge_json import mergeTool
+from merge_json import mergeTool, createDicTool
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 	def __init__(self, parent=None):
@@ -22,6 +22,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		#merge工具
 		self.mergeDirButton.clicked.connect(self.chooseMergeDir)
 		self.mergeButton.clicked.connect(self.mergeFile)
+		#创建字典
+		self.createDicButton.clicked.connect(self.createDic)
 
 	#初始化
 	def beforeShow(self):
@@ -201,12 +203,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			self.mainConfig.remove(group+'_nameList')
 		self.mainConfig.setValue('regIndex', self.regIndex)
 
-	#---------------------------------------------------------------
 	def extractFileThread(self):
 		self.thread = extractThread()
 		self.thread.window = self
 		self.thread.start()
 
+	#---------------------------------------------------------------
 	#选择工作目录
 	def chooseMergeDir(self):
 		dirpath = self.mainConfig.value('mergeDirPath')
@@ -232,6 +234,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		mergeTool(args)
 		#保存配置
 		self.mainConfig.setValue('mergeDirPath', workpath)
+
+	#---------------------------------------------------------------
+	#创建字典
+	def createDic(self):
+		workpath = self.mergeDirEdit.text()
+		args = {
+			'workpath':workpath,
+			'file':'json'
+		}
+		print(args)
+		createDicTool(args)
 
 #---------------------------------------------------------------
 #import debugpy

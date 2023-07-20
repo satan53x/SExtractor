@@ -436,6 +436,54 @@
          </widget>
         </item>
         <item>
+         <widget class="QWidget" name="widget_8" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="3,1,2">
+           <property name="spacing">
+            <number>5</number>
+           </property>
+           <property name="leftMargin">
+            <number>3</number>
+           </property>
+           <property name="topMargin">
+            <number>10</number>
+           </property>
+           <property name="rightMargin">
+            <number>3</number>
+           </property>
+           <property name="bottomMargin">
+            <number>3</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>从工作目录读取key文件和value文件生成字典</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="createDicButton">
+             <property name="text">
+              <string>生成字典</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
          <spacer name="verticalSpacer_2">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -462,6 +510,7 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Microsoft YaHei UI'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;项目地址：&lt;span style=&quot; text-decoration: underline;&quot;&gt;https://github.com/satan53x/SExtractor&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;&amp;gt;提取写入：&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;输出原文：&lt;span style=&quot; font-weight:600; color:#00aa00;&quot;&gt;transDic.output.json	&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#000000;&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#00aa00;&quot;&gt; &lt;/span&gt;输入译文：&lt;span style=&quot; font-weight:600; color:#00aa00;&quot;&gt;transDic.json&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;输出原文：&lt;span style=&quot; font-weight:600; color:#ffaa00;&quot;&gt;all.orig.json		&lt;/span&gt;&lt;span style=&quot; font-weight:600; color:#000000;&quot;&gt;&amp;gt;&amp;gt; &lt;/span&gt;输入译文：&lt;span style=&quot; font-weight:600; color:#ffaa00;&quot;&gt;all.trans.json&lt;/span&gt;&lt;/p&gt;

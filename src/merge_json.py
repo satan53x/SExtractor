@@ -164,3 +164,53 @@ def mergeTool(args):
 		print('处理结束')
 	else:
 		print('未找到主目录')
+
+#args: { workpath }
+def createDicTool(args):
+	global OnceLinesCount
+	global workpath
+	OnceLinesCount = 0
+	workpath = args['workpath']
+	ret = createDic('all.orig.json', 'all.trans.json')
+	if ret == 1:
+		ret = createDic('key.json', 'value.json')
+
+def createDic(keyName, valueName):
+	print('开始查找key/value文件:', keyName, valueName)
+	keyPath = os.path.join(workpath, keyName)
+	valuePath = os.path.join(workpath, valueName)
+	if not os.path.isfile(keyPath) or not os.path.isfile(valuePath):
+		print('未找到key/value文件', keyName, valueName)
+		return 1
+	print('找到key/value文件')
+	fileOld = open(keyPath, 'r', encoding=EncodeName)
+	keyContent = json.load(fileOld)
+	fileOld.close()
+	fileOld = open(valuePath, 'r', encoding=EncodeName)
+	valueContent = json.load(fileOld)
+	fileOld.close()
+	if not isinstance(keyContent, list) or not isinstance(valueContent, list):
+		print('key/value文件不是列表形式')
+		return 2
+	if len(keyContent) != len(valueContent):
+		print('key/value文件长度不一致')
+		return 3
+	allJson[0].clear()
+	for i in range(len(keyContent)):
+		keyItem = keyContent[i]
+		valueItem = valueContent[i]
+		# item: 字符串
+		if isinstance(keyItem, str):
+			allJson[0][keyItem] = valueItem
+		# item: 字典
+		elif isinstance(keyItem, dict):
+			keys = list(keyItem.values())
+			values = list(valueItem.values())
+			for i in range(len(keys)):
+				key = keys[i]
+				value = values[i]
+				allJson[0][key] = value
+	#导出
+	filenameList.clear()
+	writeMerge()
+	return 0

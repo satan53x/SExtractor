@@ -197,8 +197,26 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.setStretch(1, 1)
         self.horizontalLayout_3.setStretch(2, 1)
         self.verticalLayout_2.addWidget(self.widget_3)
-        spacerItem = QtWidgets.QSpacerItem(20, 141, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_2.addItem(spacerItem)
+        self.widget_8 = QtWidgets.QWidget(self.tab_3)
+        self.widget_8.setObjectName("widget_8")
+        self.horizontalLayout_6 = QtWidgets.QHBoxLayout(self.widget_8)
+        self.horizontalLayout_6.setContentsMargins(3, 10, 3, 3)
+        self.horizontalLayout_6.setSpacing(5)
+        self.horizontalLayout_6.setObjectName("horizontalLayout_6")
+        self.label_2 = QtWidgets.QLabel(self.widget_8)
+        self.label_2.setObjectName("label_2")
+        self.horizontalLayout_6.addWidget(self.label_2)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_6.addItem(spacerItem)
+        self.createDicButton = QtWidgets.QPushButton(self.widget_8)
+        self.createDicButton.setObjectName("createDicButton")
+        self.horizontalLayout_6.addWidget(self.createDicButton)
+        self.horizontalLayout_6.setStretch(0, 3)
+        self.horizontalLayout_6.setStretch(1, 1)
+        self.horizontalLayout_6.setStretch(2, 2)
+        self.verticalLayout_2.addWidget(self.widget_8)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 141, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_2.addItem(spacerItem1)
         self.tabWidget.addTab(self.tab_3, "")
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName("tab_2")
@@ -239,11 +257,14 @@ class Ui_MainWindow(object):
         self.mergeFuncBox.setItemText(1, _translate("MainWindow", "分割"))
         self.mergeLineEdit.setText(_translate("MainWindow", "0"))
         self.mergeButton.setText(_translate("MainWindow", "开始"))
+        self.label_2.setText(_translate("MainWindow", "从工作目录读取key文件和value文件生成字典"))
+        self.createDicButton.setText(_translate("MainWindow", "生成字典"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "合并分割"))
         self.readmeBrowser.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Microsoft YaHei UI\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">项目地址：<span style=\" text-decoration: underline;\">https://github.com/satan53x/SExtractor</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt; font-weight:600;\">&gt;提取写入：</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">输出原文：<span style=\" font-weight:600; color:#00aa00;\">transDic.output.json    </span><span style=\" font-weight:600; color:#000000;\">&gt;&gt;</span><span style=\" font-weight:600; color:#00aa00;\"> </span>输入译文：<span style=\" font-weight:600; color:#00aa00;\">transDic.json</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">输出原文：<span style=\" font-weight:600; color:#ffaa00;\">all.orig.json        </span><span style=\" font-weight:600; color:#000000;\">&gt;&gt; </span>输入译文：<span style=\" font-weight:600; color:#ffaa00;\">all.trans.json</span></p>\n"
