@@ -32,14 +32,17 @@ def mainExtractPart(args, parseImp):
 			filepath = os.path.join(var.workpath, var.filename+var.Postfix)
 			#print(name, filepath)
 			if os.path.isfile(filepath):
-				readFormat(var.outputFormat) #读入译文
+				var.curIO = var.io
+				readFormat() #读入译文
 				parseImp()
 				keepAllOrig()
-				writeFormat(var.outputFormat)
+				writeFormat()
+				var.curIO = var.ioExtra
+				writeFormat()
 				#break #测试
 		print('读取文件数:', var.inputCount)
 		print('新建文件数:', var.outputCount)
 	else:
 		print('未找到主目录')
 	showMessage("处理完成。")
-	print('')
+	print('Done.\n')

@@ -7,6 +7,16 @@ from importlib import import_module
 from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QStatusBar
 
+class IOConfig():
+	#输入输出格式:
+	# 0 json {orig:''}
+	# 1 json {orig:orig}
+	# 2 json [{name,message}]
+	outputFormat = 0
+	ouputFileName = ''
+	inputFileName = ''
+	prefix = ''
+
 class ExtractVar():
 	Postfix = '.txt'
 	EncodeRead = 'utf-8'
@@ -19,18 +29,14 @@ class ExtractVar():
 	replaceOnceImp = None
 	readFileDataImp = None
 	workpath = ''
-	partMode = 0 # 0 单json; 1 多json
-	#导出格式:
-	# 0 json {orig:''}
-	# 1 json {orig:orig}
-	# 2 json [{name,message}]
-	outputFormat = 0
-	outputFormatExtra = -1
+	#导出配置
+	io = IOConfig()
+	ioExtra = IOConfig()
+	curIO = None
 
+	partMode = 0 # 0 单json; 1 多json
 	outputDir = 'ctrl'
 	inputDir = 'ctrl'
-	ouputFileName = ''
-	inputFileName = ''
 
 	#-------------------
 	transDic = {}
@@ -51,36 +57,34 @@ class ExtractVar():
 	#窗口
 	window = None
 
-class OutputConfig():
-	outputDir = 'ctrl'
-	inputDir = 'ctrl'
-	ouputFileName = ''
-	inputFileName = ''
-
 var = ExtractVar()
 
-def setIOFileName(formatCode):
+def setIOFileName(io):
 	if var.partMode == 0: #总共一个输出文档
-		if formatCode == 5:
-			var.ouputFileName = 'all.orig.txt'
-			var.inputFileName = 'all.trans.txt'
-		elif formatCode == 2:
-			var.ouputFileName = 'all.orig.json'
-			var.inputFileName = 'all.trans.json'
+		if io.outputFormat == 5:
+			io.ouputFileName = 'all.orig.txt'
+			io.inputFileName = 'all.trans.txt'
+		elif io.outputFormat == 2:
+			io.ouputFileName = 'all.orig.json'
+			io.inputFileName = 'all.trans.json'
 		else:
-			var.ouputFileName = 'transDic.output.json'
-			var.inputFileName = 'transDic.json'
+			io.ouputFileName = 'transDic.output.json'
+			io.inputFileName = 'transDic.json'
 	else: #每个文件对应一个输出文档
-		if formatCode == 5:
-			var.ouputFileName = var.filename + '.txt'
-			var.inputFileName = var.filename + '.txt'
+		if io.outputFormat == 5:
+			io.ouputFileName = var.filename + '.txt'
+			io.inputFileName = var.filename + '.txt'
 		else:
-			var.ouputFileName = var.filename + '.json'
-			var.inputFileName = var.filename + '.json'
+			io.ouputFileName = var.filename + '.json'
+			io.inputFileName = var.filename + '.json'
+	io.ouputFileName = io.prefix + io.ouputFileName 
+	io.inputFileName = io.prefix + io.inputFileName
 
 # --------------------------- 读 ---------------------------------
-def readFormat(code):
-	setIOFileName(code)
+def readFormat():
+	setIOFileName(var.io)
+	setIOFileName(var.ioExtra)
+	code = var.curIO.outputFormat
 	var.isInput = False
 	var.transDic.clear()
 	var.transDicIO.clear()
@@ -96,21 +100,21 @@ def readFormat(code):
 
 def readFormat1():
 	#读入transDic字典
-	filepath = os.path.join(var.workpath, var.inputDir, var.inputFileName)
+	filepath = os.path.join(var.workpath, var.inputDir, var.curIO.inputFileName)
 	if os.path.isfile(filepath):
 		fileTransDic = open(filepath, 'r', encoding='utf-8')
 		var.transDic = json.load(fileTransDic)
-		print('读入Json: ', len(var.transDic), var.inputFileName)
+		print('读入Json: ', len(var.transDic), var.curIO.inputFileName)
 		var.isInput = True
 		#print(list(var.transDic.values())[0])
 
 def readFormat4():
 	#读入带换行文本的transDicIO字典
-	filepath = os.path.join(var.workpath, var.inputDir, var.inputFileName)
+	filepath = os.path.join(var.workpath, var.inputDir, var.curIO.inputFileName)
 	if os.path.isfile(filepath):
 		fileTransDic = open(filepath, 'r', encoding='utf-8')
 		var.transDicIO = json.load(fileTransDic)
-		print('读入Json: ', len(var.transDicIO), var.inputFileName)
+		print('读入Json: ', len(var.transDicIO), var.curIO.inputFileName)
 		var.isInput = True
 		#print(list(var.transDic.values())[0])
 		#还原transDic
@@ -119,18 +123,18 @@ def readFormat4():
 
 def readFormat5():
 	#读入txt
-	filepath = os.path.join(var.workpath, var.inputDir, var.inputFileName)
+	filepath = os.path.join(var.workpath, var.inputDir, var.curIO.inputFileName)
 	if os.path.isfile(filepath):
 		#译文
 		fileAllTrans = open(filepath, 'r', encoding='utf-8')
 		allTrans = fileAllTrans.readlines()
-		print('读入Txt:', len(allTrans), var.inputFileName)
+		print('读入Txt:', len(allTrans), var.curIO.inputFileName)
 		var.isInput = True
 		#原文
-		filepath = os.path.join(var.workpath, var.outputDir, var.ouputFileName)
+		filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 		fileAllOrig = open(filepath, 'r', encoding='utf-8')
 		allOrig = fileAllOrig.readlines()
-		print('读入Txt:', len(allOrig), var.ouputFileName)
+		print('读入Txt:', len(allOrig), var.curIO.ouputFileName)
 		#合并
 		for i in range(len(allOrig)):
 			itemOrig = re.sub(r'\n$', '', allOrig[i])
@@ -154,18 +158,18 @@ def splitToTransDic(orig, trans):
 
 def readFormat2():
 	#读入带换行文本的all.orig列表和all.trans列表
-	filepath = os.path.join(var.workpath, var.inputDir, var.inputFileName)
+	filepath = os.path.join(var.workpath, var.inputDir, var.curIO.inputFileName)
 	if os.path.isfile(filepath):
 		#译文
 		fileAllTrans = open(filepath, 'r', encoding='utf-8')
 		allTrans = json.load(fileAllTrans)
-		print('读入Json:', len(allTrans), var.inputFileName)
+		print('读入Json:', len(allTrans), var.curIO.inputFileName)
 		var.isInput = True
 		#原文
-		filepath = os.path.join(var.workpath, var.outputDir, var.ouputFileName)
+		filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 		fileAllOrig = open(filepath, 'r', encoding='utf-8')
 		allOrig = json.load(fileAllOrig)
-		print('读入Json:', len(allOrig), var.ouputFileName)
+		print('读入Json:', len(allOrig), var.curIO.ouputFileName)
 		#合并
 		for i in range(len(allOrig)):
 			itemOrig = allOrig[i]
@@ -179,7 +183,8 @@ def readFormat2():
 		fileAllTrans.close()
 
 # --------------------------- 写 ---------------------------------
-def writeFormat(code):
+def writeFormat():
+	code = var.curIO.outputFormat
 	if code == 0:
 		writeFormatDirect(var.transDic)
 	elif code == 1:
@@ -195,8 +200,8 @@ def writeFormat(code):
 
 def writeFormatDirect(targetJson):
 	#print(filepath)
-	print('输出Json:', len(targetJson), var.ouputFileName)
-	filepath = os.path.join(var.workpath, var.outputDir, var.ouputFileName)
+	print('输出Json:', len(targetJson), var.curIO.ouputFileName)
+	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 	fileOutput = open(filepath, 'w', encoding='utf-8')
 	#print(targetJson)
 	json.dump(targetJson, fileOutput, ensure_ascii=False, indent=2)
@@ -204,8 +209,8 @@ def writeFormatDirect(targetJson):
 
 def writeFormatCopyKey(targetJson):
 	#print(filepath)
-	print('输出Json:', len(targetJson), var.ouputFileName)
-	filepath = os.path.join(var.workpath, var.outputDir, var.ouputFileName)
+	print('输出Json:', len(targetJson), var.curIO.ouputFileName)
+	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 	fileOutput = open(filepath, 'w', encoding='utf-8')
 	#print(targetJson)
 	tmpDic = {}
@@ -219,8 +224,8 @@ def writeFormatCopyKey(targetJson):
 
 def writeFormatTxt(targetJson):
 	#print(filepath)
-	print('输出Txt:', len(targetJson), var.ouputFileName)
-	filepath = os.path.join(var.workpath, var.outputDir, var.ouputFileName)
+	print('输出Txt:', len(targetJson), var.curIO.ouputFileName)
+	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 	fileOutput = open(filepath, 'w', encoding='utf-8')
 	#print(targetJson)
 	for orig in targetJson.keys():
@@ -288,7 +293,8 @@ def createFolder():
 	if not os.path.exists(path):
 		os.makedirs(path)
 
-def chooseEngine(engineName, outputFormat):
+def chooseEngine(args):
+	engineName = args['engineName']
 	var.inputCount = 0
 	var.outputCount = 0
 	settings = QSettings('src/engine.ini', QSettings.IniFormat)
@@ -298,12 +304,22 @@ def chooseEngine(engineName, outputFormat):
 	var.EncodeRead = settings.value('encode')
 	#输出格式
 	formatList = settings.value('formatList')
-	if formatList == None or str(outputFormat) in formatList:
-		var.outputFormat = outputFormat
+	if formatList == None or str(args['outputFormat']) in formatList:
+		var.io.outputFormat = args['outputFormat']
 	else:
-		var.outputFormat = 0
+		var.io.outputFormat = -1
 		showMessage("该引擎暂不支持此输出格式。")
 		return 1
+	# 额外输出
+	if formatList == None or str(args['outputFormatExtra']) in formatList:
+		var.ioExtra.outputFormat = args['outputFormatExtra']
+		var.ioExtra.prefix = 'extra_'
+		if var.ioExtra.outputFormat == var.io.outputFormat:
+			var.ioExtra.outputFormat = -1
+	else:
+		var.ioExtra.outputFormat = -1
+		showMessage("该引擎暂不支持此输出格式。(额外)")
+		return 2
 	#分割符
 	s = settings.value('contentSeprate')
 	#print(s.encode())
@@ -349,7 +365,7 @@ def showMessage(msg):
 
 def initCommon(args):
 	SetG('Var', var)
-	ret = chooseEngine(args['engineName'], args['outputFormat'])
+	ret = chooseEngine(args)
 	if ret != 0:
 		return ret
 	# 匹配
@@ -361,8 +377,6 @@ def initCommon(args):
 		var.cutoff = True
 	else:
 		var.cutoff = False
-	# 额外输出
-	var.outputFormatExtra = args['outputFormatExtra']
 	return 0
 
 #args = [workpath, engineName, outputFormat, nameList]
@@ -382,7 +396,8 @@ def mainExtract(args, parseImp):
 		var.workpath = path
 		#print(var.workpath)
 		createFolder()
-		readFormat(var.outputFormat) #读入译文
+		var.curIO = var.io
+		readFormat() #读入译文
 		for name in os.listdir(var.workpath):
 			#print('File:', name)
 			if var.Postfix == '':
@@ -397,9 +412,11 @@ def mainExtract(args, parseImp):
 				keepAllOrig()
 				#break #测试
 		print('读取文件数:', var.inputCount)
-		writeFormat(var.outputFormat)
+		writeFormat()
 		print('新建文件数:', var.outputCount)
+		var.curIO = var.ioExtra
+		writeFormat()
 	else:
 		print('未找到主目录')
 	showMessage("处理完成。")
-	print('')
+	print('Done.\n')

@@ -32,7 +32,19 @@ def parseImp(content, listCtrl, dealOnce):
 		#处理文本
 		start = 0
 		end = 0
-		if re.match(r'\s*name=', lineData) or re.match(r'\s*"', lineData): #名字和对话
+		if re.match(r'\s*name=', lineData): #名字
+			ret = re.search(r'ja=".+?"', lineData)
+			if ret:
+				start = ret.start() + 4
+				end = ret.end() - 1
+			else:
+				ret = re.search(r'name=".+?"', lineData)
+				if ret:
+					start = ret.start() + 6
+					end = ret.end() - 1
+				else:
+					continue
+		elif re.match(r'\s*"', lineData): #对话
 			ret = re.search(r'".+?"', lineData)
 			if ret:
 				start = ret.start() + 1
