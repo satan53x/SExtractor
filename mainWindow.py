@@ -127,6 +127,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		else:
 			self.regNameTab.setEnabled(False)
 			self.sampleLabel.setText('引擎脚本示例')
+		#截断填充选中
+		checked = self.engineConfig.value('file') == 'bin'
+		self.cutOffCheck.setChecked(checked)
 		self.engineConfig.endGroup()
 
 	#选择格式

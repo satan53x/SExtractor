@@ -264,18 +264,18 @@
            </property>
            <item>
             <widget class="QWidget" name="widget_6" native="true">
-             <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="5,0,4">
+             <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="5,0,3">
               <property name="spacing">
                <number>2</number>
               </property>
               <property name="leftMargin">
-               <number>2</number>
+               <number>5</number>
               </property>
               <property name="topMargin">
                <number>2</number>
               </property>
               <property name="rightMargin">
-               <number>2</number>
+               <number>5</number>
               </property>
               <property name="bottomMargin">
                <number>2</number>
@@ -291,7 +291,7 @@
                  </font>
                 </property>
                 <property name="text">
-                 <string>译文长度截断填充为原文长度(bin模式下)</string>
+                 <string>译文长度截断填充为原文长度(脚本为二进制文本时)</string>
                 </property>
                 <property name="checked">
                  <bool>true</bool>
