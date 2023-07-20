@@ -19,13 +19,14 @@ class ExtractVar():
 	replaceOnceImp = None
 	readFileDataImp = None
 	workpath = ''
+	partMode = 0 # 0 单json; 1 多json
 	#导出格式:
 	# 0 json {orig:''}
 	# 1 json {orig:orig}
 	# 2 json [{name,message}]
 	outputFormat = 0
+	outputFormatExtra = -1
 
-	partMode = 0 # 0 单json; 1 多json
 	outputDir = 'ctrl'
 	inputDir = 'ctrl'
 	ouputFileName = ''
@@ -49,6 +50,12 @@ class ExtractVar():
 	#-------------------
 	#窗口
 	window = None
+
+class OutputConfig():
+	outputDir = 'ctrl'
+	inputDir = 'ctrl'
+	ouputFileName = ''
+	inputFileName = ''
 
 var = ExtractVar()
 
@@ -84,7 +91,7 @@ def readFormat(code):
 		readFormat2()
 	elif code == 3 or code == 4:
 		readFormat4()
-	else:
+	elif code == 5:
 		readFormat5()
 
 def readFormat1():
@@ -319,6 +326,8 @@ def setNameList(str):
 	var.nameList = [x for x in l if x != '']
 
 def setRegDic(str):
+	var.regDic.clear()
+	if str == None or str == '': return
 	list = re.split('\n', str)
 	for line in list:
 		# 结束
@@ -326,7 +335,7 @@ def setRegDic(str):
 			break
 		pair = line.split('=', 1)
 		# 控制
-		if pair[0].startswith('seprate'):
+		if pair[0] == 'seprate':
 			s = bytearray.fromhex(pair[1])
 			var.contentSeprate = bytes(s)
 			continue
@@ -346,14 +355,14 @@ def initCommon(args):
 	# 匹配
 	setNameList(args['nameList'])
 	# 正则
-	var.regDic.clear()
-	if args['engineName'] == 'TXT' or args['engineName'] == 'BIN':
-		setRegDic(args['regDic'])
+	setRegDic(args['regDic'])
 	# 截断
 	if args['cutoff']:
 		var.cutoff = True
 	else:
 		var.cutoff = False
+	# 额外输出
+	var.outputFormatExtra = args['outputFormatExtra']
 	return 0
 
 #args = [workpath, engineName, outputFormat, nameList]

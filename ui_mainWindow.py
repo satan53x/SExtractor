@@ -134,6 +134,9 @@ class Ui_MainWindow(object):
         self.cutOffCheck.setTristate(False)
         self.cutOffCheck.setObjectName("cutOffCheck")
         self.horizontalLayout_5.addWidget(self.cutOffCheck)
+        self.outputFileExtraBox = QtWidgets.QComboBox(self.widget_5)
+        self.outputFileExtraBox.setObjectName("outputFileExtraBox")
+        self.horizontalLayout_5.addWidget(self.outputFileExtraBox)
         self.verticalLayout.addWidget(self.widget_5)
         self.verticalLayout.setStretch(3, 5)
         self.tabWidget.addTab(self.tab, "")
@@ -231,9 +234,12 @@ class Ui_MainWindow(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt; font-weight:600;\">&gt;提取写入：</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">输出原文：<span style=\" font-weight:600; color:#00aa00;\">transDic.output.json    </span><span style=\" font-weight:600; color:#000000;\">&gt;&gt;</span><span style=\" font-weight:600; color:#00aa00;\"> </span>输入译文：<span style=\" font-weight:600; color:#00aa00;\">transDic.json</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">输出原文：<span style=\" font-weight:600; color:#ffaa00;\">all.orig.json        </span><span style=\" font-weight:600; color:#000000;\">&gt;&gt; </span>输入译文：<span style=\" font-weight:600; color:#ffaa00;\">all.trans.json</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#ffaa00;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600; color:#000000;\">  TXT</span><span style=\" color:#000000;\">模式支持</span><span style=\" font-weight:600; color:#000000;\">正则匹配</span><span style=\" color:#000000;\">每行，</span><span style=\" font-weight:600; color:#ffaa00;\">skip=</span><span style=\" color:#000000;\">表示跳过，</span><span style=\" font-weight:600; color:#ffaa00;\">search=</span><span style=\" color:#000000;\">表示搜索</span></p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#000000;\"><br /></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600; color:#000000;\">&gt;&gt;正则匹配：</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600; color:#ffaa00;\">skip=</span><span style=\" color:#000000;\">表示跳过，</span><span style=\" font-weight:600; color:#ffaa00;\">search=</span><span style=\" color:#000000;\">表示搜索</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#000000;\">匹配只处理命名分组</span><span style=\" font-weight:600; color:#00aa00;\">(</span><span style=\" font-family:\'Consolas\',\'Courier New\',\'monospace\'; font-size:14px; font-weight:600; color:#00aa00;\">?P&lt;组名&gt;</span><span style=\" font-weight:600; color:#00aa00;\">)</span><span style=\" color:#000000;\">：</span><span style=\" font-weight:600; color:#00aa00;\">name</span><span style=\" color:#000000;\">人名，</span><span style=\" font-weight:600; color:#00aa00;\">msg</span><span style=\" color:#000000;\">对话，</span><span style=\" font-weight:600; color:#00aa00;\">unfinish</span><span style=\" color:#000000;\">未结束对话（导出时与下一行合并）</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#ff0000;\">原文不要包含\\r\\n</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#000000;\">json格式只会操作value，</span><span style=\" color:#ff0000;\">value为空会复制key到value</span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; color:#000000;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt; font-weight:600;\">&gt;合并分割：</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">合并时会缓存子文件信息，分割时<span style=\" font-weight:600; color:#ff5500;\">行数填0</span>则表示使用该缓存</p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">合并时会缓存子文件信息，分割时<span style=\" font-weight:600; color:#00aa00;\">行数填0</span>则表示使用该缓存</p></body></html>"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "说明"))

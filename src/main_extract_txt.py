@@ -27,7 +27,7 @@ def write():
 			ctrl = var.listCtrl[listIndex]
 			trans = var.transDic[orig]
 			if trans == '':
-				print('>>>>>> Empty trans', var.filename, listIndex, orig, ctrl)
+				print('\033[31m译文不能为空\033[0m', var.filename, orig)
 				#trans = 'te'.format(listIndex) #测试
 				break
 			lCtrl.append(ctrl)

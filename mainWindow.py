@@ -9,16 +9,6 @@ from main_extract_bin import mainExtractBin
 from main_extract import var
 from merge_json import mergeTool
 
-#设置初始值
-def initValue(setting, name, v):
-	if setting.value(name) == None:
-		setting.setValue(name, v)
-		print('New Config', name, v)
-	else:
-		v = setting.value(name)
-		#print('Load Config', name, v)
-	return v
-
 class MainWindow(QMainWindow, Ui_MainWindow):
 	def __init__(self, parent=None):
 		super(MainWindow, self).__init__(parent)
@@ -49,11 +39,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			self.engineConfig.beginGroup(group)
 			if group.startswith('Engine_'):
 				value = group[len("Engine_"):]
-				self.engineNameBox.addItem(value)
+				if self.engineConfig.value('regDic'):
+					self.engineNameBox.insertItem(0, value)
+				else:
+					self.engineNameBox.addItem(value)
 			elif group == 'OutputFormat':
 				for key in self.engineConfig.childKeys():
 					value = self.engineConfig.value(key)
 					self.outputFileBox.addItem(value)
+					self.outputFileExtraBox.addItem(value)
 			self.engineConfig.endGroup()
 		# 当前引擎
 		self.engineCode = int(initValue(self.mainConfig, 'engineCode', 0))
@@ -63,6 +57,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.outputFormat = int(initValue(self.mainConfig, 'outputFormat', 0))
 		#print(self.outputFormat)
 		self.outputFileBox.setCurrentIndex(self.outputFormat)
+		self.outputFileExtraBox.addItem('无')
+		self.outputFileExtraBox.setCurrentIndex(self.outputFileExtraBox.count() - 1)
 		# 单个或多个Json模式
 		self.outputPartMode = int(initValue(self.mainConfig, 'outputPartMode', 0))
 		#print(self.outputPartMode)
@@ -120,9 +116,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		else:
 			self.nameListTab.setEnabled(True)
 		self.nameListEdit.setText(self.nameListConfig)
-		self.engineConfig.endGroup()
-		#特殊处理通用
-		if engineName == 'TXT' or engineName == 'BIN':
+		#特殊处理正则
+		if self.engineConfig.value('regDic'):
 			self.regNameTab.setEnabled(True)
 			self.sampleLabel.setText('正则匹配规则（可在此编辑）')
 			self.extraFuncTabs.setCurrentIndex(1)
@@ -130,6 +125,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		else:
 			self.regNameTab.setEnabled(False)
 			self.sampleLabel.setText('引擎脚本示例')
+		self.engineConfig.endGroup()
 
 	#选择格式
 	def selectFormat(self, index):
@@ -141,6 +137,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.outputPartMode = index
 		#print('selectOutputPart', self.outputPartMode)
 
+	#选择预设正则规则
 	def selectReg(self, index):
 		self.regIndex = index
 		#print('selectReg', self.regIndex)
@@ -170,8 +167,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		fileType = self.engineConfig.value(group + '/file')
 		workpath = self.mainDirEdit.text()
 		nameList = self.nameListEdit.text()
-		regDic = self.sampleBrowser.toPlainText()
+		regDic = None
+		if self.engineConfig.value(group + '/regDic'):
+			regDic = self.sampleBrowser.toPlainText()
 		cutoff = self.cutOffCheck.isChecked()
+		outputFormatExtra = self.outputFileExtraBox.currentIndex()
 		args = {
 			'workpath':workpath,
 			'engineName':engineName,
@@ -179,7 +179,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'outputPartMode':self.outputPartMode,
 			'nameList':nameList,
 			'regDic':regDic,
-			'cutoff':cutoff
+			'cutoff':cutoff,
+			'outputFormatExtra':outputFormatExtra
 		}
 		var.window = self
 		print(args)
@@ -241,3 +242,13 @@ class extractThread(QThread):
 	def run(self):
 		#debugpy.debug_this_thread()
 		self.window.extractFile()
+
+#设置初始值
+def initValue(setting, name, v):
+	if setting.value(name) == None:
+		setting.setValue(name, v)
+		print('New Config', name, v)
+	else:
+		v = setting.value(name)
+		#print('Load Config', name, v)
+	return v
