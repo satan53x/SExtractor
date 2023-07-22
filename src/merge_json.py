@@ -49,7 +49,7 @@ def writeSeprate(seq):
 	fileNew = open(filepath, 'w', encoding=EncodeName)
 	json.dump(allJson[jsonType], fileNew, ensure_ascii=False, indent=2)
 	fileNew.close()
-	print('Write done:', name)
+	print('输出完成:', name, len(allJson[jsonType]))
 
 def read(funcIndex):
 	global jsonType
@@ -181,7 +181,7 @@ def createDicTool(args):
 	args['file'] = 'txt'
 	ret = createDic(args, 'key.txt', 'value.txt')
 	if ret != 1: return
-	print('未找到文件名: key/value[.txt/.json] 或 all.orig/all.trans[.json]')
+	print('\033[33m未找到文件名:\033[0m key/value[.txt/.json] 或 all.orig/all.trans[.json]')
 
 def createDic(args, keyName, valueName):
 	#print('开始查找key/value文件:', keyName, valueName)
@@ -213,10 +213,10 @@ def createDicByJson(args, fileKey, fileValue):
 	keyContent = json.load(fileKey)
 	valueContent = json.load(fileValue)
 	if len(keyContent) != len(valueContent):
-		print('key/value文件长度不一致')
+		print('\033[33mkey/value文件长度不一致\033[0m')
 		return 2
 	if not isinstance(keyContent, list) or not isinstance(valueContent, list):
-		print('key/value文件不是列表形式')
+		print('\033[33mkey/value文件不是列表形式\033[0m')
 		return 3
 	for i in range(len(keyContent)):
 		keyItem = keyContent[i]
@@ -238,7 +238,7 @@ def createDicByTxt(args, fileKey, fileValue):
 	keyContent = fileKey.readlines()
 	valueContent = fileValue.readlines()
 	if len(keyContent) != len(valueContent):
-		print('key/value文件长度不一致')
+		print('\033[33mkey/value文件长度不一致\033[0m')
 		return 2
 	for i in range(len(keyContent)):
 		key = keyContent[i][:-1] #去换行

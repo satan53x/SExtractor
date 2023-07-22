@@ -189,6 +189,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'outputFormatExtra':outputFormatExtra
 		}
 		var.window = self
+		print('---------------------------------')
 		print(args)
 		if fileType == 'txt': 
 			mainExtractTxt(args)
@@ -234,6 +235,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'funcIndex':funcIndex,
 			'lineCount':lineCount
 		}
+		print('---------------------------------')
 		print(args)
 		mergeTool(args)
 		#保存配置
@@ -248,6 +250,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'workpath':workpath,
 			'skipReg':skipReg
 		}
+		print('---------------------------------')
 		print(args)
 		createDicTool(args)
 		self.mainConfig.setValue('mergeSkipReg', skipReg)

@@ -391,7 +391,7 @@ def mainExtract(args, parseImp):
 	var.partMode = 0
 	var.outputDir = 'ctrl'
 	var.inputDir = 'ctrl'
-	print('---------------------------------')
+	#print('---------------------------------')
 	if os.path.isdir(path):
 		var.workpath = path
 		#print(var.workpath)

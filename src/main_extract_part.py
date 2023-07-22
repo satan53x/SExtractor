@@ -18,7 +18,7 @@ def mainExtractPart(args, parseImp):
 	var.partMode = 1
 	var.outputDir = 'orig'
 	var.inputDir = 'trans'
-	print('---------------------------------')
+	#print('---------------------------------')
 	if os.path.isdir(path):
 		var.workpath = path
 		#print(var.workpath)
