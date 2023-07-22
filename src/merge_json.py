@@ -32,7 +32,7 @@ def writeMerge():
 	fileNew = open(filepath, 'w', encoding=EncodeName)
 	json.dump(allJson[jsonType], fileNew, ensure_ascii=False, indent=2)
 	fileNew.close()
-	print('Write done:', name)
+	print('输出完成:', name, len(allJson[jsonType]))
 	#保存合并信息
 	filenameList.append([0, name])
 	cache = json.dumps(filenameList, indent=2)
@@ -180,15 +180,17 @@ def createDicTool(args):
 	if ret != 1: return
 	args['file'] = 'txt'
 	ret = createDic(args, 'key.txt', 'value.txt')
+	if ret != 1: return
+	print('未找到文件名: key/value[.txt/.json] 或 all.orig/all.trans[.json]')
 
 def createDic(args, keyName, valueName):
-	print('开始查找key/value文件:', keyName, valueName)
+	#print('开始查找key/value文件:', keyName, valueName)
 	keyPath = os.path.join(workpath, keyName)
 	valuePath = os.path.join(workpath, valueName)
 	if not os.path.isfile(keyPath) or not os.path.isfile(valuePath):
-		print('未找到key/value文件', keyName, valueName)
+		#print('未找到key/value文件', keyName, valueName)
 		return 1
-	print('找到key/value文件')
+	print('找到key/value文件', keyName, valueName)
 	fileKey = open(keyPath, 'r', encoding=EncodeName)
 	fileValue = open(valuePath, 'r', encoding=EncodeName)
 	ret = 0

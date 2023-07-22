@@ -68,6 +68,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		# 合并目录
 		self.mergeDirPath = initValue(self.mainConfig, 'mergeDirPath', '.')
 		self.mergeDirEdit.setText(self.mergeDirPath)
+		text = initValue(self.mainConfig, 'mergeSkipReg', self.skipRegEdit.text())
+		self.skipRegEdit.setText(text)
 		# 设置匹配规则
 		self.regConfig = QSettings('src/reg.ini', QSettings.IniFormat)
 		self.regConfig.setIniCodec('utf-8')
@@ -80,7 +82,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.regNameBox.currentIndexChanged.connect(self.selectReg)
 		# 结束
 		self.engineNameBox.setCurrentIndex(self.engineCode)
-
 	#初始化
 	def afterShow(self):
 		pass
@@ -249,6 +250,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		}
 		print(args)
 		createDicTool(args)
+		self.mainConfig.setValue('mergeSkipReg', skipReg)
 
 #---------------------------------------------------------------
 #import debugpy
