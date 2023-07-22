@@ -9,6 +9,7 @@ def parseImp(content, listCtrl, dealOnce):
 	listIndex = 0
 	#print(len(content))
 	regDic = GetG('Var').regDic
+	nameList = GetG('Var').nameList
 	skipList = []
 	searchList = []
 	for key, value in regDic.items():
@@ -45,7 +46,7 @@ def parseImp(content, listCtrl, dealOnce):
 					#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 					ctrl = {'pos':[contentIndex, start, end]}
 					tmpDic[start] = [text, ctrl]
-					if key.startswith('name'):
+					if key.startswith('name') or text in nameList:
 						ctrl['isName'] = True #名字标记
 					elif key.startswith('unfinish'):
 						ctrl['unfinish'] = True
