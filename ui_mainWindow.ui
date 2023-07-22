@@ -428,7 +428,49 @@
            <item>
             <widget class="QPushButton" name="mergeButton">
              <property name="text">
-              <string>开始</string>
+              <string>合并/分割</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>-----------------------</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="widget_7" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <property name="spacing">
+            <number>5</number>
+           </property>
+           <property name="leftMargin">
+            <number>3</number>
+           </property>
+           <property name="topMargin">
+            <number>2</number>
+           </property>
+           <property name="rightMargin">
+            <number>3</number>
+           </property>
+           <property name="bottomMargin">
+            <number>2</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Key匹配跳过</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="skipRegEdit">
+             <property name="text">
+              <string>^[a-zA-Z0-9{]</string>
              </property>
             </widget>
            </item>
@@ -445,7 +487,7 @@
             <number>3</number>
            </property>
            <property name="topMargin">
-            <number>10</number>
+            <number>3</number>
            </property>
            <property name="rightMargin">
             <number>3</number>

@@ -165,17 +165,23 @@ def mergeTool(args):
 	else:
 		print('未找到主目录')
 
+
 #args: { workpath }
 def createDicTool(args):
 	global OnceLinesCount
 	global workpath
 	OnceLinesCount = 0
 	workpath = args['workpath']
-	ret = createDic('all.orig.json', 'all.trans.json')
-	if ret == 1:
-		ret = createDic('key.json', 'value.json')
+	#正则
+	args['file'] = 'json'
+	ret = createDic(args, 'all.orig.json', 'all.trans.json')
+	if ret != 1: return
+	ret = createDic(args, 'key.json', 'value.json')
+	if ret != 1: return
+	args['file'] = 'txt'
+	ret = createDic(args, 'key.txt', 'value.txt')
 
-def createDic(keyName, valueName):
+def createDic(args, keyName, valueName):
 	print('开始查找key/value文件:', keyName, valueName)
 	keyPath = os.path.join(workpath, keyName)
 	valuePath = os.path.join(workpath, valueName)
@@ -183,19 +189,33 @@ def createDic(keyName, valueName):
 		print('未找到key/value文件', keyName, valueName)
 		return 1
 	print('找到key/value文件')
-	fileOld = open(keyPath, 'r', encoding=EncodeName)
-	keyContent = json.load(fileOld)
-	fileOld.close()
-	fileOld = open(valuePath, 'r', encoding=EncodeName)
-	valueContent = json.load(fileOld)
-	fileOld.close()
-	if not isinstance(keyContent, list) or not isinstance(valueContent, list):
-		print('key/value文件不是列表形式')
-		return 2
+	fileKey = open(keyPath, 'r', encoding=EncodeName)
+	fileValue = open(valuePath, 'r', encoding=EncodeName)
+	ret = 0
+	allJson[0].clear()
+	if args['file'] == 'json':
+		ret = createDicByJson(args, fileKey, fileValue)
+	elif args['file'] == 'txt':
+		ret = createDicByTxt(args, fileKey, fileValue)
+	else:
+		print('后缀错误')
+	fileKey.close()
+	fileValue.close()
+	if ret == 0:
+		#导出
+		filenameList.clear()
+		writeMerge()
+	return ret
+
+def createDicByJson(args, fileKey, fileValue):
+	keyContent = json.load(fileKey)
+	valueContent = json.load(fileValue)
 	if len(keyContent) != len(valueContent):
 		print('key/value文件长度不一致')
+		return 2
+	if not isinstance(keyContent, list) or not isinstance(valueContent, list):
+		print('key/value文件不是列表形式')
 		return 3
-	allJson[0].clear()
 	for i in range(len(keyContent)):
 		keyItem = keyContent[i]
 		valueItem = valueContent[i]
@@ -209,8 +229,21 @@ def createDic(keyName, valueName):
 			for i in range(len(keys)):
 				key = keys[i]
 				value = values[i]
-				allJson[0][key] = value
-	#导出
-	filenameList.clear()
-	writeMerge()
+				setPair(key, value, args['skipReg'])
 	return 0
+
+def createDicByTxt(args, fileKey, fileValue):
+	keyContent = fileKey.readlines()
+	valueContent = fileValue.readlines()
+	if len(keyContent) != len(valueContent):
+		print('key/value文件长度不一致')
+		return 2
+	for i in range(len(keyContent)):
+		key = keyContent[i][:-1] #去换行
+		value = valueContent[i][:-1] #去换行
+		setPair(key, value, args['skipReg'])
+	return 0
+
+def setPair(key, value, skipReg):
+	if re.search(skipReg, key): return 
+	allJson[0][key] = value

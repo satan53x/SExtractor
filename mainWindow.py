@@ -242,9 +242,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 	#创建字典
 	def createDic(self):
 		workpath = self.mergeDirEdit.text()
+		skipReg = self.skipRegEdit.text()
 		args = {
 			'workpath':workpath,
-			'file':'json'
+			'skipReg':skipReg
 		}
 		print(args)
 		createDicTool(args)
