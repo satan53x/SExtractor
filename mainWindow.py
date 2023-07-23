@@ -17,8 +17,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mainDirButton.clicked.connect(self.chooseMainDir)
 		self.extractButton.clicked.connect(self.extractFileThread)
 		#self.engineNameBox.currentIndexChanged.connect(self.selectEngine)
-		self.outputFileBox.currentIndexChanged.connect(self.selectFormat)
-		self.outputPartBox.currentIndexChanged.connect(self.selectOutputPart)
+		#self.outputFileBox.currentIndexChanged.connect(self.selectFormat)
+		#self.outputPartBox.currentIndexChanged.connect(self.selectOutputPart)
 		#merge工具
 		self.mergeDirButton.clicked.connect(self.chooseMergeDir)
 		self.mergeButton.clicked.connect(self.mergeFile)
@@ -82,6 +82,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.regNameBox.currentIndexChanged.connect(self.selectReg)
 		# 结束
 		self.engineNameBox.setCurrentIndex(self.engineCode)
+		# 截断
+		checked = initValue(self.mainConfig, 'cutoff', False) != 'false'
+		self.cutOffCheck.setChecked(checked)
+
 	#初始化
 	def afterShow(self):
 		pass
@@ -128,20 +132,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		else:
 			self.regNameTab.setEnabled(False)
 			self.sampleLabel.setText('引擎脚本示例')
-		#截断填充选中
-		checked = self.engineConfig.value('file') == 'bin'
-		self.cutOffCheck.setChecked(checked)
 		self.engineConfig.endGroup()
-
-	#选择格式
-	def selectFormat(self, index):
-		self.outputFormat = index
-		#print('selectFormat', self.engineCode)
-
-	#选择导出模式
-	def selectOutputPart(self, index):
-		self.outputPartMode = index
-		#print('selectOutputPart', self.outputPartMode)
 
 	#选择预设正则规则
 	def selectReg(self, index):
@@ -170,8 +161,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 	def extractFile(self):
 		engineName = self.engineNameBox.currentText()
 		group = "Engine_" + engineName
-		fileType = self.engineConfig.value(group + '/file')
 		workpath = self.mainDirEdit.text()
+		outputFormat = self.outputFileBox.currentIndex()
+		outputPartMode = self.outputPartBox.currentIndex()
 		nameList = self.nameListEdit.text()
 		regDic = None
 		if self.engineConfig.value(group + '/regDic'):
@@ -181,32 +173,37 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		args = {
 			'workpath':workpath,
 			'engineName':engineName,
-			'outputFormat':self.outputFormat,
-			'outputPartMode':self.outputPartMode,
+			'outputFormat':outputFormat,
+			'outputPartMode':outputPartMode,
 			'nameList':nameList,
 			'regDic':regDic,
 			'cutoff':cutoff,
 			'outputFormatExtra':outputFormatExtra
 		}
 		var.window = self
+		#保存配置
+		self.saveConfig(args, group)
 		print('---------------------------------')
 		print(args)
+		fileType = self.engineConfig.value(group + '/file')
 		if fileType == 'txt': 
 			mainExtractTxt(args)
 		elif fileType == 'bin':
 			mainExtractBin(args)
 		else:
 			print('extractFile:', 'Error file type.')
-		#保存配置
+
+	def saveConfig(self, args, group):
+		self.mainConfig.setValue('mainDirPath', args['workpath'])
 		self.mainConfig.setValue('engineCode', self.engineCode)
-		self.mainConfig.setValue('outputFormat', self.outputFormat)
-		self.mainConfig.setValue('outputPartMode', self.outputPartMode)
-		self.mainConfig.setValue('mainDirPath', workpath)
-		if nameList != '':
-			self.mainConfig.setValue(group+'_nameList', nameList)
+		self.mainConfig.setValue('outputFormat', args['outputFormat'])
+		self.mainConfig.setValue('outputPartMode', args['outputPartMode'])
+		if args['nameList'] != '':
+			self.mainConfig.setValue(group+'_nameList', args['nameList'])
 		else:
 			self.mainConfig.remove(group+'_nameList')
 		self.mainConfig.setValue('regIndex', self.regIndex)
+		self.mainConfig.setValue('cutoff', args['cutoff'])
 
 	def extractFileThread(self):
 		self.thread = extractThread()
