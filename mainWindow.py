@@ -2,6 +2,7 @@ from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from PyQt5.Qt import QThread
 from ui_mainWindow import Ui_MainWindow
+import re
 import sys
 sys.path.append('.\src')
 from main_extract_txt import mainExtractTxt
@@ -140,22 +141,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		#print('selectReg', self.regIndex)
 		regName = self.regNameBox.currentText()
 		self.regConfig.beginGroup(regName)
-		textReg = ''
-		textCtrl = ''
-		textEnd = ''
+		textPart0 = ''
+		textPart1 = ''
+		textPart2 = ''
 		for key in self.regConfig.childKeys():
 			value = self.regConfig.value(key)
 			text = key + '=' + value + '\n'
-			if key.startswith('skip'):
-				textReg = text + textReg
-			elif key.startswith('search'):
-				textReg += text
+			if re.match(r'\d', key):
+				textPart0 += text
 			elif key.startswith('sample'):
-				textEnd += text
+				textPart2 += text
 			else:
-				textCtrl += text
+				textPart1 += text
 		self.regConfig.endGroup()
-		self.sampleBrowser.setText(textReg + textCtrl + textEnd)
+		self.sampleBrowser.setText(textPart0 + textPart1 + textPart2)
 
 	#提取
 	def extractFile(self):
@@ -253,13 +252,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mainConfig.setValue('mergeSkipReg', skipReg)
 
 #---------------------------------------------------------------
-#import debugpy
+import debugpy
 class extractThread(QThread):
 	def __init__(self):
 		super().__init__()
 
 	def run(self):
-		#debugpy.debug_this_thread()
+		debugpy.debug_this_thread()
 		self.window.extractFile()
 
 #设置初始值

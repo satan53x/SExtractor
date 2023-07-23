@@ -291,7 +291,7 @@
                  </font>
                 </property>
                 <property name="text">
-                 <string>译文长度截断填充为原文长度(脚本为二进制文本时)</string>
+                 <string>译文长度截断填充为原文长度(仅二进制模式下)</string>
                 </property>
                 <property name="checked">
                  <bool>true</bool>

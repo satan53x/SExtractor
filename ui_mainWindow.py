@@ -264,7 +264,7 @@ class Ui_MainWindow(object):
         self.sampleLabel.setText(_translate("MainWindow", "引擎脚本示例"))
         self.extraFuncTabs.setTabText(self.extraFuncTabs.indexOf(self.nameListTab), _translate("MainWindow", "强制设定名字"))
         self.extraFuncTabs.setTabText(self.extraFuncTabs.indexOf(self.regNameTab), _translate("MainWindow", "选择匹配规则"))
-        self.cutOffCheck.setText(_translate("MainWindow", "译文长度截断填充为原文长度(脚本为二进制文本时)"))
+        self.cutOffCheck.setText(_translate("MainWindow", "译文长度截断填充为原文长度(仅二进制模式下)"))
         self.label.setText(_translate("MainWindow", "额外导出"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "提取写入"))
         self.mergeDirLabel.setText(_translate("MainWindow", "工作目录"))
