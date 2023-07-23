@@ -27,7 +27,7 @@ def parseImp(content, listCtrl, dealOnce):
 			end -= 2
 			ctrl['isName'] = True #名字标记
 		else: #对话
-			if re.search(r'[^。）』】？」！]$'.encode('cp932'), lineData):
+			if re.search(r'[^。）』】？」！]$', lineData.decode('cp932')):
 				ctrl['unfinish'] = True
 		text = lineData[start:end].decode(OldEncodeName)
 		ctrl['pos'] = [contentIndex, start, end]
