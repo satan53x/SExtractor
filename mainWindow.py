@@ -252,13 +252,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mainConfig.setValue('mergeSkipReg', skipReg)
 
 #---------------------------------------------------------------
-import debugpy
+#import debugpy
 class extractThread(QThread):
 	def __init__(self):
 		super().__init__()
 
 	def run(self):
-		debugpy.debug_this_thread()
+		#debugpy.debug_this_thread()
 		self.window.extractFile()
 
 #设置初始值
