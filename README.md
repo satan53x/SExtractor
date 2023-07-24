@@ -34,8 +34,8 @@
 * json字典 { 带换行文本 : "" }
 * json字典 { 带换行文本 : 带换行文本 }
 * txt文档  { 文本 }
-* txt文档  [ 文本 ]
-* json列表 [ 文本 ]
+* txt文档  [ 带换行文本 ]
+* json列表 [ 带换行文本 ]
 
 ## 相关参考项目
 1. [ssynn](https://github.com/ssynn/game_translation)
