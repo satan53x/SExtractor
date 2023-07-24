@@ -47,6 +47,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 				else:
 					self.engineNameBox.addItem(value)
 			elif group == 'OutputFormat':
+				self.outputFileExtraBox.addItem('无')
 				for key in self.engineConfig.childKeys():
 					value = self.engineConfig.value(key)
 					self.outputFileBox.addItem(value)
@@ -60,8 +61,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.outputFormat = int(initValue(self.mainConfig, 'outputFormat', 0))
 		#print(self.outputFormat)
 		self.outputFileBox.setCurrentIndex(self.outputFormat)
-		self.outputFileExtraBox.addItem('无')
-		self.outputFileExtraBox.setCurrentIndex(self.outputFileExtraBox.count() - 1)
+		self.outputFileExtraBox.setCurrentIndex(0)
 		# 单个或多个Json模式
 		self.outputPartMode = int(initValue(self.mainConfig, 'outputPartMode', 0))
 		#print(self.outputPartMode)
@@ -168,7 +168,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		if self.engineConfig.value(group + '/regDic'):
 			regDic = self.sampleBrowser.toPlainText()
 		cutoff = self.cutOffCheck.isChecked()
-		outputFormatExtra = self.outputFileExtraBox.currentIndex()
+		outputFormatExtra = self.outputFileExtraBox.currentIndex() - 1
 		args = {
 			'workpath':workpath,
 			'engineName':engineName,
