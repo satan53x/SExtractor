@@ -64,7 +64,7 @@ def setIOFileName(io):
 		if io.outputFormat == 5:
 			io.ouputFileName = 'all.orig.txt'
 			io.inputFileName = 'all.trans.txt'
-		elif io.outputFormat == 2:
+		elif io.outputFormat == 2 or io.outputFormat == 6:
 			io.ouputFileName = 'all.orig.json'
 			io.inputFileName = 'all.trans.json'
 		else:
@@ -97,6 +97,8 @@ def readFormat():
 		readFormat4()
 	elif code == 5:
 		readFormat5()
+	elif code == 6:
+		readFormat6()
 
 def readFormat1():
 	#读入transDic字典
@@ -157,7 +159,7 @@ def splitToTransDic(orig, trans):
 			var.transDic[msgOrig] = msgTrans
 
 def readFormat2():
-	#读入带换行文本的all.orig列表和all.trans列表
+	#读入带换行文本item的all.orig列表和all.trans列表
 	filepath = os.path.join(var.workpath, var.inputDir, var.curIO.inputFileName)
 	if os.path.isfile(filepath):
 		#译文
@@ -182,6 +184,28 @@ def readFormat2():
 		fileAllOrig.close()
 		fileAllTrans.close()
 
+def readFormat6():
+	#读入普通的all.orig列表和all.trans列表
+	filepath = os.path.join(var.workpath, var.inputDir, var.curIO.inputFileName)
+	if os.path.isfile(filepath):
+		#译文
+		fileAllTrans = open(filepath, 'r', encoding='utf-8')
+		allTrans = json.load(fileAllTrans)
+		print('读入Json:', len(allTrans), var.curIO.inputFileName)
+		var.isInput = True
+		#原文
+		filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
+		fileAllOrig = open(filepath, 'r', encoding='utf-8')
+		allOrig = json.load(fileAllOrig)
+		print('读入Json:', len(allOrig), var.curIO.ouputFileName)
+		#合并
+		for i in range(len(allOrig)):
+			orig = allOrig[i]
+			trans = allTrans[i]
+			var.transDic[orig] = trans
+		fileAllOrig.close()
+		fileAllTrans.close()
+
 # --------------------------- 写 ---------------------------------
 def writeFormat():
 	code = var.curIO.outputFormat
@@ -197,6 +221,8 @@ def writeFormat():
 		writeFormatCopyKey(var.transDicIO)
 	elif code == 5:
 		writeFormatTxt(var.transDic)
+	elif code == 6:
+		writeFormatListByItem(var.allOrig)
 
 def writeFormatDirect(targetJson):
 	#print(filepath)
@@ -230,6 +256,21 @@ def writeFormatTxt(targetJson):
 	#print(targetJson)
 	for orig in targetJson.keys():
 		fileOutput.write(orig + '\n')
+	fileOutput.close()
+
+def writeFormatListByItem(targetJson):
+	#print(filepath)
+	print('输出Json:', len(targetJson), var.curIO.ouputFileName)
+	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
+	fileOutput = open(filepath, 'w', encoding='utf-8')
+	#print(targetJson)
+	tmpList = []
+	for item in targetJson:
+		if 'name' in item:
+			tmpList.append(item['name'])
+		if 'message' in item:
+			tmpList.append(item['message'])
+	json.dump(tmpList, fileOutput, ensure_ascii=False, indent=2)
 	fileOutput.close()
 
 # ------------------------------------------------------------

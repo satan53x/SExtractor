@@ -34,9 +34,7 @@ def searchLine(var):
 			iter = re.finditer(value, searchData) 
 			for r in iter:
 				#print(r.groups())
-				i = 0
-				for key in r.groupdict().keys():
-					i += 1
+				for i in range(1, len(r.groups())+1):
 					if r.group(i) == None: continue
 					start = r.start(i) + var.searchStart
 					end = r.end(i) + var.searchStart
@@ -47,7 +45,13 @@ def searchLine(var):
 					#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 					ctrl = {'pos':[var.contentIndex, start, end]}
 					tmpDic[start] = [text, ctrl]
-					if key.startswith('name') or text in var.nameList:
+					#检查命名
+					key = None
+					for name, index in r.re.groupindex.items():
+						if i == index: key = name
+					if not key:
+						pass
+					elif key.startswith('name') or text in var.nameList:
 						ctrl['isName'] = True #名字标记
 					elif key.startswith('unfinish'):
 						ctrl['unfinish'] = True
