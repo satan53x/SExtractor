@@ -9,7 +9,7 @@
 同引擎不同游戏的格式也可能不同，请参看程序内示例使用。
 * TXT纯文本 (正则匹配)
 * BIN二进制文本 (正则匹配)
-* JSON文本 (正则匹配。按行读取，不要压缩Json)
+* JSON文本 (正则匹配，只搜索value。按行读取，不要压缩Json)
 * AST
 * Artemis
 * EAGLS
@@ -26,7 +26,9 @@
 * json列表 [ { name : 名字, message : 带换行对话 } ]
 * json字典 { 带换行文本 : "" }
 * json字典 { 带换行文本 : 带换行文本 }
+* txt文档  { 文本 }
 * txt文档  [ 文本 ]
+* json列表 [ 文本 ]
 
 ## 相关参考项目
 1. [ssynn](https://github.com/ssynn/game_translation)
