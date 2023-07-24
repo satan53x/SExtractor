@@ -40,9 +40,9 @@ def parseImp(content, listCtrl, dealOnce):
 			# 	lineData = content[contentIndex][:-1]
 			# 	var.searchEnd += len(key)
 		else:
-			print('\033[33m查找键值对失败\033[0m', lineData)
+			print('\033[33m值查找失败, 请检查Json格式\033[0m', lineData)
 			continue
-		# 跳过
+		# 查询
 		var.contentIndex = contentIndex
 		var.lineData = lineData
 		extract_TXT.searchLine(var)

@@ -61,17 +61,17 @@ var = ExtractVar()
 
 def setIOFileName(io):
 	if var.partMode == 0: #总共一个输出文档
-		if io.outputFormat == 5:
+		if io.outputFormat == 5 or io.outputFormat == 6:
 			io.ouputFileName = 'all.orig.txt'
 			io.inputFileName = 'all.trans.txt'
-		elif io.outputFormat == 2 or io.outputFormat == 6:
+		elif io.outputFormat == 2 or io.outputFormat == 7:
 			io.ouputFileName = 'all.orig.json'
 			io.inputFileName = 'all.trans.json'
 		else:
 			io.ouputFileName = 'transDic.output.json'
 			io.inputFileName = 'transDic.json'
 	else: #每个文件对应一个输出文档
-		if io.outputFormat == 5:
+		if io.outputFormat == 5 or io.outputFormat == 6:
 			io.ouputFileName = var.filename + '.txt'
 			io.inputFileName = var.filename + '.txt'
 		else:
@@ -90,17 +90,19 @@ def readFormat():
 	var.transDicIO.clear()
 	var.allOrig.clear()
 	if code == 0 or code == 1:
-		readFormat1()
+		readFormatDic()
 	elif code == 2:
-		readFormat2()
+		readFormatItemList()
 	elif code == 3 or code == 4:
-		readFormat4()
+		readFormatDicIO()
 	elif code == 5:
-		readFormat5()
+		readFormatTxt(False)
 	elif code == 6:
-		readFormat6()
+		readFormatTxt(True)
+	elif code == 7:
+		readFormatList()
 
-def readFormat1():
+def readFormatDic():
 	#读入transDic字典
 	filepath = os.path.join(var.workpath, var.inputDir, var.curIO.inputFileName)
 	if os.path.isfile(filepath):
@@ -110,7 +112,7 @@ def readFormat1():
 		var.isInput = True
 		#print(list(var.transDic.values())[0])
 
-def readFormat4():
+def readFormatDicIO():
 	#读入带换行文本的transDicIO字典
 	filepath = os.path.join(var.workpath, var.inputDir, var.curIO.inputFileName)
 	if os.path.isfile(filepath):
@@ -123,7 +125,7 @@ def readFormat4():
 		for orig,trans in var.transDicIO.items():
 			splitToTransDic(orig, trans)
 
-def readFormat5():
+def readFormatTxt(boolSplit):
 	#读入txt
 	filepath = os.path.join(var.workpath, var.inputDir, var.curIO.inputFileName)
 	if os.path.isfile(filepath):
@@ -139,9 +141,14 @@ def readFormat5():
 		print('读入Txt:', len(allOrig), var.curIO.ouputFileName)
 		#合并
 		for i in range(len(allOrig)):
-			itemOrig = re.sub(r'\n$', '', allOrig[i])
-			itemTrans = re.sub(r'\n$', '', allTrans[i])
-			var.transDic[itemOrig] = itemTrans
+			orig = re.sub(r'\n$', '', allOrig[i])
+			trans = re.sub(r'\n$', '', allTrans[i])
+			if boolSplit:
+				#分割
+				splitToTransDic(orig, trans)
+			else:
+				#不分割
+				var.transDic[orig] = trans
 		fileAllOrig.close()
 		fileAllTrans.close()
 
@@ -158,7 +165,7 @@ def splitToTransDic(orig, trans):
 			var.transDic[msgOrig] == ' ':
 			var.transDic[msgOrig] = msgTrans
 
-def readFormat2():
+def readFormatItemList():
 	#读入带换行文本item的all.orig列表和all.trans列表
 	filepath = os.path.join(var.workpath, var.inputDir, var.curIO.inputFileName)
 	if os.path.isfile(filepath):
@@ -184,8 +191,8 @@ def readFormat2():
 		fileAllOrig.close()
 		fileAllTrans.close()
 
-def readFormat6():
-	#读入普通的all.orig列表和all.trans列表
+def readFormatList():
+	#读入带换行字符串的all.orig列表和all.trans列表
 	filepath = os.path.join(var.workpath, var.inputDir, var.curIO.inputFileName)
 	if os.path.isfile(filepath):
 		#译文
@@ -202,7 +209,7 @@ def readFormat6():
 		for i in range(len(allOrig)):
 			orig = allOrig[i]
 			trans = allTrans[i]
-			var.transDic[orig] = trans
+			splitToTransDic(orig, trans)
 		fileAllOrig.close()
 		fileAllTrans.close()
 
@@ -222,6 +229,8 @@ def writeFormat():
 	elif code == 5:
 		writeFormatTxt(var.transDic)
 	elif code == 6:
+		writeFormatTxtByItem(var.allOrig)
+	elif code == 7:
 		writeFormatListByItem(var.allOrig)
 
 def writeFormatDirect(targetJson):
@@ -256,6 +265,19 @@ def writeFormatTxt(targetJson):
 	#print(targetJson)
 	for orig in targetJson.keys():
 		fileOutput.write(orig + '\n')
+	fileOutput.close()
+
+def writeFormatTxtByItem(targetJson):
+	#print(filepath)
+	print('输出Txt:', len(targetJson), var.curIO.ouputFileName)
+	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
+	fileOutput = open(filepath, 'w', encoding='utf-8')
+	#print(targetJson)
+	for item in targetJson:
+		if 'name' in item:
+			fileOutput.write(item['name'] + '\n')
+		if 'message' in item:
+			fileOutput.write(item['message'] + '\n')
 	fileOutput.close()
 
 def writeFormatListByItem(targetJson):
