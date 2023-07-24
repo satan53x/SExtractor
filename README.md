@@ -18,7 +18,14 @@
 * SiglusEngine
 
 #### 配置
-* reg.ini中可自定义匹配规则
+* reg.ini中可自定义匹配规则, 当前预设:
+ 1. Krkr
+ 2. SFA(AOS)
+ 3. Yuris_txt
+ 4. 替换符号
+ 5. TXT转Json
+ 6. 猜测名字
+ 7. 导出所有(用于格式转换)
 
 ## 支持的导出格式：
 * json字典 { 文本 : "" }
