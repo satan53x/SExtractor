@@ -7,6 +7,7 @@ import sys
 sys.path.append('.\src')
 from main_extract_txt import mainExtractTxt
 from main_extract_bin import mainExtractBin
+from main_extract_json import mainExtractJson
 from main_extract import var
 from merge_json import mergeTool, createDicTool
 
@@ -189,6 +190,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			mainExtractTxt(args)
 		elif fileType == 'bin':
 			mainExtractBin(args)
+		elif fileType == 'json':
+			mainExtractJson(args)
 		else:
 			print('extractFile:', 'Error file type.')
 

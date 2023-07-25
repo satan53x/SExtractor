@@ -3,22 +3,18 @@ import sys
 import os
 import struct
 from common import *
-import extract_TXT
+from extract_TXT import ParseVar, GetRegList, searchLine
+from extract_TXT import replaceOnceImp as replaceOnceTxt
 
 # ---------------- Group: JSON -------------------
 def parseImp(content, listCtrl, dealOnce):
-	var = extract_TXT.ParseVar()
+	var = ParseVar()
 	var.listIndex = 0
 	var.listCtrl = listCtrl
 	var.dealOnce = dealOnce
 	#print(len(content))
 	regDic = GetG('Var').regDic
-	var.regList = []
-	for key, value in regDic.items():
-		if re.search('skip', key):
-			var.regList.append([value, 'skip'])
-		elif re.search('search', key):
-			var.regList.append([value, 'search'])
+	var.regList = GetRegList(regDic.items(), None)
 	for contentIndex in range(len(content)):
 		#if contentIndex < 1: continue 
 		lineData = content[contentIndex][:-1] #不检查末尾换行
@@ -28,12 +24,11 @@ def parseImp(content, listCtrl, dealOnce):
 		if re.match(r'\s*[\[\]\{\}]', lineData): continue #括号
 		# 确认需要匹配的数据段
 		if re.search(r'" *: *"', lineData): #键值对
-			ret = re.search(r': *"(.*)[ ,]*$', lineData)
+			ret = re.search(r': *"(.*)"[ ,]*$', lineData)
 		else: #字符串
 			ret = re.search(r'"(.*)"[ ,]*$', lineData)
 		#ret = re.search(r'"([^:]*)"[ ,]*$', lineData)
 		if ret:
-			value = ret.group(1)
 			var.searchStart = ret.start(1)
 			var.searchEnd = ret.end(1)
 			# value为空则复制key到value
@@ -49,8 +44,8 @@ def parseImp(content, listCtrl, dealOnce):
 		# 查询
 		var.contentIndex = contentIndex
 		var.lineData = lineData
-		extract_TXT.searchLine(var)
+		searchLine(var)
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
-	extract_TXT.replaceOnceImp(content, lCtrl, lTrans)
+	replaceOnceTxt(content, lCtrl, lTrans)

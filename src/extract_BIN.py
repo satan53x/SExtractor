@@ -3,7 +3,7 @@ import sys
 import os
 import struct
 from common import *
-from extract_TXT import searchLine, ParseVar
+from extract_TXT import searchLine, ParseVar, GetRegList
 
 OldEncodeName = 'cp932'
 NewEncodeName = 'gbk'
@@ -17,13 +17,7 @@ def parseImp(content, listCtrl, dealOnce):
 	var.OldEncodeName = OldEncodeName
 	#print(len(content))
 	regDic = GetG('Var').regDic
-	var.regList = []
-	for key, value in regDic.items():
-		value = value.encode(OldEncodeName)
-		if re.search('skip', key):
-			var.regList.append([value, 'skip'])
-		elif re.search('search', key):
-			var.regList.append([value, 'search'])
+	var.regList = GetRegList(regDic.items(), OldEncodeName)
 	for contentIndex in range(len(content)):
 		lineData = content[contentIndex]
 		# 每行

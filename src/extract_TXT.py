@@ -65,6 +65,17 @@ def searchLine(var):
 						var.listCtrl.append(value[1])
 				break #已匹配则停止
 
+def GetRegList(items, OldEncodeName):
+	lst = []
+	for key, value in items:
+		if OldEncodeName:
+			value = value.encode(OldEncodeName)
+		if re.search('skip', key):
+			lst.append([value, 'skip'])
+		elif re.search('search', key):
+			lst.append([value, 'search'])
+	return lst
+
 # ---------------- Group: TXT -------------------
 def parseImp(content, listCtrl, dealOnce):
 	var = ParseVar()
@@ -74,12 +85,7 @@ def parseImp(content, listCtrl, dealOnce):
 	#print(len(content))
 	regDic = GetG('Var').regDic
 	var.nameList = GetG('Var').nameList
-	var.regList = []
-	for key, value in regDic.items():
-		if re.search('skip', key):
-			var.regList.append([value, 'skip'])
-		elif re.search('search', key):
-			var.regList.append([value, 'search'])
+	var.regList = GetRegList(regDic.items(), None)
 	for contentIndex in range(len(content)):
 		#if contentIndex < 1: continue 
 		lineData = content[contentIndex][:-1] #不检查末尾换行

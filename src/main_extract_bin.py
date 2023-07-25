@@ -22,27 +22,7 @@ def write():
 	#print(var.isInput)
 	if var.isInput == True:
 		#写入译文
-		#print('write trans')
-		lCtrl = []
-		lTrans = []
-		for listIndex in range(len(var.listOrig)-1, -1, -1): #倒序
-			orig = var.listOrig[listIndex]
-			ctrl = var.listCtrl[listIndex]
-			trans = var.transDic[orig]
-			lCtrl.clear()
-			lTrans.clear()
-			if trans == '':
-				print('\033[32m译文为空, 不替换\033[0m', var.filename, orig)
-				#trans = 'te'.format(listIndex) #测试
-				continue
-			lCtrl.append(ctrl)
-			lTrans.append(trans)
-			#开始处理段落
-			ret = var.replaceOnceImp(var.content, lCtrl, lTrans)
-			if ret == False:
-				print('\033[31m替换错误，请检查文本\033[0m', var.filename, trans)
-				continue
-			#break #测试
+		replace()
 		#新文件
 		#print(len(var.content))
 		filepath = os.path.join(var.workpath, 'new', var.filename+var.Postfix)

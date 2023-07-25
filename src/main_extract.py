@@ -353,6 +353,23 @@ def dealOnce(text, listIndex):
 		var.transDic[orig] = ''
 	return True
 
+def replace():
+	for listIndex in range(len(var.listOrig)-1, -1, -1): #倒序
+		orig = var.listOrig[listIndex]
+		ctrl = var.listCtrl[listIndex]
+		trans = var.transDic[orig]
+		if trans == '':
+			print('\033[32m译文为空, 不替换\033[0m', var.filename, orig)
+			#trans = 'te'.format(listIndex) #测试
+			continue
+		#开始处理段落
+		ret = var.replaceOnceImp(var.content, [ctrl], [trans])
+		if ret == False:
+			print('\033[31m替换错误，请检查文本\033[0m', var.filename, trans)
+			continue
+		#break #测试
+
+# ------------------------------------------------------------
 def createFolder():
 	path = os.path.join(var.workpath, 'ctrl')
 	if not os.path.exists(path):

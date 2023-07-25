@@ -26,9 +26,7 @@ def write():
 		filepath = os.path.join(var.workpath, 'new', var.filename+var.Postfix)
 		#print(filepath)
 		fileNew = open(filepath, 'w', encoding=var.EncodeRead)
-		length = len(var.content)
-		for i in range(length):
-			fileNew.write(var.content[i])
+		json.dump(var.content, fileNew, ensure_ascii=False, indent=2)
 		fileNew.close()
 		#print('导出:', filename+Postfix)
 		var.outputCount += 1
@@ -37,10 +35,7 @@ def parse():
 	global content
 	#print('解析文件: '+filename)
 	fileOld = read() #判断流程
-	if var.readFileDataImp:
-		var.content = var.readFileDataImp(fileOld, None)
-	else:
-		var.content = fileOld.readlines() #会保留换行符
+	var.content = json.load(fileOld)
 	fileOld.close()
 	#print(content)
 	var.parseImp(var.content, var.listCtrl, dealOnce)
@@ -54,7 +49,7 @@ def parse():
 			#os.remove(filepath)
 
 #args = {workpath, engineName, outputFormat, outputPartMode, nameList, regDic}
-def mainExtractTxt(args):
+def mainExtractJson(args):
 	outputPartMode = args['outputPartMode']
 	if outputPartMode == 0:
 		mainExtract(args, parse)
