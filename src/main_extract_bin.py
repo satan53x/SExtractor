@@ -29,21 +29,19 @@ def write():
 			orig = var.listOrig[listIndex]
 			ctrl = var.listCtrl[listIndex]
 			trans = var.transDic[orig]
+			lCtrl.clear()
+			lTrans.clear()
 			if trans == '':
-				print('\033[31m译文不能为空\033[0m', var.filename, orig)
+				print('\033[32m译文为空, 不替换\033[0m', var.filename, orig)
 				#trans = 'te'.format(listIndex) #测试
-				break
+				continue
 			lCtrl.append(ctrl)
 			lTrans.append(trans)
-			#if 'unfinish' in ctrl:
-			#	continue
 			#开始处理段落
 			ret = var.replaceOnceImp(var.content, lCtrl, lTrans)
 			if ret == False:
 				print('\033[31m替换错误，请检查文本\033[0m', var.filename, trans)
-				break
-			lCtrl.clear()
-			lTrans.clear()
+				continue
 			#break #测试
 		#新文件
 		#print(len(var.content))

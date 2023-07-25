@@ -26,19 +26,25 @@ def generateBytes(text, lenOrig, NewEncodeName):
     if GetG('Var').cutoff == False:
          return transData
     # 检查长度
-    lenTrans = len(transData)
-    #print(contentIndex, start, end)
-    count = lenOrig - lenTrans
+    count = lenOrig - len(transData)
     #print('Diff', count)
     if count < 0:
-        transData = transData[0:lenOrig]
-        print('\033[33m译文长度超出原文，部分截断\033[0m', text)
-        try:
-            transData.decode(NewEncodeName)
-        except Exception as ex:
-            #print('\033[31m截断后编码错误\033[0m')
-            return None
-    else:
+        dic = GetG('Var').cutoffDic
+        if text not in dic:
+            dic[text] = ['', lenOrig]
+        elif dic[text][0] != '':
+            #从cutoff字典读取
+            transData = dic[text][0].encode(NewEncodeName)
+            count = lenOrig - len(transData)
+        if count < 0:
+            print('\033[33m译文长度超出原文，部分截断\033[0m', text)
+            transData = transData[0:lenOrig]
+            try:
+                transData.decode(NewEncodeName)
+            except Exception as ex:
+                #print('\033[31m截断后编码错误\033[0m')
+                return None
+    if count > 0:
         # 右边补足空格
         #print(transData)
         empty = bytearray(count)

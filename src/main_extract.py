@@ -53,6 +53,7 @@ class ExtractVar():
 	listOrig = [] #原文表
 	listCtrl = [] #控制表
 	addSeprate = True
+	cutoffDic = {}
 
 	#-------------------
 	#窗口
@@ -140,7 +141,9 @@ def readFormatTxt(boolSplit):
 		fileAllOrig = open(filepath, 'r', encoding='utf-8')
 		allOrig = fileAllOrig.readlines()
 		print('读入Txt:', len(allOrig), var.curIO.ouputFileName)
-		#合并
+		if len(allTrans) != len(allOrig):
+			print('\033[31m导入与导出文件行数不一致\033[0m', var.curIO.inputFileName)
+		#合并 
 		for i in range(len(allOrig)):
 			orig = re.sub(r'\n$', '', allOrig[i])
 			trans = re.sub(r'\n$', '', allTrans[i])
@@ -180,6 +183,8 @@ def readFormatItemList():
 		fileAllOrig = open(filepath, 'r', encoding='utf-8')
 		allOrig = json.load(fileAllOrig)
 		print('读入Json:', len(allOrig), var.curIO.ouputFileName)
+		if len(allTrans) != len(allOrig):
+			print('\033[31m导入与导出文件行数不一致\033[0m', var.curIO.inputFileName)
 		#合并
 		for i in range(len(allOrig)):
 			itemOrig = allOrig[i]
@@ -206,6 +211,8 @@ def readFormatList():
 		fileAllOrig = open(filepath, 'r', encoding='utf-8')
 		allOrig = json.load(fileAllOrig)
 		print('读入Json:', len(allOrig), var.curIO.ouputFileName)
+		if len(allTrans) != len(allOrig):
+			print('\033[31m导入与导出文件行数不一致\033[0m', var.curIO.inputFileName)
 		#合并
 		for i in range(len(allOrig)):
 			orig = allOrig[i]
@@ -347,15 +354,19 @@ def dealOnce(text, listIndex):
 	return True
 
 def createFolder():
-	path = os.path.join(var.workpath, var.inputDir)
-	if not os.path.exists(path):
-		os.makedirs(path)
-	path = os.path.join(var.workpath, var.outputDir)
+	path = os.path.join(var.workpath, 'ctrl')
 	if not os.path.exists(path):
 		os.makedirs(path)
 	path = os.path.join(var.workpath, 'new')
 	if not os.path.exists(path):
 		os.makedirs(path)
+	if var.inputDir != 'ctrl' or var.outputDir != 'ctrl':
+		path = os.path.join(var.workpath, var.inputDir)
+		if not os.path.exists(path):
+			os.makedirs(path)
+		path = os.path.join(var.workpath, var.outputDir)
+		if not os.path.exists(path):
+			os.makedirs(path)
 
 def chooseEngine(args):
 	engineName = args['engineName']
@@ -423,6 +434,25 @@ def setRegDic(str):
 		var.regDic[pair[0]] = pair[1]
 		print('正则规则:', pair[0], pair[1])
 
+def readCutoffDic():
+	var.cutoffDic.clear()
+	#读入cutoff字典
+	filepath = os.path.join(var.workpath, 'ctrl', 'cutoff.json')
+	if os.path.isfile(filepath):
+		fileTransDic = open(filepath, 'r', encoding='utf-8')
+		var.cutoffDic = json.load(fileTransDic)
+		print('读入Json: ', len(var.cutoffDic), 'cutoff.json')
+
+def writeCutoffDic():
+	if len(var.cutoffDic) == 0: return
+	#print(filepath)
+	print('输出Json:', len(var.cutoffDic), 'cutoff.json')
+	filepath = os.path.join(var.workpath, 'ctrl', 'cutoff.json')
+	fileOutput = open(filepath, 'w', encoding='utf-8')
+	#print(targetJson)
+	json.dump(var.cutoffDic, fileOutput, ensure_ascii=False, indent=2)
+	fileOutput.close()
+
 def showMessage(msg):
 	if var.window: 
 		var.window.statusBar.showMessage(msg)
@@ -446,6 +476,7 @@ def initCommon(args):
 		var.cutoff = True
 	else:
 		var.cutoff = False
+	readCutoffDic()
 	return 0
 
 #args = [workpath, engineName, outputFormat, nameList]
@@ -485,6 +516,7 @@ def mainExtract(args, parseImp):
 		print('新建文件数:', var.outputCount)
 		var.curIO = var.ioExtra
 		writeFormat()
+		writeCutoffDic()
 	else:
 		print('未找到主目录')
 	showMessage("处理完成。")

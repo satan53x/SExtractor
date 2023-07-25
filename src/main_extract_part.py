@@ -42,6 +42,7 @@ def mainExtractPart(args, parseImp):
 				#break #测试
 		print('读取文件数:', var.inputCount)
 		print('新建文件数:', var.outputCount)
+		writeCutoffDic()
 	else:
 		print('未找到主目录')
 	showMessage("处理完成。")
