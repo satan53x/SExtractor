@@ -76,6 +76,6 @@ def readFileDataImp(fileOld, contentSeprate):
 	#if isShiftJis(data[skip], data[skip+1]) == False:
 		#print('not start with shift-jis')
 	realData = data[skip:]
-	content = realData.split(contentSeprate)
+	content = re.split(contentSeprate, realData)
 	insertContent = { 0 : data[0:skip] }
 	return content, insertContent

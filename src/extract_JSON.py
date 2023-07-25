@@ -27,7 +27,11 @@ def parseImp(content, listCtrl, dealOnce):
 		if lineData == '': continue #空白行
 		if re.match(r'\s*[\[\]\{\}]', lineData): continue #括号
 		# 确认需要匹配的数据段
-		ret = re.search(r'"([^:]*)"[ ,]*$', lineData)
+		if re.search(r'" *: *"', lineData): #键值对
+			ret = re.search(r': *"(.*)[ ,]*$', lineData)
+		else: #字符串
+			ret = re.search(r'"(.*)"[ ,]*$', lineData)
+		#ret = re.search(r'"([^:]*)"[ ,]*$', lineData)
 		if ret:
 			value = ret.group(1)
 			var.searchStart = ret.start(1)

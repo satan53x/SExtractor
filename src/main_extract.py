@@ -52,6 +52,7 @@ class ExtractVar():
 	outputCount = 0 #导出文件个数
 	listOrig = [] #原文表
 	listCtrl = [] #控制表
+	addSeprate = True
 
 	#-------------------
 	#窗口
@@ -386,7 +387,7 @@ def chooseEngine(args):
 	#分割符
 	s = settings.value('contentSeprate')
 	#print(s.encode())
-	if s: var.contentSeprate = s.encode()
+	if s: var.contentSeprate = s.encode('ascii')
 	else: var.contentSeprate = None
 	#导入模块
 	#print(var.EncodeName, var.Postfix, engineName)
@@ -415,8 +416,8 @@ def setRegDic(str):
 		pair = line.split('=', 1)
 		# 控制
 		if pair[0] == 'seprate':
-			s = bytearray.fromhex(pair[1])
-			var.contentSeprate = bytes(s)
+			s = pair[1].encode('ascii')
+			var.contentSeprate = s
 			continue
 		# 规则
 		var.regDic[pair[0]] = pair[1]
@@ -435,6 +436,11 @@ def initCommon(args):
 	setNameList(args['nameList'])
 	# 正则
 	setRegDic(args['regDic'])
+	# 分割符
+	if var.contentSeprate and var.contentSeprate.startswith(b'('):
+		var.addSeprate = False
+	else:
+		var.addSeprate = True
 	# 截断
 	if args['cutoff']:
 		var.cutoff = True

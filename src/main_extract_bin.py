@@ -56,7 +56,8 @@ def write():
 				fileNew.write(var.insertContent[i])
 			fileNew.write(var.content[i])
 			if i < length-1:
-				fileNew.write(var.contentSeprate)
+				if var.addSeprate:
+					fileNew.write(var.contentSeprate)
 		fileNew.close()
 		#print('导出:', var.filename+var.Postfix)
 		var.outputCount += 1
@@ -68,7 +69,7 @@ def parse():
 		var.content, var.insertContent = var.readFileDataImp(fileOld, var.contentSeprate)
 	else:
 		data = fileOld.read()
-		var.content = data.split(var.contentSeprate)
+		var.content = re.split(var.contentSeprate, data)
 		var.insertContent.clear()
 	fileOld.close()
 	#print(var.content)
