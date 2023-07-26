@@ -40,6 +40,9 @@ def parse():
 		var.content = var.readFileDataImp(fileOld, None)
 	else:
 		var.content = fileOld.readlines() #会保留换行符
+		if not var.content[-1].endswith('\n'):
+			print('已补足文件末尾缺少的一个换行符')
+			var.content[-1] += '\n'
 	fileOld.close()
 	#print(content)
 	var.parseImp(var.content, var.listCtrl, dealOnce)
