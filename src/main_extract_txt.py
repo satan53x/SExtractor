@@ -34,7 +34,6 @@ def write():
 		var.outputCount += 1
 
 def parse():
-	global content
 	#print('解析文件: '+filename)
 	fileOld = read() #判断流程
 	if var.readFileDataImp:

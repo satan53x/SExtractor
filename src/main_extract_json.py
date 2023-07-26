@@ -26,13 +26,13 @@ def write():
 		filepath = os.path.join(var.workpath, 'new', var.filename+var.Postfix)
 		#print(filepath)
 		fileNew = open(filepath, 'w', encoding=var.EncodeRead)
-		json.dump(var.content, fileNew, ensure_ascii=False, indent=2, separators=var.contentSeprate)
+		json.dump(var.content, fileNew, ensure_ascii=False, indent=var.indent, separators=var.contentSeprate)
 		fileNew.close()
 		#print('导出:', filename+Postfix)
 		var.outputCount += 1
 
 def parse():
-	global content
+	var.indent = 2
 	#print('解析文件: '+filename)
 	fileOld = read() #判断流程
 	var.content = json.load(fileOld)

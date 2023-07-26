@@ -25,6 +25,7 @@ class ExtractVar():
 	regDic = {}
 	cutoff = {}
 	startline = 0 #起始行数
+	indent = 2 #缩进
 	#
 	parseImp = None
 	replaceOnceImp = None
