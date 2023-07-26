@@ -26,6 +26,7 @@ class ExtractVar():
 	cutoff = {}
 	startline = 0 #起始行数
 	indent = 2 #缩进
+	extractName = '^.'
 	#
 	parseImp = None
 	replaceOnceImp = None
@@ -392,6 +393,7 @@ def chooseEngine(args):
 	var.inputCount = 0
 	var.outputCount = 0
 	var.startline = 0
+	var.extractName = '^.'
 	settings = QSettings('src/engine.ini', QSettings.IniFormat)
 	strEngine = 'Engine_' + engineName
 	settings.beginGroup(strEngine)
@@ -448,6 +450,9 @@ def setRegDic(str):
 			continue
 		elif pair[0] == 'startline':
 			var.startline = int(pair[1])
+			continue
+		elif pair[0] == 'extractName':
+			var.extractName = pair[1]
 			continue
 		# 规则
 		var.regDic[pair[0]] = pair[1]

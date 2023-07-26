@@ -46,4 +46,4 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		#写入new
 		strNew = content[contentIndex][:start] + transData + content[contentIndex][end:]
 		content[contentIndex] = strNew
-		return True
+	return True

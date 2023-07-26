@@ -116,4 +116,4 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		strNew = content[contentIndex][:start] + trans + content[contentIndex][end:]
 		#print(strNew)
 		content[contentIndex] = strNew
-		return True
+	return True
