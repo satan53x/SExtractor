@@ -7,13 +7,14 @@ from main_extract import *
 
 #单独处理每个文件的json
 #args = [workpath, engineName, outputFormat, nameList]
-def mainExtractPart(args, parseImp):
+def mainExtractPart(args, parseImp, initDone=None):
 	if len(args) < 4:
 		print("main_extract参数错误", args)
 		return
 	showMessage("开始处理...")
 	path = args['workpath']
 	if initCommon(args) != 0: return
+	if initDone: initDone()
 	#print(path)
 	var.partMode = 1
 	var.outputDir = 'orig'

@@ -61,10 +61,17 @@ def parse():
 		#if os.path.exists(filepath):
 			#os.remove(filepath)
 
+def initDone():
+	var.contentSeprate = var.contentSeprate.encode('ascii')
+	if var.contentSeprate.startswith(b'('):
+		var.addSeprate = False
+	else:
+		var.addSeprate = True
+
 #args = {workpath, engineName, outputFormat, outputPartMode, nameList, regDic}
 def mainExtractBin(args):
 	outputPartMode = args['outputPartMode']
 	if outputPartMode == 0:
-		mainExtract(args, parse)
+		mainExtract(args, parse, initDone)
 	else:
-		mainExtractPart(args, parse)
+		mainExtractPart(args, parse, initDone)

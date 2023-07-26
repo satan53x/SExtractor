@@ -43,7 +43,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			self.engineConfig.beginGroup(group)
 			if group.startswith('Engine_'):
 				value = group[len("Engine_"):]
-				if self.engineConfig.value('regDic') == 1:
+				if self.engineConfig.value('regDic') == '1':
 					self.engineNameBox.insertItem(0, value)
 				else:
 					self.engineNameBox.addItem(value)
@@ -128,10 +128,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		#特殊处理正则
 		if self.engineConfig.value('regDic'):
 			self.sampleLabel.setText('正则匹配规则（可在此编辑）')
-			if self.engineConfig.value('regDic') == 1:
+			if self.engineConfig.value('regDic') == '1':
 				self.regNameTab.setEnabled(True)
 				self.extraFuncTabs.setCurrentIndex(1)
 				self.selectReg(self.regNameBox.currentIndex())
+			else:
+				self.regNameTab.setEnabled(False)
 		else:
 			self.regNameTab.setEnabled(False)
 			self.sampleLabel.setText('引擎脚本示例')
@@ -162,6 +164,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 	def extractFile(self):
 		engineName = self.engineNameBox.currentText()
 		group = "Engine_" + engineName
+		fileType = self.engineConfig.value(group + '/file')
 		workpath = self.mainDirEdit.text()
 		outputFormat = self.outputFileBox.currentIndex()
 		outputPartMode = self.outputPartBox.currentIndex()
@@ -172,6 +175,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		cutoff = self.cutOffCheck.isChecked()
 		outputFormatExtra = self.outputFileExtraBox.currentIndex() - 1
 		args = {
+			'file':fileType,
 			'workpath':workpath,
 			'engineName':engineName,
 			'outputFormat':outputFormat,
@@ -186,7 +190,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.saveConfig(args, group)
 		print('---------------------------------')
 		print(args)
-		fileType = self.engineConfig.value(group + '/file')
 		if fileType == 'txt': 
 			mainExtractTxt(args)
 		elif fileType == 'bin':

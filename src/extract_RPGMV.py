@@ -12,6 +12,7 @@ def parseImp(content, listCtrl, dealOnce):
 	var.listCtrl = listCtrl
 	var.dealOnce = dealOnce
 	#print(len(content))
+	GetG('Var').contentSeprate = (',',':')
 	regDic = GetG('Var').regDic
 	var.regList = GetRegList(regDic.items(), None)
 	if isinstance(content, dict):

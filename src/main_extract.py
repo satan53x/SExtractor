@@ -413,10 +413,7 @@ def chooseEngine(args):
 		showMessage("该引擎暂不支持此输出格式。(额外)")
 		return 2
 	#分割符
-	s = settings.value('contentSeprate')
-	#print(s.encode())
-	if s: var.contentSeprate = s.encode('ascii')
-	else: var.contentSeprate = None
+	var.contentSeprate = settings.value('contentSeprate')
 	#导入模块
 	#print(var.EncodeName, var.Postfix, engineName)
 	module = import_module('extract_' + engineName)
@@ -444,8 +441,7 @@ def setRegDic(str):
 		pair = line.split('=', 1)
 		# 控制
 		if pair[0] == 'seprate':
-			s = pair[1].encode('ascii')
-			var.contentSeprate = s
+			var.contentSeprate = pair[1]
 			continue
 		# 规则
 		var.regDic[pair[0]] = pair[1]
@@ -483,11 +479,6 @@ def initCommon(args):
 	setNameList(args['nameList'])
 	# 正则
 	setRegDic(args['regDic'])
-	# 分割符
-	if var.contentSeprate and var.contentSeprate.startswith(b'('):
-		var.addSeprate = False
-	else:
-		var.addSeprate = True
 	# 截断
 	if args['cutoff']:
 		var.cutoff = True
@@ -497,13 +488,14 @@ def initCommon(args):
 	return 0
 
 #args = [workpath, engineName, outputFormat, nameList]
-def mainExtract(args, parseImp):
+def mainExtract(args, parseImp, initDone=None):
 	if len(args) < 4:
 		print("main_extract参数错误", args)
 		return
 	showMessage("开始处理...")
 	path = args['workpath']
 	if initCommon(args) != 0: return
+	if initDone: initDone()
 	#print(path)
 	var.partMode = 0
 	var.outputDir = 'ctrl'
