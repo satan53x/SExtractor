@@ -21,6 +21,7 @@ def searchLine(var):
 		searchData = var.lineData[var.searchStart:var.searchEnd]
 	else:
 		searchData = var.lineData
+	ctrls = []
 	for regItem in var.regList:
 		regType = regItem[1]
 		value = regItem[0]
@@ -63,7 +64,9 @@ def searchLine(var):
 					if var.dealOnce(value[0], var.listIndex):
 						var.listIndex += 1
 						var.listCtrl.append(value[1])
+						ctrls.append(value[1])
 				break #已匹配则停止
+	return ctrls
 
 def GetRegList(items, OldEncodeName):
 	lst = []

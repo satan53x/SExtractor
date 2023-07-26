@@ -26,7 +26,7 @@ def write():
 		filepath = os.path.join(var.workpath, 'new', var.filename+var.Postfix)
 		#print(filepath)
 		fileNew = open(filepath, 'w', encoding=var.EncodeRead)
-		json.dump(var.content, fileNew, ensure_ascii=False, indent=2)
+		json.dump(var.content, fileNew, ensure_ascii=False, indent=2, separators=(',',':'))
 		fileNew.close()
 		#print('导出:', filename+Postfix)
 		var.outputCount += 1

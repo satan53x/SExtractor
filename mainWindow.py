@@ -43,7 +43,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			self.engineConfig.beginGroup(group)
 			if group.startswith('Engine_'):
 				value = group[len("Engine_"):]
-				if self.engineConfig.value('regDic'):
+				if self.engineConfig.value('regDic') == 1:
 					self.engineNameBox.insertItem(0, value)
 				else:
 					self.engineNameBox.addItem(value)
@@ -127,10 +127,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.nameListEdit.setText(self.nameListConfig)
 		#特殊处理正则
 		if self.engineConfig.value('regDic'):
-			self.regNameTab.setEnabled(True)
 			self.sampleLabel.setText('正则匹配规则（可在此编辑）')
-			self.extraFuncTabs.setCurrentIndex(1)
-			self.selectReg(self.regNameBox.currentIndex())
+			if self.engineConfig.value('regDic') == 1:
+				self.regNameTab.setEnabled(True)
+				self.extraFuncTabs.setCurrentIndex(1)
+				self.selectReg(self.regNameBox.currentIndex())
 		else:
 			self.regNameTab.setEnabled(False)
 			self.sampleLabel.setText('引擎脚本示例')
