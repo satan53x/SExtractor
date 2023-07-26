@@ -7,8 +7,8 @@
 
 ## 支持的引擎：
 同引擎不同游戏的格式也可能不同，请参看程序内示例使用。
-* TXT纯文本 (正则匹配)
-* BIN二进制文本 (正则匹配)
+* TXT纯文本 (正则匹配。默认utf-8)
+* BIN二进制文本 (正则匹配。默认读shift-jis写GBK)
 * JSON文本 (正则匹配，只搜索value。按行读取，不要压缩Json)
 * AST
 * Artemis
@@ -16,16 +16,18 @@
 * Krkr
 * MED (DxLib)
 * SiglusEngine
+* RPG MV
 
 #### 配置
 * reg.ini中可自定义匹配规则, 当前预设:
  1. Krkr
  2. SFA(AOS)
- 3. Yuris_txt
- 4. 替换符号
- 5. JSON_Key
- 6. 猜测名字
- 7. 导出所有(用于格式转换)
+ 3. WillPlus(AdvHD)
+ 4. Yuris_txt
+ 5. 替换符号
+ 6. JSON_Key
+ 7. 猜测名字
+ 8. 导出所有(用于格式转换)
 
 ## 支持的导出格式：
 * json字典 { 文本 : "" }
