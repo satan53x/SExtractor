@@ -19,6 +19,7 @@ def parseImp(content, listCtrl, dealOnce):
 	regDic = GetG('Var').regDic
 	var.regList = GetRegList(regDic.items(), OldEncodeName)
 	for contentIndex in range(len(content)):
+		if contentIndex < GetG('Var').startline: continue 
 		lineData = content[contentIndex]
 		# 每行
 		#print('>>> Line ' + str(contentIndex), ': ', lineData)

@@ -90,7 +90,7 @@ def parseImp(content, listCtrl, dealOnce):
 	var.nameList = GetG('Var').nameList
 	var.regList = GetRegList(regDic.items(), None)
 	for contentIndex in range(len(content)):
-		#if contentIndex < 1: continue 
+		if contentIndex < GetG('Var').startline: continue 
 		lineData = content[contentIndex][:-1] #不检查末尾换行
 		# 每行
 		#print('>>> Line ' + str(contentIndex), ': ', lineData)

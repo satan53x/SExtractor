@@ -24,6 +24,7 @@ class ExtractVar():
 	nameList = []
 	regDic = {}
 	cutoff = {}
+	startline = 0 #起始行数
 	#
 	parseImp = None
 	replaceOnceImp = None
@@ -389,6 +390,7 @@ def chooseEngine(args):
 	engineName = args['engineName']
 	var.inputCount = 0
 	var.outputCount = 0
+	var.startline = 0
 	settings = QSettings('src/engine.ini', QSettings.IniFormat)
 	strEngine = 'Engine_' + engineName
 	settings.beginGroup(strEngine)
@@ -442,6 +444,9 @@ def setRegDic(str):
 		# 控制
 		if pair[0] == 'seprate':
 			var.contentSeprate = pair[1]
+			continue
+		elif pair[0] == 'startline':
+			var.startline = int(pair[1])
 			continue
 		# 规则
 		var.regDic[pair[0]] = pair[1]
