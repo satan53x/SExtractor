@@ -61,6 +61,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setSpacing(5)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.engineNameBox = QtWidgets.QComboBox(self.widget_2)
+        self.engineNameBox.setMaxVisibleItems(16)
         self.engineNameBox.setObjectName("engineNameBox")
         self.horizontalLayout_2.addWidget(self.engineNameBox)
         self.outputFileBox = QtWidgets.QComboBox(self.widget_2)
@@ -119,6 +120,7 @@ class Ui_MainWindow(object):
         font.setBold(False)
         font.setWeight(50)
         self.regNameBox.setFont(font)
+        self.regNameBox.setMaxVisibleItems(16)
         self.regNameBox.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToContentsOnFirstShow)
         self.regNameBox.setObjectName("regNameBox")
         self.verticalLayout_5.addWidget(self.regNameBox)
@@ -272,7 +274,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
-        self.extraFuncTabs.setCurrentIndex(0)
+        self.extraFuncTabs.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

@@ -135,7 +135,11 @@
             <number>3</number>
            </property>
            <item>
-            <widget class="QComboBox" name="engineNameBox"/>
+            <widget class="QComboBox" name="engineNameBox">
+             <property name="maxVisibleItems">
+              <number>16</number>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QComboBox" name="outputFileBox"/>
@@ -200,7 +204,7 @@
            </size>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="nameListTab">
            <property name="enabled">
@@ -245,6 +249,9 @@
                 <weight>50</weight>
                 <bold>false</bold>
                </font>
+              </property>
+              <property name="maxVisibleItems">
+               <number>16</number>
               </property>
               <property name="sizeAdjustPolicy">
                <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
