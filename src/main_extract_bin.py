@@ -62,7 +62,8 @@ def parse():
 			#os.remove(filepath)
 
 def initDone():
-	var.contentSeprate = var.contentSeprate.encode('ascii')
+	s = bytes(var.contentSeprate, 'utf-8').decode('unicode_escape')
+	var.contentSeprate = s.encode('ascii')
 	if var.contentSeprate.startswith(b'('):
 		var.addSeprate = False
 	else:
