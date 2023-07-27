@@ -86,7 +86,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.engineNameBox.setCurrentIndex(self.engineCode)
 		# 截断
 		checked = initValue(self.mainConfig, 'cutoff', False) != 'false'
-		self.cutOffCheck.setChecked(checked)
+		self.cutoffCheck.setChecked(checked)
+		checked = initValue(self.mainConfig, 'cutoffCopy', False) != 'false'
+		self.cutoffCopyCheck.setChecked(checked)
 
 	#初始化
 	def afterShow(self):
@@ -172,7 +174,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		regDic = None
 		if self.engineConfig.value(group + '/regDic'):
 			regDic = self.sampleBrowser.toPlainText()
-		cutoff = self.cutOffCheck.isChecked()
+		cutoff = self.cutoffCheck.isChecked()
+		cutoffCopy = self.cutoffCopyCheck.isChecked()
 		outputFormatExtra = self.outputFileExtraBox.currentIndex() - 1
 		args = {
 			'file':fileType,
@@ -183,6 +186,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'nameList':nameList,
 			'regDic':regDic,
 			'cutoff':cutoff,
+			'cutoffCopy':cutoffCopy,
 			'outputFormatExtra':outputFormatExtra
 		}
 		var.window = self
@@ -210,6 +214,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			self.mainConfig.remove(group+'_nameList')
 		self.mainConfig.setValue('regIndex', self.regIndex)
 		self.mainConfig.setValue('cutoff', args['cutoff'])
+		self.mainConfig.setValue('cutoffCopy', args['cutoffCopy'])
 
 	def extractFileThread(self):
 		self.thread = extractThread()

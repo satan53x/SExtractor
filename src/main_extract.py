@@ -23,7 +23,8 @@ class ExtractVar():
 	contentSeprate = b'\x0D\x0A'
 	nameList = []
 	regDic = {}
-	cutoff = {}
+	cutoff = False
+	cutoffCopy = False
 	startline = 0 #起始行数
 	indent = 2 #缩进
 	extractName = '^.'
@@ -495,6 +496,10 @@ def initCommon(args):
 		var.cutoff = True
 	else:
 		var.cutoff = False
+	if args['cutoffCopy']:
+		var.cutoffCopy = True
+	else:
+		var.cutoffCopy = False
 	readCutoffDic()
 	return 0
 

@@ -31,7 +31,10 @@ def generateBytes(text, lenOrig, NewEncodeName):
     if count < 0:
         dic = GetG('Var').cutoffDic
         if text not in dic:
-            dic[text] = ['', lenOrig]
+            if GetG('Var').cutoffCopy:
+                 dic[text] = [text, lenOrig]
+            else:
+                dic[text] = ['', lenOrig]
         elif dic[text][0] != '':
             #从cutoff字典读取
             transData = dic[text][0].encode(NewEncodeName)
