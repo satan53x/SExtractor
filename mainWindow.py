@@ -146,6 +146,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.regIndex = index
 		#print('selectReg', self.regIndex)
 		regName = self.regNameBox.currentText()
+		if re.match(r'_*Custom', regName):
+			#优先读取自定义规则
+			textAll = self.mainConfig.value('reg' + regName)
+			if textAll:
+				self.sampleBrowser.setText(textAll)
+				return
 		self.regConfig.beginGroup(regName)
 		textPart0 = ''
 		textPart1 = ''
@@ -215,6 +221,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mainConfig.setValue('regIndex', self.regIndex)
 		self.mainConfig.setValue('cutoff', args['cutoff'])
 		self.mainConfig.setValue('cutoffCopy', args['cutoffCopy'])
+		regName = self.regNameBox.currentText()
+		if re.match(r'_*Custom', regName):
+			#保存自定义规则
+			textAll = self.sampleBrowser.toPlainText()
+			if not re.match(r'sample', textAll):
+				self.mainConfig.setValue('reg' + regName, textAll)
 
 	def extractFileThread(self):
 		self.thread = extractThread()
