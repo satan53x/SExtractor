@@ -20,7 +20,7 @@ class IOConfig():
 class ExtractVar():
 	Postfix = '.txt'
 	EncodeRead = 'utf-8'
-	contentSeprate = b'\x0D\x0A'
+	contentSeprate = None
 	nameList = []
 	regDic = {}
 	cutoff = False
@@ -450,7 +450,7 @@ def setRegDic(str):
 		pair = line.split('=', 1)
 		# 控制
 		if pair[0] == 'seprate':
-			var.contentSeprate = pair[1]
+			var.contentSeprate = pair[1].encode('ascii').decode('unicode_escape')
 			continue
 		elif pair[0] == 'startline':
 			var.startline = int(pair[1])

@@ -6,7 +6,7 @@ from extract_TXT import searchLine, ParseVar, GetRegList
 OldEncodeName = 'cp932'
 NewEncodeName = 'gbk'
 
-# ---------------- Engine: EAGLS -------------------
+# ---------------- Engine: WillPlus -------------------
 def parseImp(content, listCtrl, dealOnce):
 	var = ParseVar()
 	var.listIndex = 0
@@ -75,9 +75,6 @@ def parseImp(content, listCtrl, dealOnce):
 		else:
 			print('Error textType')
 		textType = -1
-		
-
-
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
