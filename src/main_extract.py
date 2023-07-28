@@ -139,7 +139,6 @@ def readFormatTxt(boolSplit):
 		fileAllTrans = open(filepath, 'r', encoding='utf-8')
 		allTrans = fileAllTrans.readlines()
 		print('读入Txt:', len(allTrans), var.curIO.inputFileName)
-		var.isInput = True
 		#原文
 		filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 		fileAllOrig = open(filepath, 'r', encoding='utf-8')
@@ -147,6 +146,8 @@ def readFormatTxt(boolSplit):
 		print('读入Txt:', len(allOrig), var.curIO.ouputFileName)
 		if len(allTrans) != len(allOrig):
 			print('\033[31m导入与导出文件行数不一致\033[0m', var.curIO.inputFileName)
+			return
+		var.isInput = True
 		#合并 
 		for i in range(len(allOrig)):
 			orig = re.sub(r'\n$', '', allOrig[i])
@@ -181,7 +182,6 @@ def readFormatItemList():
 		fileAllTrans = open(filepath, 'r', encoding='utf-8')
 		allTrans = json.load(fileAllTrans)
 		print('读入Json:', len(allTrans), var.curIO.inputFileName)
-		var.isInput = True
 		#原文
 		filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 		fileAllOrig = open(filepath, 'r', encoding='utf-8')
@@ -189,6 +189,8 @@ def readFormatItemList():
 		print('读入Json:', len(allOrig), var.curIO.ouputFileName)
 		if len(allTrans) != len(allOrig):
 			print('\033[31m导入与导出文件行数不一致\033[0m', var.curIO.inputFileName)
+			return
+		var.isInput = True
 		#合并
 		for i in range(len(allOrig)):
 			itemOrig = allOrig[i]
@@ -209,7 +211,6 @@ def readFormatList():
 		fileAllTrans = open(filepath, 'r', encoding='utf-8')
 		allTrans = json.load(fileAllTrans)
 		print('读入Json:', len(allTrans), var.curIO.inputFileName)
-		var.isInput = True
 		#原文
 		filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 		fileAllOrig = open(filepath, 'r', encoding='utf-8')
@@ -217,6 +218,8 @@ def readFormatList():
 		print('读入Json:', len(allOrig), var.curIO.ouputFileName)
 		if len(allTrans) != len(allOrig):
 			print('\033[31m导入与导出文件行数不一致\033[0m', var.curIO.inputFileName)
+			return
+		var.isInput = True
 		#合并
 		for i in range(len(allOrig)):
 			orig = allOrig[i]

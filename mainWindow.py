@@ -92,7 +92,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 	#初始化
 	def afterShow(self):
-		pass
+		#修正打印颜色
+		from colorama import init
+		init(autoreset=True)
+	
 	#---------------------------------------------------------------
 	#选择主文件夹
 	def chooseMainDir(self):
