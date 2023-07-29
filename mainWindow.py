@@ -31,6 +31,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 	def beforeShow(self):
 		self.mainConfig = QSettings('config.ini', QSettings.IniFormat)
 		self.mainConfig.setIniCodec('utf-8')
+		windowSize = initValue(self.mainConfig, 'windowSize', None)
+		if windowSize: self.resize(windowSize)
 		# 主目录
 		self.mainDirPath = initValue(self.mainConfig, 'mainDirPath', '.')
 		self.mainDirEdit.setText(self.mainDirPath)
@@ -230,6 +232,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			textAll = self.sampleBrowser.toPlainText()
 			if not re.match(r'sample', textAll):
 				self.mainConfig.setValue('reg' + regName, textAll)
+		#窗口大小
+		self.mainConfig.setValue('windowSize', self.size())
 
 	def extractFileThread(self):
 		self.thread = extractThread()
@@ -291,8 +295,9 @@ class extractThread(QThread):
 #设置初始值
 def initValue(setting, name, v):
 	if setting.value(name) == None:
-		setting.setValue(name, v)
-		print('New Config', name, v)
+		if v != None:
+			setting.setValue(name, v)
+			print('New Config', name, v)
 	else:
 		v = setting.value(name)
 		#print('Load Config', name, v)

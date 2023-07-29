@@ -9,7 +9,7 @@ NewEncodeName = 'gbk'
 # ---------------- Engine: NekoSDK -------------------
 def parseImp(content, listCtrl, dealOnce):
 	if not content[0][0:18] == b'NEKOSDK_ADVSCRIPT2':
-		print('文本头不是NEKOSDK_ADVSCRIPT2')
+		print('\033[33m文本头部不是NEKOSDK_ADVSCRIPT2\033[0m', GetG('Var').filename)
 		return
 	var = ParseVar()
 	var.listIndex = 0
