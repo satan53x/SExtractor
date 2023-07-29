@@ -47,7 +47,10 @@ def parse():
 		var.content, var.insertContent = var.readFileDataImp(fileOld, var.contentSeprate)
 	else:
 		data = fileOld.read()
-		var.content = re.split(var.contentSeprate, data)
+		if var.contentSeprate == b'':
+			var.content = [data]
+		else:
+			var.content = re.split(var.contentSeprate, data)
 		var.insertContent.clear()
 	fileOld.close()
 	#print(var.content)

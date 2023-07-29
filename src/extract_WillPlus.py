@@ -1,6 +1,6 @@
 import re
 from common import *
-import extract_BIN
+from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_TXT import searchLine, ParseVar, GetRegList
 
 OldEncodeName = 'cp932'
@@ -78,4 +78,4 @@ def parseImp(content, listCtrl, dealOnce):
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
-	extract_BIN.replaceOnceImp(content, lCtrl, lTrans)
+	return replaceOnceImpBIN(content, lCtrl, lTrans)

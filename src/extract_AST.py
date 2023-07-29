@@ -3,6 +3,7 @@ import sys
 import os
 import struct
 from common import *
+from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 
 OldEncodeName = 'cp932'
 NewEncodeName = 'gbk'
@@ -60,23 +61,4 @@ def parseImp(content, listCtrl, dealOnce):
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
-	#print(lCtrl)
-	#print(lTrans)
-	num = len(lCtrl)
-	for i in range(num):
-		# 位置
-		ctrl = lCtrl[i]
-		posData = ctrl['pos']
-		contentIndex = posData[0]
-		start = posData[1]
-		end = posData[2]
-		transData = None
-		try:
-			transData = lTrans[i].encode(NewEncodeName)
-		except Exception as ex:
-			print(ex)
-			return False
-		#写入new
-		strNew = content[contentIndex][:start] + transData + content[contentIndex][end:]
-		content[contentIndex] = strNew
-		return True
+	return replaceOnceImpBIN(content, lCtrl, lTrans)

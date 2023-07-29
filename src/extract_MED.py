@@ -1,5 +1,6 @@
 import re
 from common import *
+from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 
 OldEncodeName = 'cp932'
 NewEncodeName = 'gbk'
@@ -22,12 +23,12 @@ def parseImp(content, listCtrl, dealOnce):
 		if re.search(rb'\\N', lineData): #本行结束
 			#print('start')
 			pass
-		elif re.match(r'【.*】'.encode('cp932'), lineData): #名字
+		elif re.match(r'【.*】'.encode(OldEncodeName), lineData): #名字
 			start += 2
 			end -= 2
 			ctrl['isName'] = True #名字标记
 		else: #对话
-			if re.search(r'[^。）』】？」！]$', lineData.decode('cp932')):
+			if re.search(r'[^。）』】？」！]$', lineData.decode(OldEncodeName)):
 				ctrl['unfinish'] = True
 		text = lineData[start:end].decode(OldEncodeName)
 		ctrl['pos'] = [contentIndex, start, end]
@@ -47,23 +48,7 @@ def parseImp(content, listCtrl, dealOnce):
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
-	#print(lCtrl)
-	#print(lTrans)
-	num = len(lCtrl)
-	for i in range(num):
-		# 位置
-		ctrl = lCtrl[i]
-		posData = ctrl['pos']
-		contentIndex = posData[0]
-		start = posData[1]
-		end = posData[2]
-		transData = generateBytes(lTrans[i], end - start, NewEncodeName)
-		if transData == None:
-			return False
-		#写入new
-		strNew = content[contentIndex][:start] + transData + content[contentIndex][end:]
-		content[contentIndex] = strNew
-		return True
+	return replaceOnceImpBIN(content, lCtrl, lTrans)
 	
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeprate):

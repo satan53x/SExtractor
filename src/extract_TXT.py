@@ -16,7 +16,7 @@ class ParseVar():
 	nameList = []
 	OldEncodeName = None
 
-def searchLine(var):
+def searchLine(var:ParseVar):
 	if var.searchStart > 0:
 		searchData = var.lineData[var.searchStart:var.searchEnd]
 	else:
