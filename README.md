@@ -15,19 +15,24 @@
 * EAGLS
 * Krkr
 * MED (DxLib)
-* SiglusEngine
+* NekoSDK
 * RPG MV
+* RenPy
+* SiglusEngine
+* WillPlus
 
 #### 配置
 * reg.ini中可自定义匹配规则, 当前预设:
  1. Krkr
  2. SFA(AOS)
- 3. WillPlus(AdvHD)
+ 3. SystemC
  4. Yuris_txt
  5. 替换符号
- 6. JSON_Key
+ 6. JSON_Key(TXT转JSON)
  7. 猜测名字
- 8. 导出所有(用于格式转换)
+ 8. 两行TXT
+ 9. 导出所有(多用于格式转换)
+ 10. 自定义规则(自动保存)
 
 ## 支持的导出格式：
 * json字典 { 文本 : "" }
