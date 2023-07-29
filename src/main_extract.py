@@ -450,7 +450,7 @@ def setRegDic(str):
 		pair = line.split('=', 1)
 		# 控制
 		if pair[0] == 'seprate':
-			var.contentSeprate = pair[1].encode('ascii').decode('unicode_escape')
+			var.contentSeprate = pair[1]
 			continue
 		elif pair[0] == 'startline':
 			var.startline = int(pair[1])

@@ -23,6 +23,8 @@ def write():
 	if var.isInput == True:
 		#写入译文
 		replace()
+		#反转义
+		seprate = var.contentSeprate.decode('unicode_escape').encode('ascii')
 		#新文件
 		#print(len(var.content))
 		filepath = os.path.join(var.workpath, 'new', var.filename+var.Postfix)
@@ -35,7 +37,7 @@ def write():
 			fileNew.write(var.content[i])
 			if i < length-1:
 				if var.addSeprate:
-					fileNew.write(var.contentSeprate)
+					fileNew.write(seprate)
 		fileNew.close()
 		#print('导出:', var.filename+var.Postfix)
 		var.outputCount += 1
