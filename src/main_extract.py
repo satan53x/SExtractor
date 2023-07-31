@@ -343,7 +343,7 @@ def keepAllOrig():
 				var.transDicIO[item['message']] = ''
 			break
 
-def dealOnce(text, listIndex):
+def dealOnce(text, listIndex=0):
 	#print(orig)
 	orig = text
 	#if orig.isspace() == False:

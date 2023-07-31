@@ -31,6 +31,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 	def beforeShow(self):
 		self.mainConfig = QSettings('config.ini', QSettings.IniFormat)
 		self.mainConfig.setIniCodec('utf-8')
+		# 窗口大小
 		windowSize = initValue(self.mainConfig, 'windowSize', None)
 		if windowSize: self.resize(windowSize)
 		# 主目录
