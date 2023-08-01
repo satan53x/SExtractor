@@ -59,6 +59,7 @@ def parseImp(content, listCtrl, dealOnce):
 	GetG('Var').indent = 0
 	regDic = GetG('Var').regDic
 	var.regList = GetRegList(regDic.items(), None)
+	var.nameList = GetG('Var').nameList
 	extractName = GetG('Var').extractName
 	global extractItemName
 	if re.search(extractName, GetG('Var').filename):

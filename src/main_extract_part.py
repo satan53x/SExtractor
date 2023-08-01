@@ -13,6 +13,7 @@ def mainExtractPart(args, parseImp, initDone=None):
 		return
 	showMessage("开始处理...")
 	path = args['workpath']
+	var.workpath = path
 	if initCommon(args) != 0: return
 	if initDone: initDone()
 	#print(path)
@@ -21,7 +22,6 @@ def mainExtractPart(args, parseImp, initDone=None):
 	var.inputDir = 'trans'
 	#print('---------------------------------')
 	if os.path.isdir(path):
-		var.workpath = path
 		#print(var.workpath)
 		createFolder()
 		for name in os.listdir(var.workpath):

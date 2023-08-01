@@ -513,6 +513,7 @@ def mainExtract(args, parseImp, initDone=None):
 		return
 	showMessage("开始处理...")
 	path = args['workpath']
+	var.workpath = path
 	if initCommon(args) != 0: return
 	if initDone: initDone()
 	#print(path)
@@ -521,7 +522,6 @@ def mainExtract(args, parseImp, initDone=None):
 	var.inputDir = 'ctrl'
 	#print('---------------------------------')
 	if os.path.isdir(path):
-		var.workpath = path
 		#print(var.workpath)
 		createFolder()
 		var.curIO = var.io
