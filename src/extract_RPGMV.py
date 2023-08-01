@@ -2,6 +2,7 @@ import re
 import sys
 import os
 import struct
+import traceback
 from common import *
 from extract_TXT import ParseVar, GetRegList, searchLine
 
@@ -28,7 +29,9 @@ def dealList(var, pages, i):
 				var.lineData = item['parameters'][0]
 				var.contentIndex = [i, j, k, -1]
 				ctrls = searchLine(var)
-				if 'isName' not in ctrls[0]:
+				if len(ctrls) == 0: #未捕捉到，一般为空字符串
+					continue 
+				elif 'isName' not in ctrls[0]:
 					#对话
 					for ctrl in ctrls:
 						ctrl['unfinish'] = True
@@ -89,7 +92,8 @@ def parseImp(content, listCtrl, dealOnce):
 				dealList(var, pages, i)
 	except Exception as ex:
 		print('\033[33m值查找失败, 请检查Json格式\033[0m', i)
-		print(ex)
+		#print(ex)
+		traceback.print_exc()
 		return 2
 
 # -----------------------------------
