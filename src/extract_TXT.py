@@ -112,46 +112,6 @@ def parseImp(content, listCtrl, dealOnce):
 			else:
 				lastCtrl = None
 
-# ---------------- Group: TXT -------------------
-#特殊格式，按skip划分段落
-def parseImpParagraph(content, listCtrl, dealOnce):
-	var = ParseVar(listCtrl, dealOnce)
-	var.nameList = GetG('Var').nameList
-	regList = GetRegList(GetG('Var').regDic.items(), None)
-	regSkip = []
-	regName = []
-	regMsg = []
-	for item in regList:
-		if item[1] == 'skip':
-			regSkip.append(item)
-		elif '?P<name' in item[0]:
-			regName.append(item)
-		else:
-			regMsg.append(item)
-	lastCtrl = None
-	for contentIndex in range(len(content)):
-		var.lineData = content[contentIndex][:-1] #不检查末尾换行
-		var.contentIndex = contentIndex
-		#检查skip
-		var.regList = regSkip
-		if searchLine(var) == None:
-			#skip匹配成功
-			if lastCtrl and 'unfinish' in lastCtrl: del lastCtrl['unfinish']
-			lastCtrl = None
-			continue
-		#检查名字
-		var.regList = regName
-		ctrls = searchLine(var)
-		if len(ctrls) > 0:
-			#名字匹配成功
-			if lastCtrl and 'unfinish' in lastCtrl: del lastCtrl['unfinish']
-			lastCtrl = None
-			continue
-		var.regList = regMsg
-		ctrls = searchLine(var)
-		if len(ctrls) > 0:
-			lastCtrl = ctrls[0]
-
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
 	#print(lCtrl)
