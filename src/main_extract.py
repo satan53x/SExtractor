@@ -28,6 +28,7 @@ class ExtractVar():
 	startline = 0 #起始行数
 	indent = 2 #缩进
 	extractName = '^.'
+	structure = ''
 	#
 	parseImp = None
 	replaceOnceImp = None
@@ -457,6 +458,9 @@ def setRegDic(str):
 			continue
 		elif pair[0] == 'extractName':
 			var.extractName = pair[1]
+			continue
+		elif pair[0] == 'structure':
+			var.structure = pair[1]
 			continue
 		# 规则
 		var.regDic[pair[0]] = pair[1]

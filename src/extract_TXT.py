@@ -32,7 +32,8 @@ def searchLine(var:ParseVar):
 		value = regItem[0]
 		if regType == 'skip':
 			# 跳过
-			if re.search(value, searchData): break #已匹配则停止
+			if re.search(value, searchData): #已匹配则停止
+				return None #skip则返回None
 		else:
 			# 搜索
 			tmpDic = {}
@@ -87,10 +88,9 @@ def GetRegList(items, OldEncodeName):
 
 # ---------------- Group: TXT -------------------
 def parseImp(content, listCtrl, dealOnce):
-	var = ParseVar()
-	var.listIndex = 0
-	var.listCtrl = listCtrl
-	var.dealOnce = dealOnce
+	if GetG('Var').structure.startswith('para'):
+		return parseImpParagraph(content, listCtrl, dealOnce)
+	var = ParseVar(listCtrl, dealOnce)
 	#print(len(content))
 	regDic = GetG('Var').regDic
 	var.nameList = GetG('Var').nameList
@@ -104,6 +104,42 @@ def parseImp(content, listCtrl, dealOnce):
 		var.contentIndex = contentIndex
 		var.lineData = lineData
 		searchLine(var)
+
+# ---------------- Group: TXT -------------------
+#特殊格式，按skip划分段落
+def parseImpParagraph(content, listCtrl, dealOnce):
+	var = ParseVar(listCtrl, dealOnce)
+	var.nameList = GetG('Var').nameList
+	regList = GetRegList(GetG('Var').regDic.items(), None)
+	regSkip = []
+	regName = []
+	regMsg = []
+	for item in regList:
+		if item[1] == 'skip':
+			regSkip.append(item[0])
+		elif '?P<name' in item[0]:
+			regName.append(item)
+		else:
+			regMsg.append(item)
+	lastCtrl = None
+	for contentIndex in range(len(content)):
+		var.lineData = content[contentIndex][:-1] #不检查末尾换行
+		if any(re.search(pattern, var.lineData) for pattern in regSkip):
+			if lastCtrl and 'unfinish' in lastCtrl:
+				del lastCtrl['unfinish']
+			lastCtrl = None
+			continue
+		var.contentIndex = contentIndex
+		ctrls = []
+		if lastCtrl == None:
+			#前一行不是message时才检查名字
+			var.regList = regName
+			ctrls = searchLine(var)
+		if len(ctrls) == 0:
+			var.regList = regMsg
+			ctrls = searchLine(var)
+		if len(ctrls) > 0:
+			lastCtrl = ctrls[0]
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):

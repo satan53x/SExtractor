@@ -30,7 +30,8 @@ def parseImp(content, listCtrl, dealOnce):
 		if len(ctrls) == 0:
 			var.regList = regMessage
 			ctrls = searchLine(var)
-		lastCtrl = ctrls[0]
+		if len(ctrls) > 0:
+			lastCtrl = ctrls[0]
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
