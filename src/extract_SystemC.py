@@ -7,16 +7,6 @@ OldEncodeName = 'cp932'
 NewEncodeName = 'gbk'
 
 # ---------------- Engine: SystemC -------------------
-def getName(lineData):
-    start = -1
-    end = -1
-    if (r'　（'.encode(OldEncodeName)) in lineData:
-        idx = lineData.index(r'　（'.encode(OldEncodeName))
-        start = 0
-        end = idx
-        
-    return start,end
-        
 def parseImp(content, listCtrl, dealOnce):
 	var = ParseVar(listCtrl, dealOnce)
 	var.OldEncodeName = OldEncodeName
