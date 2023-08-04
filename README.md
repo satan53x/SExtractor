@@ -19,20 +19,23 @@
 * RPG MV
 * RenPy
 * SiglusEngine
+* SystemC
 * WillPlus
 
 #### 配置
 * reg.ini中可自定义匹配规则, 当前预设:
- 1. Krkr
- 2. SFA(AOS)
- 3. SystemC
- 4. Yuris_txt
- 5. 替换符号
- 6. JSON_Key(TXT转JSON)
- 7. 猜测名字
- 8. 两行TXT
- 9. 导出所有(多用于格式转换)
- 10. 自定义规则(自动保存)
+ 1. Artemis
+ 2. EntisGLS
+ 3. Krkr
+ 4. SFA(AOS)
+ 5. SystemC
+ 6. Yuris_txt
+ 7. 替换符号
+ 8. JSON_Key(TXT转JSON)
+ 9. 猜测名字
+ 10. 两行TXT
+ 11. 导出所有(多用于格式转换)
+ 12. 自定义规则(自动保存)
 
 ## 支持的导出格式：
 * json字典 { 文本 : "" }
