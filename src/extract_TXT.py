@@ -116,7 +116,7 @@ def parseImpParagraph(content, listCtrl, dealOnce):
 	regMsg = []
 	for item in regList:
 		if item[1] == 'skip':
-			regSkip.append(item[0])
+			regSkip.append(item)
 		elif '?P<name' in item[0]:
 			regName.append(item)
 		else:
@@ -124,12 +124,15 @@ def parseImpParagraph(content, listCtrl, dealOnce):
 	lastCtrl = None
 	for contentIndex in range(len(content)):
 		var.lineData = content[contentIndex][:-1] #不检查末尾换行
-		if any(re.search(pattern, var.lineData) for pattern in regSkip):
+		var.contentIndex = contentIndex
+		#检查skip
+		var.regList = regSkip
+		if searchLine(var) == None:
+			#skip匹配成功
 			if lastCtrl and 'unfinish' in lastCtrl:
 				del lastCtrl['unfinish']
 			lastCtrl = None
 			continue
-		var.contentIndex = contentIndex
 		ctrls = []
 		if lastCtrl == None:
 			#前一行不是message时才检查名字
