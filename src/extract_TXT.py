@@ -9,13 +9,18 @@ class ParseVar():
 	lineData = None
 	searchStart = 0
 	searchEnd = -1
-	listIndex = 0
+	listIndex = 0 #准备弃用
 	listCtrl = None
 	dealOnce = None
 	regList = []
 	nameList = []
 	OldEncodeName = None
 
+	def __init__(self, listCtrl=None, dealOnce=None):
+		self.listCtrl = listCtrl
+		self.dealOnce = dealOnce
+
+# -----------------------------------
 def searchLine(var:ParseVar):
 	if var.searchStart > 0:
 		searchData = var.lineData[var.searchStart:var.searchEnd]
@@ -63,8 +68,7 @@ def searchLine(var:ParseVar):
 				#按文本中顺序处理
 				for key in sorted(tmpDic.keys()):
 					value = tmpDic[key]
-					if var.dealOnce(value[0], var.listIndex):
-						var.listIndex += 1
+					if var.dealOnce(value[0], var.contentIndex):
 						var.listCtrl.append(value[1])
 						ctrls.append(value[1])
 				break #已匹配则停止

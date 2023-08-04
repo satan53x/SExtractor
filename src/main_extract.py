@@ -343,20 +343,20 @@ def keepAllOrig():
 				var.transDicIO[item['message']] = ''
 			break
 
-def dealOnce(text, listIndex=0):
+def dealOnce(text, contentIndex=0):
 	#print(orig)
 	orig = text
 	#if orig.isspace() == False:
 		#orig = orig.strip()
 	if orig == '': 
-		print('>>>>>> Empty orig', listIndex, var.filename)
+		print('>>>>>> Empty orig', var.filename, str(contentIndex))
 		return False
 	#if orig.isspace(): return False
 	#输出原文
 	var.listOrig.append(orig)
 	#print(orig)
 	if orig not in var.transDic:
-		#print('Add to transDic', orig, listIndex, var.filename)
+		#print('Add to transDic', orig, var.filename, str(contentIndex))
 		var.transDic[orig] = ''
 	return True
 
