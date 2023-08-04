@@ -88,22 +88,29 @@ def GetRegList(items, OldEncodeName):
 
 # ---------------- Group: TXT -------------------
 def parseImp(content, listCtrl, dealOnce):
-	if GetG('Var').structure.startswith('para'):
-		return parseImpParagraph(content, listCtrl, dealOnce)
+	checkLast = GetG('Var').structure.startswith('para')
 	var = ParseVar(listCtrl, dealOnce)
 	#print(len(content))
 	regDic = GetG('Var').regDic
 	var.nameList = GetG('Var').nameList
 	var.regList = GetRegList(regDic.items(), None)
+	lastCtrl = None
 	for contentIndex in range(len(content)):
 		if contentIndex < GetG('Var').startline: continue 
 		lineData = content[contentIndex][:-1] #不检查末尾换行
-		# 每行
 		#print('>>> Line ' + str(contentIndex), ': ', lineData)
-		if lineData == '': continue #空白行
 		var.contentIndex = contentIndex
 		var.lineData = lineData
-		searchLine(var)
+		ctrls = searchLine(var)
+		if checkLast:
+			if ctrls == None or 'isName' in ctrls[0]: #skip匹配或name匹配
+				if lastCtrl and 'unfinish' in lastCtrl:
+					del lastCtrl['unfinish'] #段落结束
+				lastCtrl = None
+			elif 'unfinish' in ctrls[0]:
+				lastCtrl = ctrls[0]
+			else:
+				lastCtrl = None
 
 # ---------------- Group: TXT -------------------
 #特殊格式，按skip划分段落
