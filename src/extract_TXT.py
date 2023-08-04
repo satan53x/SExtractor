@@ -129,18 +129,19 @@ def parseImpParagraph(content, listCtrl, dealOnce):
 		var.regList = regSkip
 		if searchLine(var) == None:
 			#skip匹配成功
-			if lastCtrl and 'unfinish' in lastCtrl:
-				del lastCtrl['unfinish']
+			if lastCtrl and 'unfinish' in lastCtrl: del lastCtrl['unfinish']
 			lastCtrl = None
 			continue
-		ctrls = []
-		if lastCtrl == None:
-			#前一行不是message时才检查名字
-			var.regList = regName
-			ctrls = searchLine(var)
-		if len(ctrls) == 0:
-			var.regList = regMsg
-			ctrls = searchLine(var)
+		#检查名字
+		var.regList = regName
+		ctrls = searchLine(var)
+		if len(ctrls) > 0:
+			#名字匹配成功
+			if lastCtrl and 'unfinish' in lastCtrl: del lastCtrl['unfinish']
+			lastCtrl = None
+			continue
+		var.regList = regMsg
+		ctrls = searchLine(var)
 		if len(ctrls) > 0:
 			lastCtrl = ctrls[0]
 
