@@ -55,7 +55,10 @@ def parseImp(content, listCtrl, dealOnce):
 			#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 			ctrl = {'pos':[0, start, end]}
 			if end <= nameEnd: #名字
-				nameDic[pos] = text
+				if text.startswith('【'):
+					nameDic[pos] = text[1:-1] #名字去掉【】，仅辅助不会导入
+				else:
+					nameDic[pos] = text
 			elif start >= msgStart: #对话或旁白
 				var.searchStart = start - 2
 				name = searchName(var)
@@ -96,22 +99,16 @@ def searchName(var:ParseVar):
 			print('searchName', '未找到名字', var.searchStart)
 			return None
 		pos -= 2
-		name = getName(lst[i])
+		name = nameDic[lst[i]]
 		if var.lineData[pos] == 0x08:
 			if name.startswith('？') :
-				name = getName(lst[i+1])
+				name = nameDic[lst[i+1]]
 			return name
 		elif var.lineData[pos] == 0x19:
 			return name
 		else:
 			print('searchName', '未知指令', var.searchStart)
 			return None
-
-def getName(addr):
-	name = nameDic[addr]
-	if name.startswith('【'):
-		name = name[1:-2]
-	return name
 
 #检查msg是否是段落结束行
 def checkUnfinish(var:ParseVar):
