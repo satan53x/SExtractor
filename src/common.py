@@ -1,3 +1,4 @@
+import bisect
 
 globalDic = {}
 
@@ -55,3 +56,10 @@ def generateBytes(text, lenOrig, NewEncodeName):
             empty[i] = 0x20
         transData += empty
     return transData
+
+
+def findInsertIndex(sortedList, target):
+    position = bisect.bisect_left(sortedList, target)
+    return position
+
+

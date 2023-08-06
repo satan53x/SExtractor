@@ -50,7 +50,7 @@ def parse():
 	else:
 		data = fileOld.read()
 		if var.contentSeprate == b'':
-			var.content = [data]
+			var.content = [bytearray(data)]
 		else:
 			var.content = re.split(var.contentSeprate, data)
 		var.insertContent.clear()
@@ -68,7 +68,7 @@ def parse():
 
 def initDone():
 	var.contentSeprate = var.contentSeprate.encode('ascii')
-	if var.contentSeprate.startswith(b'('):
+	if var.contentSeprate.startswith(b'(') or var.contentSeprate == '':
 		var.addSeprate = False
 	else:
 		var.addSeprate = True

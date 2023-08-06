@@ -29,6 +29,7 @@ class ExtractVar():
 	indent = 2 #缩进
 	extractName = '^.'
 	structure = ''
+	extraData = '' #引擎自定义的数据
 	#
 	parseImp = None
 	replaceOnceImp = None
@@ -461,6 +462,9 @@ def setRegDic(str):
 			continue
 		elif pair[0] == 'structure':
 			var.structure = pair[1]
+			continue
+		elif pair[0] == 'extraData':
+			var.extraData = pair[1]
 			continue
 		# 规则
 		var.regDic[pair[0]] = pair[1]
