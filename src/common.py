@@ -62,4 +62,6 @@ def findInsertIndex(sortedList, target):
     position = bisect.bisect_left(sortedList, target)
     return position
 
+def readInt(data, pos, byteNum=4):
+    return int.from_bytes(data[pos:pos+byteNum], byteorder='little')
 

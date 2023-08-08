@@ -12,7 +12,6 @@ msgStart = 0
 unfinishBytes = 0
 
 def initExtra():
-	GetG('Var').startline = 1
 	global nameEnd
 	global msgStart
 	global unfinishBytes
