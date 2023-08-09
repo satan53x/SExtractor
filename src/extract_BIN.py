@@ -3,30 +3,28 @@ import sys
 import os
 import struct
 from common import *
-from extract_TXT import searchLine, ParseVar, GetRegList
+from extract_TXT import searchLine, ParseVar, GetRegList, dealLastCtrl
 
 OldEncodeName = 'cp932'
 NewEncodeName = 'gbk'
 
 # ---------------- Group: BIN -------------------
 def parseImp(content, listCtrl, dealOnce):
-	var = ParseVar()
-	var.listIndex = 0
-	var.listCtrl = listCtrl
-	var.dealOnce = dealOnce
+	checkLast = GetG('Var').structure.startswith('para')
+	var = ParseVar(listCtrl, dealOnce)
 	var.OldEncodeName = OldEncodeName
-	#print(len(content))
 	regDic = GetG('Var').regDic
 	var.regList = GetRegList(regDic.items(), OldEncodeName)
+	lastCtrl = None
 	for contentIndex in range(len(content)):
 		if contentIndex < GetG('Var').startline: continue 
-		lineData = content[contentIndex]
+		var.lineData = content[contentIndex]
 		# 每行
-		#print('>>> Line ' + str(contentIndex), ': ', lineData)
-		if lineData == b'': continue #空白行
+		#print('>>> Line ' + str(contentIndex), ': ', var.lineData)
 		var.contentIndex = contentIndex
-		var.lineData = lineData
-		searchLine(var)
+		ctrls = searchLine(var)
+		if checkLast:
+			lastCtrl = dealLastCtrl(lastCtrl, ctrls)
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
