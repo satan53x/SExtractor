@@ -15,6 +15,7 @@
 * EAGLS
 * Krkr
 * MED (DxLib)
+* MoonHir
 * NekoSDK
 * RPG MV
 * RenPy
