@@ -38,6 +38,8 @@ def write():
 			if i < length-1:
 				if var.addSeprate:
 					fileNew.write(seprate)
+		if length in var.insertContent:
+			fileNew.write(var.insertContent[length])
 		fileNew.close()
 		#print('导出:', var.filename+var.Postfix)
 		var.outputCount += 1

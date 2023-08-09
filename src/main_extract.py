@@ -25,11 +25,13 @@ class ExtractVar():
 	regDic = {}
 	cutoff = False
 	cutoffCopy = False
-	startline = 0 #起始行数
 	indent = 2 #缩进
+	#可选参数
+	startline = 0 #起始行数
 	extractName = '^.'
 	structure = ''
 	extraData = '' #引擎自定义的数据
+	guessUnfinish = None
 	#
 	parseImp = None
 	replaceOnceImp = None
@@ -64,6 +66,15 @@ class ExtractVar():
 	#-------------------
 	#窗口
 	window = None
+
+	def clear(self):
+		self.inputCount = 0
+		self.outputCount = 0
+		self.startline = 0
+		self.extractName = '^.'
+		self.structure = ''
+		self.extraData = ''
+		self.guessUnfinish = ''
 
 var = ExtractVar()
 
@@ -396,10 +407,8 @@ def createFolder():
 
 def chooseEngine(args):
 	engineName = args['engineName']
-	var.inputCount = 0
-	var.outputCount = 0
-	var.startline = 0
-	var.extractName = '^.'
+	var.clear()
+	#读取配置
 	settings = QSettings('src/engine.ini', QSettings.IniFormat)
 	strEngine = 'Engine_' + engineName
 	settings.beginGroup(strEngine)
@@ -457,15 +466,11 @@ def setRegDic(str):
 		elif pair[0] == 'startline':
 			var.startline = int(pair[1])
 			continue
-		elif pair[0] == 'extractName':
-			var.extractName = pair[1]
-			continue
-		elif pair[0] == 'structure':
-			var.structure = pair[1]
-			continue
-		elif pair[0] == 'extraData':
-			var.extraData = pair[1]
-			continue
+		elif ('skip' not in pair[0]) and ('search' not in pair[0]):
+			if hasattr(var, pair[0]):
+				setattr(var, pair[0], pair[1])
+			else:
+				print('没有找到预设的参数名:', pair[0])
 		# 规则
 		var.regDic[pair[0]] = pair[1]
 		print('正则规则:', pair[0], pair[1])

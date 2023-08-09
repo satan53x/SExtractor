@@ -86,6 +86,17 @@ def GetRegList(items, OldEncodeName):
 			lst.append([value, 'search'])
 	return lst
 
+def dealLastCtrl(lastCtrl, ctrls):
+	if ctrls == None or 'isName' in ctrls[0]: #skip匹配或name匹配
+		if lastCtrl and 'unfinish' in lastCtrl:
+			del lastCtrl['unfinish'] #段落结束
+		lastCtrl = None
+	elif 'unfinish' in ctrls[0]:
+		lastCtrl = ctrls[0]
+	else:
+		lastCtrl = None
+	return lastCtrl
+
 # ---------------- Group: TXT -------------------
 def parseImp(content, listCtrl, dealOnce):
 	checkLast = GetG('Var').structure.startswith('para')
@@ -97,20 +108,12 @@ def parseImp(content, listCtrl, dealOnce):
 	lastCtrl = None
 	for contentIndex in range(len(content)):
 		if contentIndex < GetG('Var').startline: continue 
-		lineData = content[contentIndex][:-1] #不检查末尾换行
-		#print('>>> Line ' + str(contentIndex), ': ', lineData)
+		var.lineData = content[contentIndex][:-1] #不检查末尾换行
+		#print('>>> Line ' + str(contentIndex), ': ', var.lineData)
 		var.contentIndex = contentIndex
-		var.lineData = lineData
 		ctrls = searchLine(var)
 		if checkLast:
-			if ctrls == None or 'isName' in ctrls[0]: #skip匹配或name匹配
-				if lastCtrl and 'unfinish' in lastCtrl:
-					del lastCtrl['unfinish'] #段落结束
-				lastCtrl = None
-			elif 'unfinish' in ctrls[0]:
-				lastCtrl = ctrls[0]
-			else:
-				lastCtrl = None
+			lastCtrl = dealLastCtrl(lastCtrl, ctrls)
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
