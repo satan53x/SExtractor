@@ -6,6 +6,7 @@ from common import *
 from importlib import import_module
 from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QStatusBar
+import pandas
 
 class IOConfig():
 	#输入输出格式:
@@ -86,6 +87,9 @@ def setIOFileName(io):
 		elif io.outputFormat == 2 or io.outputFormat == 7:
 			io.ouputFileName = 'all.orig.json'
 			io.inputFileName = 'all.trans.json'
+		elif io.outputFormat == 8:
+			io.ouputFileName = 'transDic.output.xlsx'
+			io.inputFileName = 'transDic.xlsx'
 		else:
 			io.ouputFileName = 'transDic.output.json'
 			io.inputFileName = 'transDic.json'
@@ -93,6 +97,9 @@ def setIOFileName(io):
 		if io.outputFormat == 5 or io.outputFormat == 6:
 			io.ouputFileName = var.filename + '.txt'
 			io.inputFileName = var.filename + '.txt'
+		if io.outputFormat == 8:
+			io.ouputFileName = var.filename + '.xlsx'
+			io.inputFileName = var.filename + '.xlsx'
 		else:
 			io.ouputFileName = var.filename + '.json'
 			io.inputFileName = var.filename + '.json'
@@ -120,6 +127,8 @@ def readFormat():
 		readFormatTxt(True)
 	elif code == 7:
 		readFormatList()
+	elif code == 8:
+		readFormatXlsx()
 
 def readFormatDic():
 	#读入transDic字典
@@ -179,11 +188,12 @@ def splitToTransDic(orig, trans):
 	listMsgTrans = re.split('\r\n', trans)
 	for j in range(len(listMsgOrig)):
 		msgOrig = listMsgOrig[j]
-		msgTrans = ' '
+		msgTrans = '　'
 		if j<len(listMsgTrans) and listMsgTrans[j] != '':
 			msgTrans = listMsgTrans[j]
 		if  msgOrig not in var.transDic or \
 			var.transDic[msgOrig] == '' or \
+			var.transDic[msgOrig] == '　' or \
 			var.transDic[msgOrig] == ' ':
 			var.transDic[msgOrig] = msgTrans
 
@@ -241,6 +251,21 @@ def readFormatList():
 		fileAllOrig.close()
 		fileAllTrans.close()
 
+def readFormatXlsx():
+	#读入transDic字典的xlsx
+	filepath = os.path.join(var.workpath, var.inputDir, var.curIO.inputFileName)
+	if os.path.isfile(filepath):
+		df = pandas.read_excel(filepath)
+		for index, row in df.iterrows():
+			value = row['Value']
+			if pandas.notna(value):
+				var.transDic[row['Key']] = value
+			else:
+				var.transDic[row['Key']] = ''
+		print('读入Xlsx: ', len(var.transDic), var.curIO.inputFileName)
+		var.isInput = True
+		#print(list(var.transDic.values())[0])
+
 # --------------------------- 写 ---------------------------------
 def writeFormat():
 	code = var.curIO.outputFormat
@@ -260,6 +285,8 @@ def writeFormat():
 		writeFormatTxtByItem(var.allOrig)
 	elif code == 7:
 		writeFormatListByItem(var.allOrig)
+	elif code == 8:
+		writeFormatXlsx(var.transDic)
 
 def writeFormatDirect(targetJson):
 	#print(filepath)
@@ -322,6 +349,16 @@ def writeFormatListByItem(targetJson):
 			tmpList.append(item['message'])
 	json.dump(tmpList, fileOutput, ensure_ascii=False, indent=2)
 	fileOutput.close()
+
+def writeFormatXlsx(targetJson):
+	#print(filepath)
+	print('输出Xlsx:', len(targetJson), var.curIO.ouputFileName)
+	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
+	#fileOutput = open(filepath, 'w', encoding='utf-8')
+	#print(targetJson)
+	df = pandas.DataFrame(list(targetJson.items()), columns=['Key', 'Value'], dtype=str)
+	df.to_excel(filepath, index=False, engine='openpyxl')
+	#fileOutput.close()
 
 # ------------------------------------------------------------
 def keepAllOrig():
