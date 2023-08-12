@@ -4,6 +4,9 @@ import os
 import struct
 from common import *
 
+OldEncodeName = 'cp932'
+NewEncodeName = 'gbk'
+
 class ParseVar():
 	contentIndex = 0
 	lineData = None
@@ -117,8 +120,6 @@ def parseImp(content, listCtrl, dealOnce):
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
-	#print(lCtrl)
-	#print(lTrans)
 	num = len(lCtrl)
 	for i in range(num):
 		# 位置
@@ -128,6 +129,12 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		start = posData[1]
 		end = posData[2]
 		trans = lTrans[i]
+		if GetG('Var').cutoff:
+			origData = content[contentIndex][start:end].encode(OldEncodeName)
+			transData = generateBytes(trans, len(origData), NewEncodeName)
+			if transData == None:
+				return False
+			trans = transData.decode(NewEncodeName)
 		#写入new
 		strNew = content[contentIndex][:start] + trans + content[contentIndex][end:]
 		#print(strNew)

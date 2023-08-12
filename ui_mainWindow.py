@@ -144,7 +144,7 @@ class Ui_MainWindow(object):
         font.setBold(False)
         font.setWeight(50)
         self.cutoffCheck.setFont(font)
-        self.cutoffCheck.setChecked(True)
+        self.cutoffCheck.setChecked(False)
         self.cutoffCheck.setTristate(False)
         self.cutoffCheck.setObjectName("cutoffCheck")
         self.horizontalLayout_4.addWidget(self.cutoffCheck)
@@ -288,7 +288,7 @@ class Ui_MainWindow(object):
         self.sampleLabel.setText(_translate("MainWindow", "引擎脚本示例"))
         self.extraFuncTabs.setTabText(self.extraFuncTabs.indexOf(self.nameListTab), _translate("MainWindow", "强制设定名字"))
         self.extraFuncTabs.setTabText(self.extraFuncTabs.indexOf(self.regNameTab), _translate("MainWindow", "选择匹配规则"))
-        self.cutoffCheck.setText(_translate("MainWindow", "译文长度截断填充为原文长度(仅二进制模式下)"))
+        self.cutoffCheck.setText(_translate("MainWindow", "译文长度截断填充为原文长度(TXT模式下请看说明)"))
         self.cutoffCopyCheck.setText(_translate("MainWindow", "截断字典新增译文复制到修改字段"))
         self.label.setText(_translate("MainWindow", "额外导出"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "提取写入"))
@@ -321,7 +321,8 @@ class Ui_MainWindow(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#000000;\">匹配处理命名分组</span><span style=\" font-weight:600; color:#00aa00;\">(</span><span style=\" font-family:\'Consolas\',\'Courier New\',\'monospace\'; font-size:14px; font-weight:600; color:#00aa00;\">?P&lt;组名&gt;</span><span style=\" font-weight:600; color:#00aa00;\">)</span><span style=\" color:#000000;\">：</span><span style=\" font-weight:600; color:#00aa00;\">name</span><span style=\" color:#000000;\">人名，</span><span style=\" font-weight:600; color:#00aa00;\">msg</span><span style=\" color:#000000;\">对话，</span><span style=\" font-weight:600; color:#00aa00;\">unfinish</span><span style=\" color:#000000;\">未结束对话（导出时与下一行合并）</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#000000;\">未命名分组默认为</span><span style=\" font-weight:600; color:#00aa00;\">msg</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#ff0000;\">原文不要包含\\r\\n</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#000000;\">TXT默认读写utf-8；BIN默认读Jis写GBK；JSON模式只会操作value</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#000000;\">TXT默认读写utf-8；BIN默认读jis写GBK；JSON模式只会操作value</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#ff0000;\">TXT模式截断时会临时判定原文为jis译文为GBK，如无必要不要在TXT模式下打开截断。</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; color:#000000;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt; font-weight:600;\">&gt;合并分割：</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">合并时会缓存子文件信息，分割时<span style=\" font-weight:600; color:#00aa00;\">行数填0</span>则表示使用该缓存</p></body></html>"))
