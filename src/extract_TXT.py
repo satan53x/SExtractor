@@ -18,6 +18,9 @@ class ParseVar():
 	regList = []
 	nameList = []
 	OldEncodeName = None
+	ignoreDecodeError = False
+	postSkip = None
+	checkJIS = False
 
 	def __init__(self, listCtrl=None, dealOnce=None):
 		self.listCtrl = listCtrl
@@ -49,9 +52,24 @@ def searchLine(var:ParseVar):
 					start = r.start(i) + var.searchStart
 					end = r.end(i) + var.searchStart
 					if var.OldEncodeName: # bin
-						text = var.lineData[start:end].decode(var.OldEncodeName)
+						try:
+							if var.checkJIS:
+								ret = checkJIS(var.lineData[start:end], var.checkJIS)
+								if not ret:
+									continue
+							text = var.lineData[start:end].decode(var.OldEncodeName)
+						except Exception as ex:
+							if var.ignoreDecodeError:
+								continue
+							else:
+								raise
 					else: # txt
 						text = var.lineData[start:end]
+					#匹配后跳过
+					if var.postSkip:
+						if re.search(var.postSkip, text):
+							#print('postSkip', text)
+							continue
 					#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 					ctrl = {'pos':[var.contentIndex, start, end]}
 					tmpDic[start] = [text, ctrl]
@@ -100,14 +118,21 @@ def dealLastCtrl(lastCtrl, ctrls):
 		lastCtrl = None
 	return lastCtrl
 
+def initParseVar(var:ParseVar):
+	regDic = GetG('Var').regDic
+	var.nameList = GetG('Var').nameList
+	var.regList = GetRegList(regDic.items(), var.OldEncodeName)
+	var.ignoreDecodeError = GetG('Var').ignoreDecodeError
+	var.postSkip = GetG('Var').postSkip
+	var.checkJIS = GetG('Var').checkJIS
+	if var.checkJIS and var.OldEncodeName:
+		var.checkJIS = var.checkJIS.encode(var.OldEncodeName)
+
 # ---------------- Group: TXT -------------------
 def parseImp(content, listCtrl, dealOnce):
 	checkLast = GetG('Var').structure.startswith('para')
 	var = ParseVar(listCtrl, dealOnce)
-	#print(len(content))
-	regDic = GetG('Var').regDic
-	var.nameList = GetG('Var').nameList
-	var.regList = GetRegList(regDic.items(), None)
+	initParseVar(var)
 	lastCtrl = None
 	for contentIndex in range(len(content)):
 		if contentIndex < GetG('Var').startline: continue 

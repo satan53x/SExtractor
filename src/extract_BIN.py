@@ -3,7 +3,7 @@ import sys
 import os
 import struct
 from common import *
-from extract_TXT import searchLine, ParseVar, GetRegList, dealLastCtrl
+from extract_TXT import searchLine, ParseVar, GetRegList, dealLastCtrl, initParseVar
 
 OldEncodeName = 'cp932'
 NewEncodeName = 'gbk'
@@ -13,8 +13,7 @@ def parseImp(content, listCtrl, dealOnce):
 	checkLast = GetG('Var').structure.startswith('para')
 	var = ParseVar(listCtrl, dealOnce)
 	var.OldEncodeName = OldEncodeName
-	regDic = GetG('Var').regDic
-	var.regList = GetRegList(regDic.items(), OldEncodeName)
+	initParseVar(var)
 	lastCtrl = None
 	for contentIndex in range(len(content)):
 		if contentIndex < GetG('Var').startline: continue 

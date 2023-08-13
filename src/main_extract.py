@@ -33,6 +33,9 @@ class ExtractVar():
 	structure = ''
 	extraData = '' #引擎自定义的数据
 	guessUnfinish = None
+	ignoreDecodeError = False
+	postSkip = None
+	checkJIS = None
 	#
 	parseImp = None
 	replaceOnceImp = None
@@ -76,6 +79,9 @@ class ExtractVar():
 		self.structure = ''
 		self.extraData = ''
 		self.guessUnfinish = ''
+		self.ignoreDecodeError = False
+		self.postSkip = None
+		self.checkJIS = None
 
 var = ExtractVar()
 
@@ -502,6 +508,14 @@ def setRegDic(str):
 			continue
 		elif pair[0] == 'startline':
 			var.startline = int(pair[1])
+			continue
+		elif pair[0] == 'flag':
+			lst = pair[1].split(',')
+			for flag in lst:
+				if hasattr(var, flag):
+					setattr(var, flag, True)
+				else:
+					print('没有找到预设的参数名:', flag) 
 			continue
 		elif ('skip' not in pair[0]) and ('search' not in pair[0]):
 			if hasattr(var, pair[0]):

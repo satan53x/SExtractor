@@ -1,4 +1,5 @@
 import bisect
+import re
 
 globalDic = {}
 
@@ -13,8 +14,27 @@ def isShiftJis(byte1, byte2):
     # 检查字节范围
     if (byte1 >= 0x81 and byte1 <= 0x9F) or (byte1 >= 0xE0 and byte1 <= 0xEF):
         if (byte2 >= 0x40 and byte2 <= 0x7E) or (byte2 >= 0x80 and byte2 <= 0xFC):
-            return True
-    return False
+            return 2
+    return 0
+
+def checkJIS(bytes, reg):
+    pos = 0
+    end = len(bytes)
+    while pos < end:
+        #检查允许的单字节
+        if re.match(reg, bytes[pos:pos+1]):
+        #if chr(bytes[pos]) in '\r\n':
+            pos += 1
+            continue
+        #检查双字节
+        if end - pos < 2:
+            return False
+        offset = isShiftJis(bytes[pos], bytes[pos+1])
+        if offset <= 0: 
+            return False
+        else:
+            pos += offset
+    return True
 
 #编码生成目标长度的字节数组，会截断和填充字节
 def generateBytes(text, lenOrig, NewEncodeName):
