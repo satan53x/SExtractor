@@ -33,13 +33,14 @@ def generateBytes(text, lenOrig, NewEncodeName):
         dic = GetG('Var').cutoffDic
         if text not in dic:
             if GetG('Var').cutoffCopy:
-                 dic[text] = [text, lenOrig]
+                 dic[text] = [text, count]
             else:
-                dic[text] = ['', lenOrig]
+                dic[text] = ['', count]
         elif dic[text][0] != '':
             #从cutoff字典读取
             transData = dic[text][0].encode(NewEncodeName)
             count = lenOrig - len(transData)
+            dic[text][0] = count #刷新长度
         if count < 0:
             print('\033[33m译文长度超出原文，部分截断\033[0m', text)
             transData = transData[0:lenOrig]
