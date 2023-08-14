@@ -86,6 +86,9 @@ def findInsertIndex(sortedList, target):
 def readInt(data, pos, byteNum=4):
     return int.from_bytes(data[pos:pos+byteNum], byteorder='little')
 
+def int2bytes(i, l=4):
+    return int.to_bytes(i, byteorder='little', length=l)
+
 def xorBytes(input, xorTable):
     result = bytearray()
     xorLen = len(xorTable)

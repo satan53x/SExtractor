@@ -40,6 +40,7 @@ class ExtractVar():
 	parseImp = None
 	replaceOnceImp = None
 	readFileDataImp = None
+	replaceEndImp = None
 	workpath = ''
 	#导出配置
 	io = IOConfig()
@@ -431,6 +432,7 @@ def replace():
 			print('\033[31m替换错误，请检查文本\033[0m', var.filename, trans)
 			continue
 		#break #测试
+	var.replaceEndImp(var.content)
 
 # ------------------------------------------------------------
 def createFolder():
@@ -482,10 +484,14 @@ def chooseEngine(args):
 	module = import_module('extract_' + engineName)
 	var.parseImp = getattr(module, 'parseImp')
 	var.replaceOnceImp = getattr(module, 'replaceOnceImp')
-	if settings.value('readFileData'):
+	if hasattr(module, 'readFileDataImp'):
 		var.readFileDataImp = getattr(module, 'readFileDataImp')
 	else:
 		var.readFileDataImp = None
+	if hasattr(module, 'replaceEndImp'):
+		var.replaceEndImp = getattr(module, 'replaceEndImp')
+	else:
+		var.replaceEndImp = None
 	settings.endGroup()
 	return 0
 
@@ -499,7 +505,7 @@ def setRegDic(str):
 	list = re.split('\n', str)
 	for line in list:
 		# 结束
-		if line == '' or line.startswith('sample'): 
+		if line == '' or line.startswith('sample') or line.startswith('<'): 
 			break
 		pair = line.split('=', 1)
 		# 控制
