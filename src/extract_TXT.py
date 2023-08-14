@@ -118,8 +118,9 @@ def dealLastCtrl(lastCtrl, ctrls):
 		lastCtrl = None
 	return lastCtrl
 
-def initParseVar(var:ParseVar):
-	regDic = GetG('Var').regDic
+def initParseVar(var:ParseVar, regDic=None):
+	if regDic == None:
+		regDic = GetG('Var').regDic
 	var.nameList = GetG('Var').nameList
 	var.regList = GetRegList(regDic.items(), var.OldEncodeName)
 	var.ignoreDecodeError = GetG('Var').ignoreDecodeError
