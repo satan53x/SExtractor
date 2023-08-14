@@ -24,7 +24,7 @@ def write():
 		#写入译文
 		replace()
 		#反转义
-		seprate = var.contentSeprate.decode('unicode_escape').encode('ascii')
+		seprate = var.contentSeprate.decode('unicode_escape').encode('latin-1')
 		#新文件
 		#print(len(var.content))
 		filepath = os.path.join(var.workpath, 'new', var.filename+var.Postfix)
@@ -69,7 +69,7 @@ def parse():
 			#os.remove(filepath)
 
 def initDone():
-	var.contentSeprate = var.contentSeprate.encode('ascii')
+	var.contentSeprate = var.contentSeprate.encode('latin-1')
 	if var.contentSeprate.startswith(b'(') or var.contentSeprate == '':
 		var.addSeprate = False
 	else:
