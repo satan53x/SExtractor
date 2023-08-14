@@ -60,7 +60,7 @@ def generateBytes(text, lenOrig, NewEncodeName):
             #从cutoff字典读取
             transData = dic[text][0].encode(NewEncodeName)
             count = lenOrig - len(transData)
-            dic[text][0] = count #刷新长度
+            dic[text][1] = count #刷新长度
         if count < 0:
             print('\033[33m译文长度超出原文，部分截断\033[0m', text)
             transData = transData[0:lenOrig]
@@ -86,3 +86,10 @@ def findInsertIndex(sortedList, target):
 def readInt(data, pos, byteNum=4):
     return int.from_bytes(data[pos:pos+byteNum], byteorder='little')
 
+def xorBytes(input, xorTable):
+    result = bytearray()
+    xorLen = len(xorTable)
+    for i, b in enumerate(input):
+        xorByte = xorTable[i % xorLen]
+        result.append(b ^ xorByte)
+    return bytes(result)
