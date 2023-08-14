@@ -432,7 +432,8 @@ def replace():
 			print('\033[31m替换错误，请检查文本\033[0m', var.filename, trans)
 			continue
 		#break #测试
-	var.replaceEndImp(var.content)
+	if var.replaceEndImp:
+		var.replaceEndImp(var.content)
 
 # ------------------------------------------------------------
 def createFolder():
