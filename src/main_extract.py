@@ -26,6 +26,7 @@ class ExtractVar():
 	regDic = {}
 	cutoff = False
 	cutoffCopy = False
+	noInput = False
 	indent = 2 #缩进
 	#可选参数
 	startline = 0 #起始行数
@@ -122,6 +123,8 @@ def readFormat():
 	var.transDic.clear()
 	var.transDicIO.clear()
 	var.allOrig.clear()
+	if var.noInput: #不读取译文
+		return
 	if code == 0 or code == 1:
 		readFormatDic()
 	elif code == 2:
@@ -575,6 +578,11 @@ def initCommon(args):
 	else:
 		var.cutoffCopy = False
 	readCutoffDic()
+	# 是否不读取译文
+	if args['noInput']:
+		var.noInput = True
+	else:
+		var.noInput = False
 	return 0
 
 #args = [workpath, engineName, outputFormat, nameList]

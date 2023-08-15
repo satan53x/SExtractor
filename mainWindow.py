@@ -189,6 +189,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		cutoff = self.cutoffCheck.isChecked()
 		cutoffCopy = self.cutoffCopyCheck.isChecked()
 		outputFormatExtra = self.outputFileExtraBox.currentIndex() - 1
+		noInput = self.noInputCheck.isChecked()
 		args = {
 			'file':fileType,
 			'workpath':workpath,
@@ -199,7 +200,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'regDic':regDic,
 			'cutoff':cutoff,
 			'cutoffCopy':cutoffCopy,
-			'outputFormatExtra':outputFormatExtra
+			'outputFormatExtra':outputFormatExtra,
+			'noInput': noInput
 		}
 		var.window = self
 		#保存配置
