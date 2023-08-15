@@ -145,6 +145,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		else:
 			self.regNameTab.setEnabled(False)
 			self.sampleLabel.setText('引擎脚本示例')
+		#引擎类型
+		file = self.engineConfig.value('file')
+		self.statusBar.showMessage('读取文件方式：'+file)
 		self.engineConfig.endGroup()
 
 	#选择预设正则规则
