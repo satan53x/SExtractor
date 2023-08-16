@@ -83,7 +83,7 @@ def searchLine(var:ParseVar):
 						pass
 					elif key.startswith('name'):
 						ctrl['isName'] = True #名字标记
-					elif key.startswith('unfinish'):
+					elif key.startswith('unf'):
 						ctrl['unfinish'] = True
 					matched = True
 			if matched :
