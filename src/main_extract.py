@@ -3,6 +3,7 @@ import sys
 import json
 import re
 from common import *
+from helper_text import *
 from importlib import import_module
 from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QStatusBar
@@ -86,6 +87,8 @@ class ExtractVar():
 		self.checkJIS = None
 
 var = ExtractVar()
+SetG('Var', var)
+initTextVar(var)
 
 def setIOFileName(io):
 	if var.partMode == 0: #总共一个输出文档
@@ -193,19 +196,7 @@ def readFormatTxt(boolSplit):
 		fileAllOrig.close()
 		fileAllTrans.close()
 
-def splitToTransDic(orig, trans):
-	listMsgOrig = re.split('\r\n', orig)
-	listMsgTrans = re.split('\r\n', trans)
-	for j in range(len(listMsgOrig)):
-		msgOrig = listMsgOrig[j]
-		msgTrans = '　'
-		if j<len(listMsgTrans) and listMsgTrans[j] != '':
-			msgTrans = listMsgTrans[j]
-		if  msgOrig not in var.transDic or \
-			var.transDic[msgOrig] == '' or \
-			var.transDic[msgOrig] == '　' or \
-			var.transDic[msgOrig] == ' ':
-			var.transDic[msgOrig] = msgTrans
+
 
 def readFormatItemList():
 	#读入带换行文本item的all.orig列表和all.trans列表
@@ -560,7 +551,6 @@ def showMessage(msg):
 		var.window.statusBar.showMessage(msg)
 
 def initCommon(args):
-	SetG('Var', var)
 	ret = chooseEngine(args)
 	if ret != 0:
 		return ret
