@@ -9,41 +9,39 @@ from extract_TXT import replaceOnceImp as replaceOnceImpTXT
 
 # ---------------- Group: Krkr 1 -------------------
 def parseImp(content, listCtrl, dealOnce):
-	listR = GetG('Var').extraData.split(',')
-	if listR[0] == '':
-		listR[0] = 'r' #默认的[r]换行标志，表示段落未结束
+	endStr = GetG('Var').extraData or 'np'
 	var = ParseVar(listCtrl, dealOnce)
 	initParseVar(var)
+	lastCtrl = None
 	for contentIndex in range(len(content)):
 		if contentIndex < GetG('Var').startline: continue 
 		var.lineData = content[contentIndex][:-1] #忽略换行
 		# 每行
 		var.contentIndex = contentIndex
 		ctrls = searchLine(var)
-		if ctrls == None: continue #skip
-		if len(ctrls) > 0: continue #已匹配到
+		if ctrls == None or len(ctrls) > 0:
+			#要求段落结束后一定有skip
+			if lastCtrl and 'unfinish' in lastCtrl:
+				del lastCtrl['unfinish'] 
+			lastCtrl = None
+			continue
 		#print(var.lineData)
 		#搜索
-		ctrl = None
-		endWithR = False
 		iter = re.finditer(r'[^\[\]]+', var.lineData)
 		for r in iter:
-			endWithR = False
 			text = r.group()
 			if re.match(r'[A-Za-z]', text):
-				#控制段
-				if text in listR:
-					endWithR = True
+				if text == endStr:
+					if lastCtrl and 'unfinish' in lastCtrl:
+						del lastCtrl['unfinish'] 
+					lastCtrl = None
 				continue
 			start = r.start()
 			end = r.end()
-			ctrl = {'pos':[contentIndex, start, end]}
-			ctrl['unfinish'] = True
+			lastCtrl = {'pos':[contentIndex, start, end]}
+			lastCtrl['unfinish'] = True
 			if dealOnce(text, contentIndex):
-				listCtrl.append(ctrl)
-		if not endWithR:
-			if ctrl and 'unfinish' in ctrl:
-				del ctrl['unfinish'] #段落结束
+				listCtrl.append(lastCtrl)
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
