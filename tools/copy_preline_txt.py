@@ -6,7 +6,7 @@ import sys
 import os
 import json
 from tkinter import filedialog 
-DefaultPath = '.'
+DefaultPath = ''
 EncodeName = 'utf-8'
 Postfix = '.txt'
 SearchStr = r'^>'

@@ -1,6 +1,5 @@
 # ------------------------------------------------------------
-# 为galTransl的json限制每行最大字符数
-# 将删除原有换行符并添加新换行符
+# 为galTransl的json导出名字
 # ------------------------------------------------------------
 import sys
 import os
@@ -9,8 +8,6 @@ from tkinter import filedialog
 DefaultPath = ''
 EncodeName = 'utf-8'
 Postfix = '.json'
-MaxLen = 25
-Seprate = '\n'
 
 # ------------------------------------------------------------
 #var
@@ -21,35 +18,25 @@ allJson = {}
 listOrig = []
 listTrans = []
 # ------------------------------------------------------------
-def limitMaxLen(old:str, maxLen, sep):
-	text = old.replace(sep, '')
-	if text == '': return old
-	lst = [text[i:i+maxLen]+sep for i in range(0, len(text), maxLen)]
-	if lst[-1].endswith(sep):
-		lst[-1] = lst[-1][:-len(sep)]
-	text = ''.join(lst)
-	return text
-
-def replace():
+def findname():
 	global EncodeName
 	global allJson
 	#print(filename)
 	filepath = os.path.join(dirpath, filename+Postfix)
 	fileOld = open(filepath, 'r', encoding=EncodeName)
-	allJson = json.load(fileOld)
-	for item in allJson:
-		if 'message' not in item: continue
-		text = limitMaxLen(item['message'], MaxLen, Seprate)
-		item['message'] = text
-	write()
+	content = json.load(fileOld)
+	for item in content:
+		if 'name' not in item: continue
+		name = item['name']
+		allJson[name] = name
 	fileOld.close()
 
 # ------------------------------------------------------------
 def write():
-	path = os.path.join(dirpath, 'new')
+	path = os.path.join(dirpath, 'ctrl')
 	if not os.path.exists(path):
 		os.makedirs(path)
-	name = filename
+	name = 'nameDic'
 	filepath = os.path.join(path, name+Postfix)
 	fileNew = open(filepath, 'w', encoding=EncodeName)
 	json.dump(allJson, fileNew, ensure_ascii=False, indent=2)
@@ -74,7 +61,8 @@ def main():
 			filepath = os.path.join(dirpath, filename+Postfix)
 			if os.path.isfile(filepath):
 				#print(filepath)
-				replace()
+				findname()
 				#break
+	write()
 
 main()

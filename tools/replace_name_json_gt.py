@@ -1,16 +1,20 @@
 # ------------------------------------------------------------
-# 为galTransl的json限制每行最大字符数
-# 将删除原有换行符并添加新换行符
+# 为galTransl的json替换名字
 # ------------------------------------------------------------
+import re
 import sys
 import os
 import json
 from tkinter import filedialog 
-DefaultPath = ''
 EncodeName = 'utf-8'
+OnceLinesCount = 50
 Postfix = '.json'
-MaxLen = 25
-Seprate = '\n'
+Reverse = False
+DefaultPath = ''
+
+#------------替换--------------
+NameDic = {
+}
 
 # ------------------------------------------------------------
 #var
@@ -20,29 +24,39 @@ filename = ''
 allJson = {}
 listOrig = []
 listTrans = []
-# ------------------------------------------------------------
-def limitMaxLen(old:str, maxLen, sep):
-	text = old.replace(sep, '')
-	if text == '': return old
-	lst = [text[i:i+maxLen]+sep for i in range(0, len(text), maxLen)]
-	if lst[-1].endswith(sep):
-		lst[-1] = lst[-1][:-len(sep)]
-	text = ''.join(lst)
-	return text
 
+# ------------------------------------------------------------
 def replace():
-	global EncodeName
 	global allJson
 	#print(filename)
 	filepath = os.path.join(dirpath, filename+Postfix)
 	fileOld = open(filepath, 'r', encoding=EncodeName)
 	allJson = json.load(fileOld)
+	if not Reverse:
+		nameListOld = [str.lower(v) for v in NameDic.keys()]
+		nameListNew = list(NameDic.values())
+	else:
+		nameListOld = list(NameDic.values())
+		nameListNew = [str.lower(v) for v in NameDic.keys()]
 	for item in allJson:
-		if 'message' not in item: continue
-		text = limitMaxLen(item['message'], MaxLen, Seprate)
-		item['message'] = text
+		if 'name' not in item: continue
+		if item['name'] in nameListOld:
+			i = nameListOld.index(item['name'])
+			item['name'] = nameListNew[i]
 	write()
 	fileOld.close()
+
+#读取nameDic
+def read():
+	global NameDic
+	if len(NameDic) > 0: return #已有则不读取
+	path = os.path.join(dirpath, 'ctrl')
+	name = 'nameDic'
+	filepath = os.path.join(path, name+Postfix)
+	file = open(filepath, 'r', encoding=EncodeName)
+	NameDic = json.load(file)
+	file.close()
+	print(f'Read done: {name}')
 
 # ------------------------------------------------------------
 def write():
@@ -68,6 +82,7 @@ def main():
 	if os.path.isdir(path):
 		dirpath = path
 		#print(dirpath)
+		read()
 		for name in os.listdir(dirpath):
 			#print(name)
 			filename = name.replace(Postfix, '')
