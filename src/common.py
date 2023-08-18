@@ -22,7 +22,7 @@ def checkJIS(bytes, reg):
     end = len(bytes)
     while pos < end:
         #检查允许的单字节
-        if re.match(reg, bytes[pos:pos+1]):
+        if reg != '' and re.match(reg, bytes[pos:pos+1]):
         #if chr(bytes[pos]) in '\r\n':
             pos += 1
             continue
