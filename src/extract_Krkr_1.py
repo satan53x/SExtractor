@@ -30,11 +30,12 @@ def parseImp(content, listCtrl, dealOnce):
 		iter = re.finditer(r'[^\[\]]+', var.lineData)
 		for r in iter:
 			text = r.group()
+			if text == endStr:
+				if lastCtrl and 'unfinish' in lastCtrl:
+					del lastCtrl['unfinish'] 
+				lastCtrl = None
+				continue
 			if re.match(r'[A-Za-z]', text):
-				if text == endStr:
-					if lastCtrl and 'unfinish' in lastCtrl:
-						del lastCtrl['unfinish'] 
-					lastCtrl = None
 				continue
 			start = r.start()
 			end = r.end()
