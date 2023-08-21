@@ -7,9 +7,19 @@ from common import *
 from extract_TXT import ParseVar, searchLine, initParseVar
 from extract_TXT import replaceOnceImp as replaceOnceImpTXT
 
+def initExtra():
+	extraList = GetG('Var').extraData.split(',')
+	endStr = 'np'
+	ctrlStr = '^[A-Za-z]'
+	if len(extraList) >= 1 and extraList[0] != '':
+		endStr = extraList[0]
+	if len(extraList) >= 2 and extraList[1] != '':
+		ctrlStr = extraList[1]
+	return endStr, ctrlStr
+
 # ---------------- Group: Krkr 1 -------------------
 def parseImp(content, listCtrl, dealOnce):
-	endStr = GetG('Var').extraData or 'np'
+	endStr, ctrlStr = initExtra()
 	var = ParseVar(listCtrl, dealOnce)
 	initParseVar(var)
 	lastCtrl = None
@@ -35,7 +45,7 @@ def parseImp(content, listCtrl, dealOnce):
 					del lastCtrl['unfinish'] 
 				lastCtrl = None
 				continue
-			if re.match(r'[A-Za-z]', text):
+			if re.search(ctrlStr, text):
 				continue
 			start = r.start()
 			end = r.end()
