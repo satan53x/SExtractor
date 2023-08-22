@@ -143,6 +143,9 @@ def parseImp(content, listCtrl, dealOnce):
 		ctrls = searchLine(var)
 		if checkLast:
 			lastCtrl = dealLastCtrl(lastCtrl, ctrls)
+	#文末处理
+	if lastCtrl and 'unfinish' in lastCtrl:
+		del lastCtrl['unfinish'] #段落结束
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
