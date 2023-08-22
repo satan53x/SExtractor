@@ -35,9 +35,11 @@ class ExtractVar():
 	structure = ''
 	extraData = '' #引擎自定义的数据
 	guessUnfinish = None
-	ignoreDecodeError = False
-	postSkip = None
-	checkJIS = None
+	ignoreDecodeError = False #忽略编码错误
+	postSkip = None #匹配后置skip，匹配成功则跳过
+	checkJIS = None #检查JIS，可配置允许的单字符匹配
+	endStr = None #匹配到则结束
+	ctrlStr = None #控制段跳过
 	#
 	parseImp = None
 	replaceOnceImp = None
@@ -85,6 +87,8 @@ class ExtractVar():
 		self.ignoreDecodeError = False
 		self.postSkip = None
 		self.checkJIS = None
+		self.endStr = None
+		self.ctrlStr = None
 
 var = ExtractVar()
 SetG('Var', var)

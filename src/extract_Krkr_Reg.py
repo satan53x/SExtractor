@@ -8,13 +8,12 @@ from extract_TXT import ParseVar, searchLine, initParseVar
 from extract_TXT import replaceOnceImp as replaceOnceImpTXT
 
 def initExtra():
-	extraList = GetG('Var').extraData.split(',')
-	endStr = 'np'
-	ctrlStr = '^[A-Za-z]'
-	if len(extraList) >= 1 and extraList[0] != '':
-		endStr = extraList[0]
-	if len(extraList) >= 2 and extraList[1] != '':
-		ctrlStr = extraList[1]
+	endStr = GetG('Var').endStr
+	ctrlStr = GetG('Var').ctrlStr
+	if not endStr:
+		endStr = 'np'
+	if not ctrlStr:
+		ctrlStr = '^[A-Za-z]'
 	return endStr, ctrlStr
 
 # ---------------- Group: Krkr 1 -------------------
