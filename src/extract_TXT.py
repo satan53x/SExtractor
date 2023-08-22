@@ -20,7 +20,7 @@ class ParseVar():
 	OldEncodeName = None
 	ignoreDecodeError = False
 	postSkip = None
-	checkJIS = False
+	checkJIS = None
 
 	def __init__(self, listCtrl=None, dealOnce=None):
 		self.listCtrl = listCtrl
@@ -53,7 +53,7 @@ def searchLine(var:ParseVar):
 					end = r.end(i) + var.searchStart
 					if var.OldEncodeName: # bin
 						try:
-							if var.checkJIS:
+							if var.checkJIS != None:
 								ret = checkJIS(var.lineData[start:end], var.checkJIS)
 								if not ret:
 									continue
