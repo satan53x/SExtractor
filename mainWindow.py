@@ -140,6 +140,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 				self.regNameTab.setEnabled(True)
 				self.extraFuncTabs.setCurrentIndex(1)
 				self.selectReg(self.regNameBox.currentIndex())
+			elif self.engineConfig.value('regDic') == '2':
+				self.regNameTab.setEnabled(True)
+				self.extraFuncTabs.setCurrentIndex(1)
+				regName = self.regNameBox.currentText()
+				#只有在custom时才自动替换
+				if re.match(r'_*Custom', regName):
+					self.selectReg(self.regNameBox.currentIndex())
 			else:
 				self.regNameTab.setEnabled(False)
 		else:
@@ -232,12 +239,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mainConfig.setValue('regIndex', self.regIndex)
 		self.mainConfig.setValue('cutoff', args['cutoff'])
 		self.mainConfig.setValue('cutoffCopy', args['cutoffCopy'])
-		regName = self.regNameBox.currentText()
-		if re.match(r'_*Custom', regName):
-			#保存自定义规则
-			textAll = self.sampleBrowser.toPlainText()
-			if not re.match(r'sample', textAll):
-				self.mainConfig.setValue('reg' + regName, textAll)
+		if self.regNameTab.isEnabled():
+			regName = self.regNameBox.currentText()
+			if re.match(r'_*Custom', regName):
+				#保存自定义规则
+				textAll = self.sampleBrowser.toPlainText()
+				if not re.match(r'sample', textAll):
+					self.mainConfig.setValue('reg' + regName, textAll)
 		#窗口大小
 		self.mainConfig.setValue('windowSize', self.size())
 
