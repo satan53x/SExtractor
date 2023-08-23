@@ -2,7 +2,7 @@ import os
 import sys
 from tkinter import filedialog
 
-GameType = 0 #预设游戏
+GameType = 0 #此处选择预设游戏
 OffsetStart = 0x100 #如果是arc_conv提取需要把此处改为0x100
 DefaultDir = './Seen.txt~/'
 
