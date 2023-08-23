@@ -2,7 +2,7 @@ import os
 import sys
 from tkinter import filedialog
 
-GameType = 0 #此处选择预设游戏
+GameType = 3 #此处选择预设游戏
 OffsetStart = 0x100 #如果是arc_conv提取需要把此处改为0x100
 DefaultDir = './Seen.txt~/'
 
@@ -12,8 +12,10 @@ XorTable = {
 	0: bytearray.fromhex('8A 03 CB 50 99 11 57 06 BD 68 D7 12 45 25 9C DC'),
 	#新妻環 環の愛妻日記
 	1: bytearray.fromhex('83 0B CF 51 81 15 42 38 A0 67 DB 18 41 25 95 D4'),
-	#プリンセスハートリンク 剣姫たちの艶舞
+	#プリンセスハートリンク 剣姫たちの艶舞 DL版
 	2: bytearray.fromhex('83 0B CF 51 87 13 5F 6B 96 4D F6 14 4F 21 97 DE'),
+	#プリンセスハートリンク 剣姫たちの艶舞 PKG版
+	3: bytearray.fromhex('83 0B CF 51 87 13 5F 6B AE 68 D7 16 45 23 9B 87')
 }
 
 #加密解密函数相同

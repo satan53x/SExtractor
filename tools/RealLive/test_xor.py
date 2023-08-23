@@ -5,8 +5,8 @@ from common import printHex
 def main1():
 	#s1 = '96 BC 96 B3 82 B5 61 01 96 BC 96 B3 82 B5 61 01'
 	#s2 = '8A 03 CB 50 99 11 57 06 BD 68 D7 12 45 25 9C DC'
-	s1 = '6C 81 41 93 6C 8A C2 82 CD 8C A9 82 C2 82 A9 82'
-	s2 = 'EF 8A 8E C2 ED 9F 80 BA 6D EB 72 9A 83 A7 3C 56'
+	s1 = '59 89 62 D3 3A 91 E0 E9 4E FB B8 9B 1F A1 57 09'
+	s2 = 'DA 82 AD 82 BD 82 BF 82 E0 93 6F 8D 5A 82 CC 8E'
 	b1 = bytes.fromhex(s1)
 	b2 = bytes.fromhex(s2)
 	printHex(b1)
