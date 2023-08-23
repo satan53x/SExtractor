@@ -10,6 +10,7 @@ from main_extract_bin import mainExtractBin
 from main_extract_json import mainExtractJson
 from main_extract import var
 from merge_json import mergeTool, createDicTool
+from thread import extractThread
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 	def __init__(self, parent=None):
@@ -162,6 +163,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.regIndex = index
 		#print('selectReg', self.regIndex)
 		regName = self.regNameBox.currentText()
+		if re.match(r'_*None', regName):
+			#还原
+			group = 'Engine_' + self.engineNameBox.currentText()
+			#示例
+			value = self.engineConfig.value(group+'/sample')
+			if value:
+				self.sampleBrowser.setText(value)
+			else:
+				self.sampleBrowser.setText('')
+			return
 		if re.match(r'_*Custom', regName):
 			#优先读取自定义规则
 			textAll = self.mainConfig.value('reg' + regName)
@@ -297,15 +308,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mainConfig.setValue('mergeSkipReg', skipReg)
 
 #---------------------------------------------------------------
-#import debugpy
-class extractThread(QThread):
-	def __init__(self):
-		super().__init__()
-
-	def run(self):
-		#debugpy.debug_this_thread()
-		self.window.extractFile()
-
 #设置初始值
 def initValue(setting, name, v):
 	if setting.value(name) == None:
