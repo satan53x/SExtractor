@@ -370,7 +370,7 @@ def keepAllOrig():
 	listIndex = -1
 	if len(var.listCtrl) > 0:
 		if 'isName' in var.listCtrl[-1] or 'unfinish' in var.listCtrl[-1]:
-			print('listCtrl结束行错误', var.filename, var.listCtrl[-1], var.listOrig[-1])
+			print('\033[31mlistCtrl结束行错误\033[0m', var.filename, var.listCtrl[-1], var.listOrig[-1])
 	while(listIndex < len(var.listOrig) - 1):
 		item = {}
 		while(True):

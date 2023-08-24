@@ -23,7 +23,7 @@ def parseImp(content, listCtrl, dealOnce):
 		var.contentIndex = contentIndex
 		ctrls = searchLine(var)
 		if checkLast:
-			lastCtrl = dealLastCtrl(lastCtrl, ctrls)
+			lastCtrl = dealLastCtrl(lastCtrl, ctrls, contentIndex)
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):

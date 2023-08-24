@@ -107,7 +107,10 @@ def GetRegList(items, OldEncodeName):
 			lst.append([value, 'search'])
 	return lst
 
-def dealLastCtrl(lastCtrl, ctrls):
+def dealLastCtrl(lastCtrl, ctrls, contentIndex=-1):
+	if ctrls != None and len(ctrls) == 0:
+		print('\033[33m存在未匹配的内容\033[0m', GetG('Var').filename, contentIndex)
+		return lastCtrl
 	if ctrls == None or 'isName' in ctrls[-1]: #skip匹配或name匹配
 		if lastCtrl and 'unfinish' in lastCtrl:
 			del lastCtrl['unfinish'] #段落结束
@@ -142,7 +145,7 @@ def parseImp(content, listCtrl, dealOnce):
 		var.contentIndex = contentIndex
 		ctrls = searchLine(var)
 		if checkLast:
-			lastCtrl = dealLastCtrl(lastCtrl, ctrls)
+			lastCtrl = dealLastCtrl(lastCtrl, ctrls, contentIndex)
 	#文末处理
 	if lastCtrl and 'unfinish' in lastCtrl:
 		del lastCtrl['unfinish'] #段落结束
