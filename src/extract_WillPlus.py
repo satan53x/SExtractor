@@ -50,12 +50,19 @@ def parseImp(content, listCtrl, dealOnce):
 			#continue #测试
 			#选项
 			count = lineData[0] #选项个数
+			if count >= 6 or count == 0: 
+				#print('选项个数过滤')
+				textType = -1
+				continue #选项个数不能超过
 			start = 1
 			for i in range(count):
 				start += 2
 				ret = re.search(b'\0', lineData[start:])
 				if ret == None:
 					print('select: Not found \\0')
+					break
+				elif isShiftJis(lineData[start], lineData[start+1]) == 0:
+					print('选项开头不是日文')
 					break
 				end = start + ret.start()
 				text = lineData[start:end].decode(OldEncodeName)

@@ -158,7 +158,7 @@
               <item>
                <widget class="QComboBox" name="engineNameBox">
                 <property name="maxVisibleItems">
-                 <number>16</number>
+                 <number>25</number>
                 </property>
                </widget>
               </item>
@@ -323,7 +323,7 @@
                </font>
               </property>
               <property name="maxVisibleItems">
-               <number>16</number>
+               <number>25</number>
               </property>
               <property name="sizeAdjustPolicy">
                <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
@@ -452,7 +452,11 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QComboBox" name="outputFileExtraBox"/>
+                  <widget class="QComboBox" name="outputFileExtraBox">
+                   <property name="maxVisibleItems">
+                    <number>10</number>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </widget>
