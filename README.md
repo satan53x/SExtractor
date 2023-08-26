@@ -11,7 +11,7 @@
 同引擎不同游戏的格式也可能不同，请参看程序内示例使用。
 * TXT纯文本 (正则匹配。默认utf-8)
 * BIN二进制文本 (正则匹配。默认读shift-jis写GBK)
-* JSON文本 (正则匹配，只搜索value。按行读取，不要压缩Json)
+* JSON文本 (正则匹配，只搜索value)
 * AST
 * Artemis
 * EAGLS
