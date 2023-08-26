@@ -5,7 +5,7 @@ from extract_BIN import parseImp as parseImpBIN
 from extract_TXT import ParseVar, searchLine, initParseVar
 
 OldEncodeName = 'cp932'
-NewEncodeName = 'cp932'
+NewEncodeName = 'gbk'
 selMinCount = 10 #提取时选项函数最小参数个数
 selMaxCount = 99 #提取时选项函数最大参数个数
 
