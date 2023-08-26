@@ -51,7 +51,7 @@ def parseImp(content, listCtrl, dealOnce):
 			#选项
 			count = lineData[0] #选项个数
 			if count >= 6 or count == 0: 
-				#print('选项个数过滤')
+				print('选项个数过滤', GetG('Var').filename)
 				textType = -1
 				continue #选项个数不能超过
 			start = 1
