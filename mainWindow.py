@@ -89,9 +89,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		# 结束
 		self.engineNameBox.setCurrentIndex(self.engineCode)
 		# 截断
-		checked = initValue(self.mainConfig, 'cutoff', False) != 'false'
+		checked = initValue(self.mainConfig, 'cutoff', 'false') != 'false'
 		self.cutoffCheck.setChecked(checked)
-		checked = initValue(self.mainConfig, 'cutoffCopy', False) != 'false'
+		checked = initValue(self.mainConfig, 'cutoffCopy', 'false') != 'false'
 		self.cutoffCopyCheck.setChecked(checked)
 
 	#初始化
