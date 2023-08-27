@@ -2,12 +2,7 @@ import bisect
 import re
 from var_extract import *
 
-ExVar:ExtractVar = None
-
-def initCommon(var):
-	global ExVar
-	ExVar = var
-	SetG('Var', var)
+ExVar = gExtractVar
 
 #----------------------------------------------------------
 globalDic = {}

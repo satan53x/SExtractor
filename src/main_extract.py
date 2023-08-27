@@ -10,8 +10,8 @@ from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QStatusBar
 import pandas
 
-var = ExtractVar()
-initCommon(var)
+var = ExVar
+SetG('Var', var)
 
 def setIOFileName(io:IOConfig):
 	if var.partMode == 0: #总共一个输出文档

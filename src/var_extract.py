@@ -81,3 +81,5 @@ class ExtractVar():
 		self.endStr = None
 		self.ctrlStr = None
 		self.version = '0'
+
+gExtractVar = ExtractVar()
