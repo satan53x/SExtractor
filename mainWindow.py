@@ -91,7 +91,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		# 截断
 		checked = initValue(self.mainConfig, 'cutoff', 'false') != 'false'
 		self.cutoffCheck.setChecked(checked)
-		checked = initValue(self.mainConfig, 'cutoffCopy', 'false') != 'false'
+		checked = initValue(self.mainConfig, 'cutoffCopy', 'true') != 'false'
 		self.cutoffCopyCheck.setChecked(checked)
 
 	#初始化
