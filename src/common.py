@@ -2,6 +2,7 @@ import bisect
 import re
 
 globalDic = {}
+ExVar = None
 
 def GetG(key):
 	return globalDic[key]

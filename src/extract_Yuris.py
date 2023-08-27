@@ -210,14 +210,18 @@ class DataManager():
 	def init(self, data):
 		#header
 		self.headerLen = 0x20
-		self.version = readInt(data, 4)
+		v = int(GetG('Var').version, 0)
+		if v > 0: 
+			self.version = v
+		else:
+			self.version = readInt(data, 4)
 		if self.version >= 0x1C2:
 			self.funcLen = readInt(data, 12)
 			self.paraLen = readInt(data, 16)
 			self.strLen = readInt(data, 20)
 			self.otherLen = readInt(data, 24)
 		else:
-			print(f'\033[33m当前ybn版本暂不支持\033[0m: {self.version:X}')
+			print(f'\033[33m当前ybn版本暂不支持\033[0m: 0x{self.version:X}')
 			return None
 		#code
 		self.codeSce = 0

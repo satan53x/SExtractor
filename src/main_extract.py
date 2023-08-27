@@ -40,6 +40,7 @@ class ExtractVar():
 	checkJIS = None #检查JIS，可配置允许的单字符匹配
 	endStr = None #匹配到则结束
 	ctrlStr = None #控制段跳过
+	version = '0' #版本
 	#
 	parseImp = None
 	replaceOnceImp = None
@@ -89,6 +90,7 @@ class ExtractVar():
 		self.checkJIS = None
 		self.endStr = None
 		self.ctrlStr = None
+		self.version = '0'
 
 var = ExtractVar()
 SetG('Var', var)
