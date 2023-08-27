@@ -15,7 +15,7 @@ def initExtra():
 	global nameEnd
 	global msgStart
 	global unfinishBytes
-	lst = GetG('Var').extraData.split(',')
+	lst = ExVar.extraData.split(',')
 	nameEnd = int(lst[0], 16)
 	msgStart = int(lst[1], 16)
 	unfinishBytes = bytes.fromhex(lst[2])
@@ -135,7 +135,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		if transData == None:
 			return False
 		#写入new
-		if GetG('Var').cutoff:
+		if ExVar.cutoff:
 			mv = memoryview(content[contentIndex])
 			mv[start:end] = transData
 		else:

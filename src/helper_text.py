@@ -1,17 +1,12 @@
 import re
 from common import *
 
-__all__ = ['initTextVar', 'splitToTransDic']
+__all__ = ['splitToTransDic', 'splitToTransDicAuto']
 
-var = None
 sep = '\r\n'
 sepLen = 2
 symbolPattern = '[\\u3000-\\u303F\\uFF00-\\uFF65\\u2000-\\u206F]'
 searchCount = 10
-
-def initTextVar(v):
-	global var
-	var = v
 
 #固定分割
 def splitToTransDic(orig, trans):
@@ -23,11 +18,11 @@ def splitToTransDic(orig, trans):
 		msgTrans = '　'
 		if j<len(listMsgTrans) and listMsgTrans[j] != '':
 			msgTrans = listMsgTrans[j]
-		if  msgOrig not in var.transDic or \
-			var.transDic[msgOrig] == '' or \
-			var.transDic[msgOrig] == '　' or \
-			var.transDic[msgOrig] == ' ':
-			var.transDic[msgOrig] = msgTrans
+		if  msgOrig not in ExVar.transDic or \
+			ExVar.transDic[msgOrig] == '' or \
+			ExVar.transDic[msgOrig] == '　' or \
+			ExVar.transDic[msgOrig] == ' ':
+			ExVar.transDic[msgOrig] = msgTrans
 
 #自动重新分割
 #TODO
@@ -37,7 +32,7 @@ def splitToTransDicAuto(orig, trans):
 	for j in range(len(listMsgOrig)):
 		msgOrig = listMsgOrig[j]
 		msgTrans = listMsgTrans[j]
-		var.transDic[msgOrig] = msgTrans
+		ExVar.transDic[msgOrig] = msgTrans
 
 #重新分割
 def redistributeTrans(orig:str, trans:str):

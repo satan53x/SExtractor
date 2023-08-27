@@ -111,18 +111,18 @@ def dealPathStr(var:ParseVar, content, pathList):
 def parseImp(content, listCtrl, dealOnce):
 	var = ParseVar(listCtrl, dealOnce)
 	#print(len(content))
-	GetG('Var').indent = 0
-	regDic = GetG('Var').regDic
+	ExVar.indent = 0
+	regDic = ExVar.regDic
 	var.regList = GetRegList(regDic.items(), None)
-	var.nameList = GetG('Var').nameList
-	extractName = GetG('Var').extractName
+	var.nameList = ExVar.nameList
+	extractName = ExVar.extractName
 	global extractItemName
-	if re.search(extractName, GetG('Var').filename):
+	if re.search(extractName, ExVar.filename):
 		extractItemName = True
 	else:
 		extractItemName = False
 	#System.json
-	if GetG('Var').filename == 'System':
+	if ExVar.filename == 'System':
 		dealPathStr(var, content, SystemPathList)
 		return
 	#文件类型
@@ -157,7 +157,7 @@ def parseImp(content, listCtrl, dealOnce):
 def replaceOnceImp(content, lCtrl, lTrans):
 	pages = None
 	nodeList = None
-	if GetG('Var').filename == 'System':
+	if ExVar.filename == 'System':
 		nodeList = []
 	elif isinstance(content, list):
 		#单page

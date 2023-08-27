@@ -1,8 +1,16 @@
 import bisect
 import re
+from var_extract import *
 
+ExVar:ExtractVar = None
+
+def initCommon(var):
+	global ExVar
+	ExVar = var
+	SetG('Var', var)
+
+#----------------------------------------------------------
 globalDic = {}
-ExVar = None
 
 def GetG(key):
 	return globalDic[key]
@@ -10,6 +18,7 @@ def GetG(key):
 def SetG(key, value):
 	globalDic[key] = value
 
+#----------------------------------------------------------
 #判断是否是日文
 def isShiftJis(byte1, byte2):
     # 检查字节范围
@@ -37,6 +46,7 @@ def checkJIS(bytes, reg):
             pos += offset
     return True
 
+#----------------------------------------------------------
 #编码生成目标长度的字节数组，会截断和填充字节
 def generateBytes(text, lenOrig, NewEncodeName):
     transData = None
@@ -45,15 +55,15 @@ def generateBytes(text, lenOrig, NewEncodeName):
     except Exception as ex:
         print(ex)
         return None
-    if GetG('Var').cutoff == False:
+    if ExVar.cutoff == False:
          return transData
     # 检查长度
     count = lenOrig - len(transData)
     #print('Diff', count)
     if count < 0:
-        dic = GetG('Var').cutoffDic
+        dic = ExVar.cutoffDic
         if text not in dic:
-            if GetG('Var').cutoffCopy:
+            if ExVar.cutoffCopy:
                  dic[text] = [text, count]
             else:
                 dic[text] = ['', count]
@@ -79,7 +89,7 @@ def generateBytes(text, lenOrig, NewEncodeName):
         transData += empty
     return transData
 
-
+#----------------------------------------------------------
 def findInsertIndex(sortedList, target):
     position = bisect.bisect_left(sortedList, target)
     return position

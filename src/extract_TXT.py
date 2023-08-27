@@ -109,7 +109,7 @@ def GetRegList(items, OldEncodeName):
 
 def dealLastCtrl(lastCtrl, ctrls, contentIndex=-1):
 	if ctrls != None and len(ctrls) == 0:
-		print('\033[33m存在未匹配的内容\033[0m', GetG('Var').filename, contentIndex)
+		print('\033[33m存在未匹配的内容\033[0m', ExVar.filename, contentIndex)
 		return lastCtrl
 	if ctrls == None or 'isName' in ctrls[-1]: #skip匹配或name匹配
 		if lastCtrl and 'unfinish' in lastCtrl:
@@ -123,23 +123,23 @@ def dealLastCtrl(lastCtrl, ctrls, contentIndex=-1):
 
 def initParseVar(var:ParseVar, regDic=None):
 	if regDic == None:
-		regDic = GetG('Var').regDic
-	var.nameList = GetG('Var').nameList
+		regDic = ExVar.regDic
+	var.nameList = ExVar.nameList
 	var.regList = GetRegList(regDic.items(), var.OldEncodeName)
-	var.ignoreDecodeError = GetG('Var').ignoreDecodeError
-	var.postSkip = GetG('Var').postSkip
-	var.checkJIS = GetG('Var').checkJIS
+	var.ignoreDecodeError = ExVar.ignoreDecodeError
+	var.postSkip = ExVar.postSkip
+	var.checkJIS = ExVar.checkJIS
 	if var.checkJIS and var.OldEncodeName:
 		var.checkJIS = var.checkJIS.encode(var.OldEncodeName)
 
 # ---------------- Group: TXT -------------------
 def parseImp(content, listCtrl, dealOnce):
-	checkLast = GetG('Var').structure.startswith('para')
+	checkLast = ExVar.structure.startswith('para')
 	var = ParseVar(listCtrl, dealOnce)
 	initParseVar(var)
 	lastCtrl = None
 	for contentIndex in range(len(content)):
-		if contentIndex < GetG('Var').startline: continue 
+		if contentIndex < ExVar.startline: continue 
 		var.lineData = content[contentIndex][:-1] #不检查末尾换行
 		#print('>>> Line ' + str(contentIndex), ': ', var.lineData)
 		var.contentIndex = contentIndex
@@ -161,7 +161,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		start = posData[1]
 		end = posData[2]
 		trans = lTrans[i]
-		if GetG('Var').cutoff:
+		if ExVar.cutoff:
 			origData = content[contentIndex][start:end].encode(OldEncodeName)
 			transData = generateBytes(trans, len(origData), NewEncodeName)
 			if transData == None:

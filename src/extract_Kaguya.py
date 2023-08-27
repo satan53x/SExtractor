@@ -18,7 +18,7 @@ headerList = []
 def initExtra():
 	global fixLength
 	global exportAri
-	lst = GetG('Var').extraData.split(',')
+	lst = ExVar.extraData.split(',')
 	fixLength = 'fixLength' in lst
 	exportAri = 'exportAri' in lst
 
@@ -103,7 +103,7 @@ def replaceEndImp(content):
 		#修正ari头部
 		ariBuffer[0:4] = int2bytes(ariCount)
 		#导出
-		filepath = os.path.join(GetG('Var').workpath, 'new', 'TBLSTR.ARI')
+		filepath = os.path.join(ExVar.workpath, 'new', 'TBLSTR.ARI')
 		fileNew = open(filepath, 'wb')
 		fileNew.write(ariBuffer)
 		fileNew.close()

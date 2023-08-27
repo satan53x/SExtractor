@@ -14,8 +14,8 @@ def parseImp(content, listCtrl, dealOnce):
 	var.listCtrl = listCtrl
 	var.dealOnce = dealOnce
 	#print(len(content))
-	GetG('Var').indent = 2
-	regDic = GetG('Var').regDic
+	ExVar.indent = 2
+	regDic = ExVar.regDic
 	var.regList = GetRegList(regDic.items(), None)
 	if isinstance(content, dict):
 		#字典: 子项为字符串key:value
@@ -27,7 +27,7 @@ def parseImp(content, listCtrl, dealOnce):
 		index = -1
 		for i, value in content.items():
 			index += 1
-			if index < GetG('Var').startline: continue 
+			if index < ExVar.startline: continue 
 			lineData = value
 			if lineData == '': continue #空白行
 			var.contentIndex = [i, None]
@@ -38,7 +38,7 @@ def parseImp(content, listCtrl, dealOnce):
 		if isinstance(content[0], dict):
 			#子项为字典
 			for i in range(len(content)):
-				if i < GetG('Var').startline: continue 
+				if i < ExVar.startline: continue 
 				for j, value in content[i].items():
 					lineData = value
 					if lineData == '': continue #空白行
@@ -48,7 +48,7 @@ def parseImp(content, listCtrl, dealOnce):
 		elif isinstance(content[0], str):
 			#子项为字符串
 			for i in range(len(content)):
-				if i < GetG('Var').startline: continue
+				if i < ExVar.startline: continue
 				lineData = content[i]
 				if lineData == '': continue #空白行
 				var.contentIndex = [i, None]

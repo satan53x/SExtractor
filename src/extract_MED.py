@@ -44,7 +44,7 @@ def parseImp(content, listCtrl, dealOnce):
 		if 'unfinish' not in ctrl: break
 		del listCtrl[pos]['unfinish']
 		pos -= 1
-		print('删除从该文件最后一行开始的unfinish控制段', ctrl, GetG('Var').filename)
+		print('删除从该文件最后一行开始的unfinish控制段', ctrl, ExVar.filename)
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):

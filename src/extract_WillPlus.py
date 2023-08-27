@@ -22,10 +22,10 @@ def parseImp(content, listCtrl, dealOnce):
 		[b'^%[A-Z0-9]+(.*?)%[A-Z0-9]+%K', 'search'],
 		[b'^(.*?)%K', 'search']
 	]
-	GetG('Var').startline = 1
+	ExVar.startline = 1
 	textType = -1
 	for contentIndex in range(len(content)):
-		if contentIndex < GetG('Var').startline: continue 
+		if contentIndex < ExVar.startline: continue 
 		lineData = content[contentIndex]
 		# 每行
 		#print('>>> Line ' + str(contentIndex), ': ', lineData)
@@ -51,7 +51,7 @@ def parseImp(content, listCtrl, dealOnce):
 			#选项
 			count = lineData[0] #选项个数
 			if count >= 6 or count == 0: 
-				print('选项个数过滤', GetG('Var').filename)
+				print('选项个数过滤', ExVar.filename)
 				textType = -1
 				continue #选项个数不能超过
 			start = 1

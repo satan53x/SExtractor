@@ -10,13 +10,13 @@ NewEncodeName = 'gbk'
 
 # ---------------- Group: BIN -------------------
 def parseImp(content, listCtrl, dealOnce):
-	checkLast = GetG('Var').structure.startswith('para')
+	checkLast = ExVar.structure.startswith('para')
 	var = ParseVar(listCtrl, dealOnce)
 	var.OldEncodeName = OldEncodeName
 	initParseVar(var)
 	lastCtrl = None
 	for contentIndex in range(len(content)):
-		if contentIndex < GetG('Var').startline: continue 
+		if contentIndex < ExVar.startline: continue 
 		var.lineData = content[contentIndex]
 		# 每行
 		#print('>>> Line ' + str(contentIndex), ': ', var.lineData)

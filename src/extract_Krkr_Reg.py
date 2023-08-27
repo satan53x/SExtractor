@@ -8,8 +8,8 @@ from extract_TXT import ParseVar, searchLine, initParseVar
 from extract_TXT import replaceOnceImp as replaceOnceImpTXT
 
 def initExtra():
-	endStr = GetG('Var').endStr
-	ctrlStr = GetG('Var').ctrlStr
+	endStr = ExVar.endStr
+	ctrlStr = ExVar.ctrlStr
 	if not endStr:
 		endStr = 'np'
 	if not ctrlStr:
@@ -23,7 +23,7 @@ def parseImp(content, listCtrl, dealOnce):
 	initParseVar(var)
 	lastCtrl = None
 	for contentIndex in range(len(content)):
-		if contentIndex < GetG('Var').startline: continue 
+		if contentIndex < ExVar.startline: continue 
 		var.lineData = content[contentIndex][:-1] #忽略换行
 		# 每行
 		var.contentIndex = contentIndex

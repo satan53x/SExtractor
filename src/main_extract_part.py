@@ -14,7 +14,7 @@ def mainExtractPart(args, parseImp, initDone=None):
 	showMessage("开始处理...")
 	path = args['workpath']
 	var.workpath = path
-	if initCommon(args) != 0: return
+	if initArgs(args) != 0: return
 	if initDone: initDone()
 	#print(path)
 	var.partMode = 1

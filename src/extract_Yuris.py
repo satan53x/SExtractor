@@ -21,7 +21,7 @@ insertContent = {}
 def initExtra():
 	global selMinCount
 	global selMaxCount
-	lst = GetG('Var').extraData.split(',')
+	lst = ExVar.extraData.split(',')
 	if len(lst) > 0:
 		selMinCount = int(lst[0]) or 10
 	if len(lst) > 1:
@@ -210,7 +210,7 @@ class DataManager():
 	def init(self, data):
 		#header
 		self.headerLen = 0x20
-		v = int(GetG('Var').version, 0)
+		v = int(ExVar.version, 0)
 		if v > 0: 
 			self.version = v
 		else:
