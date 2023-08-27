@@ -8,6 +8,13 @@ OldEncodeName = 'cp932'
 NewEncodeName = 'gbk'
 selMinCount = 10 #提取时选项函数最小参数个数
 selMaxCount = 99 #提取时选项函数最大参数个数
+#版本对应code
+Codes = [
+	{'min': 0x1DC, 'max': 0x1DC, 'sce': 0x5A, 'sel': 0x1D},
+	{'min': 0x1E1, 'max': 0x1E8, 'sce': 0x6A, 'sel': 0x2C},
+	{'min': 0x1F4, 'max': 0x1F4, 'sce': 0x5A, 'sel': 0x1D},
+	{'min': 0x1C2, 'max': 0xFFF, 'sce': 0x5B, 'sel': 0x1D}
+]
 
 insertContent = {}
 # ---------------- Engine: Yu-ris -------------------
@@ -120,13 +127,6 @@ def readFileDataImp(fileOld, contentSeprate):
 	return content, insertContent
 
 # -----------------------------------
-#版本对应code
-Codes = [
-	{'min': 0x1DC, 'max': 0x1DC, 'sce': 0x5A, 'sel': 0x1D},
-	{'min': 0x1E1, 'max': 0x1E8, 'sce': 0x6A, 'sel': 0x2C},
-	{'min': 0x1F4, 'max': 0x1F4, 'sce': 0x5A, 'sel': 0x1D},
-	{'min': 0x1C2, 'max': 0xFFF, 'sce': 0x5B, 'sel': 0x1D}
-]
 #管理器
 class DataManager():
 	def splitParaStr(self):
