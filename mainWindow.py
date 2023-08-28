@@ -211,6 +211,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		cutoffCopy = self.cutoffCopyCheck.isChecked()
 		outputFormatExtra = self.outputFileExtraBox.currentIndex() - 1
 		noInput = self.noInputCheck.isChecked()
+		encode = self.txtEncodeBox.currentText()
 		args = {
 			'file':fileType,
 			'workpath':workpath,
@@ -222,7 +223,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'cutoff':cutoff,
 			'cutoffCopy':cutoffCopy,
 			'outputFormatExtra':outputFormatExtra,
-			'noInput': noInput
+			'noInput': noInput,
+			'encode': encode
 		}
 		var.window = self
 		#保存配置

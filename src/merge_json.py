@@ -45,6 +45,7 @@ def writeSeprate(seq):
 		name = filenameList[seq][1] + Postfix
 	else:
 		name = filename + '.' + str(seq) + Postfix
+		name = f'{filename}.{seq:04d}{Postfix}'
 	filepath = os.path.join(workpath, name)
 	fileNew = open(filepath, 'w', encoding=EncodeName)
 	json.dump(allJson[jsonType], fileNew, ensure_ascii=False, indent=2)
@@ -165,7 +166,7 @@ def mergeTool(args):
 	else:
 		print('未找到主目录')
 
-
+#-----------------------------------------------------------
 #args: { workpath }
 def createDicTool(args):
 	global OnceLinesCount

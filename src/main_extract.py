@@ -496,6 +496,9 @@ def initArgs(args):
 		var.noInput = True
 	else:
 		var.noInput = False
+	# 编码
+	if args['encode']:
+		var.EncodeRead = args['encode']
 	return 0
 
 #args = [workpath, engineName, outputFormat, nameList]
