@@ -93,6 +93,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.cutoffCheck.setChecked(checked)
 		checked = initValue(self.mainConfig, 'cutoffCopy', 'true') != 'false'
 		self.cutoffCopyCheck.setChecked(checked)
+		# 编码
+		index = int(initValue(self.mainConfig, 'encodeIndex', 0))
+		self.txtEncodeBox.setCurrentIndex(index)
 
 	#初始化
 	def afterShow(self):
@@ -259,6 +262,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 				textAll = self.sampleBrowser.toPlainText()
 				if not re.match(r'sample', textAll):
 					self.mainConfig.setValue('reg' + regName, textAll)
+		self.mainConfig.setValue('encodeIndex', self.txtEncodeBox.currentIndex())
 		#窗口大小
 		self.mainConfig.setValue('windowSize', self.size())
 
