@@ -24,7 +24,6 @@ class ExtractVar():
 	extractName = '^.'
 	structure = ''
 	extraData = '' #引擎自定义的数据
-	guessUnfinish = None
 	ignoreDecodeError = False #忽略编码错误
 	postSkip = None #匹配后置skip，匹配成功则跳过
 	checkJIS = None #检查JIS，可配置允许的单字符匹配
@@ -69,13 +68,14 @@ class ExtractVar():
 	window = None
 
 	def clear(self):
+		self.insertContent = {}
 		self.inputCount = 0
 		self.outputCount = 0
+		#
 		self.startline = 0
 		self.extractName = '^.'
 		self.structure = ''
 		self.extraData = ''
-		self.guessUnfinish = ''
 		self.ignoreDecodeError = False
 		self.postSkip = None
 		self.checkJIS = None

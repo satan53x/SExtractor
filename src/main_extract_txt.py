@@ -37,7 +37,7 @@ def parse():
 	#print('解析文件: '+filename)
 	fileOld = read() #判断流程
 	if var.readFileDataImp:
-		var.content = var.readFileDataImp(fileOld, None)
+		var.content, _ = var.readFileDataImp(fileOld, var.contentSeprate)
 	else:
 		var.content = fileOld.readlines() #会保留换行符
 		#签名检查
