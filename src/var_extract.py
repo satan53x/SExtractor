@@ -31,6 +31,7 @@ class ExtractVar():
 	endStr = None #匹配到则结束
 	ctrlStr = None #控制段跳过
 	version = '0' #版本
+	decrypt = '' #加解密密钥
 	#
 	parseImp = None
 	replaceOnceImp = None
@@ -81,5 +82,6 @@ class ExtractVar():
 		self.endStr = None
 		self.ctrlStr = None
 		self.version = '0'
+		self.decrypt = ''
 
 gExtractVar = ExtractVar()

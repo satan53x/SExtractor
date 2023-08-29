@@ -101,4 +101,12 @@ def xorBytes(input, xorTable):
     for i, b in enumerate(input):
         xorByte = xorTable[i % xorLen]
         result.append(b ^ xorByte)
-    return bytes(result)
+    return result
+
+
+#----------------------------------------------------------
+def getMatchItem(lst, target):
+    for item in lst:
+        if item['min'] <= target <= item['max']:
+            return item
+    return None

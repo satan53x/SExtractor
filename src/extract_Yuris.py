@@ -15,6 +15,10 @@ Codes = [
 	{'min': 0x1F4, 'max': 0x1F4, 'sce': 0x5A, 'sel': 0x1D},
 	{'min': 0x1C2, 'max': 0xFFF, 'sce': 0x5B, 'sel': 0x1D}
 ]
+Keys = [
+	{'min': 0x1E1, 'max': 0x1E8, 'key': b'\x0B\x8F\x00\xB1'},
+	{'min': 0x1C2, 'max': 0xFFF, 'key': b'\xD3\x6F\xAC\x96'}
+]
 
 insertContent = {}
 # ---------------- Engine: Yu-ris -------------------
@@ -108,11 +112,9 @@ def replaceEndImp(content):
 		manager.paraSec.extend(int2bytes(length))
 		manager.paraSec.extend(int2bytes(offset))
 	#合并
-	manager.fixHeader()
+	manager.fixSections(content)
 	insertContent[0] = manager.headerSec + manager.funcSec + manager.paraSec
-	#还原content
-	for i, data in enumerate(content):
-		content[i] = data['text']
+	insertContent[len(content)] = manager.otherSec
 	
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeprate):
@@ -123,7 +125,7 @@ def readFileDataImp(fileOld, contentSeprate):
 	content = manager.splitParaStr()
 	insertContent.clear()
 	insertContent[0] = b''
-	insertContent[len(content)] = manager.otherSec
+	#insertContent[len(content)] = manager.otherSec
 	return content, insertContent
 
 # -----------------------------------
@@ -203,9 +205,18 @@ class DataManager():
 			])
 		return funcList
 
-	def fixHeader(self):
+	def fixSections(self, content:list):
 		if self.version >= 0x1C2:
 			self.headerSec[20:24] = int2bytes(self.strLen)
+		#还原content
+		self.strSec = bytearray()
+		for i, data in enumerate(content):
+			self.strSec.extend(data['text'])
+		#加密
+		self.decodeAll()
+		#设置content
+		content.clear()
+		content.append(self.strSec)
 
 	def init(self, data):
 		#header
@@ -226,11 +237,10 @@ class DataManager():
 		#code
 		self.codeSce = 0
 		self.codeSel = 0
-		for item in Codes:
-			if item['min'] <= self.version <= item['max']:
-				self.codeSce = item['sce']
-				self.codeSel = item['sel']
-				break
+		item = getMatchItem(Codes, self.version)
+		if item:
+			self.codeSce = item['sce']
+			self.codeSel = item['sel']
 		#header
 		start = 0
 		end = self.headerLen
@@ -238,7 +248,7 @@ class DataManager():
 		#func
 		start = end
 		end = start + self.funcLen
-		self.funcSec = bytearray(data[start:end])
+		self.funcSec = data[start:end]
 		#para
 		start = end
 		end = start + self.paraLen
@@ -250,7 +260,28 @@ class DataManager():
 		#other
 		start = end
 		end = start + self.otherLen
-		self.otherSec = bytearray(data[start:end])
+		self.otherSec = data[start:end]
+		#解密
+		self.decodeAll()
 		return self
 	
+	def decodeAll(self):
+		if ExVar.decrypt == '': return
+		if ExVar.decrypt == '0':
+			#自动
+			item = getMatchItem(Keys, self.version)
+			if item:
+				self.xorKey = item['key']
+			else:
+				print(f'\033[33m没有匹配的密钥\033[0m: 0x{self.version:X}')
+				return
+		else:
+			self.xorKey =  ExVar.decrypt
+		#解密
+		self.funcSec = xorBytes(self.funcSec, self.xorKey)
+		self.paraSec = xorBytes(self.paraSec, self.xorKey)
+		self.strSec = xorBytes(self.strSec, self.xorKey)
+		self.otherSec = xorBytes(self.otherSec, self.xorKey)
+
+
 manager = DataManager()
