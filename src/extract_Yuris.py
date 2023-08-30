@@ -276,7 +276,8 @@ class DataManager():
 				print(f'\033[33m没有匹配的密钥\033[0m: 0x{self.version:X}')
 				return
 		else:
-			self.xorKey =  ExVar.decrypt
+			#escape
+			self.xorKey =  ExVar.decrypt.encode().decode('unicode_escape').encode('latin-1')
 		#解密
 		self.funcSec = xorBytes(self.funcSec, self.xorKey)
 		self.paraSec = xorBytes(self.paraSec, self.xorKey)
