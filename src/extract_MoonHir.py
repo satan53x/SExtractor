@@ -7,7 +7,7 @@ from extract_TXT import GetRegList, ParseVar, searchLine
 OldEncodeName = 'cp932'
 NewEncodeName = 'gbk'
 
-# ---------------- Engine: RealLive -------------------
+# ---------------- Engine: MoonHir -------------------
 def parseImp(content, listCtrl, dealOnce):
 	return parseImpBIN(content, listCtrl, dealOnce)
 
@@ -24,7 +24,7 @@ def readFileDataImp(fileOld, contentSeprate):
 	end = start + size
 	if end > len(data):
 		print('error: 区块结束超过了文件末尾')
-		return [], []
+		return [], {}
 	realData = data[start:end]
 	content = re.split(contentSeprate, realData)
 	insertContent = { 

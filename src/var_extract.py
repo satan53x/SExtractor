@@ -19,18 +19,6 @@ class ExtractVar():
 	cutoffCopy = False
 	noInput = False
 	indent = 2 #缩进
-	#可选参数
-	startline = 0 #起始行数
-	extractName = '^.'
-	structure = ''
-	extraData = '' #引擎自定义的数据
-	ignoreDecodeError = False #忽略编码错误
-	postSkip = None #匹配后置skip，匹配成功则跳过
-	checkJIS = None #检查JIS，可配置允许的单字符匹配
-	endStr = None #匹配到则结束
-	ctrlStr = None #控制段跳过
-	version = '0' #版本
-	decrypt = '' #加解密密钥
 	#
 	parseImp = None
 	replaceOnceImp = None
@@ -68,20 +56,23 @@ class ExtractVar():
 	window = None
 
 	def clear(self):
+		self.OldEncodeName = 'cp932'
+		self.NewEncodeName = 'gbk'
+		#
 		self.insertContent = {}
 		self.inputCount = 0
 		self.outputCount = 0
-		#
-		self.startline = 0
+		#各引擎参数
+		self.startline = 0 #起始行数
 		self.extractName = '^.'
 		self.structure = ''
-		self.extraData = ''
-		self.ignoreDecodeError = False
-		self.postSkip = None
-		self.checkJIS = None
-		self.endStr = None
-		self.ctrlStr = None
-		self.version = '0'
-		self.decrypt = ''
+		self.extraData = '' #引擎自定义的数据
+		self.ignoreDecodeError = False #忽略编码错误
+		self.postSkip = None #匹配后置skip，匹配成功则跳过
+		self.checkJIS = None #检查JIS，可配置允许的单字符匹配
+		self.endStr = None #匹配到则结束
+		self.ctrlStr = None #控制段跳过
+		self.version = '0' #版本
+		self.decrypt = '' #加解密密钥
 
 gExtractVar = ExtractVar()

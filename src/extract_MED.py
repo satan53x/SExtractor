@@ -57,7 +57,7 @@ def readFileDataImp(fileOld, contentSeprate):
 	#print('skip start', skip)
 	if skip >= len(data):
 		#print('skip is too big')
-		return [], []
+		return [], {}
 	#if isShiftJis(data[skip], data[skip+1]) == False:
 		#print('not start with shift-jis')
 	realData = data[skip:]

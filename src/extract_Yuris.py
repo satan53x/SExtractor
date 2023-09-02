@@ -121,7 +121,7 @@ def readFileDataImp(fileOld, contentSeprate):
 	data = fileOld.read()
 	#解析
 	if not manager.init(data):
-		return [], []
+		return [], {}
 	content = manager.splitParaStr()
 	insertContent.clear()
 	insertContent[0] = b''

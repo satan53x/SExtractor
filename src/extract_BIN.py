@@ -5,14 +5,13 @@ import struct
 from common import *
 from extract_TXT import searchLine, ParseVar, GetRegList, dealLastCtrl, initParseVar
 
-OldEncodeName = 'cp932'
-NewEncodeName = 'gbk'
+
 
 # ---------------- Group: BIN -------------------
 def parseImp(content, listCtrl, dealOnce):
 	checkLast = ExVar.structure.startswith('para')
 	var = ParseVar(listCtrl, dealOnce)
-	var.OldEncodeName = OldEncodeName
+	var.OldEncodeName = ExVar.OldEncodeName
 	initParseVar(var)
 	lastCtrl = None
 	for contentIndex in range(len(content)):
@@ -37,7 +36,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		contentIndex = posData[0]
 		start = posData[1]
 		end = posData[2]
-		transData = generateBytes(lTrans[i], end - start, NewEncodeName)
+		transData = generateBytes(lTrans[i], end - start, ExVar.NewEncodeName)
 		if transData == None:
 			return False
 		#写入new

@@ -13,6 +13,12 @@ def GetG(key):
 def SetG(key, value):
 	globalDic[key] = value
 
+def printError(tip, *args):
+    print(f'\033{tip}[0m', end=' ')
+    for arg in args:
+        print(arg, end=' ')
+    print('')
+
 #----------------------------------------------------------
 #判断是否是日文
 def isShiftJis(byte1, byte2):
@@ -40,6 +46,26 @@ def checkJIS(bytes, reg):
         else:
             pos += offset
     return True
+
+#查找第一个UTF-8
+def findFirstUTF8(data, pos):
+    length = 0
+    #查询长度
+    if (data[pos] & 0x80) == 0x00:
+        length = 1
+    elif (data[pos] & 0xE0) == 0xC0:
+        length = 2
+    elif (data[pos] & 0xF0) == 0xE0:
+        length = 3
+    elif(data[pos] & 0xF8) == 0xF0:
+        length = 4
+    else:
+        return -1
+    #检查后续字节是否合法
+    for i in range(1, length):
+        if (data[pos+i] & 0xC0) != 0x80:
+            return -1
+    return length
 
 #----------------------------------------------------------
 #编码生成目标长度的字节数组，会截断和填充字节
@@ -102,7 +128,6 @@ def xorBytes(input, xorTable):
         xorByte = xorTable[i % xorLen]
         result.append(b ^ xorByte)
     return result
-
 
 #----------------------------------------------------------
 def getMatchItem(lst, target):

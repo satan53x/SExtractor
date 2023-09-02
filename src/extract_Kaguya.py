@@ -126,4 +126,4 @@ def readFileDataImp(fileOld, contentSeprate):
 		headerList.append([textType, length])
 		content.append(data[pos:end])
 		pos = end
-	return content, []
+	return content, {}
