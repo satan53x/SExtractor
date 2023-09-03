@@ -9,9 +9,9 @@ OldEncodeName = 'cp932'
 NewEncodeName = 'gbk'
 XorTable = b'\xFF'
 StartLine = 1
-ArcHeaderLen = 4
+MagicNumberLen = 4
 
-fixLength = False #修正索引长度
+fixLength = True #修正索引长度
 exportAri = False #导出索引文件ari
 headerList = []
 
@@ -29,7 +29,6 @@ def parseImp(content, listCtrl, dealOnce):
 	var.OldEncodeName = OldEncodeName
 	initParseVar(var)
 	for contentIndex in range(len(content)):
-		if contentIndex < StartLine: continue #第一行为总长
 		textType, length = headerList[contentIndex]
 		lineData = content[contentIndex]
 		# 每行
@@ -80,44 +79,54 @@ def replaceOnceImp(content, lCtrl, lTrans):
 	return True
 
 # -----------------------------------
-def replaceEndImp(content):
-	if not fixLength: return
+def replaceEndImp(content:list):
 	#遍历
 	ariBuffer = bytearray(b'\0\0\0\0') #ARI头部长度4，文本个数
-	addr = ArcHeaderLen
+	addr = MagicNumberLen + 4
 	ariCount = 1 #好像ari头部本身也算一个count
-	for contentIndex in range(1, len(headerList)):
+	for contentIndex in range(len(headerList)):
 		textType, length = headerList[contentIndex]
-		if exportAri:
-			if textType == 0:
-				#为ari添加文本索引
-				ariCount += 1
-				ariBuffer.extend(int2bytes(addr))
+		if textType == 0 or MagicNumberLen > 0:
+			#为ari添加索引
+			ariCount += 1
+			ariBuffer.extend(int2bytes(addr))
 		#下一个地址
 		addr += 8 + length #字符串header长度为8字节
 	#写入arc包长
-	b = int2bytes(addr, ArcHeaderLen)
-	content[0][0:ArcHeaderLen] = b
-	#导出ari
+	b = int2bytes(addr, 4)
+	ExVar.insertContent[0][MagicNumberLen:MagicNumberLen+4] = b
+	#修正ari头部
+	ariBuffer[0:4] = int2bytes(ariCount)
+	if MagicNumberLen > 0 and fixLength:
+		#ari包含在arc中
+		ExVar.insertContent[len(content)] = ariBuffer[4:] #不需要个数
 	if exportAri:
-		#修正ari头部
-		ariBuffer[0:4] = int2bytes(ariCount)
-		#导出
-		filepath = os.path.join(ExVar.workpath, 'new', 'TBLSTR.ARI')
-		fileNew = open(filepath, 'wb')
-		fileNew.write(ariBuffer)
-		fileNew.close()
+		if MagicNumberLen > 0:
+			print('此版本ARC已包含ARI')
+		else:
+			#导出ari
+			filepath = os.path.join(ExVar.workpath, 'new', 'TBLSTR.ARI')
+			fileNew = open(filepath, 'wb')
+			fileNew.write(ariBuffer)
+			fileNew.close()
 
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeprate):
 	data = fileOld.read()
-	totalLen = readInt(data, 0)
+	global MagicNumberLen
+	if data[0:4] == 'UF01'.encode('ascii'):
+		MagicNumberLen = 4
+	else:
+		MagicNumberLen = 0
+	pos = MagicNumberLen
+	strMaxAddr = readInt(data, pos) #字符区最大位置
 	content = []
+	insertContent = {
+		0: bytearray(data[0:pos+4]) #header
+	}
 	headerList.clear()
-	headerList.append([])
-	content.append(bytearray(data[0:ArcHeaderLen]))
-	pos = ArcHeaderLen
-	while pos < totalLen:
+	pos += 4 
+	while pos < strMaxAddr:
 		textType = readInt(data, pos)
 		pos += 4
 		length = readInt(data, pos)
@@ -126,4 +135,6 @@ def readFileDataImp(fileOld, contentSeprate):
 		headerList.append([textType, length])
 		content.append(data[pos:end])
 		pos = end
-	return content, {}
+	if MagicNumberLen > 0:
+		insertContent[len(content)] = data[strMaxAddr:] #ari索引区
+	return content, insertContent
