@@ -267,7 +267,7 @@ class DataManager():
 	
 	def decodeAll(self):
 		if ExVar.decrypt == '': return
-		if ExVar.decrypt == '0':
+		if ExVar.decrypt.startswith('auto'):
 			#自动
 			item = getMatchItem(Keys, self.version)
 			if item:
@@ -278,6 +278,16 @@ class DataManager():
 		else:
 			#escape
 			self.xorKey =  ExVar.decrypt.encode().decode('unicode_escape').encode('latin-1')
+		#解密验证
+		offset = xorBytes(self.paraSec[8:12], self.xorKey) #第一个偏移，一般应该为0
+		if offset != 0:
+			key = xorBytes(offset, self.xorKey)
+			keyStr = f'\\x{key[0]:02X}\\x{key[1]:02X}\\x{key[2]:02X}\\x{key[3]:02X}'
+			if ExVar.decrypt == 'auto':
+				self.xorKey = key
+				printWarning('默认密钥可能不正确，密钥已自动替换为：', keyStr)
+			else:
+				printWarning('默认密钥可能不正确，猜测密钥为：', keyStr)
 		#解密
 		self.funcSec = xorBytes(self.funcSec, self.xorKey)
 		self.paraSec = xorBytes(self.paraSec, self.xorKey)

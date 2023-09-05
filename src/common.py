@@ -14,7 +14,13 @@ def SetG(key, value):
 	globalDic[key] = value
 
 def printError(tip, *args):
-    print(f'\033{tip}[0m', end=' ')
+    print(f'\033[31m{tip}\033[0m', end=' ')
+    for arg in args:
+        print(arg, end=' ')
+    print('')
+
+def printWarning(tip, *args):
+    print(f'\033[33m{tip}\033[0m', end=' ')
     for arg in args:
         print(arg, end=' ')
     print('')
