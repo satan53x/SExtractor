@@ -279,9 +279,9 @@ class DataManager():
 			#escape
 			self.xorKey =  ExVar.decrypt.encode().decode('unicode_escape').encode('latin-1')
 		#解密验证
-		offset = xorBytes(self.paraSec[8:12], self.xorKey) #第一个偏移，一般应该为0
-		if offset != 0:
-			key = xorBytes(offset, self.xorKey)
+		bOffset = xorBytes(self.paraSec[8:12], self.xorKey) #第一个偏移，一般应该为0
+		if readInt(bOffset, 0) != 0:
+			key = xorBytes(bOffset, self.xorKey)
 			keyStr = f'\\x{key[0]:02X}\\x{key[1]:02X}\\x{key[2]:02X}\\x{key[3]:02X}'
 			if ExVar.decrypt == 'auto':
 				self.xorKey = key
