@@ -267,7 +267,7 @@ class DataManager():
 	
 	def decodeAll(self):
 		if ExVar.decrypt == '': return
-		if ExVar.decrypt.startswith('auto'):
+		if ExVar.decrypt.startswith('auto') or ExVar.decrypt == 'default':
 			#自动
 			item = getMatchItem(Keys, self.version)
 			if item:
