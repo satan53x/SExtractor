@@ -285,9 +285,9 @@ class DataManager():
 			keyStr = f'\\x{key[0]:02X}\\x{key[1]:02X}\\x{key[2]:02X}\\x{key[3]:02X}'
 			if ExVar.decrypt == 'auto':
 				self.xorKey = key
-				printWarning('默认密钥可能不正确，密钥已自动替换为：', keyStr)
+				printWarning('默认密钥可能不正确，密钥已自动替换为:', keyStr)
 			else:
-				printWarning('默认密钥可能不正确，猜测密钥为：', keyStr)
+				printWarning('默认密钥可能不正确，猜测密钥为:', keyStr)
 		#解密
 		self.funcSec = xorBytes(self.funcSec, self.xorKey)
 		self.paraSec = xorBytes(self.paraSec, self.xorKey)
