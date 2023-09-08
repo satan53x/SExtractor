@@ -27,7 +27,9 @@ def dealPages(var, pages, i):
 				var.lineData = item['parameters'][0]
 				var.contentIndex = [i, j, k, -1]
 				ctrls = searchLine(var)
-				if len(ctrls) == 0: #未捕捉到，一般为空字符串
+				if ctrls == None:
+					pass
+				elif len(ctrls) == 0: #未捕捉到，一般为空字符串
 					continue 
 				elif 'isName' not in ctrls[0]:
 					#对话
