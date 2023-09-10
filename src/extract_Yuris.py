@@ -262,10 +262,11 @@ class DataManager():
 		end = start + self.otherLen
 		self.otherSec = data[start:end]
 		#解密
+		self.findKey()
 		self.decodeAll()
 		return self
 	
-	def decodeAll(self):
+	def findKey(self):
 		if ExVar.decrypt == '': return
 		if ExVar.decrypt.startswith('auto') or ExVar.decrypt == 'default':
 			#自动
@@ -288,6 +289,9 @@ class DataManager():
 				printWarning('默认密钥可能不正确，密钥已自动替换为:', keyStr)
 			else:
 				printWarning('默认密钥可能不正确，猜测密钥为:', keyStr)
+
+	def decodeAll(self):
+		if ExVar.decrypt == '': return
 		#解密
 		self.funcSec = xorBytes(self.funcSec, self.xorKey)
 		self.paraSec = xorBytes(self.paraSec, self.xorKey)
