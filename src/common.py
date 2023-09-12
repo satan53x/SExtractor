@@ -14,13 +14,36 @@ def SetG(key, value):
 	globalDic[key] = value
 
 def printError(tip, *args):
+    if not ExVar.printSetting[4]: return
     print(f'\033[31m{tip}\033[0m', end=' ')
     for arg in args:
         print(arg, end=' ')
     print('')
 
 def printWarning(tip, *args):
+    if not ExVar.printSetting[3]: return
     print(f'\033[33m{tip}\033[0m', end=' ')
+    for arg in args:
+        print(arg, end=' ')
+    print('')
+
+def printWarningGreen(tip, *args):
+    if not ExVar.printSetting[2]: return
+    print(f'\033[32m{tip}\033[0m', end=' ')
+    for arg in args:
+        print(arg, end=' ')
+    print('')
+
+def printInfo(tip, *args):
+    if not ExVar.printSetting[1]: return
+    print(tip, end=' ')
+    for arg in args:
+        print(arg, end=' ')
+    print('')
+
+def printDebug(tip, *args):
+    if not ExVar.printSetting[0]: return
+    print(tip, end=' ')
     for arg in args:
         print(arg, end=' ')
     print('')

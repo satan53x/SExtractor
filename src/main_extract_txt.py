@@ -43,9 +43,9 @@ def parse():
 		#签名检查
 		s = var.content[0]
 		if s[0] == '\ufeff' or s[0] == '\ufffe':
-			print('\033[33m请检查文件编码是否正确，疑似含有签名\033[0m', var.filename)
+			printWarning('请检查文件编码是否正确，疑似含有签名', var.filename)
 		if not var.content[-1].endswith('\n'):
-			print('已补足文件末尾缺少的一个换行符')
+			printInfo('已补足文件末尾缺少的一个换行符')
 			var.content[-1] += '\n'
 	fileOld.close()
 	#print(content)
@@ -54,7 +54,7 @@ def parse():
 	num = len(var.listOrig)
 	#print('count:', num, len(transDic))
 	if num == 0:
-		print('\033[32m没有解析到有效内容\033[0m', var.filename)
+		printWarningGreen('没有解析到有效内容', var.filename)
 		#filepath = os.path.join(var.workpath, var.filename+var.Postfix)
 		#if os.path.exists(filepath):
 			#os.remove(filepath)

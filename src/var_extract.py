@@ -50,6 +50,7 @@ class ExtractVar():
 	listCtrl = [] #控制表
 	addSeprate = True
 	cutoffDic = {}
+	printSetting = None
 
 	#-------------------
 	#窗口

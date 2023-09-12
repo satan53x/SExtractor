@@ -72,7 +72,7 @@ def readFormatDic():
 	if os.path.isfile(filepath):
 		fileTransDic = open(filepath, 'r', encoding='utf-8')
 		var.transDic = json.load(fileTransDic)
-		print('读入Json: ', len(var.transDic), var.curIO.inputFileName)
+		printInfo('读入Json: ', len(var.transDic), var.curIO.inputFileName)
 		var.isInput = True
 		#print(list(var.transDic.values())[0])
 
@@ -82,7 +82,7 @@ def readFormatDicIO():
 	if os.path.isfile(filepath):
 		fileTransDic = open(filepath, 'r', encoding='utf-8')
 		var.transDicIO = json.load(fileTransDic)
-		print('读入Json: ', len(var.transDicIO), var.curIO.inputFileName)
+		printInfo('读入Json: ', len(var.transDicIO), var.curIO.inputFileName)
 		var.isInput = True
 		#print(list(var.transDic.values())[0])
 		#还原transDic
@@ -96,14 +96,14 @@ def readFormatTxt(boolSplit):
 		#译文
 		fileAllTrans = open(filepath, 'r', encoding='utf-8')
 		allTrans = fileAllTrans.readlines()
-		print('读入Txt:', len(allTrans), var.curIO.inputFileName)
+		printInfo('读入Txt:', len(allTrans), var.curIO.inputFileName)
 		#原文
 		filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 		fileAllOrig = open(filepath, 'r', encoding='utf-8')
 		allOrig = fileAllOrig.readlines()
-		print('读入Txt:', len(allOrig), var.curIO.ouputFileName)
+		printInfo('读入Txt:', len(allOrig), var.curIO.ouputFileName)
 		if len(allTrans) != len(allOrig):
-			print('\033[31m导入与导出文件行数不一致\033[0m', var.curIO.inputFileName)
+			printError('导入与导出文件行数不一致', var.curIO.inputFileName)
 			return
 		var.isInput = True
 		#合并 
@@ -128,14 +128,14 @@ def readFormatItemList():
 		#译文
 		fileAllTrans = open(filepath, 'r', encoding='utf-8')
 		allTrans = json.load(fileAllTrans)
-		print('读入Json:', len(allTrans), var.curIO.inputFileName)
+		printInfo('读入Json:', len(allTrans), var.curIO.inputFileName)
 		#原文
 		filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 		fileAllOrig = open(filepath, 'r', encoding='utf-8')
 		allOrig = json.load(fileAllOrig)
-		print('读入Json:', len(allOrig), var.curIO.ouputFileName)
+		printInfo('读入Json:', len(allOrig), var.curIO.ouputFileName)
 		if len(allTrans) != len(allOrig):
-			print('\033[31m导入与导出文件行数不一致\033[0m', var.curIO.inputFileName)
+			printError('导入与导出文件行数不一致', var.curIO.inputFileName)
 			return
 		var.isInput = True
 		#合并
@@ -157,14 +157,14 @@ def readFormatList():
 		#译文
 		fileAllTrans = open(filepath, 'r', encoding='utf-8')
 		allTrans = json.load(fileAllTrans)
-		print('读入Json:', len(allTrans), var.curIO.inputFileName)
+		printInfo('读入Json:', len(allTrans), var.curIO.inputFileName)
 		#原文
 		filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 		fileAllOrig = open(filepath, 'r', encoding='utf-8')
 		allOrig = json.load(fileAllOrig)
-		print('读入Json:', len(allOrig), var.curIO.ouputFileName)
+		printInfo('读入Json:', len(allOrig), var.curIO.ouputFileName)
 		if len(allTrans) != len(allOrig):
-			print('\033[31m导入与导出文件行数不一致\033[0m', var.curIO.inputFileName)
+			printError('导入与导出文件行数不一致', var.curIO.inputFileName)
 			return
 		var.isInput = True
 		#合并
@@ -186,7 +186,7 @@ def readFormatXlsx():
 				var.transDic[row['Key']] = value
 			else:
 				var.transDic[row['Key']] = ''
-		print('读入Xlsx: ', len(var.transDic), var.curIO.inputFileName)
+		printInfo('读入Xlsx: ', len(var.transDic), var.curIO.inputFileName)
 		var.isInput = True
 		#print(list(var.transDic.values())[0])
 
@@ -214,7 +214,7 @@ def writeFormat():
 
 def writeFormatDirect(targetJson):
 	#print(filepath)
-	print('输出Json:', len(targetJson), var.curIO.ouputFileName)
+	printInfo('输出Json:', len(targetJson), var.curIO.ouputFileName)
 	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 	fileOutput = open(filepath, 'w', encoding='utf-8')
 	#print(targetJson)
@@ -223,7 +223,7 @@ def writeFormatDirect(targetJson):
 
 def writeFormatCopyKey(targetJson):
 	#print(filepath)
-	print('输出Json:', len(targetJson), var.curIO.ouputFileName)
+	printInfo('输出Json:', len(targetJson), var.curIO.ouputFileName)
 	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 	fileOutput = open(filepath, 'w', encoding='utf-8')
 	#print(targetJson)
@@ -238,7 +238,7 @@ def writeFormatCopyKey(targetJson):
 
 def writeFormatTxt(targetJson):
 	#print(filepath)
-	print('输出Txt:', len(targetJson), var.curIO.ouputFileName)
+	printInfo('输出Txt:', len(targetJson), var.curIO.ouputFileName)
 	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 	fileOutput = open(filepath, 'w', encoding='utf-8')
 	#print(targetJson)
@@ -248,7 +248,7 @@ def writeFormatTxt(targetJson):
 
 def writeFormatTxtByItem(targetJson):
 	#print(filepath)
-	print('输出Txt:', len(targetJson), var.curIO.ouputFileName)
+	printInfo('输出Txt:', len(targetJson), var.curIO.ouputFileName)
 	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 	fileOutput = open(filepath, 'w', encoding='utf-8')
 	#print(targetJson)
@@ -261,7 +261,7 @@ def writeFormatTxtByItem(targetJson):
 
 def writeFormatListByItem(targetJson):
 	#print(filepath)
-	print('输出Json:', len(targetJson), var.curIO.ouputFileName)
+	printInfo('输出Json:', len(targetJson), var.curIO.ouputFileName)
 	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 	fileOutput = open(filepath, 'w', encoding='utf-8')
 	#print(targetJson)
@@ -276,7 +276,7 @@ def writeFormatListByItem(targetJson):
 
 def writeFormatXlsx(targetJson):
 	#print(filepath)
-	print('输出Xlsx:', len(targetJson), var.curIO.ouputFileName)
+	printInfo('输出Xlsx:', len(targetJson), var.curIO.ouputFileName)
 	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 	#fileOutput = open(filepath, 'w', encoding='utf-8')
 	#print(targetJson)
@@ -289,7 +289,7 @@ def keepAllOrig():
 	listIndex = -1
 	if len(var.listCtrl) > 0:
 		if 'isName' in var.listCtrl[-1] or 'unfinish' in var.listCtrl[-1]:
-			print('\033[31mlistCtrl结束行错误\033[0m', var.filename, var.listCtrl[-1], var.listOrig[-1])
+			printError('listCtrl结束行错误', var.filename, var.listCtrl[-1], var.listOrig[-1])
 	while(listIndex < len(var.listOrig) - 1):
 		item = {}
 		while(True):
@@ -323,7 +323,7 @@ def dealOnce(text, contentIndex=0):
 	#if orig.isspace() == False:
 		#orig = orig.strip()
 	if orig == '': 
-		print('>>>>>> Empty orig', var.filename, str(contentIndex))
+		printWarning('提取时译文为空', var.filename, str(contentIndex))
 		return False
 	#if orig.isspace(): return False
 	#输出原文
@@ -340,13 +340,13 @@ def replace():
 		ctrl = var.listCtrl[listIndex]
 		trans = var.transDic[orig]
 		if trans == '':
-			print('\033[32m译文为空, 不替换\033[0m', var.filename, orig)
+			printWarningGreen('译文为空, 不替换', var.filename, orig)
 			#trans = 'te'.format(listIndex) #测试
 			continue
 		#开始处理段落
 		ret = var.replaceOnceImp(var.content, [ctrl], [trans])
 		if ret == False:
-			print('\033[31m替换错误，请检查文本\033[0m', var.filename, trans)
+			printError('替换错误，请检查文本', var.filename, trans)
 			continue
 		#break #测试
 	if var.replaceEndImp:
@@ -439,13 +439,13 @@ def setRegDic(str):
 				if hasattr(var, flag):
 					setattr(var, flag, True)
 				else:
-					print('没有找到预设的参数名:', flag) 
+					printWarning('没有找到预设的参数名:', flag) 
 			continue
 		elif ('skip' not in pair[0]) and ('search' not in pair[0]):
 			if hasattr(var, pair[0]):
 				setattr(var, pair[0], pair[1])
 			else:
-				print('没有找到预设的参数名:', pair[0])
+				printWarning('没有找到预设的参数名:', pair[0])
 		# 规则
 		var.regDic[pair[0]] = pair[1]
 		print('正则规则:', pair[0], pair[1])
@@ -457,12 +457,12 @@ def readCutoffDic():
 	if os.path.isfile(filepath):
 		fileTransDic = open(filepath, 'r', encoding='utf-8')
 		var.cutoffDic = json.load(fileTransDic)
-		print('读入Json: ', len(var.cutoffDic), 'cutoff.json')
+		printInfo('读入Json: ', len(var.cutoffDic), 'cutoff.json')
 
 def writeCutoffDic():
 	if len(var.cutoffDic) == 0: return
 	#print(filepath)
-	print('输出Json:', len(var.cutoffDic), 'cutoff.json')
+	printInfo('输出Json:', len(var.cutoffDic), 'cutoff.json')
 	filepath = os.path.join(var.workpath, 'ctrl', 'cutoff.json')
 	fileOutput = open(filepath, 'w', encoding='utf-8')
 	#print(targetJson)
@@ -499,12 +499,14 @@ def initArgs(args):
 	# 编码
 	if args['encode']:
 		var.EncodeRead = args['encode']
+	#打印
+	var.printSetting = args['print']
 	return 0
 
 #args = [workpath, engineName, outputFormat, nameList]
 def mainExtract(args, parseImp, initDone=None):
 	if len(args) < 4:
-		print("main_extract参数错误", args)
+		printError("main_extract参数错误", args)
 		return
 	showMessage("开始处理...")
 	path = args['workpath']
@@ -534,13 +536,13 @@ def mainExtract(args, parseImp, initDone=None):
 				parseImp()
 				keepAllOrig()
 				#break #测试
-		print('读取文件数:', var.inputCount)
+		printInfo('读取文件数:', var.inputCount)
 		writeFormat()
-		print('新建文件数:', var.outputCount)
+		printInfo('新建文件数:', var.outputCount)
 		var.curIO = var.ioExtra
 		writeFormat()
 		writeCutoffDic()
 	else:
-		print('未找到主目录')
+		printError('未找到主目录')
 	showMessage("处理完成。")
 	print('Done.\n')

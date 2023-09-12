@@ -542,6 +542,77 @@
          </widget>
         </item>
         <item>
+         <widget class="QGroupBox" name="groupBox_5">
+          <property name="title">
+           <string>打印信息</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_17">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <item>
+            <widget class="QCheckBox" name="printCheck0">
+             <property name="text">
+              <string>Debug</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="printCheck1">
+             <property name="text">
+              <string>Info</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="printCheck2">
+             <property name="text">
+              <string>WarningGreen</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="printCheck3">
+             <property name="text">
+              <string>Warning</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="printCheck4">
+             <property name="text">
+              <string>Error</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -787,7 +858,7 @@
            <item>
             <widget class="QGroupBox" name="groupBox_4">
              <property name="title">
-              <string>收集分发（从合并目录到提取目录）</string>
+              <string>收集分发（合并目录到提取目录）</string>
              </property>
              <layout class="QHBoxLayout" name="horizontalLayout_16">
               <property name="spacing">

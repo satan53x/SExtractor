@@ -63,7 +63,7 @@ def parse():
 	num = len(var.listOrig)
 	#print('count:', num, len(transDic))
 	if num == 0:
-		print('\033[32m没有解析到有效内容\033[0m', var.filename)
+		printWarningGreen('没有解析到有效内容', var.filename)
 		#filepath = os.path.join(var.workpath, var.filename+var.Postfix)
 		#if os.path.exists(filepath):
 			#os.remove(filepath)

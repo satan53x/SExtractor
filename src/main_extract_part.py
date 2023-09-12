@@ -9,7 +9,7 @@ from main_extract import *
 #args = [workpath, engineName, outputFormat, nameList]
 def mainExtractPart(args, parseImp, initDone=None):
 	if len(args) < 4:
-		print("main_extract参数错误", args)
+		printError("main_extract参数错误", args)
 		return
 	showMessage("开始处理...")
 	path = args['workpath']
@@ -41,10 +41,10 @@ def mainExtractPart(args, parseImp, initDone=None):
 				var.curIO = var.ioExtra
 				writeFormat()
 				#break #测试
-		print('读取文件数:', var.inputCount)
-		print('新建文件数:', var.outputCount)
+		printInfo('读取文件数:', var.inputCount)
+		printInfo('新建文件数:', var.outputCount)
 		writeCutoffDic()
 	else:
-		print('未找到主目录')
+		printError('未找到主目录')
 	showMessage("处理完成。")
 	print('Done.\n')

@@ -227,7 +227,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'cutoffCopy':cutoffCopy,
 			'outputFormatExtra':outputFormatExtra,
 			'noInput': noInput,
-			'encode': encode
+			'encode': encode,
+			'print': self.getExtractPrintSetting()
 		}
 		var.window = self
 		#保存配置
@@ -265,6 +266,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mainConfig.setValue('encodeIndex', self.txtEncodeBox.currentIndex())
 		#窗口大小
 		self.mainConfig.setValue('windowSize', self.size())
+
+	#提取打印设置
+	def getExtractPrintSetting(self):
+		lst = []
+		lst.append(self.printCheck0.isChecked()) #info
+		lst.append(self.printCheck1.isChecked()) #info
+		lst.append(self.printCheck2.isChecked()) #warningGreen
+		lst.append(self.printCheck3.isChecked()) #warning
+		lst.append(self.printCheck4.isChecked()) #error
+		return lst
 
 	def extractFileThread(self):
 		self.thread = extractThread()
