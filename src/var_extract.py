@@ -51,6 +51,8 @@ class ExtractVar():
 	addSeprate = True
 	cutoffDic = {}
 	printSetting = None
+	splitIndexArray = None
+	maxCountPerLine = 0
 
 	#-------------------
 	#窗口

@@ -9,6 +9,7 @@ copyKeyToValue = True
 
 # ---------------- Group: JSON -------------------
 def parseImp(content, listCtrl, dealOnce):
+	if content == []: return
 	var = ParseVar()
 	var.listIndex = 0
 	var.listCtrl = listCtrl

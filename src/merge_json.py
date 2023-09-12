@@ -95,21 +95,36 @@ def seprateDic(content):
 	count = 0
 	seq = 0
 	for key, value in content.items():
+		while getOnceLinesCount(seq) == 0:
+			writeSeprate(seq)
+			seq += 1
+			count = 0
+			allJson[0].clear()
 		allJson[0][key] = value
 		count += 1
 		if count >= OnceLinesCount:
-			seq += 1
 			writeSeprate(seq)
+			seq += 1
 			count = 0
 			allJson[0].clear()
 	if count != 0:
-		seq += 1
 		writeSeprate(seq)
+		seq += 1
+	elif OnceLinesCount == 0:
+		allJson[0].clear()
+		while seq < len(filenameList) - 1:
+			writeSeprate(seq)
+			seq += 1
 
 def seprateList(content):
 	count = 0
 	seq = 0
 	for item in content:
+		while getOnceLinesCount(seq) == 0:
+			writeSeprate(seq)
+			seq += 1
+			count = 0
+			allJson[1].clear()
 		allJson[1].append(item)
 		count += 1
 		if count >= getOnceLinesCount(seq):
@@ -120,6 +135,11 @@ def seprateList(content):
 	if count != 0:
 		writeSeprate(seq)
 		seq += 1
+	elif OnceLinesCount == 0:
+		allJson[1].clear()
+		while seq < len(filenameList) - 1:
+			writeSeprate(seq)
+			seq += 1
 
 def getOnceLinesCount(seq):
 	if OnceLinesCount > 0: return OnceLinesCount

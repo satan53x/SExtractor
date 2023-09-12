@@ -97,6 +97,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		# 编码
 		index = int(initValue(self.mainConfig, 'encodeIndex', 0))
 		self.txtEncodeBox.setCurrentIndex(index)
+		# 译文
+		checked = initValue(self.mainConfig, 'splitAuto', 'false') != 'false'
+		self.splitCheck.setChecked(checked)
+		maxCountPerLine = initValue(self.mainConfig, 'maxCountPerLine', 30)
+		self.splitMaxEdit.setText(str(maxCountPerLine))
 
 	#初始化
 	def afterShow(self):
@@ -216,6 +221,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		outputFormatExtra = self.outputFileExtraBox.currentIndex() - 1
 		noInput = self.noInputCheck.isChecked()
 		encode = self.txtEncodeBox.currentText()
+		splitIndexArray = None
+		if self.splitCheck.isChecked():
+			lst = self.splitIndexEdit.text().split(',')
+			splitIndexArray = [int(i) for i in lst]
+		maxCountPerLine = int(self.splitMaxEdit.text())
 		args = {
 			'file':fileType,
 			'workpath':workpath,
@@ -229,7 +239,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'outputFormatExtra':outputFormatExtra,
 			'noInput': noInput,
 			'encode': encode,
-			'print': self.getExtractPrintSetting()
+			'print': self.getExtractPrintSetting(),
+			'splitIndexArray': splitIndexArray,
+			'maxCountPerLine': maxCountPerLine
 		}
 		var.window = self
 		#保存配置
@@ -257,6 +269,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mainConfig.setValue('regIndex', self.regIndex)
 		self.mainConfig.setValue('cutoff', args['cutoff'])
 		self.mainConfig.setValue('cutoffCopy', args['cutoffCopy'])
+		self.mainConfig.setValue('maxCountPerLine', args['maxCountPerLine'])
 		if self.regNameTab.isEnabled():
 			regName = self.regNameBox.currentText()
 			if re.match(r'_*Custom', regName):
@@ -267,6 +280,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mainConfig.setValue('encodeIndex', self.txtEncodeBox.currentIndex())
 		#窗口大小
 		self.mainConfig.setValue('windowSize', self.size())
+		self.mainConfig.setValue('splitAuto', self.splitCheck.isChecked())
 
 	#提取打印设置
 	def getExtractPrintSetting(self):

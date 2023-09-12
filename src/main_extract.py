@@ -499,8 +499,11 @@ def initArgs(args):
 	# 编码
 	if args['encode']:
 		var.EncodeRead = args['encode']
-	#打印
+	# 打印
 	var.printSetting = args['print']
+	# 分割
+	var.splitIndexArray = args['splitIndexArray']
+	var.maxCountPerLine = args['maxCountPerLine']
 	return 0
 
 #args = [workpath, engineName, outputFormat, nameList]
