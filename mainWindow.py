@@ -25,6 +25,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		#merge工具
 		self.mergeDirButton.clicked.connect(self.chooseMergeDir)
 		self.mergeButton.clicked.connect(self.mergeFile)
+		self.collectButton.clicked.connect(self.collectFiles)
 		#创建字典
 		self.createDicButton.clicked.connect(self.createDic)
 
@@ -323,6 +324,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		print(args)
 		createDicTool(args)
 		self.mainConfig.setValue('mergeSkipReg', skipReg)
+
+	#收集
+	def collectFiles(self):
+		self.statusBar.showMessage('暂不支持此功能')
 
 #---------------------------------------------------------------
 #设置初始值
