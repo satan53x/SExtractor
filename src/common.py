@@ -145,8 +145,10 @@ def findInsertIndex(sortedList, target):
     return position
 
 def findNearestIndex(sortedList, target):
-    position = bisect.bisect_right(sortedList, target)
-    if position > 0:
+    position = bisect.bisect_left(sortedList, target)
+    if position >= len(sortedList):
+        position = len(sortedList) - 1
+    elif position > 0:
         left = sortedList[position - 1]
         right = sortedList[position]
         if right - target >= target - left:
