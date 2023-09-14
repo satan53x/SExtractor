@@ -221,10 +221,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		outputFormatExtra = self.outputFileExtraBox.currentIndex() - 1
 		noInput = self.noInputCheck.isChecked()
 		encode = self.txtEncodeBox.currentText()
-		splitIndexArray = None
-		if self.splitCheck.isChecked():
-			lst = self.splitIndexEdit.text().split(',')
-			splitIndexArray = [int(i) for i in lst]
+		splitAuto = self.splitCheck.isChecked()
+		splitParaSep = self.splitSepEdit.text()
 		maxCountPerLine = int(self.splitMaxEdit.text())
 		args = {
 			'file':fileType,
@@ -240,7 +238,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'noInput': noInput,
 			'encode': encode,
 			'print': self.getExtractPrintSetting(),
-			'splitIndexArray': splitIndexArray,
+			'splitAuto': splitAuto,
+			'splitParaSep': splitParaSep,
 			'maxCountPerLine': maxCountPerLine
 		}
 		var.window = self

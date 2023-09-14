@@ -51,7 +51,8 @@ class ExtractVar():
 	addSeprate = True
 	cutoffDic = {}
 	printSetting = None
-	splitIndexArray = None
+	splitAuto = False
+	splitParaSep = '\r\n' #段落分割符
 	maxCountPerLine = 0
 
 	#-------------------

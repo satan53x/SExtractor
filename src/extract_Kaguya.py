@@ -39,12 +39,21 @@ def parseImp(content, listCtrl, dealOnce):
 			end = index
 		#解密
 		text = xorBytes(lineData[start:end], XorTable)
-		text = text.decode(OldEncodeName)
-		ctrl = {'pos':[contentIndex, start, end]}
-		if textType == 2: #名字类型
-			ctrl['isName'] = True
-		if dealOnce(text, contentIndex): 
-			listCtrl.append(ctrl)
+		if var.regList == []:
+			text = text.decode(OldEncodeName)
+			ctrl = {'pos':[contentIndex, start, end]}
+			if textType == 2: #名字类型
+				ctrl['isName'] = True
+			if dealOnce(text, contentIndex): 
+				listCtrl.append(ctrl)
+		else:
+			var.lineData = text
+			var.searchStart = start
+			var.searchEnd = end
+			var.contentIndex = contentIndex
+			ctrls = searchLine(var)
+			if textType == 2: #名字类型
+				ctrls[0]['isName'] = True
 
 # -----------------------------------
 
@@ -70,10 +79,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 			length += len(transData) - lenOrig
 			headerList[contentIndex][1] = length
 		#写入new
-		strNew = b''
-		strNew += int2bytes(textType)
-		strNew += int2bytes(length)
-		strNew += lineData[:start] + transData + lineData[end:]
+		strNew = lineData[:start] + transData + lineData[end:]
 		content[contentIndex] = strNew
 
 	return True
@@ -86,6 +92,10 @@ def replaceEndImp(content:list):
 	ariCount = 1 #好像ari头部本身也算一个count
 	for contentIndex in range(len(headerList)):
 		textType, length = headerList[contentIndex]
+		#还原控制段
+		prefix = int2bytes(textType) + int2bytes(length)
+		content[contentIndex] = prefix + content[contentIndex]
+		#索引
 		if textType == 0 or MagicNumberLen > 0:
 			#为ari添加索引
 			ariCount += 1

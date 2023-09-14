@@ -144,6 +144,15 @@ def findInsertIndex(sortedList, target):
     position = bisect.bisect_left(sortedList, target)
     return position
 
+def findNearestIndex(sortedList, target):
+    position = bisect.bisect_right(sortedList, target)
+    if position > 0:
+        left = sortedList[position - 1]
+        right = sortedList[position]
+        if right - target >= target - left:
+            position -= 1
+    return position
+
 def readInt(data, pos, byteNum=4):
     return int.from_bytes(data[pos:pos+byteNum], byteorder='little')
 

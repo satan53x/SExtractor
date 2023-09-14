@@ -308,7 +308,7 @@ def keepAllOrig():
 					item['message'] = ""
 				item['message'] += orig
 				if 'unfinish' in ctrl:
-					item['message'] += '\r\n'
+					item['message'] += var.splitParaSep
 					continue
 			var.allOrig.append(item)
 			#加入transDicIO
@@ -474,6 +474,8 @@ def showMessage(msg):
 		var.window.statusBar.showMessage(msg)
 
 def initArgs(args):
+	# 打印
+	var.printSetting = args['print']
 	ret = chooseEngine(args)
 	if ret != 0:
 		return ret
@@ -499,10 +501,10 @@ def initArgs(args):
 	# 编码
 	if args['encode']:
 		var.EncodeRead = args['encode']
-	# 打印
-	var.printSetting = args['print']
 	# 分割
-	var.splitIndexArray = args['splitIndexArray']
+	var.splitAuto = args['splitAuto']
+	var.splitParaSep:str = args['splitParaSep']
+	var.splitParaSep = var.splitParaSep.encode().decode('unicode_escape')
 	var.maxCountPerLine = args['maxCountPerLine']
 	return 0
 

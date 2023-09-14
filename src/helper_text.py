@@ -1,9 +1,10 @@
+import math
 import re
 from common import *
 
 __all__ = ['splitToTransDic', 'splitToTransDicAuto']
 
-sep = '\r\n'
+#sep = '\r\n'
 sepLen = 2
 symbolPattern = '[\\u3000-\\u303F\\uFF00-\\uFF65\\u2000-\\u206F]'
 searchCount = 10
@@ -11,10 +12,11 @@ searchCount = 10
 #固定分割
 def splitToTransDic(orig, trans):
 	if trans == '': return #整体译文为空则不处理
-	if ExVar.splitIndexArray:
+	if ExVar.splitAuto:
 		#重新分割
 		splitToTransDicAuto(orig, trans) 
 		return
+	sep = ExVar.splitParaSep
 	listMsgOrig = re.split(sep, orig)
 	listMsgTrans = re.split(sep, trans)
 	for j in range(len(listMsgOrig)):
@@ -42,42 +44,64 @@ def splitToTransDicAuto(orig, trans):
 
 #重新分割
 def redistributeTrans(orig:str, trans:str):
+	sep = ExVar.splitParaSep
 	#分割原文
-	scale = len(trans) / len(orig)
 	origList = re.split(sep, orig)
-	transList = re.split(sep, trans)
-	if len(origList) == len(transList):
-		#个数相同则不需要进行重新分割
-		return origList, transList
 	newTrans = re.sub(sep, '', trans)
+	if len(origList) == 1:
+		return origList, [newTrans]
+	# transList = re.split(sep, trans)
+	# if len(origList) == len(transList):
+	# 	return origList, transList
+	#查询译文符号
+	transSymbolList = []
+	matches = re.finditer(symbolPattern, newTrans)
+	for match in matches:
+		transSymbolList.append(match.end()) #右区间，不包含
+	#找出最接近的下标
+	transSepList = []
+	if len(transSymbolList) <= len(origList):
+		#符号数量不大于原文行数
+		for index in range(len(origList)):
+			if index < len(transSymbolList):
+				transSepList.append(transSymbolList[index])
+			else:
+				transSepList.append(len(newTrans))
+	else:
+		#符号数量大于原文行数
+		scale = len(trans) / len(orig)
+		origSepList = []
+		length = 0
+		for seq in range(len(origList) - 1):
+			length += len(origList[seq])
+			pos = math.floor(length * scale)
+			origSepList.append(pos)
+		#查找
+		transIndexList = []
+		for j, pos in enumerate(origSepList):
+			index = findNearestIndex(transSymbolList, pos)
+			if j>0 and index <= transIndexList[j-1]:
+				index = transIndexList[j-1] + 1
+			transIndexList.append(index)
+		transIndexList.append(len(transSymbolList)-1)
+		#修正尾部重复
+		for j in range(len(transIndexList) - 2, -1, -1):
+			if transIndexList[j] >= transIndexList[j+1]:
+				transIndexList[j] = transIndexList[j+1] - 1
+			else:
+				break
+		#分配
+		for index in transIndexList:
+			transSepList.append(transSymbolList[index])
+	#分割译文
 	transList = []
 	start = 0
-	max = len(newTrans)
-	for index in range(len(origList) - 1):
-		#单行处理
-		orig = origList[index]
-		end = start + round(len(orig)*scale) #初始搜索位置
-		if end > max:
-			end = max
-		pos = end
-		for i in ExVar.splitIndexArray:
-			#单个字符扫描
-			pos = end + i
-			if pos < start or pos >= max:
-				#扫描失败
-				pos = end
-				#printWarning('建议手动修正分割:', trans.replace('\r\n', '\\r\\n'))
-				break
-			ret = re.match(symbolPattern, newTrans[pos])
-			if ret:
-				pos += 1
-				break
-		text = newTrans[start:pos] or '　'
-		transList.append(text)
-		start = pos
-	#最后一行保留所有
-	text = newTrans[start:] or '　'
-	transList.append(text)
+	for end in transSepList:
+		if start == end:
+			transList.append('　')
+		else:
+			transList.append(newTrans[start:end])
+		start = end
 	return origList, transList
 
 
