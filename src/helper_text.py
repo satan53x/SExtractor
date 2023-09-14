@@ -29,7 +29,7 @@ def splitToTransDic(orig, trans):
 			ExVar.transDic[msgOrig] == '　' or \
 			ExVar.transDic[msgOrig] == ' ':
 			if len(msgTrans) > ExVar.maxCountPerLine:
-				printWarning('译文长度存疑', msgTrans)
+				printWarning('长度超过设置阈值', msgTrans)
 			ExVar.transDic[msgOrig] = msgTrans
 
 #自动重新分割
@@ -39,7 +39,7 @@ def splitToTransDicAuto(orig, trans):
 		msgOrig = listMsgOrig[j]
 		msgTrans = listMsgTrans[j]
 		if len(msgTrans) > ExVar.maxCountPerLine:
-			printWarning('译文长度存疑', msgTrans)
+			printWarning('长度超过设置阈值', msgTrans)
 		ExVar.transDic[msgOrig] = msgTrans
 
 #重新分割
