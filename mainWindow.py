@@ -100,7 +100,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		# 译文
 		checked = initValue(self.mainConfig, 'splitAuto', 'false') != 'false'
 		self.splitCheck.setChecked(checked)
-		maxCountPerLine = initValue(self.mainConfig, 'maxCountPerLine', 30)
+		maxCountPerLine = initValue(self.mainConfig, 'maxCountPerLine', 64)
 		self.splitMaxEdit.setText(str(maxCountPerLine))
 
 	#初始化
