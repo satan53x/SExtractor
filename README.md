@@ -30,6 +30,7 @@
 * Yu-ris
 
 #### 配置
+* 文件夹下自定义的config*.ini都会被读取，*中不能以数字开头。(例：configTest.ini)
 * reg.ini中可自定义匹配规则, 当前预设:
  1. Artemis
  2. EntisGLS
