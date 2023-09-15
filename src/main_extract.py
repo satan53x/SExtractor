@@ -484,23 +484,16 @@ def initArgs(args):
 	# 正则
 	setRegDic(args['regDic'])
 	# 截断
-	if args['cutoff']:
-		var.cutoff = True
-	else:
-		var.cutoff = False
-	if args['cutoffCopy']:
-		var.cutoffCopy = True
-	else:
-		var.cutoffCopy = False
+	var.cutoff = args['cutoff']
+	var.cutoffCopy = args['cutoffCopy']
 	readCutoffDic()
 	# 是否不读取译文
-	if args['noInput']:
-		var.noInput = True
-	else:
-		var.noInput = False
+	var.noInput =  args['noInput']
 	# 编码
-	if args['encode']:
-		var.EncodeRead = args['encode']
+	var.EncodeRead = args['encode']
+	if args['binEncodeValid']:
+		var.OldEncodeName = var.EncodeRead
+		var.NewEncodeName = var.EncodeRead
 	# 分割
 	var.splitAuto = args['splitAuto']
 	var.splitParaSep:str = args['splitParaSep']

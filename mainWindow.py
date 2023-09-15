@@ -245,36 +245,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		engineName = self.engineNameBox.currentText()
 		group = "Engine_" + engineName
 		fileType = self.engineConfig.value(group + '/file')
-		workpath = self.mainDirEdit.text()
-		outputFormat = self.outputFileBox.currentIndex()
-		outputPartMode = self.outputPartBox.currentIndex()
-		nameList = self.nameListEdit.text()
 		regDic = None
 		if self.engineConfig.value(group + '/regDic'):
 			regDic = self.sampleBrowser.toPlainText()
-		cutoff = self.cutoffCheck.isChecked()
-		cutoffCopy = self.cutoffCopyCheck.isChecked()
-		outputFormatExtra = self.outputFileExtraBox.currentIndex() - 1
-		noInput = self.noInputCheck.isChecked()
-		encode = self.txtEncodeBox.currentText()
 		args = {
 			'file':fileType,
-			'workpath':workpath,
+			'workpath':self.mainDirEdit.text(),
 			'engineName':engineName,
-			'outputFormat':outputFormat,
-			'outputPartMode':outputPartMode,
-			'nameList':nameList,
+			'outputFormat':self.outputFileBox.currentIndex(),
+			'outputPartMode':self.outputPartBox.currentIndex(),
+			'nameList':self.nameListEdit.text(),
 			'regDic':regDic,
-			'cutoff':cutoff,
-			'cutoffCopy':cutoffCopy,
-			'outputFormatExtra':outputFormatExtra,
-			'noInput': noInput,
-			'encode': encode,
+			'cutoff':self.cutoffCheck.isChecked(),
+			'cutoffCopy':self.cutoffCopyCheck.isChecked(),
+			'outputFormatExtra':self.outputFileExtraBox.currentIndex() - 1,
+			'noInput':  self.noInputCheck.isChecked(),
+			'encode': self.txtEncodeBox.currentText(),
 			'print': self.getExtractPrintSetting(),
 			'splitAuto': self.splitCheck.isChecked(),
 			'splitParaSep': self.splitSepEdit.text(),
 			'ignoreSameLineCount': self.ignoreSameCheck.isChecked(),
-			'maxCountPerLine': int(self.splitMaxEdit.text())
+			'maxCountPerLine': int(self.splitMaxEdit.text()),
+			'binEncodeValid': self.binEncodeCheck.isChecked()
 		}
 		var.window = self
 		#保存配置
