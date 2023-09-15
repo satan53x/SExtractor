@@ -1,3 +1,4 @@
+import os
 from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from PyQt5.Qt import QThread
@@ -12,33 +13,48 @@ from main_extract import var
 from merge_json import mergeTool, createDicTool
 from thread import extractThread
 
+ConfigCount = 4
+
 class MainWindow(QMainWindow, Ui_MainWindow):
 	def __init__(self, parent=None):
 		super(MainWindow, self).__init__(parent)
 		self.setupUi(self)
+		self.initEnd = False
 		#提取
 		self.mainDirButton.clicked.connect(self.chooseMainDir)
 		self.extractButton.clicked.connect(self.extractFileThread)
-		#self.engineNameBox.currentIndexChanged.connect(self.selectEngine)
+		self.engineNameBox.currentIndexChanged.connect(self.selectEngine)
 		#self.outputFileBox.currentIndexChanged.connect(self.selectFormat)
 		#self.outputPartBox.currentIndexChanged.connect(self.selectOutputPart)
+		self.regNameBox.currentIndexChanged.connect(self.selectReg)
 		#merge工具
 		self.mergeDirButton.clicked.connect(self.chooseMergeDir)
 		self.mergeButton.clicked.connect(self.mergeFile)
 		self.collectButton.clicked.connect(self.collectFiles)
 		#创建字典
 		self.createDicButton.clicked.connect(self.createDic)
+		#配置选项
+		self.configName = 'config.ini'
+		for i in range(1, ConfigCount):
+			self.configSeqBox.addItem(str(i))
+		path = os.path.abspath(__file__)
+		path = os.path.dirname(path)
+		for filename in os.listdir(path):
+			ret = re.search(r'config([^\d].*?).ini', filename)
+			if ret:
+				name = ret.group(1)
+				self.configSeqBox.addItem(name)
+		self.configSeqBox.currentIndexChanged.connect(self.selectConfig)
+
+	def selectConfig(self, index):
+		if index == 0:
+			self.configName = 'config.ini'
+		else:
+			self.configName = f'config{self.configSeqBox.currentText()}.ini'
+		self.refreshConfig()
 
 	#初始化
 	def beforeShow(self):
-		self.mainConfig = QSettings('config.ini', QSettings.IniFormat)
-		self.mainConfig.setIniCodec('utf-8')
-		# 窗口大小
-		windowSize = initValue(self.mainConfig, 'windowSize', None)
-		if windowSize: self.resize(windowSize)
-		# 主目录
-		self.mainDirPath = initValue(self.mainConfig, 'mainDirPath', '.')
-		self.mainDirEdit.setText(self.mainDirPath)
 		# 引擎列表
 		self.engineConfig = QSettings('src/engine.ini', QSettings.IniFormat)
 		self.engineConfig.setIniCodec('utf-8')
@@ -59,10 +75,37 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 					self.outputFileBox.addItem(value)
 					self.outputFileExtraBox.addItem(value)
 			self.engineConfig.endGroup()
+		# 设置匹配规则
+		self.regConfig = QSettings('src/reg.ini', QSettings.IniFormat)
+		self.regConfig.setIniCodec('utf-8')
+		groupList = self.regConfig.childGroups()
+		for group in groupList: 
+			#print(group)
+			self.regNameBox.addItem(group)
+		#刷新
+		self.refreshConfig()
+
+	#初始化
+	def afterShow(self):
+		#修正打印颜色
+		from colorama import init
+		init(autoreset=True)
+	
+	def refreshConfig(self):
+		self.initEnd = False
+		#选择配置
+		self.mainConfig = QSettings(self.configName, QSettings.IniFormat)
+		self.mainConfig.setIniCodec('utf-8')
+		# 窗口大小
+		windowSize = initValue(self.mainConfig, 'windowSize', None)
+		if windowSize: self.resize(windowSize)
+		# 主目录
+		self.mainDirPath = initValue(self.mainConfig, 'mainDirPath', '.')
+		self.mainDirEdit.setText(self.mainDirPath)
 		# 当前引擎
 		self.engineCode = int(initValue(self.mainConfig, 'engineCode', 0))
 		#print(self.engineCode)
-		self.engineNameBox.currentIndexChanged.connect(self.selectEngine)
+		#self.engineNameBox.currentIndexChanged.connect(self.selectEngine)
 		# 当前输出格式
 		self.outputFormat = int(initValue(self.mainConfig, 'outputFormat', 0))
 		#print(self.outputFormat)
@@ -78,17 +121,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		text = initValue(self.mainConfig, 'mergeSkipReg', self.skipRegEdit.text())
 		self.skipRegEdit.setText(text)
 		# 设置匹配规则
-		self.regConfig = QSettings('src/reg.ini', QSettings.IniFormat)
-		self.regConfig.setIniCodec('utf-8')
-		groupList = self.regConfig.childGroups()
-		for group in groupList: 
-			#print(group)
-			self.regNameBox.addItem(group)
 		self.regIndex = int(initValue(self.mainConfig, 'regIndex', 0))
 		self.regNameBox.setCurrentIndex(self.regIndex)
-		self.regNameBox.currentIndexChanged.connect(self.selectReg)
-		# 结束
-		self.engineNameBox.setCurrentIndex(self.engineCode)
+		#self.regNameBox.currentIndexChanged.connect(self.selectReg)
 		# 截断
 		checked = initValue(self.mainConfig, 'cutoff', 'false') != 'false'
 		self.cutoffCheck.setChecked(checked)
@@ -104,13 +139,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.ignoreSameCheck.setChecked(checked)
 		maxCountPerLine = initValue(self.mainConfig, 'maxCountPerLine', 64)
 		self.splitMaxEdit.setText(str(maxCountPerLine))
+		# 结束
+		self.initEnd = True
+		self.engineNameBox.setCurrentIndex(self.engineCode)
 
-	#初始化
-	def afterShow(self):
-		#修正打印颜色
-		from colorama import init
-		init(autoreset=True)
-	
 	#---------------------------------------------------------------
 	#选择主文件夹
 	def chooseMainDir(self):
@@ -123,6 +155,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 	#选择引擎
 	def selectEngine(self, index):
+		if not self.initEnd: return
 		self.engineCode = index
 		#print('selectEngine', self.engineCode)
 		#显示示例
@@ -171,6 +204,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 	#选择预设正则规则
 	def selectReg(self, index):
+		if not self.initEnd: return
 		self.regIndex = index
 		#print('selectReg', self.regIndex)
 		regName = self.regNameBox.currentText()

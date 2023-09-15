@@ -1,5 +1,5 @@
 __pycache__/
 *.spec
 .vscode/
-config.ini
+config*.ini
 .backup/
