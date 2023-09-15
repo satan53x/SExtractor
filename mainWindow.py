@@ -100,6 +100,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		# 译文
 		checked = initValue(self.mainConfig, 'splitAuto', 'false') != 'false'
 		self.splitCheck.setChecked(checked)
+		checked = initValue(self.mainConfig, 'ignoreSameLineCount', 'false') != 'false'
+		self.ignoreSameCheck.setChecked(checked)
 		maxCountPerLine = initValue(self.mainConfig, 'maxCountPerLine', 64)
 		self.splitMaxEdit.setText(str(maxCountPerLine))
 
@@ -221,9 +223,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		outputFormatExtra = self.outputFileExtraBox.currentIndex() - 1
 		noInput = self.noInputCheck.isChecked()
 		encode = self.txtEncodeBox.currentText()
-		splitAuto = self.splitCheck.isChecked()
-		splitParaSep = self.splitSepEdit.text()
-		maxCountPerLine = int(self.splitMaxEdit.text())
 		args = {
 			'file':fileType,
 			'workpath':workpath,
@@ -238,9 +237,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'noInput': noInput,
 			'encode': encode,
 			'print': self.getExtractPrintSetting(),
-			'splitAuto': splitAuto,
-			'splitParaSep': splitParaSep,
-			'maxCountPerLine': maxCountPerLine
+			'splitAuto': self.splitCheck.isChecked(),
+			'splitParaSep': self.splitSepEdit.text(),
+			'ignoreSameLineCount': self.ignoreSameCheck.isChecked(),
+			'maxCountPerLine': int(self.splitMaxEdit.text())
 		}
 		var.window = self
 		#保存配置
@@ -280,6 +280,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		#窗口大小
 		self.mainConfig.setValue('windowSize', self.size())
 		self.mainConfig.setValue('splitAuto', self.splitCheck.isChecked())
+		self.mainConfig.setValue('ignoreSameLineCount', self.ignoreSameCheck.isChecked())
 
 	#提取打印设置
 	def getExtractPrintSetting(self):

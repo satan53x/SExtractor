@@ -50,9 +50,10 @@ def redistributeTrans(orig:str, trans:str):
 	newTrans = re.sub(sep, '', trans)
 	if len(origList) == 1:
 		return origList, [newTrans]
-	# transList = re.split(sep, trans)
-	# if len(origList) == len(transList):
-	# 	return origList, transList
+	if ExVar.ignoreSameLineCount:
+		transList = re.split(sep, trans)
+		if len(origList) == len(transList):
+			return origList, transList
 	#查询译文符号
 	transSymbolList = []
 	matches = re.finditer(symbolPattern, newTrans)
@@ -99,6 +100,7 @@ def redistributeTrans(orig:str, trans:str):
 	for end in transSepList:
 		if start == end:
 			transList.append('　')
+			#printWarningGreen('添加空行', newTrans)
 		else:
 			transList.append(newTrans[start:end])
 		start = end

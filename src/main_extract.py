@@ -505,6 +505,7 @@ def initArgs(args):
 	var.splitAuto = args['splitAuto']
 	var.splitParaSep:str = args['splitParaSep']
 	var.splitParaSep = var.splitParaSep.encode().decode('unicode_escape')
+	var.ignoreSameLineCount = args['ignoreSameLineCount']
 	var.maxCountPerLine = args['maxCountPerLine']
 	return 0
 

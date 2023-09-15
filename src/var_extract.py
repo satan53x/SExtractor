@@ -53,6 +53,7 @@ class ExtractVar():
 	printSetting = None
 	splitAuto = False
 	splitParaSep = '\r\n' #段落分割符
+	ignoreSameLineCount = True
 	maxCountPerLine = 0
 
 	#-------------------
