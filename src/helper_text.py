@@ -100,7 +100,7 @@ def redistributeTrans(orig:str, trans:str):
 	for end in transSepList:
 		if start == end:
 			transList.append('　')
-			#printWarningGreen('添加空行', newTrans)
+			#printWarningGreen('添加空行', trans)
 		else:
 			transList.append(newTrans[start:end])
 		start = end

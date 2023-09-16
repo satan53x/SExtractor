@@ -286,36 +286,46 @@ def writeFormatXlsx(targetJson):
 
 # ------------------------------------------------------------
 def keepAllOrig():
+	# if len(var.listCtrl) > 0:
+	# 	if 'isName' in var.listCtrl[-1] or 'unfinish' in var.listCtrl[-1]:
+	# 		printError('listCtrl结束行错误', var.filename, var.listCtrl[-1], var.listOrig[-1])
 	listIndex = -1
-	if len(var.listCtrl) > 0:
-		if 'isName' in var.listCtrl[-1] or 'unfinish' in var.listCtrl[-1]:
-			printError('listCtrl结束行错误', var.filename, var.listCtrl[-1], var.listOrig[-1])
+	item = {}
 	while(listIndex < len(var.listOrig) - 1):
-		item = {}
-		while(True):
-			listIndex += 1
-			ctrl = var.listCtrl[listIndex]
-			orig = var.listOrig[listIndex]
-			#print(listIndex, orig, ctrl)
-			if 'isName'in ctrl:
-				item['name'] = orig
-				if orig not in var.transDicIO:
-					#print('Add to transDicIO', orig, listIndex, var.filename)
-					var.transDicIO[orig] = ''
+		listIndex += 1
+		ctrl = var.listCtrl[listIndex]
+		orig = var.listOrig[listIndex]
+		#print(listIndex, orig, ctrl)
+		if 'isName'in ctrl:
+			item = tryAddToDic(item, ctrl) #前一个结束
+			item['name'] = orig
+			continue
+		else:
+			if 'message' not in item:
+				item['message'] = ""
+			item['message'] += orig
+			if 'unfinish' in ctrl:
+				item['message'] += var.splitParaSep
 				continue
-			else:
-				if 'message' not in item:
-					item['message'] = ""
-				item['message'] += orig
-				if 'unfinish' in ctrl:
-					item['message'] += var.splitParaSep
-					continue
-			var.allOrig.append(item)
-			#加入transDicIO
+			item = tryAddToDic(item, ctrl)
+	item = tryAddToDic(item, ctrl)
+
+def tryAddToDic(item:dict, ctrl):
+	if item != {}:
+		var.allOrig.append(item)
+		#加入transDicIO
+		if 'name' in item:
+			if item['name'] not in var.transDicIO:
+				#print('Add to transDicIO', orig, listIndex, var.filename)
+				var.transDicIO[item['name']] = ''
+		if 'message' in item:
 			if item['message'] not in var.transDicIO:
 				#print('Add to transDicIO', orig, listIndex, var.filename)
 				var.transDicIO[item['message']] = ''
-			break
+		else:
+			printWarning('message为空', var.filename, ctrl)
+		item = {}
+	return item
 
 def dealOnce(text, contentIndex=0):
 	#print(orig)
