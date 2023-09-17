@@ -12,7 +12,7 @@
 * TXT纯文本 (正则匹配。可选utf-8，utf-8-sig，utf-16(LE BOM))
 * BIN二进制文本 (正则匹配。默认读shift-jis写GBK)
 * JSON文本 (正则匹配，只搜索value)
-* AST
+* AST (移除，转为正则预设)
 * Artemis
 * CSV
 * EAGLS
@@ -32,22 +32,24 @@
 #### 配置
 * 文件夹下自定义的config*.ini都会被读取，*中不能以数字开头。(例：configTest.ini)
 * reg.ini中可自定义匹配规则, 当前预设:
- 1. Artemis
- 2. EntisGLS
- 3. Krkr
- 4. Nexas
- 5. RealLive (选项分开提取)
- 6. SFA(AOS)
- 7. SystemC
- 8. Yuris_txt (非ybn)
- 9. BIN暴力匹配
- 10. 替换符号
- 11. JSON_Key(TXT转JSON)
- 12. 猜测名字
- 13. 两行TXT
- 14. 导出所有(多用于格式转换)
- 15. 自定义规则(自动保存)
- 16. None还原为引擎默认
+ 1. AST
+ 2. Artemis
+ 3. EntisGLS
+ 4. Krkr
+ 5. Nexas
+ 6. RealLive (选项分开提取)
+ 7. SFA(AOS)
+ 8. SystemC
+ 9. Valkyria_ODN
+ 10. Yuris_txt (非ybn)
+ 11. BIN暴力匹配
+ 12. 替换符号
+ 13. JSON_Key(TXT转JSON)
+ 14. 猜测名字
+ 15. 两行TXT
+ 16. 导出所有(多用于格式转换)
+ 17. 自定义规则(自动保存)
+ 18. None还原为引擎默认
 
 ## 支持的导出格式：
 * json字典 { 文本 : "" }
