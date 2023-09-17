@@ -291,6 +291,7 @@ def keepAllOrig():
 	# 		printError('listCtrl结束行错误', var.filename, var.listCtrl[-1], var.listOrig[-1])
 	listIndex = -1
 	item = {}
+	ctrl = {}
 	while(listIndex < len(var.listOrig) - 1):
 		listIndex += 1
 		ctrl = var.listCtrl[listIndex]
@@ -333,7 +334,7 @@ def dealOnce(text, contentIndex=0):
 	#if orig.isspace() == False:
 		#orig = orig.strip()
 	if orig == '': 
-		printWarning('提取时译文为空', var.filename, str(contentIndex))
+		printWarning('提取时原文为空', var.filename, str(contentIndex))
 		return False
 	#if orig.isspace(): return False
 	#输出原文
