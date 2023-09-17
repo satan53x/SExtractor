@@ -507,7 +507,8 @@ def initArgs(args):
 	# 分割
 	var.splitAuto = args['splitAuto']
 	var.splitParaSep:str = args['splitParaSep']
-	var.splitParaSep = var.splitParaSep.encode().decode('unicode_escape')
+	if '\\' in var.splitParaSep: #需要处理转义
+		var.splitParaSep = var.splitParaSep.encode().decode('unicode_escape')
 	var.ignoreSameLineCount = args['ignoreSameLineCount']
 	var.maxCountPerLine = args['maxCountPerLine']
 	return 0
