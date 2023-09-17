@@ -55,6 +55,7 @@ class ExtractVar():
 	splitParaSep = '\r\n' #段落分割符
 	ignoreSameLineCount = True
 	maxCountPerLine = 0
+	addSpace = '　' #填充的空格
 
 	#-------------------
 	#窗口

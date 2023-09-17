@@ -21,7 +21,7 @@ def splitToTransDic(orig, trans):
 	listMsgTrans = re.split(sep, trans)
 	for j in range(len(listMsgOrig)):
 		msgOrig = listMsgOrig[j]
-		msgTrans = '　'
+		msgTrans = ExVar.addSpace
 		if j<len(listMsgTrans) and listMsgTrans[j] != '':
 			msgTrans = listMsgTrans[j]
 		if  msgOrig not in ExVar.transDic or \
@@ -99,7 +99,7 @@ def redistributeTrans(orig:str, trans:str):
 	start = 0
 	for end in transSepList:
 		if start == end:
-			transList.append('　')
+			transList.append(ExVar.addSpace)
 			#printWarningGreen('添加空行', trans)
 		else:
 			transList.append(newTrans[start:end])
