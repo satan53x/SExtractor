@@ -140,8 +140,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		maxCountPerLine = initValue(self.mainConfig, 'maxCountPerLine', 64)
 		self.splitMaxEdit.setText(str(maxCountPerLine))
 		# 结束
-		self.initEnd = True
 		self.engineNameBox.setCurrentIndex(self.engineCode)
+		self.initEnd = True
+		self.selectEngine(self.engineCode)
 
 	#---------------------------------------------------------------
 	#选择主文件夹
