@@ -142,6 +142,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		# 段落分割符
 		splitParaSep = initValue(self.mainConfig, 'splitParaSep', '\\r\\n')
 		self.splitSepEdit.setText(splitParaSep)
+		# bin纯文本模式
+		checked = initValue(self.mainConfig, 'pureText', 'false') != 'false'
+		self.binPureTextCheck.setChecked(checked)
 		# 结束
 		self.engineNameBox.setCurrentIndex(self.engineCode)
 		self.initEnd = True
@@ -270,7 +273,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'splitParaSep': self.splitSepEdit.text(),
 			'ignoreSameLineCount': self.ignoreSameCheck.isChecked(),
 			'maxCountPerLine': int(self.splitMaxEdit.text()),
-			'binEncodeValid': self.binEncodeCheck.isChecked()
+			'binEncodeValid': self.binEncodeCheck.isChecked(),
+			'pureText': self.binPureTextCheck.isChecked()
 		}
 		var.window = self
 		#保存配置
@@ -312,7 +316,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mainConfig.setValue('splitAuto', self.splitCheck.isChecked())
 		self.mainConfig.setValue('splitParaSep', args['splitParaSep'])
 		self.mainConfig.setValue('ignoreSameLineCount', self.ignoreSameCheck.isChecked())
-
+		self.mainConfig.setValue('pureText', self.binPureTextCheck.isChecked())
 	#提取打印设置
 	def getExtractPrintSetting(self):
 		lst = []

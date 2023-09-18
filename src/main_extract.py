@@ -512,6 +512,7 @@ def initArgs(args):
 		var.splitParaSep = var.splitParaSep.encode().decode('unicode_escape')
 	var.ignoreSameLineCount = args['ignoreSameLineCount']
 	var.maxCountPerLine = args['maxCountPerLine']
+	var.pureText = args['pureText']
 	return 0
 
 #args = [workpath, engineName, outputFormat, nameList]
