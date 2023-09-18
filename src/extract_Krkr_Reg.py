@@ -10,15 +10,18 @@ from extract_TXT import replaceOnceImp as replaceOnceImpTXT
 def initExtra():
 	endStr = ExVar.endStr
 	ctrlStr = ExVar.ctrlStr
+	sepStr = ExVar.sepStr
 	if not endStr:
 		endStr = 'np'
 	if not ctrlStr:
 		ctrlStr = '^[A-Za-z]'
-	return endStr, ctrlStr
+	if not sepStr:
+		sepStr = '[^\\[\\]]+'
+	return endStr, ctrlStr, sepStr
 
 # ---------------- Group: Krkr 1 -------------------
 def parseImp(content, listCtrl, dealOnce):
-	endStr, ctrlStr = initExtra()
+	endStr, ctrlStr, sepStr = initExtra()
 	var = ParseVar(listCtrl, dealOnce)
 	initParseVar(var)
 	lastCtrl = None
@@ -36,7 +39,7 @@ def parseImp(content, listCtrl, dealOnce):
 			continue
 		#print(var.lineData)
 		#搜索
-		iter = re.finditer(r'[^\[\]]+', var.lineData)
+		iter = re.finditer(sepStr, var.lineData)
 		for r in iter:
 			text = r.group()
 			if text == endStr:

@@ -78,7 +78,9 @@ class ExtractVar():
 		self.checkJIS = None #检查JIS，可配置允许的单字符匹配
 		self.endStr = None #匹配到则结束
 		self.ctrlStr = None #控制段跳过
+		self.sepStr = None #分割控制段和文本
 		self.version = '0' #版本
 		self.decrypt = '' #加解密密钥
+		self.pureText = False #bin模式下如果为纯文本，则会先转为utf再进行正则
 
 gExtractVar = ExtractVar()

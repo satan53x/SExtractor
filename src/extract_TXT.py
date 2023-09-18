@@ -27,11 +27,28 @@ class ParseVar():
 		self.dealOnce = dealOnce
 
 # -----------------------------------
+def GetPos(var:ParseVar, searchData:str, r:re.Match[str], i):
+	start = r.start(i)
+	end = r.end(i)
+	if var.OldEncodeName and ExVar.pureText:
+		#bin的纯文本模式
+		#从字符位置转为字节位置
+		lengthPre = len(searchData[0:start].encode(var.OldEncodeName))
+		lengthText = len(searchData[start:end].encode(var.OldEncodeName))
+		start = lengthPre
+		end = lengthPre + lengthText
+	start += var.searchStart
+	end += var.searchStart
+	return start, end
+# -----------------------------------
 def searchLine(var:ParseVar):
 	if var.searchStart > 0:
 		searchData = var.lineData[var.searchStart:var.searchEnd]
 	else:
 		searchData = var.lineData
+	if var.OldEncodeName and ExVar.pureText:
+		#bin的纯文本模式
+		searchData = searchData.decode(var.OldEncodeName)
 	ctrls = []
 	for regItem in var.regList:
 		regType = regItem[1]
@@ -49,8 +66,7 @@ def searchLine(var:ParseVar):
 				#print(r.groups())
 				for i in range(1, len(r.groups())+1):
 					if r.group(i) == None: continue
-					start = r.start(i) + var.searchStart
-					end = r.end(i) + var.searchStart
+					start, end = GetPos(var, searchData, r, i)
 					if var.OldEncodeName: # bin
 						try:
 							if var.checkJIS != None:
@@ -99,7 +115,7 @@ def searchLine(var:ParseVar):
 def GetRegList(items, OldEncodeName):
 	lst = []
 	for key, value in items:
-		if OldEncodeName:
+		if OldEncodeName and ExVar.pureText == False:
 			value = value.encode(OldEncodeName)
 		if re.search('skip', key):
 			lst.append([value, 'skip'])
@@ -108,10 +124,7 @@ def GetRegList(items, OldEncodeName):
 	return lst
 
 def dealLastCtrl(lastCtrl, ctrls, contentIndex=-1):
-	if ctrls != None and len(ctrls) == 0:
-		print('\033[33m存在未匹配的内容\033[0m', ExVar.filename, contentIndex)
-		return lastCtrl
-	if ctrls == None or 'isName' in ctrls[-1]: #skip匹配或name匹配
+	if ctrls == None or len(ctrls) == 0 or 'isName' in ctrls[-1]: #skip匹配或name匹配或存在未匹配内容
 		if lastCtrl and 'unfinish' in lastCtrl:
 			del lastCtrl['unfinish'] #段落结束
 		lastCtrl = None
