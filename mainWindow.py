@@ -139,6 +139,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.ignoreSameCheck.setChecked(checked)
 		maxCountPerLine = initValue(self.mainConfig, 'maxCountPerLine', 64)
 		self.splitMaxEdit.setText(str(maxCountPerLine))
+		# 段落分割符
+		splitParaSep = initValue(self.mainConfig, 'splitParaSep', '\\r\\n')
+		self.splitSepEdit.setText(splitParaSep)
 		# 结束
 		self.engineNameBox.setCurrentIndex(self.engineCode)
 		self.initEnd = True
@@ -307,6 +310,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		#窗口大小
 		self.mainConfig.setValue('windowSize', self.size())
 		self.mainConfig.setValue('splitAuto', self.splitCheck.isChecked())
+		self.mainConfig.setValue('splitParaSep', args['splitParaSep'])
 		self.mainConfig.setValue('ignoreSameLineCount', self.ignoreSameCheck.isChecked())
 
 	#提取打印设置
