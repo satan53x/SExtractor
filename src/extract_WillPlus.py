@@ -3,8 +3,6 @@ from common import *
 from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_TXT import searchLine, ParseVar, GetRegList
 
-OldEncodeName = 'cp932'
-NewEncodeName = 'gbk'
 
 # ---------------- Engine: WillPlus -------------------
 def parseImp(content, listCtrl, dealOnce):
@@ -12,7 +10,7 @@ def parseImp(content, listCtrl, dealOnce):
 	var.listIndex = 0
 	var.listCtrl = listCtrl
 	var.dealOnce = dealOnce
-	var.OldEncodeName = OldEncodeName
+	var.OldEncodeName = ExVar.OldEncodeName
 	#print(len(content))
 	regLists = [None, None]
 	regLists[0] = [
@@ -65,7 +63,7 @@ def parseImp(content, listCtrl, dealOnce):
 					print('选项开头不是日文')
 					break
 				end = start + ret.start()
-				text = lineData[start:end].decode(OldEncodeName)
+				text = lineData[start:end].decode(ExVar.OldEncodeName)
 				#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 				ctrl = {'pos':[contentIndex, start, end]}
 				#print(ctrl)

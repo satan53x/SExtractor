@@ -3,8 +3,6 @@ from common import *
 from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_TXT import searchLine, ParseVar, GetRegList
 
-OldEncodeName = 'cp932'
-NewEncodeName = 'gbk'
 
 nameDic = {}
 nameEnd = 0
@@ -50,7 +48,7 @@ def parseImp(content, listCtrl, dealOnce):
 			if end > nameEnd and start < msgStart: continue #跳过
 			text = lineData[start:end]
 			#if re.match(regSkip, text): continue
-			text = text.decode(OldEncodeName)
+			text = text.decode(ExVar.OldEncodeName)
 			#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 			ctrl = {'pos':[0, start, end]}
 			if end <= nameEnd: #名字
@@ -131,7 +129,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		start = posData[1]
 		end = posData[2]
 		if start < 0: continue #不写回
-		transData = generateBytes(lTrans[i], end - start, NewEncodeName)
+		transData = generateBytes(lTrans[i], end - start, ExVar.NewEncodeName)
 		if transData == None:
 			return False
 		#写入new

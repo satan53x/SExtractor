@@ -5,8 +5,6 @@ import struct
 from common import *
 from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 
-OldEncodeName = 'cp932'
-NewEncodeName = 'gbk'
 
 # ---------------- Group: AST -------------------
 def parseImp(content, listCtrl, dealOnce):
@@ -28,7 +26,7 @@ def parseImp(content, listCtrl, dealOnce):
 				if ret:
 					start = ret.start() + 6
 					end = ret.end() - 1
-					text = lineData[start:end].decode(OldEncodeName)
+					text = lineData[start:end].decode(ExVar.OldEncodeName)
 					ctrl = {'pos':[contentIndex, start, end]}
 					ctrl['isName'] = True #名字标记
 					#print(ctrl)
@@ -50,7 +48,7 @@ def parseImp(content, listCtrl, dealOnce):
 			ret = re.search(rb'<', lineData)
 			if ret:
 				end = ret.start()
-			text = lineData[start:end].decode(OldEncodeName)
+			text = lineData[start:end].decode(ExVar.OldEncodeName)
 			#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 			ctrl = {'pos':[contentIndex, start, end]}
 			ctrl['unfinish'] = True

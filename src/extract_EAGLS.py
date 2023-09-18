@@ -3,8 +3,6 @@ from common import *
 from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_BIN import parseImp as parseImpBIN
 
-OldEncodeName = 'cp932'
-NewEncodeName = 'gbk'
 
 # ---------------- Engine: EAGLS -------------------
 def parseImp(content, listCtrl, dealOnce):

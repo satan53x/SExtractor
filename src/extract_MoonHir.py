@@ -4,9 +4,6 @@ from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_BIN import parseImp as parseImpBIN
 from extract_TXT import GetRegList, ParseVar, searchLine
 
-OldEncodeName = 'cp932'
-NewEncodeName = 'gbk'
-
 # ---------------- Engine: MoonHir -------------------
 def parseImp(content, listCtrl, dealOnce):
 	return parseImpBIN(content, listCtrl, dealOnce)

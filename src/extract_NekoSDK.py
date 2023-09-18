@@ -3,8 +3,6 @@ from common import *
 from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_TXT import searchLine, ParseVar, GetRegList
 
-OldEncodeName = 'cp932'
-NewEncodeName = 'gbk'
 
 # ---------------- Engine: NekoSDK -------------------
 def parseImp(content, listCtrl, dealOnce):
@@ -15,10 +13,10 @@ def parseImp(content, listCtrl, dealOnce):
 	var.listIndex = 0
 	var.listCtrl = listCtrl
 	var.dealOnce = dealOnce
-	var.OldEncodeName = OldEncodeName
+	var.OldEncodeName = ExVar.OldEncodeName
 	var.lineData = content[0]
 	#print(len(content))
-	searchBytes = '[テキスト表示]'.encode(OldEncodeName)
+	searchBytes = '[テキスト表示]'.encode(ExVar.OldEncodeName)
 	ExVar.startline = 1
 	pos = 18
 	while True:
@@ -40,7 +38,7 @@ def readText(var:ParseVar, pos, textType):
 	startAll = pos
 	pos += length
 	endAll = pos - 1 #不包含末尾的\0
-	textAll = var.lineData[startAll:endAll].decode(OldEncodeName)
+	textAll = var.lineData[startAll:endAll].decode(ExVar.OldEncodeName)
 	if textType == 0:
 		#名字
 		if textAll == '': return pos
@@ -58,7 +56,7 @@ def readText(var:ParseVar, pos, textType):
 		it = re.finditer(rb'\r\n', var.lineData[startAll:endAll])
 		for r in it:
 			end = r.start() + startAll
-			text = var.lineData[start:end].decode(OldEncodeName)
+			text = var.lineData[start:end].decode(ExVar.OldEncodeName)
 			#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 			ctrl = {'pos':[0, start, end]}
 			ctrl['unfinish'] = True
@@ -69,7 +67,7 @@ def readText(var:ParseVar, pos, textType):
 			start = end + 2
 		if start < endAll:
 			end = endAll
-			text = var.lineData[start:end].decode(OldEncodeName)
+			text = var.lineData[start:end].decode(ExVar.OldEncodeName)
 			#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 			ctrl = {'pos':[0, start, end]}
 			if var.dealOnce(text, var.listIndex):

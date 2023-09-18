@@ -4,8 +4,7 @@ from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_BIN import parseImp as parseImpBIN
 from extract_TXT import ParseVar, searchLine, initParseVar
 
-OldEncodeName = 'cp932'
-NewEncodeName = 'gbk'
+
 selMinCount = 10 #提取时选项函数最小参数个数
 selMaxCount = 99 #提取时选项函数最大参数个数
 #版本对应code
@@ -35,7 +34,7 @@ def parseImp(content, listCtrl, dealOnce):
 	if not content: return
 	initExtra()
 	var = ParseVar(listCtrl, dealOnce)
-	var.OldEncodeName = OldEncodeName
+	var.OldEncodeName = ExVar.OldEncodeName
 	initParseVar(var)
 	funcList = manager.splitFunc()
 	paraIndex = 0
@@ -69,7 +68,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		contentIndex = posData[0]
 		start = posData[1]
 		end = posData[2]
-		transData = generateBytes(lTrans[i], end - start, NewEncodeName)
+		transData = generateBytes(lTrans[i], end - start, ExVar.NewEncodeName)
 		if transData == None:
 			return False
 		#写入new

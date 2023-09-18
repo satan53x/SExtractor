@@ -2,8 +2,6 @@ import re
 from common import *
 from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 
-OldEncodeName = 'cp932'
-NewEncodeName = 'gbk'
 
 # ---------------- Engine: MED -------------------
 def parseImp(content, listCtrl, dealOnce):
@@ -23,14 +21,14 @@ def parseImp(content, listCtrl, dealOnce):
 		if re.search(rb'\\N', lineData): #本行结束
 			#print('start')
 			pass
-		elif re.match(r'【.*】'.encode(OldEncodeName), lineData): #名字
+		elif re.match(r'【.*】'.encode(ExVar.OldEncodeName), lineData): #名字
 			start += 2
 			end -= 2
 			ctrl['isName'] = True #名字标记
 		else: #对话
-			if re.search(r'[^。）』】？」！]$', lineData.decode(OldEncodeName)):
+			if re.search(r'[^。）』】？」！]$', lineData.decode(ExVar.OldEncodeName)):
 				ctrl['unfinish'] = True
-		text = lineData[start:end].decode(OldEncodeName)
+		text = lineData[start:end].decode(ExVar.OldEncodeName)
 		ctrl['pos'] = [contentIndex, start, end]
 		#print(ctrl)
 		if dealOnce(text, listIndex):

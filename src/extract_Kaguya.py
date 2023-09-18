@@ -5,8 +5,6 @@ from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_BIN import parseImp as parseImpBIN
 from extract_TXT import GetRegList, ParseVar, dealLastCtrl, initParseVar, searchLine
 
-OldEncodeName = 'cp932'
-NewEncodeName = 'gbk'
 XorTable = b'\xFF'
 StartLine = 1
 MagicNumberLen = 4
@@ -26,7 +24,7 @@ def initExtra():
 def parseImp(content, listCtrl, dealOnce):
 	initExtra()
 	var = ParseVar(listCtrl, dealOnce)
-	var.OldEncodeName = OldEncodeName
+	var.OldEncodeName = ExVar.OldEncodeName
 	initParseVar(var)
 	for contentIndex in range(len(content)):
 		textType, length = headerList[contentIndex]
@@ -40,7 +38,7 @@ def parseImp(content, listCtrl, dealOnce):
 		#解密
 		text = xorBytes(lineData[start:end], XorTable)
 		if var.regList == []:
-			text = text.decode(OldEncodeName)
+			text = text.decode(ExVar.OldEncodeName)
 			ctrl = {'pos':[contentIndex, start, end]}
 			if textType == 2: #名字类型
 				ctrl['isName'] = True
@@ -66,7 +64,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		contentIndex = posData[0]
 		start = posData[1]
 		end = posData[2]
-		transData = generateBytes(lTrans[i], end - start, NewEncodeName)
+		transData = generateBytes(lTrans[i], end - start, ExVar.NewEncodeName)
 		if transData == None:
 			return False
 		#加密

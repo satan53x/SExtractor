@@ -3,17 +3,15 @@ from common import *
 from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_TXT import searchLine, ParseVar, GetRegList
 
-OldEncodeName = 'cp932'
-NewEncodeName = 'gbk'
 
 # ---------------- Engine: SystemC -------------------
 def parseImp(content, listCtrl, dealOnce):
 	var = ParseVar(listCtrl, dealOnce)
-	var.OldEncodeName = OldEncodeName
+	var.OldEncodeName = ExVar.OldEncodeName
 	lastCtrl = None
 	regSkip = [rb'^[A-Za-z/\*]', rb'^$']
-	regName = [ [r'^(?P<name>.+?)　（'.encode(OldEncodeName), 'search'] ]
-	regMessage = [ [r'^(?P<unfinish>.+)$'.encode(OldEncodeName), 'search'] ]
+	regName = [ [r'^(?P<name>.+?)　（'.encode(ExVar.OldEncodeName), 'search'] ]
+	regMessage = [ [r'^(?P<unfinish>.+)$'.encode(ExVar.OldEncodeName), 'search'] ]
 	for contentIndex in range(len(content)):
 		var.lineData = content[contentIndex]
 		if any(re.match(pattern, var.lineData) for pattern in regSkip):
