@@ -15,6 +15,7 @@
 * AST (移除，转为正则预设)
 * Artemis
 * CSV
+* Cyberworks / CSystem (仅用于文本为UTF-16的新版)
 * EAGLS
 * FVP
 * Kaguya
@@ -64,3 +65,4 @@
 ## 相关参考项目
 1. [ssynn](https://github.com/ssynn/game_translation)
 2. [SiglusTools](https://github.com/yanhua0518/GALgameScriptTools)
+3. [CSystemTools](https://github.com/arcusmaximus/CSystemTools)
