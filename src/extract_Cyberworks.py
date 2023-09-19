@@ -10,6 +10,7 @@ def initExtra():
 	#默认编码
 	ExVar.OldEncodeName = 'utf-16-le'
 	ExVar.NewEncodeName = 'utf-16-le'
+	ExVar.pureText = True #强制使用纯文本模式，不然正则pattern编码会有问题
 
 # ---------------- Engine: Cyberworks CSystem -------------------
 def parseImp(content, listCtrl, dealOnce):	
