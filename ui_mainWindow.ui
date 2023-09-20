@@ -502,6 +502,16 @@
                   <string>UTF-16</string>
                  </property>
                 </item>
+                <item>
+                 <property name="text">
+                  <string>cp932</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>gbk</string>
+                 </property>
+                </item>
                </widget>
               </item>
              </layout>
