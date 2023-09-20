@@ -3,7 +3,8 @@ import sys
 import os
 import struct
 from common import *
-from extract_TXT import searchLine, ParseVar, GetRegList, dealLastCtrl, initParseVar
+from extract_TXT import searchLine, ParseVar, dealLastCtrl, initParseVar
+from helper_text import generateBytes
 
 
 

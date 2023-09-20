@@ -1,9 +1,8 @@
 import os
 import re
 from common import *
-from extract_BIN import replaceOnceImp as replaceOnceImpBIN
-from extract_BIN import parseImp as parseImpBIN
-from extract_TXT import GetRegList, ParseVar, dealLastCtrl, initParseVar, searchLine
+from extract_TXT import ParseVar, initParseVar, searchLine
+from helper_text import generateBytes
 
 XorTable = b'\xFF'
 StartLine = 1
@@ -54,7 +53,6 @@ def parseImp(content, listCtrl, dealOnce):
 				ctrls[0]['isName'] = True
 
 # -----------------------------------
-
 def replaceOnceImp(content, lCtrl, lTrans):
 	num = len(lCtrl)
 	for i in range(num):

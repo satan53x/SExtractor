@@ -46,5 +46,4 @@ def mainExtractPart(args, parseImp, initDone=None):
 		writeCutoffDic()
 	else:
 		printError('未找到主目录')
-	showMessage("处理完成。")
-	print('Done.\n')
+	extractDone()

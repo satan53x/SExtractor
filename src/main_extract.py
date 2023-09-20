@@ -513,7 +513,14 @@ def initArgs(args):
 	var.ignoreSameLineCount = args['ignoreSameLineCount']
 	var.maxCountPerLine = args['maxCountPerLine']
 	var.pureText = args['pureText']
+	var.tunnelJis = args['tunnelJis']
 	return 0
+
+def extractDone():
+	if ExVar.tunnelJis:
+		generateTunnelJisMap()
+	showMessage("处理完成。")
+	print('Done.\n')
 
 #args = [workpath, engineName, outputFormat, nameList]
 def mainExtract(args, parseImp, initDone=None):
@@ -556,5 +563,4 @@ def mainExtract(args, parseImp, initDone=None):
 		writeCutoffDic()
 	else:
 		printError('未找到主目录')
-	showMessage("处理完成。")
-	print('Done.\n')
+	extractDone()

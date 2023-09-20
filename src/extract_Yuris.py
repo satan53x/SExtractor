@@ -1,8 +1,7 @@
 import re
 from common import *
-from extract_BIN import replaceOnceImp as replaceOnceImpBIN
-from extract_BIN import parseImp as parseImpBIN
 from extract_TXT import ParseVar, searchLine, initParseVar
+from helper_text import generateBytes
 
 
 selMinCount = 10 #提取时选项函数最小参数个数

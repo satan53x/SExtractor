@@ -3,6 +3,7 @@ import sys
 import os
 import struct
 from common import *
+from helper_text import generateBytes
 
 OldEncodeName = 'cp932'
 NewEncodeName = 'gbk'

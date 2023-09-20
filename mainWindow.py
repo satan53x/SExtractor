@@ -274,7 +274,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'ignoreSameLineCount': self.ignoreSameCheck.isChecked(),
 			'maxCountPerLine': int(self.splitMaxEdit.text()),
 			'binEncodeValid': self.binEncodeCheck.isChecked(),
-			'pureText': self.binPureTextCheck.isChecked()
+			'pureText': self.binPureTextCheck.isChecked(),
+			'tunnelJis': self.tunnelJisCheck.isChecked()
 		}
 		var.window = self
 		#保存配置

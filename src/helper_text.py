@@ -1,9 +1,61 @@
 import math
+import os
 import re
 from common import *
 
-__all__ = ['splitToTransDic', 'splitToTransDicAuto']
+__all__ = ['splitToTransDic', 'splitToTransDicAuto', 'generateTunnelJis', 'generateTunnelJisMap']
 
+#----------------------------------------------------------
+#编码生成目标长度的字节数组，会截断和填充字节
+def generateBytes(text, lenOrig, NewEncodeName):
+	transData = None
+	if ExVar.tunnelJis:
+		transData = generateTunnelJis(text)
+	else:
+		try:
+			transData = text.encode(NewEncodeName)
+		except Exception as ex:
+			print(ex)
+			return None
+	if ExVar.cutoff == False:
+		return transData
+	# 检查长度
+	count = lenOrig - len(transData)
+	#print('Diff', count)
+	if count < 0:
+		if ExVar.tunnelJis:
+			#使用隧道时,cutoffDic字典不生效
+			printWarning('译文长度超出原文，请手动修正', text)
+			return None
+		dic = ExVar.cutoffDic
+		if text not in dic:
+			if ExVar.cutoffCopy:
+					dic[text] = [text, count]
+			else:
+				dic[text] = ['', count]
+		elif dic[text][0] != '':
+			#从cutoff字典读取
+			transData = dic[text][0].encode(NewEncodeName)
+			count = lenOrig - len(transData)
+			dic[text][1] = count #刷新长度
+		if count < 0:
+			printWarning('译文长度超出原文，部分截断', text)
+			transData = transData[0:lenOrig]
+			try:
+				transData.decode(NewEncodeName)
+			except Exception as ex:
+				#print('\033[31m截断后编码错误\033[0m')
+				return None
+	if count > 0:
+		# 右边补足空格
+		#print(transData)
+		empty = bytearray(count)
+		for i in range(int(count)):
+			empty[i] = 0x20
+		transData += empty
+	return transData
+
+#----------------------------------------------------------
 #sep = '\r\n'
 sepLen = 2
 symbolPattern = '[\\u3000-\\u303F\\uFF00-\\uFF65\\u2000-\\u206F]'
@@ -106,7 +158,50 @@ def redistributeTrans(orig:str, trans:str):
 		start = end
 	return origList, transList
 
+# ------------------------------------------------------------
+tunnelJisList = []
+tunnelUnicodeList = []
+lowBytesToAvoid = [ ord('\t'), ord('\n'), ord('\r'), ord(' '), ord(',') ]
+#生成VNT的Jis表
+def generateJisList():
+	lst = list(range(0x81, 0xA0)) + list(range(0xE0, 0xFE))
+	for i in lst:
+		for j in range(0x01, 0x40):
+			if j in lowBytesToAvoid: continue
+			tunnelJisList.append(i.to_bytes(1) + j.to_bytes(1))
+		
+generateJisList()
 
+#插入VNT的字符表，生成JIS编码文本
+def generateTunnelJis(text):
+	data = bytearray()
+	for wchar in text:
+		try:
+			b = wchar.encode('cp932')
+		except Exception as ex:
+			if wchar in tunnelUnicodeList:
+				#已存在
+				index = tunnelUnicodeList.index(wchar)
+			else:
+				#新增
+				index = len(tunnelUnicodeList)
+				tunnelUnicodeList.append(wchar)
+			#获取转换字符
+			b = tunnelJisList[index]
+		#导出
+		data.extend(b)
+	return data
 
-
-
+def generateTunnelJisMap(filepath=''):
+	data = bytearray()
+	for wchar in tunnelUnicodeList:
+		bs = wchar.encode('utf-16-le')
+		data.extend(bs)
+	if filepath != None:
+		if filepath == '':
+			filepath = os.path.join(ExVar.workpath, 'ctrl', 'sjis_ext.bin')
+		fileOutput = open(filepath, 'wb')
+		fileOutput.write(data)
+		fileOutput.close()
+	return data
+	

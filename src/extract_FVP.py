@@ -1,8 +1,7 @@
 import re
 from common import *
-from extract_BIN import replaceOnceImp as replaceOnceImpBIN
-from extract_TXT import searchLine, ParseVar, GetRegList
-
+from extract_TXT import searchLine, ParseVar
+from helper_text import generateBytes
 
 nameDic = {}
 nameEnd = 0
@@ -118,8 +117,6 @@ def checkUnfinish(var:ParseVar):
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
-	#print(lCtrl)
-	#print(lTrans)
 	num = len(lCtrl)
 	for i in range(num):
 		# 位置
