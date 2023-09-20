@@ -1,5 +1,5 @@
 # SExtractor
- 仅用于提取和导入未加密的GalGame脚本文本
+ 仅用于提取和导入GalGame脚本文本（大部分都需要明文）
  
 ## Python依赖模块：
 国内推荐先配置镜像再下载：`pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple`
@@ -30,27 +30,30 @@
 * WillPlus
 * Yu-ris
 
-#### 配置
+## 其他功能
+* 可以导出VNT的JIS隧道文件sjis_ext.bin，需要配合VNTProxy一起使用。
 * 文件夹下自定义的config*.ini都会被读取，*中不能以数字开头。(例：configTest.ini)
-* reg.ini中可自定义匹配规则, 当前预设:
- 1. AST
- 2. Artemis
- 3. EntisGLS
- 4. Krkr
- 5. Nexas
- 6. RealLive (选项分开提取)
- 7. SFA(AOS)
- 8. SystemC
- 9. Valkyria_ODN
- 10. Yuris_txt (非ybn)
- 11. BIN暴力匹配
- 12. 替换符号
- 13. JSON_Key(TXT转JSON)
- 14. 猜测名字
- 15. 两行TXT
- 16. 导出所有(多用于格式转换)
- 17. 自定义规则(自动保存)
- 18. None还原为引擎默认
+* reg.ini中可自定义正则匹配规则
+
+## 当前正则预设
+* AST
+* Artemis
+* EntisGLS
+* Krkr
+* Nexas
+* RealLive (选项分开提取)
+* SFA(AOS)
+* SystemC
+* Valkyria_ODN
+* Yuris_txt (非ybn)
+* BIN暴力匹配
+* 替换符号
+* JSON_Key(TXT转JSON)
+* 猜测名字
+* 两行TXT
+* 导出所有(多用于格式转换)
+* 自定义规则(自动保存)
+* None还原为引擎默认
 
 ## 支持的导出格式：
 * json字典 { 文本 : "" }
@@ -66,3 +69,4 @@
 1. [ssynn](https://github.com/ssynn/game_translation)
 2. [SiglusTools](https://github.com/yanhua0518/GALgameScriptTools)
 3. [CSystemTools](https://github.com/arcusmaximus/CSystemTools)
+4. [VNTranslationTools](https://github.com/arcusmaximus/VNTranslationTools)
