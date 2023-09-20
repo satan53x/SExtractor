@@ -203,5 +203,6 @@ def generateTunnelJisMap(filepath=''):
 		fileOutput = open(filepath, 'wb')
 		fileOutput.write(data)
 		fileOutput.close()
+		printWarningGreen('在ctrl文件夹下生成了sjis_ext.bin')
 	return data
 	
