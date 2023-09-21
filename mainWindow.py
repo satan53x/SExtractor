@@ -137,7 +137,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.splitCheck.setChecked(checked)
 		checked = initValue(self.mainConfig, 'ignoreSameLineCount', 'false') != 'false'
 		self.ignoreSameCheck.setChecked(checked)
-		maxCountPerLine = initValue(self.mainConfig, 'maxCountPerLine', 64)
+		maxCountPerLine = initValue(self.mainConfig, 'maxCountPerLine', 512)
 		self.splitMaxEdit.setText(str(maxCountPerLine))
 		# 段落分割符
 		splitParaSep = initValue(self.mainConfig, 'splitParaSep', '\\r\\n')
