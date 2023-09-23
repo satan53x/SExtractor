@@ -31,9 +31,10 @@
 * Yu-ris
 
 ## 其他功能
-* 可以导出VNT的JIS隧道文件sjis_ext.bin，需要配合VNTProxy一起使用。
-* 文件夹下自定义的config*.ini都会被读取，*中不能以数字开头。(例：configTest.ini)
-* reg.ini中可自定义正则匹配规则
+* 可以导出VNT的JIS隧道文件`sjis_ext.bin`，需要配合`VNTProxy`使用。(同时也会导出UIF配置)
+* 可以导出UIF的JIS替换配置`uif_config.json`，需要配合`UniversalInjectorFramework`使用。
+* 文件夹下自定义的`config*.ini`都会被读取，*中不能以数字开头。(例：`configTest.ini`)
+* `reg.ini`中可自定义正则匹配规则
 
 ## 当前正则预设
 * AST
@@ -70,3 +71,5 @@
 2. [SiglusTools](https://github.com/yanhua0518/GALgameScriptTools)
 3. [CSystemTools](https://github.com/arcusmaximus/CSystemTools)
 4. [VNTranslationTools](https://github.com/arcusmaximus/VNTranslationTools)
+5. [UniversalInjectorFramework](https://github.com/AtomCrafty/UniversalInjectorFramework)
+6. [GalTransl_DumpInjector](https://github.com/XD2333/GalTransl_DumpInjector)
