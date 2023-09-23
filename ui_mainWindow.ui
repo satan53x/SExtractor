@@ -549,7 +549,7 @@
            </item>
            <item>
             <widget class="QWidget" name="widget_16" native="true">
-             <layout class="QHBoxLayout" name="horizontalLayout_28" stretch="10,0,8">
+             <layout class="QHBoxLayout" name="horizontalLayout_28" stretch="10,0">
               <property name="leftMargin">
                <number>5</number>
               </property>
@@ -581,13 +581,6 @@
                  </size>
                 </property>
                </spacer>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="tunnelJisCheck">
-                <property name="text">
-                 <string>生成适配VNT的JIS隧道文件</string>
-                </property>
-               </widget>
               </item>
              </layout>
             </widget>
@@ -894,11 +887,46 @@
               <item>
                <widget class="QLineEdit" name="splitMaxEdit">
                 <property name="text">
-                 <string>30</string>
+                 <string>512</string>
                 </property>
                </widget>
               </item>
              </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_13">
+          <property name="title">
+           <string>JIS配置</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_30">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>6</number>
+           </property>
+           <item>
+            <widget class="QCheckBox" name="tunnelJisCheck">
+             <property name="text">
+              <string>生成VNT的JIS隧道文件</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="subsJisCheck">
+             <property name="text">
+              <string>生成UniversalInjector的JIS替换配置</string>
+             </property>
             </widget>
            </item>
           </layout>

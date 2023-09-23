@@ -514,11 +514,18 @@ def initArgs(args):
 	var.maxCountPerLine = args['maxCountPerLine']
 	var.pureText = args['pureText']
 	var.tunnelJis = args['tunnelJis']
+	var.subsJis = args['subsJis']
+	if var.tunnelJis:
+		generateJisList()
+	elif var.subsJis:
+		generateSubsDic()
 	return 0
 
 def extractDone():
-	if ExVar.tunnelJis:
+	if var.tunnelJis:
 		generateTunnelJisMap()
+	elif var.subsJis:
+		generateSubsConfig()
 	showMessage("处理完成。")
 	print('Done.\n')
 
@@ -564,3 +571,4 @@ def mainExtract(args, parseImp, initDone=None):
 	else:
 		printError('未找到主目录')
 	extractDone()
+

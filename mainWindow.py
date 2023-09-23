@@ -275,7 +275,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'maxCountPerLine': int(self.splitMaxEdit.text()),
 			'binEncodeValid': self.binEncodeCheck.isChecked(),
 			'pureText': self.binPureTextCheck.isChecked(),
-			'tunnelJis': self.tunnelJisCheck.isChecked()
+			'tunnelJis': self.tunnelJisCheck.isChecked(),
+			'subsJis': self.subsJisCheck.isChecked()
 		}
 		var.window = self
 		#保存配置

@@ -3,7 +3,11 @@ import os
 import re
 from common import *
 
-__all__ = ['splitToTransDic', 'splitToTransDicAuto', 'generateTunnelJis', 'generateTunnelJisMap']
+__all__ = ['splitToTransDic', 'splitToTransDicAuto', 
+		'generateJisList', 'generateTunnelJis', 'generateTunnelJisMap',
+		'generateSubsDic', 'generateSubsJis', 'generateSubsConfig',
+		'writeSubsConfig'
+]
 
 #----------------------------------------------------------
 #编码生成目标长度的字节数组，会截断和填充字节
@@ -11,6 +15,8 @@ def generateBytes(text, lenOrig, NewEncodeName):
 	transData = None
 	if ExVar.tunnelJis:
 		transData = generateTunnelJis(text)
+	elif ExVar.subsJis:
+		transData = generateSubsJis(text)
 	else:
 		try:
 			transData = text.encode(NewEncodeName)
@@ -159,25 +165,27 @@ def redistributeTrans(orig:str, trans:str):
 	return origList, transList
 
 # ------------------------------------------------------------
+OldEncodeName = 'cp932'
 tunnelJisList = []
 tunnelUnicodeList = []
 lowBytesToAvoid = [ ord('\t'), ord('\n'), ord('\r'), ord(' '), ord(',') ]
 #生成VNT的Jis表
 def generateJisList():
+	tunnelUnicodeList.clear()
+	global tunnelJisList
+	if tunnelJisList != []: return
 	lst = list(range(0x81, 0xA0)) + list(range(0xE0, 0xFE))
 	for i in lst:
 		for j in range(0x01, 0x40):
 			if j in lowBytesToAvoid: continue
 			tunnelJisList.append(i.to_bytes(1) + j.to_bytes(1))
-		
-generateJisList()
 
 #插入VNT的字符表，生成JIS编码文本
 def generateTunnelJis(text):
 	data = bytearray()
 	for wchar in text:
 		try:
-			b = wchar.encode('cp932')
+			b = wchar.encode(OldEncodeName)
 		except Exception as ex:
 			if wchar in tunnelUnicodeList:
 				#已存在
@@ -204,5 +212,81 @@ def generateTunnelJisMap(filepath=''):
 		fileOutput.write(data)
 		fileOutput.close()
 		printWarningGreen('在ctrl文件夹下生成了sjis_ext.bin')
+	#subs配置
+	readSubsConfig()
+	subsConfig['tunnel_decoder']['mapping'] = ''.join(tunnelUnicodeList)
+	subsConfig['tunnel_decoder']['enable'] = True
+	writeSubsConfig()
 	return data
+
+# ------------------------------------------------------------
+import json
+subsDic = {} #预设字典，默认来自GalTransl_DumpInjector项目
+subsJPList = [] #jp
+subsCNList = [] #cn
+subsRemainList = [] #剩余的cn
+subsConfig = {}
+
+def generateSubsDic():
+	subsJPList.clear()
+	subsCNList.clear()
+	subsRemainList.clear()
+	global subsDic
+	if subsDic != {}: return
+	filepath = os.path.join('src', 'subs_cn_jp.json')
+	fileOld = open(filepath, 'r', encoding='utf-8')
+	subsDic = json.load(fileOld)
+	printInfo('读入subs字典：', os.path.basename(filepath))
+
+#生成替换后的JIS编码文本
+def generateSubsJis(text):
+	data = bytearray()
+	for wchar in text:
+		try:
+			b = wchar.encode(OldEncodeName)
+		except Exception as ex:
+			if wchar in subsDic:
+				#存在预设
+				if wchar not in subsCNList:
+					#未加入列表
+					subsJPList.append(subsDic[wchar])
+					subsCNList.append(wchar)
+				b = subsDic[wchar].encode(OldEncodeName)
+			else:
+				#不存在预设
+				subsRemainList.append(wchar)
+				#wcharList.append(wchar)
+				printError('JIS替换预设不存在，请在subs_cn_jp.json中添加', wchar)
+				b = '<>'.encode(OldEncodeName)
+		#导出
+		data.extend(b)
+	return data
+	
+#生成配置文件
+def generateSubsConfig():
+	readSubsConfig()
+	subsConfig['character_substitution']['source_characters'] = ''.join(subsJPList)
+	subsConfig['character_substitution']['target_characters'] = ''.join(subsCNList)
+	subsConfig['character_substitution']['enable'] = True
+	if subsRemainList != []:
+		subsConfig['character_substitution']['remain'] = subsRemainList
+	elif 'remain' in subsConfig['character_substitution']:
+		del subsCNList['character_substitution']['remain']
+	writeSubsConfig()
+
+def readSubsConfig():
+	global subsConfig
+	filepath = os.path.join('src', 'uif_config.json')
+	fileOld = open(filepath, 'r', encoding='utf-8')
+	subsConfig = json.load(fileOld)
+	fileOld.close()
+
+def writeSubsConfig(filepath=''):
+	if filepath == '':
+		filepath = os.path.join(ExVar.workpath, 'ctrl', 'uif_config.json')
+	fileOutput = open(filepath, 'w', encoding='utf-8')
+	json.dump(subsConfig, fileOutput, ensure_ascii=False, indent=2)
+	fileOutput.close()
+	printWarningGreen('在ctrl文件夹下生成了uif_config.json')
+	
 	

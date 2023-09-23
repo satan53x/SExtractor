@@ -57,6 +57,7 @@ class ExtractVar():
 	maxCountPerLine = 0
 	addSpace = '　' #填充的空格
 	tunnelJis = False
+	subsJis = False
 
 	#-------------------
 	#窗口

@@ -3,7 +3,6 @@ from common import *
 from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_TXT import searchLine, ParseVar, GetRegList
 
-
 # ---------------- Engine: WillPlus -------------------
 def parseImp(content, listCtrl, dealOnce):
 	var = ParseVar()
@@ -49,7 +48,7 @@ def parseImp(content, listCtrl, dealOnce):
 			#选项
 			count = lineData[0] #选项个数
 			if count >= 6 or count == 0: 
-				print('选项个数过滤', ExVar.filename)
+				#printDebug('选项个数过滤', ExVar.filename)
 				textType = -1
 				continue #选项个数不能超过
 			start = 1
@@ -57,10 +56,10 @@ def parseImp(content, listCtrl, dealOnce):
 				start += 2
 				ret = re.search(b'\0', lineData[start:])
 				if ret == None:
-					print('select: Not found \\0')
+					printError('select: Not found \\0')
 					break
 				elif isShiftJis(lineData[start], lineData[start+1]) == 0:
-					print('选项开头不是日文')
+					printError('选项开头不是日文')
 					break
 				end = start + ret.start()
 				text = lineData[start:end].decode(ExVar.OldEncodeName)
