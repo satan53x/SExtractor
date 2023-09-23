@@ -31,8 +31,8 @@
 * Yu-ris
 
 ## 其他功能
-* 可以导出VNT的JIS隧道文件`sjis_ext.bin`，需要配合`VNTProxy`使用。(同时也会导出UIF配置)
-* 可以导出UIF的JIS替换配置`uif_config.json`，需要配合`UniversalInjectorFramework`使用。
+* 可以导出VNT的JIS隧道文件`sjis_ext.bin`，需要配合[VNTProxy](#相关项目)使用。(同时也会导出UIF配置)
+* 可以导出UIF的JIS替换配置`uif_config.json`，需要配合[UniversalInjectorFramework](#相关项目)使用。
 * 文件夹下自定义的`config*.ini`都会被读取，*中不能以数字开头。(例：`configTest.ini`)
 * `reg.ini`中可自定义正则匹配规则
 
@@ -66,7 +66,7 @@
 * txt文档  [ 带换行文本 ]
 * json列表 [ 带换行文本 ]
 
-## 相关参考项目
+## 相关项目
 1. [ssynn](https://github.com/ssynn/game_translation)
 2. [SiglusTools](https://github.com/yanhua0518/GALgameScriptTools)
 3. [CSystemTools](https://github.com/arcusmaximus/CSystemTools)
