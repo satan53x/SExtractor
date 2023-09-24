@@ -77,7 +77,7 @@ def readFileDataImp(fileOld, contentSeprate):
 			break
 		pos += 4
 		end = pos + length
-		header = {'length': length}
+		header = {}
 		if data[pos] == 0x53: #文本S
 			header['type'] = 'S'
 			#pre
