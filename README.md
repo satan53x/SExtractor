@@ -67,9 +67,10 @@
 * json列表 [ 带换行文本 ]
 
 ## 相关项目
-1. [ssynn](https://github.com/ssynn/game_translation)
+1. [game_translation](https://github.com/ssynn/game_translation)
 2. [SiglusTools](https://github.com/yanhua0518/GALgameScriptTools)
 3. [CSystemTools](https://github.com/arcusmaximus/CSystemTools)
 4. [VNTranslationTools](https://github.com/arcusmaximus/VNTranslationTools)
 5. [UniversalInjectorFramework](https://github.com/AtomCrafty/UniversalInjectorFramework)
 6. [GalTransl_DumpInjector](https://github.com/XD2333/GalTransl_DumpInjector)
+7. [EAGLS](https://github.com/jszhtian/EAGLS)
