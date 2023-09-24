@@ -5,8 +5,8 @@ import struct
 from common import *
 from helper_text import generateBytes
 
-OldEncodeName = 'cp932'
-NewEncodeName = 'gbk'
+OldEncodeName = 'cp932' #仅用于TXT模式截断
+NewEncodeName = 'gbk' #仅用于TXT模式截断
 
 class ParseVar():
 	contentIndex = 0

@@ -119,6 +119,8 @@ def int2bytes(i, l=4):
     return int.to_bytes(i, byteorder='little', length=l)
 
 def xorBytes(input, xorTable):
+    if not xorTable:
+        return bytearray(input)
     result = bytearray()
     xorLen = len(xorTable)
     for i, b in enumerate(input):

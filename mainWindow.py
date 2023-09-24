@@ -197,7 +197,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 				self.extraFuncTabs.setCurrentIndex(1)
 				regName = self.regNameBox.currentText()
 				#只有在custom时才自动替换
-				if re.match(r'_*Custom', regName):
+				name = engineName.split('_')[0]
+				if re.match(r'_*Custom', regName) or re.search(name, regName):
 					self.selectReg(self.regNameBox.currentIndex())
 			else:
 				self.regNameTab.setEnabled(False)
