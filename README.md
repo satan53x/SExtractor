@@ -15,7 +15,7 @@
 * AST (移除，转为正则预设)
 * Artemis
 * CSV
-* Cyberworks / CSystem (仅用于文本为UTF-16的新版)
+* Cyberworks / CSystem
 * EAGLS
 * FVP
 * Kaguya
