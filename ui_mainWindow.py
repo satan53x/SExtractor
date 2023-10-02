@@ -295,7 +295,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_17.setContentsMargins(5, 5, 5, 5)
         self.horizontalLayout_17.setObjectName("horizontalLayout_17")
         self.printCheck0 = QtWidgets.QCheckBox(self.groupBox_5)
-        self.printCheck0.setChecked(True)
+        self.printCheck0.setChecked(False)
         self.printCheck0.setObjectName("printCheck0")
         self.horizontalLayout_17.addWidget(self.printCheck0)
         self.printCheck1 = QtWidgets.QCheckBox(self.groupBox_5)

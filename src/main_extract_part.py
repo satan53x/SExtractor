@@ -35,6 +35,7 @@ def mainExtractPart(args, parseImp, initDone=None):
 			if os.path.isfile(filepath):
 				var.curIO = var.io
 				readFormat() #读入译文
+				printDebug('读取文件:', var.filename)
 				parseImp()
 				keepAllOrig()
 				writeFormat()

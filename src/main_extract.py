@@ -558,7 +558,7 @@ def mainExtract(args, parseImp, initDone=None):
 			filepath = os.path.join(var.workpath, var.filename+var.Postfix)
 			#print(name, filepath)
 			if os.path.isfile(filepath):
-				#print('File:', name)
+				printDebug('读取文件:', var.filename)
 				parseImp()
 				keepAllOrig()
 				#break #测试
