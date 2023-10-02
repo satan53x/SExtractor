@@ -15,7 +15,10 @@ XorTable = {
 	#プリンセスハートリンク 剣姫たちの艶舞 DL版
 	2: bytearray.fromhex('83 0B CF 51 87 13 5F 6B 96 4D F6 14 4F 21 97 DE'),
 	#プリンセスハートリンク 剣姫たちの艶舞 PKG版
-	3: bytearray.fromhex('83 0B CF 51 87 13 5F 6B AE 68 D7 16 45 23 9B 87')
+	3: bytearray.fromhex('83 0B CF 51 87 13 5F 6B AE 68 D7 16 45 23 9B 87'),
+	#『彼氏いない歴＝年齢』じゃ、どうしてイケナイのよ!?
+	# The key made by `Morph`
+	4: bytearray.fromhex('73 ED 33 9F 63 D1 B9 CE 5E 8E 2B D8 A1 E1 7D 22')
 }
 
 #加密解密函数相同
