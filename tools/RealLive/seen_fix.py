@@ -2,7 +2,7 @@ import os
 import sys
 from tkinter import filedialog
 
-GameType = 3 #此处选择预设游戏
+GameType = 23 #此处选择预设游戏
 OffsetStart = 0x100 #如果是arc_conv提取需要把此处改为0x100
 DefaultDir = './Seen.txt~/'
 
@@ -16,9 +16,20 @@ XorTable = {
 	2: bytearray.fromhex('83 0B CF 51 87 13 5F 6B 96 4D F6 14 4F 21 97 DE'),
 	#プリンセスハートリンク 剣姫たちの艶舞 PKG版
 	3: bytearray.fromhex('83 0B CF 51 87 13 5F 6B AE 68 D7 16 45 23 9B 87'),
+	# >>>>>>> Made by `Cosetto`
+	# 3Ping Lovers! ☆ Ippu Nisai no Sekai e Youkoso♪
+	21: bytearray.fromhex('66 8A 20 D4 6E C3 B4 B8 4B F8 38 93 AC AC 70 0A'),
+	# Niizuma Shino
+	22: bytearray.fromhex('8C 03 CC 55 9F 1D 41 38 A1 60 D4 12 5D 2D 85 D4'),
+	# Niizuma Koyomi
+	23: bytearray.fromhex('80 05 D7 40 89 15 5D 3C A7 62 D3 17 41 39 86 D0'),
+	# Lovedori Halation
+	24: bytearray.fromhex('74 3C 2F FC 6E CD B4 BF 4B D4 2A 25 A3 84 70 04'),
+	# Mizugi Shoujo to Biyaku Ice ~Zannen na Kanojo no Shitsukekata, Oshiemasu~
+	25: bytearray.fromhex('93 02 CB 40 89 23 52 38 B0 7E D2 1A 5A 29 AD D1'),
+	# >>>>>>> Made by `Morph`
 	#『彼氏いない歴＝年齢』じゃ、どうしてイケナイのよ!?
-	# The key made by `Morph`
-	4: bytearray.fromhex('73 ED 33 9F 63 D1 B9 CE 5E 8E 2B D8 A1 E1 7D 22')
+	41: bytearray.fromhex('73 ED 33 9F 63 D1 B9 CE 5E 8E 2B D8 A1 E1 7D 22')
 }
 
 #加密解密函数相同
