@@ -77,6 +77,12 @@ def splitToTransDic(orig, trans):
 	sep = ExVar.splitParaSep
 	listMsgOrig = re.split(sep, orig)
 	listMsgTrans = re.split(sep, trans)
+	if len(listMsgTrans) > len(listMsgOrig):
+		#合并末尾多余行数
+		i = len(listMsgOrig) - 1
+		listMsgTrans[i] = ''.join(listMsgTrans[i:])
+		for j in range(len(listMsgTrans)-1, i, -1):
+			listMsgTrans.pop(j)
 	for j in range(len(listMsgOrig)):
 		msgOrig = listMsgOrig[j]
 		msgTrans = ExVar.addSpace
