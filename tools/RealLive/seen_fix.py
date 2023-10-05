@@ -17,15 +17,15 @@ XorTable = {
 	#プリンセスハートリンク 剣姫たちの艶舞 PKG版
 	3: bytearray.fromhex('83 0B CF 51 87 13 5F 6B AE 68 D7 16 45 23 9B 87'),
 	# >>>>>>> Made by `Cosetto`
-	# 3Ping Lovers! ☆ Ippu Nisai no Sekai e Youkoso♪
+	# 3Ping Lovers！☆一夫二妻の世界へようこそ♪
 	21: bytearray.fromhex('66 8A 20 D4 6E C3 B4 B8 4B F8 38 93 AC AC 70 0A'),
-	# Niizuma Shino
+	# 新妻詩乃
 	22: bytearray.fromhex('8C 03 CC 55 9F 1D 41 38 A1 60 D4 12 5D 2D 85 D4'),
-	# Niizuma Koyomi
+	# 新妻こよみ
 	23: bytearray.fromhex('80 05 D7 40 89 15 5D 3C A7 62 D3 17 41 39 86 D0'),
-	# Lovedori Halation
+	# らぶ撮りハレーション
 	24: bytearray.fromhex('74 3C 2F FC 6E CD B4 BF 4B D4 2A 25 A3 84 70 04'),
-	# Mizugi Shoujo to Biyaku Ice ~Zannen na Kanojo no Shitsukekata, Oshiemasu~
+	# 水着少女と媚薬アイス ～残念なカノジョのしつけ方、教えます～
 	25: bytearray.fromhex('93 02 CB 40 89 23 52 38 B0 7E D2 1A 5A 29 AD D1'),
 	# >>>>>>> Made by `Morph`
 	#『彼氏いない歴＝年齢』じゃ、どうしてイケナイのよ!?
