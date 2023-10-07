@@ -125,17 +125,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.regNameBox.setCurrentIndex(self.regIndex)
 		#self.regNameBox.currentIndexChanged.connect(self.selectReg)
 		# 截断
-		checked = initValue(self.mainConfig, 'cutoff', 'false') != 'false'
+		checked = initValue(self.mainConfig, 'cutoff', 'false')
 		self.cutoffCheck.setChecked(checked)
-		checked = initValue(self.mainConfig, 'cutoffCopy', 'true') != 'false'
+		checked = initValue(self.mainConfig, 'cutoffCopy', 'true')
 		self.cutoffCopyCheck.setChecked(checked)
 		# 编码
 		index = int(initValue(self.mainConfig, 'encodeIndex', 0))
 		self.txtEncodeBox.setCurrentIndex(index)
 		# 译文
-		checked = initValue(self.mainConfig, 'splitAuto', 'false') != 'false'
+		checked = initValue(self.mainConfig, 'splitAuto', 'false')
 		self.splitCheck.setChecked(checked)
-		checked = initValue(self.mainConfig, 'ignoreSameLineCount', 'false') != 'false'
+		checked = initValue(self.mainConfig, 'ignoreSameLineCount', 'false')
 		self.ignoreSameCheck.setChecked(checked)
 		maxCountPerLine = initValue(self.mainConfig, 'maxCountPerLine', 512)
 		self.splitMaxEdit.setText(str(maxCountPerLine))
@@ -143,7 +143,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		splitParaSep = initValue(self.mainConfig, 'splitParaSep', '\\r\\n')
 		self.splitSepEdit.setText(splitParaSep)
 		# bin纯文本模式
-		checked = initValue(self.mainConfig, 'pureText', 'false') != 'false'
+		checked = initValue(self.mainConfig, 'pureText', 'false')
 		self.binPureTextCheck.setChecked(checked)
 		# 结束
 		self.engineNameBox.setCurrentIndex(self.engineCode)
@@ -391,4 +391,8 @@ def initValue(setting, name, v):
 	else:
 		v = setting.value(name)
 		#print('Load Config', name, v)
+		if v == 'false':
+			v = False
+		elif v == 'true':
+			v = True
 	return v
