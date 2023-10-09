@@ -1,0 +1,14 @@
+只需要复制SHook.dll和SHook.ini。
+用类似Xenos的注入工具注入即可；也可和其他插件配合使用，比如支持Plugin文件夹的kDays.dll可以自动注入。
+调试信息可用DebugView工具查看。
+
+ini配置：
+根据注入方式不同位置不同，请尝试和exe或者dll同目录。
+读取会跳过空行或者#;注释，行首尽量不要有特殊字符
+
+ini具体说明：
+WaitCount		dllmain收到的消息数，到达之后再进行写入，防止程序解压未完成，请根据DebugView调试信息自行修正
+AllSectionCount		进行扫描的Section总数，不是指有效Section个数
+Search64			最大64位的搜索字节流，?代表任意
+Search128			最大128位的搜索字节流，?代表任意
+LoadLibrary		延迟加载自定义dll
