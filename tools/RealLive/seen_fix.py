@@ -2,9 +2,9 @@ import os
 import sys
 from tkinter import filedialog
 
-GameType = 23 #此处选择预设游戏
+GameType = 21 #此处选择预设游戏
 OffsetStart = 0x100 #如果是arc_conv提取需要把此处改为0x100
-DefaultDir = './Seen.txt~/'
+DefaultDir = '.'
 
 #每个游戏可能不同，可以通过异或txt截断处和游戏内ocr提取文本获得
 XorTable = {
@@ -47,12 +47,10 @@ def fixSeenSub(data, tableType):
 
 def main(args):
 	workpath = DefaultDir
-	if os.path.isdir(workpath):
-		pass
-	elif len(args) > 1:
+	if len(args) > 1:
 		workpath = args[1]
 	else:
-		workpath = filedialog.askdirectory(initialdir='.')
+		workpath = filedialog.askdirectory(initialdir=workpath)
 		if workpath == '': return
 	print('工作目录', workpath)
 	#创建new文件夹
