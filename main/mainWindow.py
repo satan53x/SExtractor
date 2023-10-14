@@ -145,6 +145,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		# bin纯文本模式
 		checked = initValue(self.mainConfig, 'pureText', False)
 		self.binPureTextCheck.setChecked(checked)
+		# bin纯文本模式
+		checked = initValue(self.mainConfig, 'transReplace', True)
+		self.transReplaceCheck.setChecked(checked)
 		# 结束
 		self.engineNameBox.setCurrentIndex(self.engineCode)
 		self.initEnd = True
@@ -277,7 +280,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'binEncodeValid': self.binEncodeCheck.isChecked(),
 			'pureText': self.binPureTextCheck.isChecked(),
 			'tunnelJis': self.tunnelJisCheck.isChecked(),
-			'subsJis': self.subsJisCheck.isChecked()
+			'subsJis': self.subsJisCheck.isChecked(),
+			'transReplace': self.transReplaceCheck.isChecked()
 		}
 		var.window = self
 		#保存配置
@@ -320,6 +324,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mainConfig.setValue('splitParaSep', args['splitParaSep'])
 		self.mainConfig.setValue('ignoreSameLineCount', self.ignoreSameCheck.isChecked())
 		self.mainConfig.setValue('pureText', self.binPureTextCheck.isChecked())
+		self.mainConfig.setValue('transReplace', self.transReplaceCheck.isChecked())
 	#提取打印设置
 	def getExtractPrintSetting(self):
 		lst = []

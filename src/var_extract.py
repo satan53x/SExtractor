@@ -39,6 +39,9 @@ class ExtractVar():
 	transDicIO = {} #读取写入时的原本字典，不参与write()，模式01则不需要
 	allOrig = []
 
+	cutoffDic = {}
+	textConf = {}
+
 	#-------------------
 	filename = ''
 	content = None
@@ -49,7 +52,6 @@ class ExtractVar():
 	listOrig = [] #原文表
 	listCtrl = [] #控制表
 	addSeprate = True
-	cutoffDic = {}
 	printSetting = None
 	splitAuto = False
 	splitParaSep = '\r\n' #段落分割符
@@ -58,6 +60,7 @@ class ExtractVar():
 	addSpace = '　' #填充的空格
 	tunnelJis = False
 	subsJis = False
+	transReplace = True #译文替换
 
 	#-------------------
 	#窗口

@@ -65,6 +65,19 @@ def readFormat():
 		readFormatList()
 	elif code == 8:
 		readFormatXlsx()
+	#修正译文
+	if var.transReplace:
+		filepath = './text_conf.json'
+		if os.path.isfile(filepath):
+			fileOld = open(filepath, 'r', encoding='utf-8')
+			var.textConf = json.load(fileOld)
+			fileOld.close()
+			if 'trans_replace' not in var.textConf: return
+			replaceDic = var.textConf['trans_replace']
+			for orig, trans in var.transDic.items():
+				for old, new in replaceDic.items():
+					trans = re.sub(old, new, trans)
+					var.transDic[orig] = trans
 
 def readFormatDic():
 	#读入transDic字典
@@ -519,6 +532,7 @@ def initArgs(args):
 		generateJisList()
 	elif var.subsJis:
 		generateSubsDic()
+	var.transReplace = args['transReplace']
 	return 0
 
 def extractDone():

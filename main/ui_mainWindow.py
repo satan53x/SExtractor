@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'g:\Porj\Python\SExtractor\ui_mainWindow.ui'
+# Form implementation generated from reading ui file 'g:\Porj\Python\SExtractor\main\ui_mainWindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -365,6 +365,16 @@ class Ui_MainWindow(object):
         self.subsJisCheck.setObjectName("subsJisCheck")
         self.horizontalLayout_30.addWidget(self.subsJisCheck)
         self.verticalLayout_7.addWidget(self.groupBox_13)
+        self.groupBox_14 = QtWidgets.QGroupBox(self.tab_4)
+        self.groupBox_14.setObjectName("groupBox_14")
+        self.horizontalLayout_31 = QtWidgets.QHBoxLayout(self.groupBox_14)
+        self.horizontalLayout_31.setContentsMargins(5, 0, 5, 6)
+        self.horizontalLayout_31.setObjectName("horizontalLayout_31")
+        self.transReplaceCheck = QtWidgets.QCheckBox(self.groupBox_14)
+        self.transReplaceCheck.setChecked(False)
+        self.transReplaceCheck.setObjectName("transReplaceCheck")
+        self.horizontalLayout_31.addWidget(self.transReplaceCheck)
+        self.verticalLayout_7.addWidget(self.groupBox_14)
         spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_7.addItem(spacerItem3)
         self.tabWidget.addTab(self.tab_4, "")
@@ -544,6 +554,8 @@ class Ui_MainWindow(object):
         self.groupBox_13.setTitle(_translate("MainWindow", "JIS配置"))
         self.tunnelJisCheck.setText(_translate("MainWindow", "生成VNT的JIS隧道文件"))
         self.subsJisCheck.setText(_translate("MainWindow", "生成UniversalInjector的JIS替换配置"))
+        self.groupBox_14.setTitle(_translate("MainWindow", "文本处理"))
+        self.transReplaceCheck.setText(_translate("MainWindow", "启用译文替换"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_4), _translate("MainWindow", "设置"))
         self.mergeDirLabel.setText(_translate("MainWindow", "工作目录"))
         self.mergeDirButton.setText(_translate("MainWindow", " 选择文件夹 "))
