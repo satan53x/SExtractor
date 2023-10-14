@@ -5,7 +5,7 @@ from PyQt5.Qt import QThread
 from ui_mainWindow import Ui_MainWindow
 import re
 import sys
-sys.path.append('.\src')
+sys.path.append('./src')
 from main_extract_txt import mainExtractTxt
 from main_extract_bin import mainExtractBin
 from main_extract_json import mainExtractJson
@@ -34,7 +34,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		#创建字典
 		self.createDicButton.clicked.connect(self.createDic)
 		#配置选项
-		self.configName = 'config.ini'
+		self.configName = 'main/config.ini'
 		for i in range(1, ConfigCount):
 			self.configSeqBox.addItem(str(i))
 		path = os.path.abspath(__file__)
@@ -48,9 +48,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 	def selectConfig(self, index):
 		if index == 0:
-			self.configName = 'config.ini'
+			self.configName = 'main/config.ini'
 		else:
-			self.configName = f'config{self.configSeqBox.currentText()}.ini'
+			self.configName = f'main/config{self.configSeqBox.currentText()}.ini'
 		self.refreshConfig()
 
 	#初始化
@@ -125,17 +125,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.regNameBox.setCurrentIndex(self.regIndex)
 		#self.regNameBox.currentIndexChanged.connect(self.selectReg)
 		# 截断
-		checked = initValue(self.mainConfig, 'cutoff', 'false')
+		checked = initValue(self.mainConfig, 'cutoff', False)
 		self.cutoffCheck.setChecked(checked)
-		checked = initValue(self.mainConfig, 'cutoffCopy', 'true')
+		checked = initValue(self.mainConfig, 'cutoffCopy', True)
 		self.cutoffCopyCheck.setChecked(checked)
 		# 编码
 		index = int(initValue(self.mainConfig, 'encodeIndex', 0))
 		self.txtEncodeBox.setCurrentIndex(index)
 		# 译文
-		checked = initValue(self.mainConfig, 'splitAuto', 'false')
+		checked = initValue(self.mainConfig, 'splitAuto', False)
 		self.splitCheck.setChecked(checked)
-		checked = initValue(self.mainConfig, 'ignoreSameLineCount', 'false')
+		checked = initValue(self.mainConfig, 'ignoreSameLineCount', False)
 		self.ignoreSameCheck.setChecked(checked)
 		maxCountPerLine = initValue(self.mainConfig, 'maxCountPerLine', 512)
 		self.splitMaxEdit.setText(str(maxCountPerLine))
@@ -143,7 +143,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		splitParaSep = initValue(self.mainConfig, 'splitParaSep', '\\r\\n')
 		self.splitSepEdit.setText(splitParaSep)
 		# bin纯文本模式
-		checked = initValue(self.mainConfig, 'pureText', 'false')
+		checked = initValue(self.mainConfig, 'pureText', False)
 		self.binPureTextCheck.setChecked(checked)
 		# 结束
 		self.engineNameBox.setCurrentIndex(self.engineCode)

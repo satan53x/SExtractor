@@ -1,6 +1,7 @@
 import sys
 #PyQt5中使用的基本控件都在PyQt5.QtWidgets模块中
 from PyQt5.QtWidgets import QApplication
+sys.path.append('./main')
 from mainWindow import MainWindow
 
 if __name__ == "__main__":
