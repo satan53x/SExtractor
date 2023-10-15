@@ -10,21 +10,12 @@ class IOConfig():
 	prefix = ''
 
 class ExtractVar():
-	Postfix = '.txt'
-	EncodeRead = 'utf-8'
-	contentSeprate = None
-	nameList = []
-	regDic = {}
-	cutoff = False
-	cutoffCopy = False
-	noInput = False
-	indent = 2 #缩进
-	#
 	parseImp = None
 	replaceOnceImp = None
 	readFileDataImp = None
 	replaceEndImp = None
 	workpath = ''
+	window = None
 	#导出配置
 	io = IOConfig()
 	ioExtra = IOConfig()
@@ -39,40 +30,47 @@ class ExtractVar():
 	transDicIO = {} #读取写入时的原本字典，不参与write()，模式01则不需要
 	allOrig = []
 
+	filename = ''
+	content = None
+	isInput = False #是否写入译文
+	listOrig = [] #原文表
+	listCtrl = [] #控制表
 	cutoffDic = {}
 	textConf = {}
 
 	#-------------------
-	filename = ''
-	content = None
-	insertContent = {} #需要插入的内容
-	isInput = False #是否写入译文
-	inputCount = 0 #导出文件个数
-	outputCount = 0 #导出文件个数
-	listOrig = [] #原文表
-	listCtrl = [] #控制表
+	Postfix = '.txt'
+	EncodeRead = 'utf-8'
+	contentSeprate = None
+	fileType = '' #引擎类型
+	nameList = []
+	regDic = {}
+	cutoff = False
+	cutoffCopy = False
+	noInput = False
+	indent = 2 #缩进
+	#-------------------
+	symbolPattern = '[\\u3000-\\u303F\\uFF00-\\uFF65\\u2000-\\u206F]' #重新分割匹配字符
 	addSeprate = True
 	printSetting = None
 	splitAuto = False
 	splitParaSep = '\r\n' #段落分割符
 	ignoreSameLineCount = True
 	maxCountPerLine = 0
+	fixedMaxPerLine = False
 	addSpace = '　' #填充的空格
 	tunnelJis = False
 	subsJis = False
 	transReplace = True #译文替换
 
 	#-------------------
-	#窗口
-	window = None
-
 	def clear(self):
 		self.OldEncodeName = 'cp932'
 		self.NewEncodeName = 'gbk'
 		#
-		self.insertContent = {}
-		self.inputCount = 0
-		self.outputCount = 0
+		self.insertContent = {} #需要插入的内容
+		self.inputCount = 0 #导出文件个数
+		self.outputCount = 0 #导出文件个数
 		#各引擎参数
 		self.startline = 0 #起始行数
 		self.extractName = '^.'

@@ -67,17 +67,15 @@ def readFormat():
 		readFormatXlsx()
 	#修正译文
 	if var.transReplace:
-		filepath = './text_conf.json'
-		if os.path.isfile(filepath):
-			fileOld = open(filepath, 'r', encoding='utf-8')
-			var.textConf = json.load(fileOld)
-			fileOld.close()
-			if 'trans_replace' not in var.textConf: return
-			replaceDic = var.textConf['trans_replace']
-			for orig, trans in var.transDic.items():
-				for old, new in replaceDic.items():
-					trans = re.sub(old, new, trans)
-					var.transDic[orig] = trans
+		if 'trans_replace' not in var.textConf: return
+		if var.fileType == 'bin':
+			charset = var.NewEncodeName
+		else:
+			charset = var.EncodeRead
+		for key, replaceDic in var.textConf['trans_replace'].items():
+			if charset not in key: continue
+			printDebug('进行译文替换')
+			replaceValue(var.transDic, replaceDic)
 
 def readFormatDic():
 	#读入transDic字典
@@ -395,6 +393,7 @@ def createFolder():
 def chooseEngine(args):
 	engineName = args['engineName']
 	var.clear()
+	var.fileType = args['file']
 	#读取配置
 	settings = QSettings('src/engine.ini', QSettings.IniFormat)
 	strEngine = 'Engine_' + engineName
@@ -493,6 +492,17 @@ def writeCutoffDic():
 	json.dump(var.cutoffDic, fileOutput, ensure_ascii=False, indent=2)
 	fileOutput.close()
 
+def readTextConf():
+	if not var.transReplace: return
+	filepath = os.path.join(var.workpath, 'ctrl', 'text_conf.json')
+	if not os.path.isfile(filepath):
+		filepath = os.path.join('.', 'text_conf.json')
+		if not os.path.isfile(filepath):
+			return
+	fileOld = open(filepath, 'r', encoding='utf-8')
+	var.textConf = json.load(fileOld)
+	fileOld.close()
+
 def showMessage(msg):
 	if var.window: 
 		var.window.statusBar.showMessage(msg)
@@ -524,6 +534,7 @@ def initArgs(args):
 	if '\\' in var.splitParaSep: #需要处理转义
 		var.splitParaSep = var.splitParaSep.encode().decode('unicode_escape')
 	var.ignoreSameLineCount = args['ignoreSameLineCount']
+	var.fixedMaxPerLine = args['fixedMaxPerLine']
 	var.maxCountPerLine = args['maxCountPerLine']
 	var.pureText = args['pureText']
 	var.tunnelJis = args['tunnelJis']
@@ -533,6 +544,7 @@ def initArgs(args):
 	elif var.subsJis:
 		generateSubsDic()
 	var.transReplace = args['transReplace']
+	readTextConf()
 	return 0
 
 def extractDone():

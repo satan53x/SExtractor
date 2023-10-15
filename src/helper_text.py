@@ -6,7 +6,8 @@ from common import *
 __all__ = ['splitToTransDic', 'splitToTransDicAuto', 
 		'generateJisList', 'generateTunnelJis', 'generateTunnelJisMap',
 		'generateSubsDic', 'generateSubsJis', 'generateSubsConfig',
-		'writeSubsConfig'
+		'writeSubsConfig',
+		'replaceValue'
 ]
 
 #----------------------------------------------------------
@@ -63,9 +64,9 @@ def generateBytes(text, lenOrig, NewEncodeName):
 
 #----------------------------------------------------------
 #sep = '\r\n'
-sepLen = 2
-symbolPattern = '[\\u3000-\\u303F\\uFF00-\\uFF65\\u2000-\\u206F]'
-searchCount = 10
+#sepLen = 2
+#symbolPattern = '[\\u3000-\\u303F\\uFF00-\\uFF65\\u2000-\\u206F]'
+#searchCount = 10
 
 #固定分割
 def splitToTransDic(orig, trans):
@@ -118,9 +119,23 @@ def redistributeTrans(orig:str, trans:str):
 		transList = re.split(sep, trans)
 		if len(origList) == len(transList):
 			return origList, transList
+	if ExVar.fixedMaxPerLine:
+		#固定长度
+		lineLen = ExVar.maxCountPerLine
+		transList = [newTrans[i:i+lineLen] for i in range(0, len(newTrans), lineLen)]
+		if len(transList) > len(origList):
+			#合并末尾多余行数
+			i = len(origList) - 1
+			transList[i] = ''.join(transList[i:])
+			for j in range(len(transList)-1, i, -1):
+				transList.pop(j)
+		else:
+			for i in range(len(transList), len(origList)):
+				transList.append(ExVar.addSpace)
+		return origList, transList
 	#查询译文符号
 	transSymbolList = []
-	matches = re.finditer(symbolPattern, newTrans)
+	matches = re.finditer(ExVar.symbolPattern, newTrans)
 	for match in matches:
 		transSymbolList.append(match.end()) #右区间，不包含
 	#找出最接近的下标
@@ -295,4 +310,9 @@ def writeSubsConfig(filepath=''):
 	fileOutput.close()
 	printWarningGreen('在ctrl文件夹下生成了uif_config.json')
 	
-	
+# ------------------------------------------------------------
+def replaceValue(transDic, replaceDic):
+	for orig, trans in transDic.items():
+		for old, new in replaceDic.items():
+			trans = re.sub(old, new, trans)
+			transDic[orig] = trans

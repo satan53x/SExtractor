@@ -142,10 +142,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		# 段落分割符
 		splitParaSep = initValue(self.mainConfig, 'splitParaSep', '\\r\\n')
 		self.splitSepEdit.setText(splitParaSep)
+		# 固定长度
+		fixedMaxPerLine = initValue(self.mainConfig, 'fixedMaxPerLine', False)
+		self.fixedMaxCheck.setChecked(fixedMaxPerLine)
 		# bin纯文本模式
 		checked = initValue(self.mainConfig, 'pureText', False)
 		self.binPureTextCheck.setChecked(checked)
-		# bin纯文本模式
+		# 译文替换
 		checked = initValue(self.mainConfig, 'transReplace', True)
 		self.transReplaceCheck.setChecked(checked)
 		# 结束
@@ -276,6 +279,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'splitAuto': self.splitCheck.isChecked(),
 			'splitParaSep': self.splitSepEdit.text(),
 			'ignoreSameLineCount': self.ignoreSameCheck.isChecked(),
+			'fixedMaxPerLine': self.fixedMaxCheck.isChecked(),
 			'maxCountPerLine': int(self.splitMaxEdit.text()),
 			'binEncodeValid': self.binEncodeCheck.isChecked(),
 			'pureText': self.binPureTextCheck.isChecked(),
@@ -323,8 +327,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mainConfig.setValue('splitAuto', self.splitCheck.isChecked())
 		self.mainConfig.setValue('splitParaSep', args['splitParaSep'])
 		self.mainConfig.setValue('ignoreSameLineCount', self.ignoreSameCheck.isChecked())
+		self.mainConfig.setValue('fixedMaxPerLine', self.fixedMaxCheck.isChecked())
 		self.mainConfig.setValue('pureText', self.binPureTextCheck.isChecked())
 		self.mainConfig.setValue('transReplace', self.transReplaceCheck.isChecked())
+		
 	#提取打印设置
 	def getExtractPrintSetting(self):
 		lst = []
