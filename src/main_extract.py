@@ -69,7 +69,10 @@ def readFormat():
 	if var.transReplace:
 		if 'trans_replace' not in var.textConf: return
 		if var.fileType == 'bin':
-			charset = var.NewEncodeName
+			if var.tunnelJis or var.subsJis:
+				charset = 'cp932'
+			else:
+				charset = var.NewEncodeName
 		else:
 			charset = var.EncodeRead
 		for key, replaceDic in var.textConf['trans_replace'].items():
