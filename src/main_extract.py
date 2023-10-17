@@ -67,18 +67,28 @@ def readFormat():
 		readFormatXlsx()
 	#修正译文
 	if var.transReplace:
-		if 'trans_replace' not in var.textConf: return
 		if var.fileType == 'bin':
 			if var.tunnelJis or var.subsJis:
 				charset = 'cp932'
 			else:
-				charset = var.NewEncodeName
+				charset = var.NewEncodeName.lower()
 		else:
-			charset = var.EncodeRead
-		for key, replaceDic in var.textConf['trans_replace'].items():
-			if charset not in key: continue
-			printDebug('进行译文替换')
-			replaceValue(var.transDic, replaceDic)
+			charset = var.EncodeRead.lower()
+		#译文替换
+		if 'trans_replace' in var.textConf:
+			for key, replaceDic in var.textConf['trans_replace'].items():
+				if charset not in key: continue
+				printDebug('进行译文替换')
+				replaceValue(var.transDic, replaceDic)
+		#原文保留
+		if 'orig_keep' in var.textConf:
+			for key, keepList in var.textConf['orig_keep'].items():
+				if charset not in key: continue
+				printDebug('进行原文保留')
+				for orig, trans in var.transDic.items():
+					for keep in keepList:
+						if keep == orig:
+							var.transDic[orig] = ''
 
 def readFormatDic():
 	#读入transDic字典
