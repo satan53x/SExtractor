@@ -1,10 +1,11 @@
 import os
 from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
-from PyQt5.Qt import QThread
+from PyQt5.QtGui import QIcon
 from ui_mainWindow import Ui_MainWindow
 import re
 import sys
+import ctypes
 sys.path.append('./src')
 from main_extract_txt import mainExtractTxt
 from main_extract_bin import mainExtractBin
@@ -20,6 +21,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		super(MainWindow, self).__init__(parent)
 		self.setupUi(self)
 		self.initEnd = False
+		# 设置图标
+		icon = QIcon("main/main.ico")
+		self.setWindowIcon(icon)
+		ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("myappid")
 		#提取
 		self.mainDirButton.clicked.connect(self.chooseMainDir)
 		self.extractButton.clicked.connect(self.extractFileThread)
