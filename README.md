@@ -13,6 +13,7 @@
 * BIN二进制文本 (正则匹配。默认读shift-jis写GBK)
 * JSON文本 (正则匹配，只搜索value)
 * AST (移除，转为正则预设)
+* AZ System (Encrypt Isaac)
 * Artemis
 * CSV
 * Cyberworks / CSystem
