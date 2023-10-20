@@ -19,7 +19,7 @@ def initExtra():
 		sepStr = '[^\\[\\]]+'
 	return endStr, ctrlStr, sepStr
 
-# ---------------- Group: Krkr 1 -------------------
+# ---------------- Group: Krkr Split -------------------
 def parseImp(content, listCtrl, dealOnce):
 	endStr, ctrlStr, sepStr = initExtra()
 	var = ParseVar(listCtrl, dealOnce)
