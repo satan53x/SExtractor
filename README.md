@@ -1,5 +1,5 @@
 # SExtractor
- 仅用于提取和导入GalGame脚本文本（大部分都需要明文）
+ 从GalGame脚本提取和导入文本（大部分需要明文）
  
 ## Python依赖模块：
 国内推荐先配置镜像再下载：`pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple`
