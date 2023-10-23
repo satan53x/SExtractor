@@ -11,7 +11,7 @@
 同引擎不同游戏的格式也可能不同，请参看程序内示例使用。
 * TXT纯文本 (正则匹配。可选utf-8，utf-8-sig，utf-16(LE BOM))
 * BIN二进制文本 (正则匹配。默认读shift-jis写GBK)
-* JSON文本 (正则匹配，只搜索value)
+* JSON文本 (正则匹配，只搜索value，value为空则先自动复制key到value)
 * AST (移除，转为正则预设)
 * AZ System (Encrypt Isaac)
 * Artemis
@@ -56,6 +56,15 @@
 * 导出所有(多用于格式转换)
 * 自定义规则(自动保存)
 * None还原为引擎默认
+
+## 工具
+* AZ System: isaac加密
+* Cyberworks: UTF-16解封包
+* EAGLS: 解封包
+* RealLive: 解封包，二次加解密
+* SHook: 跳壳
+* Unity: data.dsm加解密
+* UniversalInjectorFramework: dll
 
 ## 支持的导出格式：
 * json字典 { 文本 : "" }
