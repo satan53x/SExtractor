@@ -13,7 +13,7 @@ def main1():
 	printHex(b2)
 	ret = b''
 	for i in range(len(b1)):
-		ret += (b1[i] ^ b2[i]).to_bytes(1)
+		ret += (b1[i] ^ b2[i%len(b2)]).to_bytes(1)
 	printHex(ret)
 
 def main2():
