@@ -9,6 +9,11 @@ headerList = []
 insertContent = {}
 
 # ---------------- Engine: Black Rainbow -------------------
+def initExtra():
+	if ExVar.extraData:
+		global XorKey
+		XorKey = ExVar.extraData.encode().decode('unicode_escape').encode('latin-1')
+
 def parseImp(content, listCtrl, dealOnce):
 	return parseImpBIN(content, listCtrl, dealOnce)
 
@@ -43,6 +48,7 @@ def replaceEndImp(content:list):
 
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeprate):
+	initExtra()
 	data = fileOld.read()
 	#文本为第一区块
 	pos = 0x4C
