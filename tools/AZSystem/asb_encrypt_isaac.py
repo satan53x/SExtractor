@@ -1,7 +1,8 @@
-import re
+# ------------------------------------------------------------
+# https://github.com/satan53x/SExtractor/tree/main/tools/AZSystem
+# ------------------------------------------------------------
 import sys
 import os
-import json
 from tkinter import filedialog
 import zlib 
 DefaultPath = ''

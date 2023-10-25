@@ -1,3 +1,6 @@
+# ------------------------------------------------------------
+# https://github.com/satan53x/SExtractor/tree/main/tools/RealLive
+# ------------------------------------------------------------
 import os
 import sys
 from tkinter import filedialog
