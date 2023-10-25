@@ -26,21 +26,27 @@ def replaceEndImp(content:list):
 	for contentIndex in range(len(content)):
 		lineData = content[contentIndex]
 		header = headerList[contentIndex]
+		bs = bytearray()
 		if header['segType'] == 0x08:
-			#文本
+			#对话/旁边
 			diffLen = len(lineData) - header['textLen']
 			header['textLen'] += diffLen
 			header['segLen'] += diffLen
-			bs = bytearray()
 			bs.extend(int2bytes(header['roleLen']))
 			bs.extend(int2bytes(header['textLen']))
 			if header['roleLen'] > 0:
 				bs.extend(header['role'])
-			#加密
-			lineData = xorBytes(lineData, XorKey)
+			#文本
+			lineData = xorBytes(lineData, XorKey) #加密
 			bs.extend(lineData)
-		else:
-			bs = b''
+		elif header['segType'] == 0x0E:
+			#选项
+			diffLen = len(lineData) - header['textLen']
+			header['textLen'] += diffLen
+			header['segLen'] += diffLen
+			bs.extend(int2bytes(header['textLen']))
+			#文本
+			bs.extend(lineData)
 		content[contentIndex] = int2bytes(header['segType']) + int2bytes(header['segLen']) + header['pre'] + bs
 		totalLen += len(content[contentIndex])
 	#修正总长度
@@ -63,7 +69,7 @@ def readFileDataImp(fileOld, contentSeprate):
 		pos += 4
 		header = {'segType':segType, 'segLen':segLen}
 		if segType == 0x08:
-			#文本
+			#对话/旁边
 			header['pre'] = data[pos:pos+0x0C]
 			pos += 0x0C
 			roleLen = readInt(data, pos)
@@ -82,6 +88,17 @@ def readFileDataImp(fileOld, contentSeprate):
 			pos += textLen
 			#文本解密
 			bs = xorBytes(bs, XorKey)
+			content.append(bs)
+		elif segType == 0x0E:
+			#选项
+			header['pre'] = data[pos:pos+0x08]
+			pos += 0x08
+			textLen = readInt(data, pos)
+			header['textLen'] = textLen
+			pos += 4
+			#文本
+			bs = data[pos:pos+textLen]
+			pos += textLen
 			content.append(bs)
 		else:
 			header['pre'] = data[pos:pos+segLen]
