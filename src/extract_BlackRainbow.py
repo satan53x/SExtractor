@@ -2,14 +2,13 @@ import re
 from common import *
 from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_BIN import parseImp as parseImpBIN
-from extract_TXT import GetRegList, ParseVar, searchLine
 
-XorKey = b'\x2B\xC5\x2A\x3D'
+XorKey = b'\x2B\xC5\x2A\x3D' #文本密钥
 
 headerList = []
 insertContent = {}
 
-# ---------------- Engine: MoonHir -------------------
+# ---------------- Engine: Black Rainbow -------------------
 def parseImp(content, listCtrl, dealOnce):
 	return parseImpBIN(content, listCtrl, dealOnce)
 
