@@ -30,8 +30,8 @@ def generateBytes(text, lenOrig, NewEncodeName):
 	count = lenOrig - len(transData)
 	#print('Diff', count)
 	if count < 0:
-		if ExVar.tunnelJis:
-			#使用隧道时,cutoffDic字典不生效
+		if ExVar.tunnelJis or ExVar.subsJis:
+			#使用JIS隧道或替换时,cutoffDic字典不生效
 			printWarning('译文长度超出原文，请手动修正', text)
 			return None
 		dic = ExVar.cutoffDic
