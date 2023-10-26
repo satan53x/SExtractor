@@ -125,10 +125,12 @@ def GetRegList(items, OldEncodeName):
 	return lst
 
 def dealLastCtrl(lastCtrl, ctrls, contentIndex=-1):
-	if ctrls == None or len(ctrls) == 0 or 'isName' in ctrls[-1]: #skip匹配或name匹配或存在未匹配内容
+	if ctrls == None or (len(ctrls) > 0 and 'isName' in ctrls[-1]): #skip匹配或name匹配或存在未匹配内容
 		if lastCtrl and 'unfinish' in lastCtrl:
 			del lastCtrl['unfinish'] #段落结束
 		lastCtrl = None
+	elif len(ctrls) == 0:
+		pass
 	elif 'unfinish' in ctrls[-1]:
 		lastCtrl = ctrls[-1]
 	else:
