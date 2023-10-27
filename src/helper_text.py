@@ -12,7 +12,21 @@ __all__ = ['splitToTransDic', 'splitToTransDicAuto',
 
 OldEncodeName = 'cp932'
 #----------------------------------------------------------
-def getBytes(text, NewEncodeName, maxLen=0):
+def getBytes(text, NewEncodeName):
+	transData = None
+	if ExVar.tunnelJis: #JIS隧道
+		transData, _ = generateTunnelJis(text)
+	elif ExVar.subsJis: #JIS替换
+		transData, _ = generateSubsJis(text)
+	else:
+		try:
+			transData = text.encode(NewEncodeName)
+		except Exception as ex:
+			print(ex)
+			return None
+	return transData
+
+def getBytesMax(text, NewEncodeName, maxLen):
 	transData = None
 	cutoffLen = 0
 	if ExVar.tunnelJis: #JIS隧道
@@ -25,7 +39,7 @@ def getBytes(text, NewEncodeName, maxLen=0):
 		except Exception as ex:
 			print(ex)
 			return None, 0
-		if maxLen > 0 and maxLen < len(transData): #截断
+		if maxLen < len(transData): #截断
 			try:
 				cutoffLen = maxLen
 				newData = transData[0:cutoffLen]
@@ -38,9 +52,10 @@ def getBytes(text, NewEncodeName, maxLen=0):
 		transData = transData[0:cutoffLen]
 	return transData, maxLen - totalLen
 
+#----------------------------------------------------------
 #编码生成目标长度的字节数组，会截断和填充字节
 def generateBytes(text, lenOrig, NewEncodeName):
-	transData, _ = getBytes(text, NewEncodeName)
+	transData = getBytes(text, NewEncodeName)
 	if ExVar.cutoff == False or transData == None:
 		return transData
 	# 检查长度
@@ -53,12 +68,12 @@ def generateBytes(text, lenOrig, NewEncodeName):
 				dic[text] = [text, count]
 			else:
 				dic[text] = ['', count]
-			transData, lost = getBytes(text, NewEncodeName, lenOrig)
+			transData, lost = getBytesMax(text, NewEncodeName, lenOrig)
 		elif dic[text][0] != '':
 			#从cutoff字典读取
 			oldText = text
 			text = dic[oldText][0]
-			transData, lost = getBytes(text, NewEncodeName, lenOrig)
+			transData, lost = getBytesMax(text, NewEncodeName, lenOrig)
 			dic[oldText][1] = lost #刷新长度
 		if lost < 0:
 			#进行了截断，丢失长度为lost
