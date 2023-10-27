@@ -10,23 +10,38 @@ __all__ = ['splitToTransDic', 'splitToTransDicAuto',
 		'replaceValue'
 ]
 
+OldEncodeName = 'cp932'
 #----------------------------------------------------------
+def getBytes(text, NewEncodeName, maxLen=0):
+	transData = None
+	cutoffLen = 0
+	if ExVar.tunnelJis: #JIS隧道
+		transData, cutoffLen = generateTunnelJis(text, maxLen)
+	elif ExVar.subsJis: #JIS替换
+		transData, cutoffLen = generateSubsJis(text, maxLen)
+	else:
+		try:
+			transData = text.encode(NewEncodeName)
+		except Exception as ex:
+			print(ex)
+			return None, 0
+		if maxLen > 0 and maxLen < len(transData): #截断
+			try:
+				cutoffLen = maxLen
+				newData = transData[0:cutoffLen]
+				newData.decode(NewEncodeName)
+				return newData, maxLen - len(transData)
+			except Exception as ex:
+				cutoffLen = maxLen - 1
+	totalLen = len(transData)
+	if cutoffLen > 0: #截断
+		transData = transData[0:cutoffLen]
+	return transData, maxLen - totalLen
+
 #编码生成目标长度的字节数组，会截断和填充字节
 def generateBytes(text, lenOrig, NewEncodeName):
-	transData = None
-	if ExVar.cutoff == False:
-		if ExVar.tunnelJis:
-			transData = generateTunnelJis(text)
-			return transData
-		elif ExVar.subsJis:
-			transData = generateSubsJis(text)
-			return transData
-	try:
-		transData = text.encode(NewEncodeName)
-	except Exception as ex:
-		print(ex)
-		return None
-	if ExVar.cutoff == False:
+	transData, _ = getBytes(text, NewEncodeName)
+	if ExVar.cutoff == False or transData == None:
 		return transData
 	# 检查长度
 	count = lenOrig - len(transData)
@@ -38,32 +53,17 @@ def generateBytes(text, lenOrig, NewEncodeName):
 				dic[text] = [text, count]
 			else:
 				dic[text] = ['', count]
+			transData, lost = getBytes(text, NewEncodeName, lenOrig)
 		elif dic[text][0] != '':
 			#从cutoff字典读取
 			oldText = text
-			text = dic[text][0]
-			transData = text.encode(NewEncodeName)
-			count = lenOrig - len(transData)
-			dic[oldText][1] = count #刷新长度
-		if count < 0:
-			#进行截断
+			text = dic[oldText][0]
+			transData, lost = getBytes(text, NewEncodeName, lenOrig)
+			dic[oldText][1] = lost #刷新长度
+		if lost < 0:
+			#进行了截断，丢失长度为lost
 			printWarning('译文长度超出原文，部分截断', text)
-			transData = transData[0:lenOrig]
-			try:
-				text = transData.decode(NewEncodeName)
-			except Exception as ex:
-				#print('\033[31m截断后编码错误\033[0m')
-				return None
-	#JIS隧道或替换
-	if ExVar.tunnelJis or ExVar.subsJis:
-		if ExVar.tunnelJis:
-			transData = generateTunnelJis(text)
-		elif ExVar.subsJis:
-			transData = generateSubsJis(text)
 		count = lenOrig - len(transData)
-		if count < 0:
-			printError('JIS隧道或替换导致长度增加', text)
-			return None
 	if count > 0:
 		# 右边补足空格
 		#print(transData)
@@ -197,7 +197,6 @@ def redistributeTrans(orig:str, trans:str):
 	return origList, transList
 
 # ------------------------------------------------------------
-OldEncodeName = 'cp932'
 tunnelJisList = []
 tunnelUnicodeList = []
 lowBytesToAvoid = [ ord('\t'), ord('\n'), ord('\r'), ord(' '), ord(',') ]
@@ -213,8 +212,9 @@ def generateJisList():
 			tunnelJisList.append(i.to_bytes(1) + j.to_bytes(1))
 
 #插入VNT的字符表，生成JIS编码文本
-def generateTunnelJis(text):
+def generateTunnelJis(text, maxLen=0):
 	data = bytearray()
+	cutoffLen = 0
 	for wchar in text:
 		try:
 			b = wchar.encode(OldEncodeName)
@@ -230,7 +230,16 @@ def generateTunnelJis(text):
 			b = tunnelJisList[index]
 		#导出
 		data.extend(b)
-	return data
+		if maxLen > 0 and cutoffLen == 0:
+			if len(data) < maxLen:
+				pass
+			elif len(data) == maxLen:
+				cutoffLen = maxLen
+			else:
+				cutoffLen = len(data) - len(b)
+	if cutoffLen == len(data):
+		cutoffLen = 0
+	return data, cutoffLen
 
 def generateTunnelJisMap(filepath=''):
 	data = bytearray()
@@ -271,8 +280,9 @@ def generateSubsDic():
 	printInfo('读入subs字典：', os.path.basename(filepath))
 
 #生成替换后的JIS编码文本
-def generateSubsJis(text):
+def generateSubsJis(text, maxLen=0):
 	data = bytearray()
+	cutoffLen = 0
 	for wchar in text:
 		try:
 			b = wchar.encode(OldEncodeName)
@@ -292,7 +302,16 @@ def generateSubsJis(text):
 				b = '<>'.encode(OldEncodeName)
 		#导出
 		data.extend(b)
-	return data
+		if maxLen > 0 and cutoffLen == 0:
+			if len(data) < maxLen:
+				pass
+			elif len(data) == maxLen:
+				cutoffLen = maxLen
+			else:
+				cutoffLen = len(data) - len(b)
+	if cutoffLen == len(data):
+		cutoffLen = 0
+	return data, cutoffLen
 	
 #生成配置文件
 def generateSubsConfig():
