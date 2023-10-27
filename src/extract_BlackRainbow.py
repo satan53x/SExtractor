@@ -56,7 +56,6 @@ def replaceEndImp(content:list):
 def readFileDataImp(fileOld, contentSeprate):
 	initExtra()
 	data = fileOld.read()
-	#文本为第一区块
 	pos = 0x4C
 	insertContent.clear()
 	insertContent[0] = bytearray(data[0:pos])
