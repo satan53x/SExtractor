@@ -14,45 +14,56 @@ __all__ = ['splitToTransDic', 'splitToTransDicAuto',
 #编码生成目标长度的字节数组，会截断和填充字节
 def generateBytes(text, lenOrig, NewEncodeName):
 	transData = None
-	if ExVar.tunnelJis:
-		transData = generateTunnelJis(text)
-	elif ExVar.subsJis:
-		transData = generateSubsJis(text)
-	else:
-		try:
-			transData = text.encode(NewEncodeName)
-		except Exception as ex:
-			print(ex)
-			return None
+	if ExVar.cutoff == False:
+		if ExVar.tunnelJis:
+			transData = generateTunnelJis(text)
+			return transData
+		elif ExVar.subsJis:
+			transData = generateSubsJis(text)
+			return transData
+	try:
+		transData = text.encode(NewEncodeName)
+	except Exception as ex:
+		print(ex)
+		return None
 	if ExVar.cutoff == False:
 		return transData
 	# 检查长度
 	count = lenOrig - len(transData)
 	#print('Diff', count)
 	if count < 0:
-		if ExVar.tunnelJis or ExVar.subsJis:
-			#使用JIS隧道或替换时,cutoffDic字典不生效
-			printWarning('译文长度超出原文，请手动修正', text)
-			return None
 		dic = ExVar.cutoffDic
 		if text not in dic:
 			if ExVar.cutoffCopy:
-					dic[text] = [text, count]
+				dic[text] = [text, count]
 			else:
 				dic[text] = ['', count]
 		elif dic[text][0] != '':
 			#从cutoff字典读取
-			transData = dic[text][0].encode(NewEncodeName)
+			oldText = text
+			text = dic[text][0]
+			transData = text.encode(NewEncodeName)
 			count = lenOrig - len(transData)
-			dic[text][1] = count #刷新长度
+			dic[oldText][1] = count #刷新长度
 		if count < 0:
+			#进行截断
 			printWarning('译文长度超出原文，部分截断', text)
 			transData = transData[0:lenOrig]
 			try:
-				transData.decode(NewEncodeName)
+				text = transData.decode(NewEncodeName)
 			except Exception as ex:
 				#print('\033[31m截断后编码错误\033[0m')
 				return None
+	#JIS隧道或替换
+	if ExVar.tunnelJis or ExVar.subsJis:
+		if ExVar.tunnelJis:
+			transData = generateTunnelJis(text)
+		elif ExVar.subsJis:
+			transData = generateSubsJis(text)
+		count = lenOrig - len(transData)
+		if count < 0:
+			printError('JIS隧道或替换导致长度增加', text)
+			return None
 	if count > 0:
 		# 右边补足空格
 		#print(transData)
