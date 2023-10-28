@@ -66,9 +66,9 @@ def generateBytes(text, lenOrig, NewEncodeName):
 		dic = ExVar.cutoffDic
 		if text not in dic:
 			if ExVar.cutoffCopy:
-				dic[text] = [text, count]
+				dic[text] = [text, lost]
 			else:
-				dic[text] = ['', count]
+				dic[text] = ['', lost]
 		elif dic[text][0] != '':
 			#从cutoff字典读取
 			oldText = text
