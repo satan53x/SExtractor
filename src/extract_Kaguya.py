@@ -51,6 +51,9 @@ def parseImp(content, listCtrl, dealOnce):
 			ctrls = searchLine(var)
 			if textType == 2: #名字类型
 				ctrls[0]['isName'] = True
+			lastCtrl = ctrls[-1]
+			if lastCtrl and 'unfinish' in lastCtrl:
+				del lastCtrl['unfinish']
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):

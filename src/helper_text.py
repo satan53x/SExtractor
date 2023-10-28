@@ -55,20 +55,20 @@ def getBytesMax(text, NewEncodeName, maxLen):
 #----------------------------------------------------------
 #编码生成目标长度的字节数组，会截断和填充字节
 def generateBytes(text, lenOrig, NewEncodeName):
-	transData = getBytes(text, NewEncodeName)
-	if ExVar.cutoff == False or transData == None:
+	if ExVar.cutoff == False:
+		transData = getBytes(text, NewEncodeName)
 		return transData
 	# 检查长度
-	count = lenOrig - len(transData)
+	transData, lost = getBytesMax(text, NewEncodeName, lenOrig)
+	if transData == None: return transData
 	#print('Diff', count)
-	if count < 0:
+	if lost < 0:
 		dic = ExVar.cutoffDic
 		if text not in dic:
 			if ExVar.cutoffCopy:
 				dic[text] = [text, count]
 			else:
 				dic[text] = ['', count]
-			transData, lost = getBytesMax(text, NewEncodeName, lenOrig)
 		elif dic[text][0] != '':
 			#从cutoff字典读取
 			oldText = text
@@ -78,7 +78,9 @@ def generateBytes(text, lenOrig, NewEncodeName):
 		if lost < 0:
 			#进行了截断，丢失长度为lost
 			printWarning('译文长度超出原文，部分截断', text)
-		count = lenOrig - len(transData)
+	count = lenOrig - len(transData)
+	if count < 0:
+		printError('截断后仍然超长')
 	if count > 0:
 		# 右边补足空格
 		#print(transData)
