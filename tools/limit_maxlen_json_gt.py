@@ -9,7 +9,7 @@ from tkinter import filedialog
 DefaultPath = ''
 EncodeName = 'utf-8'
 Postfix = '.json'
-MaxLen = 25
+MaxLen = 26
 Seprate = '\n'
 
 # ------------------------------------------------------------

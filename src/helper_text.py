@@ -59,33 +59,35 @@ def generateBytes(text, lenOrig, NewEncodeName):
 		transData = getBytes(text, NewEncodeName)
 		return transData
 	# 检查长度
-	transData, lost = getBytesMax(text, NewEncodeName, lenOrig)
+	transData, diff = getBytesMax(text, NewEncodeName, lenOrig)
 	if transData == None: return transData
-	#print('Diff', count)
-	if lost < 0:
+	#print('Diff', diff) 
+	#diff为预计最终差值，即原文字节长度减去不截断时的译文字节长度
+	if diff < 0:
 		dic = ExVar.cutoffDic
 		if text not in dic:
 			if ExVar.cutoffCopy:
-				dic[text] = [text, lost]
+				dic[text] = [text, diff]
 			else:
-				dic[text] = ['', lost]
+				dic[text] = ['', diff]
 		elif dic[text][0] != '':
 			#从cutoff字典读取
 			oldText = text
 			text = dic[oldText][0]
-			transData, lost = getBytesMax(text, NewEncodeName, lenOrig)
-			dic[oldText][1] = lost #刷新长度
-		if lost < 0:
-			#进行了截断，丢失长度为lost
+			transData, diff = getBytesMax(text, NewEncodeName, lenOrig)
+			dic[oldText][1] = diff #刷新长度
+		if diff < 0:
+			#进行了截断
 			printWarning('译文长度超出原文，部分截断', text)
-	count = lenOrig - len(transData)
-	if count < 0:
+	lost = lenOrig - len(transData) #lost为截断后实际差值
+	if lost < 0:
 		printError('截断后仍然超长')
-	if count > 0:
+		return None
+	if lost > 0:
 		# 右边补足空格
 		#print(transData)
-		empty = bytearray(count)
-		for i in range(int(count)):
+		empty = bytearray(lost)
+		for i in range(int(lost)):
 			empty[i] = 0x20
 		transData += empty
 	return transData
