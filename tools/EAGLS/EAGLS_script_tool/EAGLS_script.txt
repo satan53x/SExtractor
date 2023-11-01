@@ -1,0 +1,24 @@
+EAGLS/ALIS command line interface tools. Credit to Joshiben on Fuwanovel.
+https://forums.fuwanovel.net/topic/17841-script-extraction-thread/page/7/#comment-525080
+
+Requires Python 3.8 or above.
+
+rawpacker.py: Unpacks and repacks .pak files without decrypting/encrypting them. Usually unneeded.
+Use -h for tool commands.
+
+scpacker.py: script extraction tool.
+Use -h for tool commands.
+
+---------------------------------------------------
+Script formatting:
+
+(e) = linebreak command
+(y=) = ruby text/furigana
+(f=) = sets font size according to number. Can be 0-9 for gothic and 10-19 for mincho. The mapping number<->fontsize varies between games.
+(c=r,g,b) = text color; rgb values between 0-255
+(s=r,g,b) = text outline; rgb values between 0-255
+(r) = reset text formatting
+<> = escapes brackets
+
+
+More to be found...?

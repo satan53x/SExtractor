@@ -1,3 +1,5 @@
-原版地址：https://github.com/jszhtian/EAGLS
+EAGLS_script_tool：由 Cosetto 提供
+HSHINTAI_decrypt：https://github.com/jszhtian/EAGLS
 
-原版解包出的dat如果乱码，则需要使用修改版。
+请优先使用EAGLS_script_tool解封包
+HSHINTAI_decrypt封包可能存在地址偏移问题

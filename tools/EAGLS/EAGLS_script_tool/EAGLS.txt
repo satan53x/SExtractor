@@ -1,0 +1,37 @@
+Tech-Arts Enhanced Adventure Game Language System (E.A.G.L.S.)
+
+Documentation not complete...
+
+Basic information:
+-Files used by the engine are inside their own folder, which usually are \script\ for the script, \CG\ for the images, \movie\ for animations, and \wave\ for audio.
+-Files are usually inside .pak containers, but the engine supports loading of unpacked files.
+-Engine usually doesn't allow the game to be run if it's not installed. Unknown if this behavior can be modified.
+
+Engine filetypes:
+
+---.pak: Package resourse. Container of engine files.
+#Open with Garbro.
+
+---.idx: Package resourse key file. Used by the engine and tools to open .pak files.
+#No need to touch this.
+
+---.gr: Image file.
+#Open and convert with Garbro.
+
+---.dat: script file.
+#Extract and reinsert the script with scpacker.py (see EAGLS_script.txt)
+
+---.mpg
+
+---.wav
+
+---.ogg
+
+Supported filetypes:
+
+---.bmp
+#A .bmp file inside the /CG/ folder will override a .gr file inside the .pak container if they have the same filename.
+
+
+
+
