@@ -99,8 +99,8 @@ def sc_pack(
         try:
             filename = filename.rsplit(".", 1)[0] + ".txt"
             header = data_old[:text_offset]
-            with open(data_dir.joinpath(filename), newline="", encoding="gbk") as txt_file:
-                body = txt_file.read().encode("gbk")
+            with open(data_dir.joinpath(filename), mode="rb") as txt_file:
+                body = txt_file.read()
             footer = data_old[-version:]
             data_dict[entry] = b"".join([header, body, footer])
         except FileNotFoundError:
