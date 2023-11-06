@@ -61,7 +61,7 @@ def parseImp(content, listCtrl, dealOnce):
 				if name:
 					#额外增加不写回的名字
 					ctrlName = {'pos':[0, -1, -1]}
-					ctrlName['isName'] = True
+					ctrlName['name'] = True
 					if dealOnce(name, start):
 						listCtrl.append(ctrlName)
 				var.searchStart = end + 1

@@ -23,7 +23,7 @@ def parseImp(content, listCtrl, dealOnce):
 			pos += length
 			ctrls = searchLine(var)
 			if ctrls and len(ctrls) > 0:
-				ctrls[0]['isName'] = True
+				ctrls[0]['name'] = True
 			#第二行为文本
 			ret, length, var.searchStart, var.searchEnd = readText(var.lineData, pos)
 			pos += length

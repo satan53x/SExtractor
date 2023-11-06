@@ -95,11 +95,11 @@ def searchLine(var:ParseVar):
 					for name, index in r.re.groupindex.items():
 						if i == index: key = name
 					if text in var.nameList: #强制检查名字
-						ctrl['isName'] = True #名字标记
+						ctrl['name'] = True #名字标记
 					elif not key:
 						pass
 					elif key.startswith('name'):
-						ctrl['isName'] = True #名字标记
+						ctrl['name'] = True #名字标记
 					elif key.startswith('unf'):
 						ctrl['unfinish'] = True
 					matched = True
@@ -125,7 +125,7 @@ def GetRegList(items, OldEncodeName):
 	return lst
 
 def dealLastCtrl(lastCtrl, ctrls, contentIndex=-1):
-	if ctrls == None or (len(ctrls) > 0 and 'isName' in ctrls[-1]): #skip匹配或name匹配或存在未匹配内容
+	if ctrls == None or (len(ctrls) > 0 and 'name' in ctrls[-1]): #skip匹配或name匹配或存在未匹配内容
 		if lastCtrl and 'unfinish' in lastCtrl:
 			del lastCtrl['unfinish'] #段落结束
 		lastCtrl = None

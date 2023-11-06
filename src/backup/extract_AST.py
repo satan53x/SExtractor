@@ -28,7 +28,7 @@ def parseImp(content, listCtrl, dealOnce):
 					end = ret.end() - 1
 					text = lineData[start:end].decode(ExVar.OldEncodeName)
 					ctrl = {'pos':[contentIndex, start, end]}
-					ctrl['isName'] = True #名字标记
+					ctrl['name'] = True #名字标记
 					#print(ctrl)
 					if dealOnce(text, listIndex):
 						listIndex += 1

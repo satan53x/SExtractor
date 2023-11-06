@@ -63,7 +63,7 @@ def parseImp(content, listCtrl, dealOnce):
 					continue
 				ctrl = {'pos':[contentIndex, start, end]}
 				if col in nameCols or text in var.nameList: #强制检查名字
-					ctrl['isName'] = True #名字标记
+					ctrl['name'] = True #名字标记
 				if dealOnce(text, contentIndex):
 					listCtrl.append(ctrl)
 			start = r.end()

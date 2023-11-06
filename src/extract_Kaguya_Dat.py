@@ -34,7 +34,7 @@ def parseImp(content, listCtrl, dealOnce):
 					ctrl = {'pos':[var.contentIndex, start, end]}
 					if count > 0:
 						#名字
-						ctrl['isName'] = True
+						ctrl['name'] = True
 					text = var.lineData[start:end].decode(var.OldEncodeName)
 					if var.dealOnce(text, var.contentIndex):
 						var.listCtrl.append(ctrl)

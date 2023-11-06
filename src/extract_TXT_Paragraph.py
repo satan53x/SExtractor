@@ -34,7 +34,7 @@ def parseImp(content, listCtrl, dealOnce):
 				ctrl['isMsg'] = True
 				index = len(listCtrl) - 1 - len(ctrls)
 				if index >= 0 and 'isMsg' not in listCtrl[index]:
-					listCtrl[index]['isName'] = True
+					listCtrl[index]['name'] = True
 	#文末处理
 	if lastCtrl and 'unfinish' in lastCtrl:
 		del lastCtrl['unfinish'] #段落结束

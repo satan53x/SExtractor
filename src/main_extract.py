@@ -311,7 +311,7 @@ def writeFormatXlsx(targetJson):
 # ------------------------------------------------------------
 def keepAllOrig():
 	# if len(var.listCtrl) > 0:
-	# 	if 'isName' in var.listCtrl[-1] or 'unfinish' in var.listCtrl[-1]:
+	# 	if 'name' in var.listCtrl[-1] or 'unfinish' in var.listCtrl[-1]:
 	# 		printError('listCtrl结束行错误', var.filename, var.listCtrl[-1], var.listOrig[-1])
 	listIndex = -1
 	item = {}
@@ -321,7 +321,7 @@ def keepAllOrig():
 		ctrl = var.listCtrl[listIndex]
 		orig = var.listOrig[listIndex]
 		#print(listIndex, orig, ctrl)
-		if 'isName'in ctrl:
+		if 'name'in ctrl:
 			item = tryAddToDic(item, ctrl) #前一个结束
 			item['name'] = orig
 			continue

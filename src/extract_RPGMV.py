@@ -31,7 +31,7 @@ def dealPages(var, pages, i):
 					pass
 				elif len(ctrls) == 0: #未捕捉到，一般为空字符串
 					continue 
-				elif 'isName' not in ctrls[0]:
+				elif 'name' not in ctrls[0]:
 					#对话
 					for ctrl in ctrls:
 						ctrl['unfinish'] = True

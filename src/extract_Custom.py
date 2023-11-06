@@ -18,7 +18,7 @@ def parseImp(content, listCtrl, dealOnce):
 		text = lineData[start:end].decode(OldEncodeName)
 		# 0行数，1起始字符下标（包含），2结束字符下标（不包含）
 		ctrl = {'pos':[contentIndex, start, end]}
-		#ctrl['isName'] = True #名字
+		#ctrl['name'] = True #名字
 		#ctrl['unfinish'] = True #段落未完结
 		if dealOnce(text): listCtrl.append(ctrl)
 

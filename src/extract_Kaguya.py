@@ -40,7 +40,7 @@ def parseImp(content, listCtrl, dealOnce):
 			text = text.decode(ExVar.OldEncodeName)
 			ctrl = {'pos':[contentIndex, start, end]}
 			if textType == 2: #名字类型
-				ctrl['isName'] = True
+				ctrl['name'] = True
 			if dealOnce(text, contentIndex): 
 				listCtrl.append(ctrl)
 		else:
@@ -50,7 +50,7 @@ def parseImp(content, listCtrl, dealOnce):
 			var.contentIndex = contentIndex
 			ctrls = searchLine(var)
 			if textType == 2: #名字类型
-				ctrls[0]['isName'] = True
+				ctrls[0]['name'] = True
 			lastCtrl = ctrls[-1]
 			if lastCtrl and 'unfinish' in lastCtrl:
 				del lastCtrl['unfinish']

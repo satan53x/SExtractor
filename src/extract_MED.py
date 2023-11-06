@@ -24,7 +24,7 @@ def parseImp(content, listCtrl, dealOnce):
 		elif re.match(r'【.*】'.encode(ExVar.OldEncodeName), lineData): #名字
 			start += 2
 			end -= 2
-			ctrl['isName'] = True #名字标记
+			ctrl['name'] = True #名字标记
 		else: #对话
 			if re.search(r'[^。）』】？」！]$', lineData.decode(ExVar.OldEncodeName)):
 				ctrl['unfinish'] = True
@@ -38,7 +38,7 @@ def parseImp(content, listCtrl, dealOnce):
 	pos = listIndex - 1
 	while pos >= 0:
 		ctrl = listCtrl[pos]
-		if 'isName' in ctrl: break
+		if 'name' in ctrl: break
 		if 'unfinish' not in ctrl: break
 		del listCtrl[pos]['unfinish']
 		pos -= 1

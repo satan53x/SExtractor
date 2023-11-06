@@ -26,7 +26,7 @@ def parseImp(content, listCtrl, dealOnce):
 			end = pos + length - 1
 			text = var.lineData[pos:end].decode(ExVar.OldEncodeName)
 			ctrl = {'pos':[contentIndex, pos, end]}
-			ctrl['isName'] = True
+			ctrl['name'] = True
 			if var.dealOnce(text, contentIndex): listCtrl.append(ctrl)
 		pos += length
 		#对话/旁边
