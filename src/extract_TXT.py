@@ -98,10 +98,14 @@ def searchLine(var:ParseVar):
 						ctrl['name'] = True #名字标记
 					elif not key:
 						pass
-					elif key.startswith('name'):
-						ctrl['name'] = True #名字标记
-					elif key.startswith('unf'):
-						ctrl['unfinish'] = True
+					else:
+						key = key.rstrip('0123456789')
+						if key == 'name' or key == 'unfinish':
+							ctrl[key] = True #标记
+						else:
+							if 'flags' not in ctrl:
+								ctrl['flags'] = []
+							ctrl['flags'].append(key)
 					matched = True
 			if matched :
 				#按文本中顺序处理
@@ -125,17 +129,30 @@ def GetRegList(items, OldEncodeName):
 	return lst
 
 def dealLastCtrl(lastCtrl, ctrls, contentIndex=-1):
-	if ctrls == None or (len(ctrls) > 0 and 'name' in ctrls[-1]): #skip匹配或name匹配或存在未匹配内容
-		if lastCtrl and 'unfinish' in lastCtrl:
-			del lastCtrl['unfinish'] #段落结束
-		lastCtrl = None
+	flags = []
+	ctrl = None
+	if ctrls == None: #skip匹配
+		flags.append('predel_unfinish')
 	elif len(ctrls) == 0:
 		pass
-	elif 'unfinish' in ctrls[-1]:
-		lastCtrl = ctrls[-1]
 	else:
-		lastCtrl = None
-	return lastCtrl
+		ctrl = ctrls[-1]
+		if 'flags' in ctrl:
+			flags.extend(ctrl['flags'])
+		if 'name' in ctrl: #name匹配
+			flags.append('predel_unfinish')
+			ctrl = None
+	#处理flags
+	for flag in flags:
+		if lastCtrl:
+			if flag.startswith('pre_'):
+				key = flag[4:]
+				lastCtrl[key] = True #添加
+			elif flag.startswith('predel_'):
+				key = flag[7:]
+				if key in lastCtrl:
+					del lastCtrl[key] #删除
+	return ctrl
 
 def initParseVar(var:ParseVar, regDic=None):
 	if regDic == None:
