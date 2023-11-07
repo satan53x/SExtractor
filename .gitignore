@@ -3,3 +3,4 @@ __pycache__/
 .vscode/
 config*.ini
 .backup/
+build/
