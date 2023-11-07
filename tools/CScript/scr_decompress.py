@@ -27,7 +27,12 @@ def uncomFile():
 	data = fileOld.read()
 	fileOld.close()
 	#处理
-	pos = 12
+	pos = 0
+	sig = int.from_bytes(data[pos:pos+4], byteorder='little')
+	if sig == 0 or sig == 1:
+		pos = 0x10
+	else:
+		pos = 0xC
 	comSize = int.from_bytes(data[pos:pos+4], byteorder='little')
 	pos += 4
 	uncomSize = int.from_bytes(data[pos:pos+4], byteorder='little')
@@ -43,7 +48,7 @@ def uncomFile():
 		uncom = uncom[0:uncomSize]
 		content.append(uncom)
 		#修正长度
-		content[0][16:20] = int.to_bytes(len(uncom), 4, byteorder='little')
+		content[0][-4:] = int.to_bytes(len(uncom), 4, byteorder='little')
 		print(f'解压: {filename}, {uncomSize}')
 	else:
 		#压缩
@@ -54,8 +59,8 @@ def uncomFile():
 		com = com[0:comSize]
 		content.append(com)
 		#修正长度
-		content[0][12:16] = int.to_bytes(len(com), 4, byteorder='little')
-		content[0][16:20] = int.to_bytes(uncomSize, 4, byteorder='little')
+		content[0][-8:-4] = int.to_bytes(len(com), 4, byteorder='little')
+		content[0][-4:] = int.to_bytes(uncomSize, 4, byteorder='little')
 		print(f'压缩: {filename}, {comSize}')
 	write()
 
