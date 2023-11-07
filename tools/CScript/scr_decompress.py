@@ -2,14 +2,10 @@
 # https://github.com/satan53x/SExtractor/tree/main/tools/CScript
 # 解压和压缩，根据头部定义压缩长度和实际文件长度判断
 # ------------------------------------------------------------
-import io
-import re
 import sys
 import os
-import json
 from tkinter import filedialog
 #import lzss
-#from lzss_s import decode, encode
 import lzss_s
 DefaultPath = ''
 EncodeName = 'utf-8'
