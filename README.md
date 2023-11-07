@@ -12,10 +12,11 @@
 * TXT纯文本 (正则匹配。可选utf-8，utf-8-sig，utf-16(LE BOM))
 * BIN二进制文本 (正则匹配。默认读shift-jis写GBK)
 * JSON文本 (正则匹配，只搜索value，value为空则先自动复制key到value)
-* AST (移除，转为正则预设)
 * AZ System (Encrypt Isaac)
 * Artemis
+* Black Rainbow
 * CSV
+* CScript
 * Cyberworks / CSystem
 * EAGLS
 * FVP
@@ -26,7 +27,6 @@
 * NekoSDK
 * RPGMaker MV
 * RenPy
-* SiglusEngine (弃用)
 * SystemC
 * WillPlus
 * Yu-ris
