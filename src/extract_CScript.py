@@ -84,9 +84,15 @@ def readFileDataImp(fileOld, contentSeprate):
 	initExtra()
 	data = fileOld.read()
 	#文件头
-	comLen = readInt(data, 0xC)
-	uncomLen = readInt(data, 0x10)
-	pos = 0x14
+	sig = readInt(data, 0)
+	if sig == 0 or sig == 1:
+		pos = 0x10
+	else:
+		pos = 0xC
+	comLen = readInt(data, pos)
+	pos += 4
+	uncomLen = readInt(data, pos)
+	pos += 4
 	insertContent.clear()
 	insertContent[0] = bytearray(data[0:pos])
 	#解压
