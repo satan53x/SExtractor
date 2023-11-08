@@ -10,7 +10,7 @@ insertContent = {}
 writeCompress = True
 fileType = 0
 seprate = {
-	0:rb'\x3F\x00\x00\x00',
+	0:rb'[\x3F\x15]\x00\x00\x00',
 	0x35:rb'[\x11\x14]\x00\x00\x00'
 }
 def initExtra():
@@ -142,6 +142,8 @@ def readFileDataImp(fileOld, contentSeprate):
 			lineData, newPos = dealSel(data, pos, header)
 		elif segType == 0x3F:
 			lineData, newPos = dealText0(data, pos, header)
+		elif segType == 0x15:
+			lineData, newPos = dealSel0(data, pos, header)
 		else:
 			lineData = None
 			printError('错误类型', segType)
@@ -217,6 +219,29 @@ def dealText0(data, pos, header):
 	pos += 4
 	lineData.append(data[pos:pos+msgLen])
 	pos += msgLen
+	return lineData, pos
+
+#选项：sig 0
+def dealSel0(data, pos, header):
+	header['pre'][0].extend(data[pos:pos+0x14]) #未知
+	pos += 0x14
+	count = readInt(data, pos) #选项个数
+	if count < 2 or count > 4:
+		return None, 0
+	header['pre'][0].extend(data[pos:pos+9]) #个数和00
+	pos += 9
+	lineData = []
+	for i in range(count):
+		#选项
+		if i > 0:
+			header['pre'].append(data[pos:pos+5]) #空
+			pos += 5
+		msgLen = readInt(data, pos)
+		if msgLen < 0 or msgLen > 0x100:
+			return None, 0
+		pos += 4
+		lineData.append(data[pos:pos+msgLen])
+		pos += msgLen
 	return lineData, pos
 
 # -----------------------------------

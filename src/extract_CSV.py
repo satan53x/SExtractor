@@ -88,14 +88,6 @@ def replaceOnceImp(content, lCtrl, lTrans):
 
 def replaceEndImp(content):
 	if ExVar.pureText: return content
-	#还原为文本
-	# if ExVar.structure != 'nohead':
-	# 	#CSV头部添加
-	# 	lst = content.columns.tolist()
-	# 	newContent.append(seprate.join(lst) + '\n')
-	# for index, row in content.iterrows():
-	# 	s = row.apply(str).str.cat(sep=',')
-	# 	newContent.append(s + '\n')
 	#需要改变外部content
 	data = content.to_csv(index=False)
 	ExVar.newLine = ''
