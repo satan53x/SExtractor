@@ -459,8 +459,10 @@ def setRegDic(str):
 	list = re.split('\n', str)
 	for line in list:
 		# 结束
-		if line == '' or line.startswith('sample') or line.startswith('<'): 
+		if line == '' or line.startswith('sample'): 
 			break
+		elif line.startswith('<'):
+			continue
 		pair = line.split('=', 1)
 		# 控制
 		if pair[0] == 'seprate':

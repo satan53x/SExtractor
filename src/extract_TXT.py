@@ -3,9 +3,9 @@ import sys
 import os
 import struct
 from common import *
-from helper_text import generateBytes
+from helper_text import generateBytes, getBytes
 
-OldEncodeName = 'cp932' #仅用于TXT模式截断
+OldEncodeName = 'cp932' #仅用于TXT模式截断和JIS替换
 NewEncodeName = 'gbk' #仅用于TXT模式截断
 
 class ParseVar():
@@ -194,7 +194,10 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		start = posData[1]
 		end = posData[2]
 		trans = lTrans[i]
-		if ExVar.cutoff:
+		if ExVar.subsJis:
+			transData = getBytes(trans, ExVar.NewEncodeName)
+			trans = transData.decode(OldEncodeName)
+		elif ExVar.cutoff:
 			origData = content[contentIndex][start:end].encode(OldEncodeName)
 			transData = generateBytes(trans, len(origData), NewEncodeName)
 			if transData == None:

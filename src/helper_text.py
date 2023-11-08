@@ -7,7 +7,8 @@ __all__ = ['splitToTransDic', 'splitToTransDicAuto',
 		'generateJisList', 'generateTunnelJis', 'generateTunnelJisMap',
 		'generateSubsDic', 'generateSubsJis', 'generateSubsConfig',
 		'writeSubsConfig',
-		'replaceValue'
+		'replaceValue',
+		'getBytes', 'OldEncodeName'
 ]
 
 OldEncodeName = 'cp932'

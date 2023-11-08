@@ -25,7 +25,10 @@ def write():
 		#print(len(content))
 		filepath = os.path.join(var.workpath, 'new', var.filename+var.Postfix)
 		#print(filepath)
-		fileNew = open(filepath, 'w', encoding=var.EncodeRead)
+		if ExVar.newLine != None:
+			fileNew = open(filepath, 'w', encoding=var.EncodeRead, newline=ExVar.newLine)
+		else:
+			fileNew = open(filepath, 'w', encoding=var.EncodeRead)
 		length = len(var.content)
 		for i in range(length):
 			fileNew.write(var.content[i])

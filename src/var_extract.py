@@ -68,6 +68,7 @@ class ExtractVar():
 	def clear(self):
 		self.OldEncodeName = 'cp932'
 		self.NewEncodeName = 'gbk'
+		self.newLine = None
 		#
 		self.insertContent = {} #需要插入的内容
 		self.inputCount = 0 #导出文件个数
@@ -86,5 +87,6 @@ class ExtractVar():
 		self.version = '0' #版本
 		self.decrypt = '' #加解密密钥
 		self.pureText = False #bin模式下如果为纯文本，则会先转为utf再进行正则
+		self.writeOffset = '0' #写入偏移
 
 gExtractVar = ExtractVar()
