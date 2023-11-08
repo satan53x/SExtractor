@@ -8,6 +8,11 @@ content = []
 insertContent = {}
 
 writeCompress = True
+fileType = 0
+seprate = {
+	0:rb'\x3F\x00\x00\x00',
+	0x35:rb'[\x11\x14]\x00\x00\x00'
+}
 def initExtra():
 	global writeCompress
 	lst = ExVar.extraData.split(',')
@@ -59,11 +64,12 @@ def replaceEndImp(content:list):
 			bs = bytearray()
 			for i, lineData in enumerate(content[contentIndex]):
 				length = len(lineData)
+				if i < len(header['pre']):
+					bs.extend(header['pre'][i])
 				bs.extend(int2bytes(length))
 				bs.extend(lineData)
 		else:
-			bs = content[contentIndex]
-		bs = header['pre'] + bs
+			bs = header['pre'] + content[contentIndex]
 		data.extend(bs)
 	#压缩
 	uncomLen = len(data)
@@ -84,10 +90,13 @@ def readFileDataImp(fileOld, contentSeprate):
 	initExtra()
 	data = fileOld.read()
 	#文件头
+	global fileType
 	sig = readInt(data, 0)
-	if sig == 0 or sig == 1:
+	if sig < 0x10:
+		fileType = 0
 		pos = 0x10
 	else:
+		fileType = 0x35
 		pos = 0xC
 	comLen = readInt(data, pos)
 	pos += 4
@@ -107,7 +116,7 @@ def readFileDataImp(fileOld, contentSeprate):
 	pos = 0
 	content.clear()
 	headerList.clear()
-	pattern = re.compile(contentSeprate)
+	pattern = re.compile(seprate[fileType])
 	start = 0
 	while True:
 		#查找
@@ -125,13 +134,16 @@ def readFileDataImp(fileOld, contentSeprate):
 			break
 		#检查文本
 		segType = readInt(data, pos)
-		header = {'segType':segType, 'pre':bytearray(data[pos:pos+4])}
+		header = {'segType':segType, 'pre':[bytearray(data[pos:pos+4])]}
 		pos += 4
 		if segType == 0x11:
 			lineData, newPos = dealText(data, pos, header)
 		elif segType == 0x14:
 			lineData, newPos = dealSel(data, pos, header)
+		elif segType == 0x3F:
+			lineData, newPos = dealText0(data, pos, header)
 		else:
+			lineData = None
 			printError('错误类型', segType)
 		if lineData == None:
 			continue
@@ -141,15 +153,15 @@ def readFileDataImp(fileOld, contentSeprate):
 		headerList.append(header)
 	return content, insertContent
 
-#处理名字和对话
+#名字和对话
 def dealText(data, pos, header):
-	header['pre'].extend(data[pos:pos+4]) #序号
+	header['pre'][0].extend(data[pos:pos+4]) #序号
 	pos += 4
 	lineData = []
 	#名字
 	header['name'] = 0
 	nameLen = readInt(data, pos)
-	if nameLen < 0 or nameLen > 0x100:
+	if nameLen < 0 or nameLen > 0x40:
 		return None, 0
 	pos += 4
 	lineData.append(data[pos:pos+nameLen])
@@ -165,12 +177,12 @@ def dealText(data, pos, header):
 		return None, 0
 	return lineData, pos
 
-#处理选项
+#选项
 def dealSel(data, pos, header):
 	count = readInt(data, pos) #选项个数
 	if count < 2 or count > 4:
 		return None, 0
-	header['pre'].extend(data[pos:pos+8]) #个数和0A
+	header['pre'][0].extend(data[pos:pos+8]) #个数和0A
 	pos += 8
 	lineData = []
 	for i in range(count):
@@ -183,6 +195,28 @@ def dealSel(data, pos, header):
 		pos += msgLen
 	#选项后的0A,0A
 	#pos += (3+count) * 4
+	return lineData, pos
+
+#名字和对话：sig 0
+def dealText0(data, pos, header):
+	header['pre'][0].extend(data[pos:pos+0x11]) #序号
+	pos += 0x11
+	lineData = []
+	#名字
+	header['name'] = 0
+	nameLen = readInt(data, pos)
+	if nameLen < 0 or nameLen > 0x40:
+		return None, 0
+	pos += 4
+	lineData.append(data[pos:pos+nameLen])
+	pos += nameLen
+	#消息
+	header['pre'].append(data[pos:pos+5]) #空
+	pos += 5
+	msgLen = readInt(data, pos)
+	pos += 4
+	lineData.append(data[pos:pos+msgLen])
+	pos += msgLen
 	return lineData, pos
 
 # -----------------------------------
