@@ -34,6 +34,7 @@
 ## 其他功能
 * 可以导出VNT的JIS隧道文件`sjis_ext.bin`，需要配合[VNTProxy](#相关项目)使用。(同时也会导出UIF配置)
 * 可以导出UIF的JIS替换配置`uif_config.json`，需要配合[UniversalInjectorFramework](#相关项目)使用。
+* `Tools/Font`下有GBK2JIS替换字体，以备dll无法hook游戏时使用。
 * 文件夹下自定义的`config*.ini`都会被读取，*中不能以数字开头。(例：`configTest.ini`)
 * `reg.ini`中可自定义正则匹配规则
 
