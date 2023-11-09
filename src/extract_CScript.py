@@ -9,14 +9,33 @@ insertContent = {}
 
 writeCompress = True
 fileType = 0
-seprate = {
-	0:rb'[\x3F\x15]\x00\x00\x00',
-	0x35:rb'[\x11\x14]\x00\x00\x00'
-}
+
 def initExtra():
+	#写入是否压缩
 	global writeCompress
 	lst = ExVar.extraData.split(',')
 	writeCompress = 'compress' in lst
+	#类型控制
+	if ExVar.ctrlStr:
+		lst = ExVar.ctrlStr.split(',')
+		for i, cs in enumerate(lst):
+			l = cs.split('|')
+			for j, v in enumerate(l):
+				#字符转为int
+				v = eval(v)
+				l[j] = v
+			#修改控制字节
+			config[fileType][i * 2] = l
+				
+def getSep():
+	lst = config[fileType]
+	seprate = bytearray(rb'[')
+	for i in range(0, len(lst), 2):
+		for j in lst[i]:
+			bs = f'\\x{j:02X}'.encode('ASCII')
+			seprate.extend(bs)
+	seprate.extend(rb']\0\0\0')
+	return bytes(seprate)
 
 # ---------------- Engine: CScript -------------------
 def parseImp(content, listCtrl, dealOnce):
@@ -87,7 +106,6 @@ def replaceEndImp(content:list):
 
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeprate):
-	initExtra()
 	data = fileOld.read()
 	#文件头
 	global fileType
@@ -104,6 +122,7 @@ def readFileDataImp(fileOld, contentSeprate):
 	pos += 4
 	insertContent.clear()
 	insertContent[0] = bytearray(data[0:pos])
+	initExtra()
 	#解压
 	if len(data) - pos == comLen:
 		data = uncompress(data[pos:pos+comLen], uncomLen)
@@ -116,7 +135,8 @@ def readFileDataImp(fileOld, contentSeprate):
 	pos = 0
 	content.clear()
 	headerList.clear()
-	pattern = re.compile(seprate[fileType])
+	seprate = getSep()
+	pattern = re.compile(seprate)
 	start = 0
 	while True:
 		#查找
@@ -136,17 +156,12 @@ def readFileDataImp(fileOld, contentSeprate):
 		segType = readInt(data, pos)
 		header = {'segType':segType, 'pre':[bytearray(data[pos:pos+4])]}
 		pos += 4
-		if segType == 0x11:
-			lineData, newPos = dealText(data, pos, header)
-		elif segType == 0x14:
-			lineData, newPos = dealSel(data, pos, header)
-		elif segType == 0x3F:
-			lineData, newPos = dealText0(data, pos, header)
-		elif segType == 0x15:
-			lineData, newPos = dealSel0(data, pos, header)
-		else:
-			lineData = None
-			printError('错误类型', segType)
+		lineData = None
+		for i in range(0, len(config[fileType]), 2):
+			if segType in config[fileType][i]:
+				deal = config[fileType][i+1]
+				lineData, newPos = deal(data, pos, header)
+				break
 		if lineData == None:
 			continue
 		pos = newPos
@@ -243,7 +258,11 @@ def dealSel0(data, pos, header):
 		lineData.append(data[pos:pos+msgLen])
 		pos += msgLen
 	return lineData, pos
-
+# -----------------------------------
+config = {
+	0: [[0x3F], dealText0, [0x15,0x1A], dealSel0],
+	0x35: [[0x11], dealText, [0x14], dealSel],
+}
 # -----------------------------------
 from libs.lzss import lzss_s
 def uncompress(com, uncomSize=0):
