@@ -15,7 +15,7 @@
   },
   "font_manager": {
     "enable": false,
-    "resource_files": [
+    "resource_files": ["WenQuanYi_msgothic.otf"
     ],
     "spoof_enumeration": {
       "enable": true,
@@ -26,7 +26,7 @@
     "spoof_creation": {
       "enable": true,
       "override_face": "Microsoft YaHei",
-      "override_charset": 0
+      "override_charset": 128
     }
   }
 }
