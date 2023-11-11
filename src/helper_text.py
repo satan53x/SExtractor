@@ -318,7 +318,7 @@ def generateSubsJis(text, maxLen=0):
 				#不存在预设
 				subsRemainList.append(wchar)
 				#wcharList.append(wchar)
-				printError('JIS替换预设不存在，请在subs_cn_jp.json中添加', wchar)
+				printError('JIS替换字典不存在字符：', wchar)
 				b = '<>'.encode(OldEncodeName)
 		#导出
 		data.extend(b)
@@ -340,7 +340,9 @@ def generateSubsConfig():
 	subsConfig['character_substitution']['target_characters'] = ''.join(subsCNList)
 	subsConfig['character_substitution']['enable'] = True
 	if subsRemainList != []:
-		subsConfig['character_substitution']['remain'] = subsRemainList
+		lst = list(set(subsRemainList))
+		subsConfig['character_substitution']['remain'] = lst
+		printError('译文中的JIS未匹配字符总览，请人工进行修正，详见uif_config.json中remain：\n', ''.join(lst))
 	elif 'remain' in subsConfig['character_substitution']:
 		del subsCNList['character_substitution']['remain']
 	writeSubsConfig()
