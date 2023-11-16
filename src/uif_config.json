@@ -18,15 +18,15 @@
     "resource_files": ["WenQuanYi_msgothic.otf"
     ],
     "spoof_enumeration": {
-      "enable": true,
+      "enable": false,
       "filter_pitch_and_family": 0,
       "filter_charset": 1,
       "spoof_charset": 128
     },
     "spoof_creation": {
-      "enable": true,
-      "override_face": "Microsoft YaHei",
-      "override_charset": 128
+      "enable": false,
+      "override_face": "WenQuanYi Micro Hei",
+      "override_charset": 0
     }
   }
 }
