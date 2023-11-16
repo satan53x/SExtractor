@@ -84,11 +84,16 @@ def readFileDataImp(fileOld, contentSeprate):
 		printError('Signature不符合', bs)
 		return content, insertContent
 	#版本
-	bs2 = data[pos:pos+5]
-	pos += 5
+	bs2 = bytearray(data[pos:pos+4])
+	pos += 4
+	offset = 1
 	if bs2[3] >= 0x34:
 		printError('版本不符合', bs2)
 		return content, insertContent
+	elif bs2[3] >= 3:
+		offset = 2
+	bs2.extend(data[pos:pos+offset])
+	pos += offset
 	insertContent[0] = bs + bs2
 	#global XorTable
 	#XorTable = bs2[4]

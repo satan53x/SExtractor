@@ -134,7 +134,7 @@ def dealLastCtrl(lastCtrl, ctrls, contentIndex=-1):
 	if ctrls == None: #skip匹配
 		flags.append('predel_unfinish')
 	elif len(ctrls) == 0:
-		pass
+		ctrl = lastCtrl
 	else:
 		ctrl = ctrls[-1]
 		if 'flags' in ctrl:
