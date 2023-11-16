@@ -319,7 +319,7 @@ def generateSubsJis(text, maxLen=0):
 				subsRemainList.append(wchar)
 				#wcharList.append(wchar)
 				printError('JIS替换字典不存在字符：', wchar)
-				b = '<>'.encode(OldEncodeName)
+				b = '　'.encode(OldEncodeName)
 		#导出
 		data.extend(b)
 		if maxLen > 0 and cutoffLen == 0:
