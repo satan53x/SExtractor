@@ -25,7 +25,7 @@
     },
     "spoof_creation": {
       "enable": false,
-      "override_face": "WenQuanYi Micro Hei",
+      "override_face": "WenQuanYi",
       "override_charset": 0
     }
   }
