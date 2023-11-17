@@ -4,17 +4,8 @@
     "print_loaded_modules": false
   },
   "allocate_console": false,
-  "tunnel_decoder": {
-    "enable": false,
-    "mapping": ""
-  },
-    "character_substitution": {
-    "enable": false,
-    "source_characters":"",
-    "target_characters":""
-  },
   "font_manager": {
-    "enable": false,
+    "enable": true,
     "resource_files": [ "WenQuanYi_msgothic.otf" ],
     "spoof_enumeration": {
       "enable": false,
