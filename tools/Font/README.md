@@ -10,8 +10,8 @@
 * 匹配规格：`2-11-6-9-7-2-5-8-2-4` `2-2-4-0-0-0-0-0-0-0`
 
 ## 文件
-* 原字体：`WenQuanYi.ttf`
-* 替换后：`WenQuanYi_CNJP.ttf`（WenQuanYi Micro Hei）
+* 原字体：`WenQuanYi.ttf`（WenQuanYi Micro Hei）
+* 替换后：`WenQuanYi_CNJP.ttf`（WenQuanYi）
 * 字体名MS Gothic修正后：`WenQuanYi_msgothic.otf`（ＭＳ ゴシック）
 
 ## 工具
