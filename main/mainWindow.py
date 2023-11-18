@@ -156,6 +156,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		# 译文替换
 		checked = initValue(self.mainConfig, 'transReplace', True)
 		self.transReplaceCheck.setChecked(checked)
+		# 分割前替换
+		checked = initValue(self.mainConfig, 'preReplace', False)
+		self.preReplaceCheck.setChecked(checked)
 		# 结束
 		self.engineNameBox.setCurrentIndex(self.engineCode)
 		self.initEnd = True
@@ -290,7 +293,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'pureText': self.binPureTextCheck.isChecked(),
 			'tunnelJis': self.tunnelJisCheck.isChecked(),
 			'subsJis': self.subsJisCheck.isChecked(),
-			'transReplace': self.transReplaceCheck.isChecked()
+			'transReplace': self.transReplaceCheck.isChecked(),
+			'preReplace': self.preReplaceCheck.isChecked()
 		}
 		var.window = self
 		#保存配置
@@ -335,6 +339,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mainConfig.setValue('fixedMaxPerLine', self.fixedMaxCheck.isChecked())
 		self.mainConfig.setValue('pureText', self.binPureTextCheck.isChecked())
 		self.mainConfig.setValue('transReplace', self.transReplaceCheck.isChecked())
+		self.mainConfig.setValue('preReplace', self.preReplaceCheck.isChecked())
 		
 	#提取打印设置
 	def getExtractPrintSetting(self):

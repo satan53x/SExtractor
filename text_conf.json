@@ -1,4 +1,7 @@
 {
+  "replace_before_split": {
+      "[\r\n]+": "\r\n"
+  },
   "trans_replace": {
     "gbk":
     {

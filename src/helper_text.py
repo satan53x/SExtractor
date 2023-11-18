@@ -102,6 +102,12 @@ def generateBytes(text, lenOrig, NewEncodeName):
 #固定分割
 def splitToTransDic(orig, trans):
 	if trans == '': return #整体译文为空则不处理
+	if ExVar.preReplace:
+		#分割前替换
+		if 'replace_before_split' in ExVar.textConf:
+			replaceDic = ExVar.textConf['replace_before_split']
+			for old, new in replaceDic.items():
+				trans = re.sub(old, new, trans)
 	if ExVar.splitAuto:
 		#重新分割
 		splitToTransDicAuto(orig, trans) 

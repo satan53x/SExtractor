@@ -62,6 +62,7 @@ class ExtractVar():
 	tunnelJis = False
 	subsJis = False
 	transReplace = True #译文替换
+	preReplace = True #译文分割前替换
 	ouputTmp = False #输出中间临时文件
 
 	#-------------------
