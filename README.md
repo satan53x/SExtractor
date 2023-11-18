@@ -34,9 +34,10 @@
 ## 其他功能
 * 可以导出VNT的JIS隧道文件`sjis_ext.bin`，需要配合[VNTProxy](#相关项目)使用。(同时也会导出UIF配置)
 * 可以导出UIF的JIS替换配置`uif_config.json`，需要配合[UniversalInjectorFramework](#相关项目)使用。
-* `Tools/Font`下有GBK2JIS替换字体，以备dll无法hook游戏时使用。
+* `Tools/Font`下有JIS替换字体，以备dll无法hook游戏时使用。
 * 文件夹下自定义的`config*.ini`都会被读取，*中不能以数字开头。(例：`configTest.ini`)
-* `reg.ini`中可自定义正则匹配规则
+* `reg.ini`中可自定义正则匹配规则。
+* `text_conf.json`进行文本处理配置，优先读取工作目录ctrl文件下配置，如果没有则读取工具根目录默认配置。
 
 ## 当前正则预设
 * AST
@@ -46,7 +47,6 @@
 * Nexas
 * RealLive (选项分开提取)
 * SFA(AOS)
-* SystemC
 * Valkyria_ODN
 * Yuris_txt (非ybn)
 * BIN暴力匹配
@@ -59,9 +59,13 @@
 * None还原为引擎默认
 
 ## 工具
+* Astronauts: gpx封包，Mwb提取
 * AZ System: isaac加密
+* BlackRainbow: 封包
+* CScript: 封包，解压压缩
 * Cyberworks: UTF-16解封包
 * EAGLS: 解封包
+* Font: JIS替换字典生成的字体
 * RealLive: 解封包，二次加解密
 * SHook: 跳壳
 * Unity: data.dsm加解密
