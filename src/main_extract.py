@@ -547,6 +547,7 @@ def initArgs(args):
 	if args['binEncodeValid']:
 		var.OldEncodeName = var.EncodeRead
 		var.NewEncodeName = var.EncodeRead
+		printWarningGreen('已启用: 编码也对BIN生效', var.EncodeRead)
 	# 分割
 	var.splitAuto = args['splitAuto']
 	var.splitParaSep:str = args['splitParaSep']
