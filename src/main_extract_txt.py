@@ -43,13 +43,14 @@ def parse():
 		var.content, _ = var.readFileDataImp(fileOld, var.contentSeprate)
 	else:
 		var.content = fileOld.readlines() #会保留换行符
-		#签名检查
-		s = var.content[0]
-		if s[0] == '\ufeff' or s[0] == '\ufffe':
-			printWarning('请检查文件编码是否正确，疑似含有签名', var.filename)
-		if not var.content[-1].endswith('\n'):
-			printInfo('已补足文件末尾缺少的一个换行符')
-			var.content[-1] += '\n'
+		if var.content:
+			#签名检查
+			s = var.content[0]
+			if s[0] == '\ufeff' or s[0] == '\ufffe':
+				printWarning('请检查文件编码是否正确，疑似含有签名', var.filename)
+			if not var.content[-1].endswith('\n'):
+				printInfo('已补足文件末尾缺少的一个换行符')
+				var.content[-1] += '\n'
 	fileOld.close()
 	#print(content)
 	var.parseImp(var.content, var.listCtrl, dealOnce)
