@@ -121,6 +121,16 @@ def readInt(data, pos, byteNum=4):
 def int2bytes(i, l=4):
     return int.to_bytes(i, byteorder='little', length=l)
 
+def readStr(data, pos, endByte=0):
+    start = pos
+    while pos < len(data):
+        if data[pos] == endByte:
+            #不包含结尾字节
+            #pos += 1
+            break
+        pos += 1
+    return data[start:pos]
+
 def xorBytes(input, xorTable):
     if not xorTable:
         return bytearray(input)

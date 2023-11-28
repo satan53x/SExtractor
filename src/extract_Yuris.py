@@ -11,11 +11,14 @@ Codes = [
 	{'min': 0x1DC, 'max': 0x1DC, 'sce': 0x5A, 'sel': 0x1D},
 	{'min': 0x1E1, 'max': 0x1EB, 'sce': 0x6A, 'sel': 0x2C},
 	{'min': 0x1F4, 'max': 0x1F4, 'sce': 0x5A, 'sel': 0x1D},
-	{'min': 0x1C2, 'max': 0xFFF, 'sce': 0x5B, 'sel': 0x1D}
+	{'min': 0x1C2, 'max': 0x22A, 'sce': 0x5B, 'sel': 0x1D},
+	{'min': 0x22B, 'max': 0xFFF, 'sce': 0x6C, 'sel': 0x2B},
+	{'min': 0x0, 'max': 0xFFF, 'sce': 0x5A, 'sel': 0x1D},
 ]
 Keys = [
 	{'min': 0x1E1, 'max': 0x1E8, 'key': b'\x0B\x8F\x00\xB1'},
-	{'min': 0x1C2, 'max': 0xFFF, 'key': b'\xD3\x6F\xAC\x96'}
+	{'min': 0x1C2, 'max': 0x22A, 'key': b'\xD3\x6F\xAC\x96'},
+	{'min': 0x22B, 'max': 0xFFF, 'key': b'\xA9\xF8\xCC\x66'},
 ]
 
 insertContent = {}
@@ -35,10 +38,10 @@ def parseImp(content, listCtrl, dealOnce):
 	var = ParseVar(listCtrl, dealOnce)
 	var.OldEncodeName = ExVar.OldEncodeName
 	initParseVar(var)
-	funcList = manager.splitFunc()
+	cmdList = manager.splitCmd()
 	paraIndex = 0
-	for i in range(len(funcList)):
-		code, count, textType = funcList[i]
+	for i in range(len(cmdList)):
+		code, count, textType = cmdList[i]
 		if textType == 0:
 			#文本
 			dealStr(content, var, paraIndex)
@@ -111,11 +114,17 @@ def replaceEndImp(content):
 		manager.paraSec.extend(int2bytes(offset))
 	#合并
 	manager.fixSections(content)
-	insertContent[0] = manager.headerSec + manager.funcSec + manager.paraSec
+	insertContent[0] = manager.headerSec + manager.cmdSec + manager.paraSec
 	insertContent[len(content)] = manager.otherSec
 	
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeprate):
+	if not re.match(r'yst\d+', ExVar.filename):
+		#控制脚本
+		if ExVar.filename == 'ysc':
+			data = fileOld.read()
+			manager.initConfig(data)
+		return [], {}
 	data = fileOld.read()
 	#解析
 	if not manager.init(data):
@@ -181,14 +190,14 @@ class DataManager():
 		offset = self.paraList[paraIndex][2]
 		return self.offsetDic[offset]
 
-	def splitFunc(self):
-		funcList = []
+	def splitCmd(self):
+		cmdList = []
 		pos = 0
-		while pos < self.funcLen:
-			#单个func
-			code = readInt(self.funcSec, pos, 1)
+		while pos < self.cmdLen:
+			#单个command
+			code = readInt(self.cmdSec, pos, 1)
 			pos += 1
-			count = readInt(self.funcSec, pos, 1)
+			count = readInt(self.cmdSec, pos, 1)
 			pos += 3
 			textType = -1
 			if code == self.codeSce: #文本
@@ -196,12 +205,12 @@ class DataManager():
 			elif code == self.codeSel: #选项
 				textType = 1
 			#正常保存字节
-			funcList.append([
+			cmdList.append([
 				code,
 				count,
 				textType
 			])
-		return funcList
+		return cmdList
 
 	def fixSections(self, content:list):
 		if self.version >= 0x1C2:
@@ -225,7 +234,7 @@ class DataManager():
 		else:
 			self.version = readInt(data, 4)
 		if self.version >= 0x1C2:
-			self.funcLen = readInt(data, 12)
+			self.cmdLen = readInt(data, 12)
 			self.paraLen = readInt(data, 16)
 			self.strLen = readInt(data, 20)
 			self.otherLen = readInt(data, 24)
@@ -235,7 +244,11 @@ class DataManager():
 		#code
 		self.codeSce = 0
 		self.codeSel = 0
-		item = getMatchItem(Codes, self.version)
+		if self.codeDic != {}:
+			#从ysc设置
+			item = Codes[-1]
+		else:
+			item = getMatchItem(Codes, self.version)
 		if item:
 			self.codeSce = item['sce']
 			self.codeSel = item['sel']
@@ -243,10 +256,10 @@ class DataManager():
 		start = 0
 		end = self.headerLen
 		self.headerSec = bytearray(data[start:end])
-		#func
+		#cmd
 		start = end
-		end = start + self.funcLen
-		self.funcSec = data[start:end]
+		end = start + self.cmdLen
+		self.cmdSec = data[start:end]
 		#para
 		start = end
 		end = start + self.paraLen
@@ -291,10 +304,40 @@ class DataManager():
 	def decodeAll(self):
 		if ExVar.decrypt == '': return
 		#解密
-		self.funcSec = xorBytes(self.funcSec, self.xorKey)
+		self.cmdSec = xorBytes(self.cmdSec, self.xorKey)
 		self.paraSec = xorBytes(self.paraSec, self.xorKey)
 		self.strSec = xorBytes(self.strSec, self.xorKey)
 		self.otherSec = xorBytes(self.otherSec, self.xorKey)
 
+	codeDic = {}
+	#ysc.bin初始化配置
+	def initConfig(self, data):
+		printWarningGreen('尝试从ysc.bin读取指令配置')
+		self.codeDic.clear()
+		pos = 0x8
+		codeNum = readInt(data, pos)
+		pos += 0x8
+		for cmdCode in range(codeNum):
+			#命令
+			bs = readStr(data, pos)
+			text = bs.decode('cp932')
+			pos += len(bs) + 1 #结束\0
+			paraCount = data[pos]
+			pos += 1
+			self.codeDic[text] = [cmdCode, paraCount]
+			if text == 'WORD':
+				Codes[-1]['sce'] = cmdCode
+				printInfo('命令：', text, hex(cmdCode), paraCount)
+			elif text == 'GOSUB':
+				Codes[-1]['sel'] = cmdCode
+				printInfo('命令：', text, hex(cmdCode), paraCount)
+			#else:
+				#printDebug('命令：', text, hex(cmdCode), paraCount)
+			for paraCode in range(paraCount):
+				#参数
+				bs = readStr(data, pos)
+				#text = bs.decode('cp932')
+				pos += len(bs) + 3
+				#printDebug('    参数：', text, hex(paraCode))
 
 manager = DataManager()
