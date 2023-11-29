@@ -102,12 +102,15 @@ def init(fileOld):
 	seprate = ExVar.contentSeprate
 	writeOffset = int(ExVar.writeOffset)
 	if ExVar.structure == 'nohead':
-		content = pd.read_csv(fileOld, header=None, sep=seprate, quoting=csv.csv.QUOTE_MINIMAL)
+		content = pd.read_csv(fileOld, header=None, sep=seprate, quoting=csv.QUOTE_MINIMAL)
 		contentNames = None
+		row = content.iloc[0]
+		colMax = len(row)
 	else:
 		content = pd.read_csv(fileOld, sep=seprate, quoting=csv.QUOTE_MINIMAL)
 		contentNames = content.columns.tolist()
-	setValid(contentNames)
+		colMax = len(contentNames)
+	setValid(contentNames, colMax)
 	return content
 
 def initText(content):
@@ -121,7 +124,7 @@ def initText(content):
 		contentNames = re.split(seprate, head)
 	setValid(contentNames)
 
-def setValid(contentNames):
+def setValid(contentNames, colMax=9999):
 	#有效列
 	validCols.clear()
 	nameCols.clear()
@@ -135,7 +138,8 @@ def setValid(contentNames):
 				nameCols.append(i)
 			else:
 				i = int(s)
-			validCols.append(i)
+			if i < colMax:
+				validCols.append(i)
 	else:
 		#按列名
 		valid = ExVar.extraData
