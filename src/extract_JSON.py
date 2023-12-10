@@ -3,21 +3,17 @@ import sys
 import os
 import struct
 from common import *
-from extract_TXT import ParseVar, GetRegList, searchLine
+from extract_TXT import ParseVar, GetRegList, searchLine, initParseVar
 
 copyKeyToValue = True
 
 # ---------------- Group: JSON -------------------
 def parseImp(content, listCtrl, dealOnce):
 	if content == []: return
-	var = ParseVar()
-	var.listIndex = 0
-	var.listCtrl = listCtrl
-	var.dealOnce = dealOnce
+	var = ParseVar(listCtrl, dealOnce)
+	initParseVar(var)
 	#print(len(content))
 	ExVar.indent = 2
-	regDic = ExVar.regDic
-	var.regList = GetRegList(regDic.items(), None)
 	if isinstance(content, dict):
 		#字典: 子项为字符串key:value
 		if copyKeyToValue:

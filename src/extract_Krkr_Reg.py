@@ -44,7 +44,6 @@ def parseImp(content, listCtrl, dealOnce):
 		iter = sepStr.finditer(var.lineData)
 		for r in iter:
 			text = r.group()
-			#if re.search(endStr, text):
 			if endStr.search(text):
 				if lastCtrl and 'unfinish' in lastCtrl:
 					del lastCtrl['unfinish'] 

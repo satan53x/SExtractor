@@ -4,7 +4,7 @@ import os
 import struct
 import traceback
 from common import *
-from extract_TXT import ParseVar, GetRegList, searchLine
+from extract_TXT import ParseVar, GetRegList, searchLine, initParseVar
 
 extractItemName = True
 
@@ -112,11 +112,9 @@ def dealPathStr(var:ParseVar, content, pathList):
 #解析
 def parseImp(content, listCtrl, dealOnce):
 	var = ParseVar(listCtrl, dealOnce)
+	initParseVar(var)
 	#print(len(content))
 	ExVar.indent = 0
-	regDic = ExVar.regDic
-	var.regList = GetRegList(regDic.items(), None)
-	var.nameList = ExVar.nameList
 	extractName = ExVar.extractName
 	global extractItemName
 	if re.search(extractName, ExVar.filename):

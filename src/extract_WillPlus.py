@@ -5,10 +5,7 @@ from extract_TXT import searchLine, ParseVar, GetRegList
 
 # ---------------- Engine: WillPlus -------------------
 def parseImp(content, listCtrl, dealOnce):
-	var = ParseVar()
-	var.listIndex = 0
-	var.listCtrl = listCtrl
-	var.dealOnce = dealOnce
+	var = ParseVar(listCtrl, dealOnce)
 	var.OldEncodeName = ExVar.OldEncodeName
 	#print(len(content))
 	regLists = [None, None]
