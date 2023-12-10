@@ -60,12 +60,12 @@ def isShiftJis(byte1, byte2):
             return 2
     return 0
 
-def checkJIS(bytes, reg):
+def checkJIS(bytes, pattern):
     pos = 0
     end = len(bytes)
     while pos < end:
         #检查允许的单字节
-        if reg != '' and re.match(reg, bytes[pos:pos+1]):
+        if pattern != '' and pattern.match(bytes[pos:pos+1]):
         #if chr(bytes[pos]) in '\r\n':
             pos += 1
             continue

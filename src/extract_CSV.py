@@ -46,7 +46,7 @@ def parseText(content, var:ParseVar):
 			if start < end and col in validCols:
 				#有效行
 				text = var.lineData[start:end]
-				if var.postSkip and re.search(var.postSkip, text):
+				if var.postSkip and var.postSkip.search(text):
 					start = r.end()
 					col += 1
 					continue

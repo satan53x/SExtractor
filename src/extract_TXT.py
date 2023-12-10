@@ -84,7 +84,7 @@ def searchLine(var:ParseVar):
 						text = var.lineData[start:end]
 					#匹配后跳过
 					if var.postSkip:
-						if re.search(var.postSkip, text):
+						if var.postSkip.search(text):
 							#print('postSkip', text)
 							continue
 					#0行数，1起始字符下标（包含），2结束字符下标（不包含）
@@ -160,10 +160,13 @@ def initParseVar(var:ParseVar, regDic=None):
 	var.nameList = ExVar.nameList
 	var.regList = GetRegList(regDic.items(), var.OldEncodeName)
 	var.ignoreDecodeError = ExVar.ignoreDecodeError
-	var.postSkip = ExVar.postSkip
-	var.checkJIS = ExVar.checkJIS
-	if var.checkJIS and var.OldEncodeName:
-		var.checkJIS = var.checkJIS.encode(var.OldEncodeName)
+	if ExVar.postSkip:
+		var.postSkip = re.compile(ExVar.postSkip)
+	if ExVar.checkJIS:
+		var.checkJIS = ExVar.checkJIS
+		if var.OldEncodeName:
+			var.checkJIS = var.checkJIS.encode(var.OldEncodeName)
+		var.checkJIS = re.compile(var.checkJIS)
 
 # ---------------- Group: TXT -------------------
 def parseImp(content, listCtrl, dealOnce):
