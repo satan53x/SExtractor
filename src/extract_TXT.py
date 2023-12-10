@@ -53,16 +53,16 @@ def searchLine(var:ParseVar):
 	ctrls = []
 	for regItem in var.regList:
 		regType = regItem[1]
-		value = regItem[0]
+		pattern:re.Pattern = regItem[0]
 		if regType == 'skip':
 			# 跳过
-			if re.search(value, searchData): #已匹配则停止
+			if pattern.search(searchData): #已匹配则停止
 				return None #skip则返回None
 		else:
 			# 搜索
 			tmpDic = {}
 			matched = False
-			iter = re.finditer(value, searchData) 
+			iter = pattern.finditer(searchData) 
 			for r in iter:
 				#print(r.groups())
 				for i in range(1, len(r.groups())+1):
@@ -123,9 +123,9 @@ def GetRegList(items, OldEncodeName):
 		if OldEncodeName and ExVar.pureText == False:
 			value = value.encode(OldEncodeName)
 		if re.search('skip', key):
-			lst.append([value, 'skip'])
+			lst.append([re.compile(value), 'skip'])
 		elif re.search('search', key):
-			lst.append([value, 'search'])
+			lst.append([re.compile(value), 'search'])
 	return lst
 
 def dealLastCtrl(lastCtrl, ctrls, contentIndex=-1):

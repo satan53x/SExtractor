@@ -10,11 +10,11 @@ def parseImp(content, listCtrl, dealOnce):
 	#print(len(content))
 	regLists = [None, None]
 	regLists[0] = [
-		[b'^[^\0](?P<name>.*?)\0', 'search']
+		[re.compile(b'^[^\0](?P<name>.*?)\0'), 'search']
 	]
 	regLists[1] = [
-		[b'^%[A-Z0-9]+(.*?)%[A-Z0-9]+%K', 'search'],
-		[b'^(.*?)%K', 'search']
+		[re.compile(b'^%[A-Z0-9]+(.*?)%[A-Z0-9]+%K'), 'search'],
+		[re.compile(b'^(.*?)%K'), 'search']
 	]
 	ExVar.startline = 1
 	textType = -1

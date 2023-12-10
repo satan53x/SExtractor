@@ -9,9 +9,15 @@ def parseImp(content, listCtrl, dealOnce):
 	var = ParseVar(listCtrl, dealOnce)
 	var.OldEncodeName = ExVar.OldEncodeName
 	lastCtrl = None
-	regSkip = [rb'^[A-Za-z/\*]', rb'^$']
-	regName = [ [r'^(?P<name>.+?)　（'.encode(ExVar.OldEncodeName), 'search'] ]
-	regMessage = [ [r'^(?P<unfinish>.+)$'.encode(ExVar.OldEncodeName), 'search'] ]
+	regSkip = [ 
+		re.compile(rb'^[A-Za-z/\*]', rb'^$') 
+	]
+	regName = [ 
+		[re.compile(r'^(?P<name>.+?)　（'.encode(ExVar.OldEncodeName)), 'search'] 
+	]
+	regMessage = [ 
+		[re.compile(r'^(?P<unfinish>.+)$'.encode(ExVar.OldEncodeName)), 'search'] 
+	]
 	for contentIndex in range(len(content)):
 		var.lineData = content[contentIndex]
 		if any(re.match(pattern, var.lineData) for pattern in regSkip):
