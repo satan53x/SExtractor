@@ -13,11 +13,13 @@ def initExtra():
 	sepStr = ExVar.sepStr
 	if not endStr:
 		endStr = 'np'
+	if not endStr.startswith('^'):
+		endStr = '^' + endStr + '$'
 	if not ctrlStr:
 		ctrlStr = '^[A-Za-z]'
 	if not sepStr:
 		sepStr = '[^\\[\\]]+'
-	return endStr, ctrlStr, sepStr
+	return re.compile(endStr), re.compile(ctrlStr), re.compile(sepStr)
 
 # ---------------- Group: Krkr Split -------------------
 def parseImp(content, listCtrl, dealOnce):
@@ -39,15 +41,16 @@ def parseImp(content, listCtrl, dealOnce):
 			continue
 		#print(var.lineData)
 		#搜索
-		iter = re.finditer(sepStr, var.lineData)
+		iter = sepStr.finditer(var.lineData)
 		for r in iter:
 			text = r.group()
-			if text == endStr:
+			#if re.search(endStr, text):
+			if endStr.search(text):
 				if lastCtrl and 'unfinish' in lastCtrl:
 					del lastCtrl['unfinish'] 
 				lastCtrl = None
 				continue
-			if re.search(ctrlStr, text):
+			if ctrlStr.search(text):
 				continue
 			start = r.start()
 			end = r.end()
