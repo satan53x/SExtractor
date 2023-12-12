@@ -465,7 +465,7 @@ def setRegDic(str):
 		# 结束
 		if line == '' or line.startswith('sample'): 
 			break
-		elif line.startswith('<'):
+		elif line.startswith('<') or line.startswith(';'):
 			continue
 		pair = line.split('=', 1)
 		# 控制
