@@ -100,12 +100,17 @@ def searchLine(var:ParseVar):
 						pass
 					else:
 						key = key.rstrip('0123456789')
-						if key == 'name' or key == 'unfinish':
-							ctrl[key] = True #标记
+						if 'AND' in key:
+							keys = key.split('AND')
 						else:
-							if 'flags' not in ctrl:
-								ctrl['flags'] = []
-							ctrl['flags'].append(key)
+							keys = [key]
+						for key in keys:
+							if key == 'name' or key == 'unfinish':
+								ctrl[key] = True #标记
+							else:
+								if 'flags' not in ctrl:
+									ctrl['flags'] = []
+								ctrl['flags'].append(key)
 					matched = True
 			if matched :
 				#按文本中顺序处理
