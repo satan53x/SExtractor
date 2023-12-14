@@ -583,7 +583,7 @@
                </spacer>
               </item>
               <item>
-               <widget class="QCheckBox" name="binEncodeCheck_2">
+               <widget class="QCheckBox" name="binEncodeCheck">
                 <property name="text">
                  <string>编码也对BIN生效</string>
                 </property>
