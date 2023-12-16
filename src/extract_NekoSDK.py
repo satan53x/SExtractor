@@ -67,18 +67,21 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		#修正长度
 		before = bytearray(content[contentIndex][:start])
 		lenPos = ctrl['lenPos']
-		diff = len(transData) - (end - start)
-		if end < lenPos[1]:
+		diff = len(transData) - (end - start) #变化的字节数差值
+		if end <= lenPos[1]:
 			#名字
-			seq = 0
+			textType = 0
 			if lenPos[1] >= 0:
-				lenPos[1] += diff #文本长度位置偏移修正
+				#msg长度位置偏移修正
+				#（其实因为是倒序处理，msg在name之前已经处理完毕，可能并不需要修正偏移）
+				lenPos[1] += diff
 		else:
 			#文本
-			seq = 1
-		if lenPos[seq] >= 0:
-			oldLen = readInt(content[contentIndex], lenPos[seq])
-			before[lenPos[seq]:lenPos[seq]+4] = int2bytes(oldLen + diff)
+			textType = 1
+		lp = lenPos[textType]
+		if lp >= 0:
+			oldLen = readInt(content[contentIndex], lp)
+			before[lp:lp+4] = int2bytes(oldLen + diff)
 		#写入new
 		strNew = before + transData + content[contentIndex][end:]
 		content[contentIndex] = strNew
