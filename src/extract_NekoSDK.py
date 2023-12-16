@@ -4,6 +4,9 @@ from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_TXT import searchLine, ParseVar, initParseVar
 from helper_text import generateBytes
 
+def initExtra():
+	ExVar.pureText = True
+
 # ---------------- Engine: NekoSDK -------------------
 def parseImp(content, listCtrl, dealOnce):
 	if not content[0][0:18] == b'NEKOSDK_ADVSCRIPT2':
@@ -28,14 +31,22 @@ def parseImp(content, listCtrl, dealOnce):
 			ctrl = {'pos':[contentIndex, pos, end]}
 			ctrl['name'] = True
 			if var.dealOnce(text, contentIndex): listCtrl.append(ctrl)
+			ctrl['lenPos'] = pos-4
 		pos += length
 		#对话/旁边
 		length = readInt(var.lineData, pos) #有结束符\0
 		pos += 4
 		end = pos + length - 1
-		text = var.lineData[pos:end].decode(ExVar.OldEncodeName)
-		ctrl = {'pos':[contentIndex, pos, end]}
-		if var.dealOnce(text, contentIndex): listCtrl.append(ctrl)
+		#text = var.lineData[pos:end].decode(ExVar.OldEncodeName)
+		#ctrl = {'pos':[contentIndex, pos, end]}
+		#if var.dealOnce(text, contentIndex): listCtrl.append(ctrl)
+		var.contentIndex = contentIndex
+		var.searchStart = pos
+		var.searchEnd = end
+		ctrls = searchLine(var)
+		if ctrls:
+			for ctrl in ctrls:
+				ctrl['lenPos'] = pos-4
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
@@ -51,7 +62,10 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		if transData == None: return False
 		#修正长度
 		before = bytearray(content[contentIndex][:start])
-		before[start-4:start] = int2bytes(len(transData) + 1)
+		oldLen = readInt(content[contentIndex], ctrl['lenPos'])
+		diff = len(transData) - (end - start)
+		#before[start-4:start] = int2bytes(len(transData) + 1)
+		before[start-4:start] = int2bytes(oldLen + diff)
 		#写入new
 		strNew = before + transData + content[contentIndex][end:]
 		content[contentIndex] = strNew
@@ -60,6 +74,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeprate):
 	data = fileOld.read()
+	initExtra()
 	content = []
 	start = 0
 	pat = rb'\x5B\x83\x65\x83\x4C\x83\x58\x83\x67\x95\x5C\x8E\xA6\x5D'
