@@ -24,7 +24,6 @@ def parseImp(content, listCtrl, dealOnce):
 		#名字
 		length = readInt(var.lineData, pos) #有结束符\0
 		pos += 4
-		lenPos = [-1, -1] #name, msg
 		if length > 1:
 			#有名字
 			end = pos + length - 1
@@ -32,8 +31,7 @@ def parseImp(content, listCtrl, dealOnce):
 			ctrl = {'pos':[contentIndex, pos, end]}
 			ctrl['name'] = True
 			if var.dealOnce(text, contentIndex): listCtrl.append(ctrl)
-			lenPos[0] = pos - 4
-			ctrl['lenPos'] = lenPos
+			ctrl['lenPos'] = pos - 4
 		pos += length
 		#对话/旁边
 		length = readInt(var.lineData, pos) #有结束符\0
@@ -47,9 +45,8 @@ def parseImp(content, listCtrl, dealOnce):
 		var.searchEnd = end
 		ctrls = searchLine(var)
 		if ctrls:
-			lenPos[1] = pos - 4
 			for ctrl in ctrls:
-				ctrl['lenPos'] = lenPos
+				ctrl['lenPos'] = pos - 4
 				
 
 # -----------------------------------
@@ -66,22 +63,10 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		if transData == None: return False
 		#修正长度
 		before = bytearray(content[contentIndex][:start])
-		lenPos = ctrl['lenPos']
+		lp = ctrl['lenPos']
 		diff = len(transData) - (end - start) #变化的字节数差值
-		if end <= lenPos[1]:
-			#名字
-			textType = 0
-			if lenPos[1] >= 0:
-				#msg长度位置偏移修正
-				#（其实因为是倒序处理，msg在name之前已经处理完毕，可能并不需要修正偏移）
-				lenPos[1] += diff
-		else:
-			#文本
-			textType = 1
-		lp = lenPos[textType]
-		if lp >= 0:
-			oldLen = readInt(content[contentIndex], lp)
-			before[lp:lp+4] = int2bytes(oldLen + diff)
+		oldLen = readInt(before, lp)
+		before[lp:lp+4] = int2bytes(oldLen + diff)
 		#写入new
 		strNew = before + transData + content[contentIndex][end:]
 		content[contentIndex] = strNew
