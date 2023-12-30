@@ -138,6 +138,8 @@ def dealLastCtrl(lastCtrl, ctrls, contentIndex=-1):
 	ctrl = None
 	if ctrls == None: #skip匹配
 		flags.append('predel_unfinish')
+		if ExVar.ignoreSkip:
+			ctrl = lastCtrl
 	elif len(ctrls) == 0:
 		ctrl = lastCtrl
 	else:

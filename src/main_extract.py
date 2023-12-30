@@ -565,6 +565,7 @@ def initArgs(args):
 		generateSubsDic()
 	var.transReplace = args['transReplace']
 	var.preReplace = args['preReplace']
+	var.ignoreSkip = args['ignoreSkip']
 	readTextConf()
 	return 0
 

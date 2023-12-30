@@ -64,6 +64,7 @@ class ExtractVar():
 	transReplace = True #译文替换
 	preReplace = True #译文分割前替换
 	ouputTmp = False #输出中间临时文件
+	ignoreSkip = False #skip不影响段落（lastCtrl不会置为None）
 
 	#-------------------
 	def clear(self):

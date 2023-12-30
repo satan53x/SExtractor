@@ -159,6 +159,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		# 分割前替换
 		checked = initValue(self.mainConfig, 'preReplace', False)
 		self.preReplaceCheck.setChecked(checked)
+		# skip不影响段落（lastCtrl不会置为None）
+		checked = initValue(self.mainConfig, 'ignoreSkip', False)
+		self.ignoreSkipCheck.setChecked(checked)
 		# 结束
 		self.engineNameBox.setCurrentIndex(self.engineCode)
 		self.initEnd = True
@@ -294,7 +297,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'tunnelJis': self.tunnelJisCheck.isChecked(),
 			'subsJis': self.subsJisCheck.isChecked(),
 			'transReplace': self.transReplaceCheck.isChecked(),
-			'preReplace': self.preReplaceCheck.isChecked()
+			'preReplace': self.preReplaceCheck.isChecked(),
+			'ignoreSkip': self.ignoreSkipCheck.isChecked()
 		}
 		var.window = self
 		#保存配置
@@ -340,6 +344,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mainConfig.setValue('pureText', self.binPureTextCheck.isChecked())
 		self.mainConfig.setValue('transReplace', self.transReplaceCheck.isChecked())
 		self.mainConfig.setValue('preReplace', self.preReplaceCheck.isChecked())
+		self.mainConfig.setValue('ignoreSkip', self.ignoreSkipCheck.isChecked())
 		
 	#提取打印设置
 	def getExtractPrintSetting(self):

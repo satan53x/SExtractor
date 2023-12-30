@@ -929,7 +929,7 @@
           <property name="title">
            <string>其它</string>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_25">
+          <layout class="QHBoxLayout" name="horizontalLayout_25" stretch="1,1,1">
            <property name="leftMargin">
             <number>5</number>
            </property>
@@ -945,10 +945,17 @@
            <item>
             <widget class="QCheckBox" name="cutoffCopyCheck">
              <property name="text">
-              <string>截断字典新增译文复制到修改字段</string>
+              <string>截断字典的新增复制到修改处</string>
              </property>
              <property name="checked">
               <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="ignoreSkipCheck">
+             <property name="text">
+              <string>skip不影响段落</string>
              </property>
             </widget>
            </item>
