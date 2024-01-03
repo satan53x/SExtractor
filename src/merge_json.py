@@ -36,7 +36,7 @@ def writeMerge():
 	#保存合并信息
 	filenameList.append([0, name])
 	cache = json.dumps(filenameList, indent=2)
-	settings = QSettings('config.ini', QSettings.IniFormat)
+	settings = QSettings('main/config.ini', QSettings.IniFormat)
 	settings.setValue('filenameList', cache)
 
 def writeSeprate(seq):
@@ -150,7 +150,7 @@ def loadFilenameList(funcIndex):
 	global filenameList
 	filenameList.clear()
 	if funcIndex == 1 and OnceLinesCount == 0:
-		settings = QSettings('config.ini', QSettings.IniFormat)
+		settings = QSettings('main/config.ini', QSettings.IniFormat)
 		cache = settings.value('filenameList')
 		filenameList = json.loads(cache)
 

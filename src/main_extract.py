@@ -348,6 +348,7 @@ def tryAddToDic(item:dict, ctrl):
 				#print('Add to transDicIO', orig, listIndex, var.filename)
 				var.transDicIO[item['name']] = ''
 		if 'message' in item:
+			item['message'] = item['message'].rstrip('\r\n')
 			if item['message'] not in var.transDicIO:
 				#print('Add to transDicIO', orig, listIndex, var.filename)
 				var.transDicIO[item['message']] = ''
