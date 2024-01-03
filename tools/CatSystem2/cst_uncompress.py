@@ -1,7 +1,5 @@
-import re
 import sys
 import os
-import json
 from tkinter import filedialog
 import zlib 
 DefaultPath = ''

@@ -1,12 +1,9 @@
 # ------------------------------------------------------------
 # https://github.com/satan53x/SExtractor/tree/main/tools/BlackRainbow
 # ------------------------------------------------------------
-import re
 import sys
 import os
-import json
 from tkinter import filedialog
-import zlib 
 DefaultPath = ''
 Postfix = ''
 BytesDatSig = b'\x05\x00\x00\x00\x0A\x55\xDC\xA2' #Version和有效标志

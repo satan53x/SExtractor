@@ -1,12 +1,9 @@
 # ------------------------------------------------------------
 # https://github.com/satan53x/SExtractor/tree/main/tools/CScript
 # ------------------------------------------------------------
-import re
 import sys
 import os
-import json
 from tkinter import filedialog
-import zlib 
 DefaultPath = r''
 PackName = '../scr.dat'
 NameLen = 0x2C #根据原包头部的单个名字长度进行设定，常见值为：0x2C, 0x44, 0x64
