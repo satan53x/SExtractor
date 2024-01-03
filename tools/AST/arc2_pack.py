@@ -1,10 +1,11 @@
 # ------------------------------------------------------------
 # https://github.com/satan53x/SExtractor/tree/main/tools/AST
+# 依赖模块：pip install pylzss
 # ------------------------------------------------------------
 import sys
 import os
 from tkinter import filedialog
-import lzss # pip install pylzss
+import lzss # 模块 pylzss
 DefaultPath = ''
 Postfix = ''
 Version = 2 #版本号
