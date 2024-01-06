@@ -137,8 +137,9 @@ def dealLastCtrl(lastCtrl, ctrls, contentIndex=-1):
 	flags = []
 	ctrl = None
 	if ctrls == None: #skip匹配
-		flags.append('predel_unfinish')
-		if ExVar.ignoreSkip:
+		if not ExVar.skipIgnoreUnfinish:
+			flags.append('predel_unfinish')
+		if ExVar.skipIgnoreCtrl:
 			ctrl = lastCtrl
 	elif len(ctrls) == 0:
 		ctrl = lastCtrl
