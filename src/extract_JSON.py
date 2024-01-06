@@ -36,12 +36,20 @@ def parseImp(content, listCtrl, dealOnce):
 			#子项为字典
 			for i in range(len(content)):
 				if i < ExVar.startline: continue 
-				for j, value in content[i].items():
+				for j, value in content[i].items(): #j可以是key值
 					lineData = value
 					if lineData == '': continue #空白行
 					var.contentIndex = [i, j]
 					var.lineData = lineData
-					searchLine(var)
+					ctrls = searchLine(var)
+					if ExVar.keepFormat and ctrls and len(ctrls) > 0:
+						#保持格式
+						ctrl = ctrls[-1]
+						if j == 'name':
+							ctrl['name'] = True
+						elif j == 'message':
+							if 'unfinish' in ctrl:
+								del ctrl['unfinish']
 		elif isinstance(content[0], str):
 			#子项为字符串
 			for i in range(len(content)):

@@ -91,5 +91,6 @@ class ExtractVar():
 		self.decrypt = '' #加解密密钥
 		self.pureText = False #bin模式下如果为纯文本，则会先转为utf再进行正则
 		self.writeOffset = '0' #写入偏移
+		self.keepFormat = True #保持格式
 
 gExtractVar = ExtractVar()

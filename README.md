@@ -40,6 +40,7 @@
 * `text_conf.json`进行文本处理配置，优先读取工作目录ctrl文件下配置，如果没有则读取工具根目录默认配置。
 
 ## 当前正则预设
+（更多预设正则详见根目录`预设正则.fake.ini`）
 * AST
 * Artemis
 * EntisGLS
