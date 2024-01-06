@@ -535,8 +535,6 @@ def initArgs(args):
 		return ret
 	# 匹配
 	setNameList(args['nameList'])
-	# 正则
-	setRegDic(args['regDic'])
 	# 截断
 	var.cutoff = args['cutoff']
 	var.cutoffCopy = args['cutoffCopy']
@@ -569,6 +567,8 @@ def initArgs(args):
 	var.skipIgnoreCtrl = args['skipIgnoreCtrl']
 	var.skipIgnoreUnfinish = args['skipIgnoreUnfinish']
 	readTextConf()
+	# 正则
+	setRegDic(args['regDic'])
 	return 0
 
 def extractDone():
