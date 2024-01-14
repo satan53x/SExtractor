@@ -54,7 +54,7 @@ def init():
 #--------------------------------------------
 def main():
     #填充文本：cp932有效字符
-    add_char = '･'
+    add_char = '･' #无效字符占位
     seq = 0
     first_list = list(range(0x81, 0xA0)) + list(range(0xE0, 0xF0)) + list(range(0xFA, 0xFD)) #第一字节
     second_list = list(range(0x40, 0x7F)) + list(range(0x80, 0xFD)) #第二字节
@@ -69,7 +69,8 @@ def main():
                 text += bs.decode('cp932')
                 valid += 1
             except:
-                text += add_char
+                #continue #不占位
+                text += add_char #占位
         #绘制
         if valid == 0: continue
         draw_text(text)
