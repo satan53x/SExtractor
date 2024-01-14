@@ -2,7 +2,7 @@ import json
 import subprocess
 import sys
 
-FontSrc = 'simhei.ttf'
+FontSrc = 'WenQuanYi.ttf'
 SubsJson = '../../src/subs_cn_jp.json'
 Reverse = True #字典键值交换位置
 
