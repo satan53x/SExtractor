@@ -22,9 +22,12 @@ def main1():
 	for i in range(len(b1)):
 		ret += (b1[i] ^ b2[i%len(b2)]).to_bytes(1)
 	printHex(ret)
-	print(ret)
-	text = ret.decode('cp932')
-	print(text)
+	try:
+		text = ret.decode('cp932')
+		print(ret)
+		print(text)
+	except:
+		pass
 
 def main2():
 	s = '「ダンナ様、斗環は見つかっ'
