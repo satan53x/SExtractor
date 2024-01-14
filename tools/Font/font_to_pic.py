@@ -1,7 +1,7 @@
 import os
 from PIL import Image, ImageDraw, ImageFont
 
-chars = "中文测试"
+#chars = "中文测试"
 ttf_path = "WenQuanYi_CNJP.ttf"
 img_format = 'webp'
 
@@ -37,13 +37,10 @@ def draw_line(line, pos_y):
 def draw_text(text):
     #print('\033[32m绘制：\033[0m', text)
     start = 0
-    end = 0
     pos_y = init_y
     while start < len(text):
-        end = start + char_count
-        if end >= len(text): end = len(text)
-        line = text[start:end]
-        start = end
+        line = text[start:start + char_count]
+        start += char_count
         #绘制
         draw_line(line, pos_y)
         pos_y += char_h + interval_h
@@ -56,7 +53,7 @@ def init():
 
 #--------------------------------------------
 def main():
-    #填充文本
+    #填充文本：cp932有效字符
     add_char = '･'
     seq = 0
     first_list = list(range(0x81, 0xA0)) + list(range(0xE0, 0xF0)) + list(range(0xFA, 0xFD)) #第一字节
