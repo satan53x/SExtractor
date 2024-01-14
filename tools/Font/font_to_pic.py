@@ -3,22 +3,22 @@ from PIL import Image, ImageDraw, ImageFont
 
 #chars = "中文测试"
 ttf_path = "WenQuanYi_CNJP.ttf"
-img_format = 'webp'
+img_format = 'webp' #图片类型
 
 folder = 'image38'
 font_size = 38 #字体大小
 img_w, img_h = 1024, 640 #图片长宽
 init_x, init_y = 10, 12 #初始位置
-char_w, char_h = 38, 38 #文字长宽
-interval_w, interval_h = 10, 10  #文字间距
+char_w, char_h = 38, 38 #字符长宽
+interval_w, interval_h = 10, 10  #字符间距
 # folder = 'image31'
 # font_size = 31 #字体大小
 # img_w, img_h = 800, 440 #图片长宽
 # init_x, init_y = 10, 10 #初始位置
-# char_w, char_h = 31, 31 #文字长宽
-# interval_w, interval_h = 10, 10  #文字间距
+# char_w, char_h = 31, 31 #字符长宽
+# interval_w, interval_h = 10, 10  #字符间距
 
-char_count = 19 #每行字数
+char_count = 19 #每行字符数
 fill_color = (255, 255, 255)
 
 #--------------------------------------------
@@ -74,12 +74,12 @@ def main():
         if valid == 0: continue
         draw_text(text)
         #img.show()
+        #输出
         seq += 1
-        name = f'fnt_s{font_size}_n{seq}.{img_format}'
-        print('\033[32m绘制：\033[0m', name)
+        name = f'fnt_s{font_size}_n{seq}.{img_format}' #输出的图片名字
+        print('\033[32m输出：\033[0m', name)
         if not os.path.exists(folder): os.makedirs(folder)
         img.save(os.path.join(folder, name), img_format)
-        
 
 if __name__ == '__main__':
     main()
