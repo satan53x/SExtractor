@@ -268,5 +268,5 @@ def createDicByTxt(args, fileKey, fileValue):
 	return 0
 
 def setPair(key, value, skipReg):
-	if re.search(skipReg, key): return 
+	if skipReg and re.search(skipReg, key): return 
 	allJson[0][key] = value
