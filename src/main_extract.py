@@ -334,6 +334,12 @@ def keepAllOrig():
 				item['message'] = ""
 			item['message'] += orig
 			if 'unfinish' in ctrl:
+				if listIndex < len(var.listCtrl) - 1:
+					nextCtrl = var.listCtrl[listIndex + 1]
+					if 'name'in nextCtrl: #下一个是名字则不加分隔符
+						continue
+				elif listIndex == len(var.listCtrl) - 1:
+					continue #最后一行
 				item['message'] += var.splitParaSep
 				continue
 			item = tryAddToDic(item, ctrl)
@@ -348,7 +354,6 @@ def tryAddToDic(item:dict, ctrl):
 				#print('Add to transDicIO', orig, listIndex, var.filename)
 				var.transDicIO[item['name']] = ''
 		if 'message' in item:
-			item['message'] = item['message'].rstrip('\r\n')
 			if item['message'] not in var.transDicIO:
 				#print('Add to transDicIO', orig, listIndex, var.filename)
 				var.transDicIO[item['message']] = ''
