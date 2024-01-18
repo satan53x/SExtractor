@@ -1,8 +1,7 @@
 import sys
 #PyQt5中使用的基本控件都在PyQt5.QtWidgets模块中
 from PyQt5.QtWidgets import QApplication
-sys.path.append('./main')
-from mainWindow import MainWindow
+from main.mainWindow import MainWindow
 
 if __name__ == "__main__":
     #固定的，PyQt5程序都需要QApplication对象。sys.argv是命令行参数列表，确保程序可以双击运行

@@ -2,7 +2,7 @@ import os
 from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from PyQt5.QtGui import QIcon
-from ui_mainWindow import Ui_MainWindow
+from main.ui_mainWindow import Ui_MainWindow
 import re
 import sys
 import ctypes
@@ -12,7 +12,7 @@ from main_extract_bin import mainExtractBin
 from main_extract_json import mainExtractJson
 from main_extract import var
 from merge_json import mergeTool, createDicTool
-from thread import extractThread
+from main.thread import extractThread
 
 ConfigCount = 4
 
