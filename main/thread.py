@@ -16,9 +16,9 @@ class extractThread(QThread):
 		try:
 			self.window.extractFile()
 		except Exception as ex:
-			print('\033[31m提取时发生错误：\033[0m')
+			print('\033[31m------------------------------提取时发生错误------------------------------\033[0m')
 			traceback.print_exc()
-			print('\033[31m----------------------------------------------------------------------\033[0m')
+			print('\033[31m--------------------------------------------------------------------------\033[0m')
 			ret = 1
 		end = time.perf_counter()
 		interval = (end - start) * 1000 // 1 / 1000
