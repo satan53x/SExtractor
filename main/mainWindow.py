@@ -369,7 +369,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 	def handleThreadFinished(self, ret):
 		if ret == 1:
-			self.statusBar.showMessage('提取时发生错误！！！    具体错误详见控制台打印！！！')
+			self.statusBar.showMessage('提取或导入时发生错误！！！    具体错误详见控制台打印！！！')
 
 	#---------------------------------------------------------------
 	#选择工作目录
