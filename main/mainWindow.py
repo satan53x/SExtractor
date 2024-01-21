@@ -13,8 +13,7 @@ from main_extract_json import mainExtractJson
 from main_extract import var
 from merge_json import mergeTool, createDicTool
 from main.thread import extractThread
-
-ConfigCount = 4
+from main.configManager import ConfigManager
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 	def __init__(self, parent=None):
@@ -38,25 +37,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.collectButton.clicked.connect(self.collectFiles)
 		#创建字典
 		self.createDicButton.clicked.connect(self.createDic)
-		#配置选项
-		self.configName = 'main/config.ini'
-		for i in range(1, ConfigCount):
-			self.configSeqBox.addItem(str(i))
-		path = os.path.abspath(__file__)
-		path = os.path.dirname(path)
-		for filename in os.listdir(path):
-			ret = re.search(r'config([^\d].*?).ini', filename)
-			if ret:
-				name = ret.group(1)
-				self.configSeqBox.addItem(name)
-		self.configSeqBox.currentIndexChanged.connect(self.selectConfig)
-
-	def selectConfig(self, index):
-		if index == 0:
-			self.configName = 'main/config.ini'
-		else:
-			self.configName = f'main/config{self.configSeqBox.currentText()}.ini'
-		self.refreshConfig()
+		#配置
+		self.configManager = ConfigManager(self)
+		self.configManager.showSeq()
 
 	#初始化
 	def beforeShow(self):
@@ -88,87 +71,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			#print(group)
 			self.regNameBox.addItem(group)
 		#刷新
-		self.refreshConfig()
+		self.configManager.refreshConfig()
 
 	#初始化
 	def afterShow(self):
 		#修正打印颜色
 		from colorama import init
 		init(autoreset=True)
-	
-	def refreshConfig(self):
-		self.initEnd = False
-		#选择配置
-		self.mainConfig = QSettings(self.configName, QSettings.IniFormat)
-		self.mainConfig.setIniCodec('utf-8')
-		# 窗口大小
-		windowSize = initValue(self.mainConfig, 'windowSize', None)
-		if windowSize: self.resize(windowSize)
-		# 主目录
-		self.mainDirPath = initValue(self.mainConfig, 'mainDirPath', '.')
-		self.mainDirEdit.setText(self.mainDirPath)
-		# 当前引擎
-		self.engineCode = int(initValue(self.mainConfig, 'engineCode', 0))
-		#print(self.engineCode)
-		#self.engineNameBox.currentIndexChanged.connect(self.selectEngine)
-		# 当前输出格式
-		self.outputFormat = int(initValue(self.mainConfig, 'outputFormat', 0))
-		#print(self.outputFormat)
-		self.outputFileBox.setCurrentIndex(self.outputFormat)
-		self.outputFileExtraBox.setCurrentIndex(0)
-		# 单个或多个Json模式
-		self.outputPartMode = int(initValue(self.mainConfig, 'outputPartMode', 0))
-		#print(self.outputPartMode)
-		self.outputPartBox.setCurrentIndex(self.outputPartMode)
-		# 合并目录
-		self.mergeDirPath = initValue(self.mainConfig, 'mergeDirPath', '.')
-		self.mergeDirEdit.setText(self.mergeDirPath)
-		text = initValue(self.mainConfig, 'mergeSkipReg', self.skipRegEdit.text())
-		self.skipRegEdit.setText(text)
-		# 设置匹配规则
-		self.regIndex = int(initValue(self.mainConfig, 'regIndex', 0))
-		self.regNameBox.setCurrentIndex(self.regIndex)
-		#self.regNameBox.currentIndexChanged.connect(self.selectReg)
-		# 截断
-		checked = initValue(self.mainConfig, 'cutoff', False)
-		self.cutoffCheck.setChecked(checked)
-		checked = initValue(self.mainConfig, 'cutoffCopy', True)
-		self.cutoffCopyCheck.setChecked(checked)
-		# 编码
-		index = int(initValue(self.mainConfig, 'encodeIndex', 0))
-		self.txtEncodeBox.setCurrentIndex(index)
-		# 译文
-		checked = initValue(self.mainConfig, 'splitAuto', False)
-		self.splitCheck.setChecked(checked)
-		checked = initValue(self.mainConfig, 'ignoreSameLineCount', False)
-		self.ignoreSameCheck.setChecked(checked)
-		maxCountPerLine = initValue(self.mainConfig, 'maxCountPerLine', 512)
-		self.splitMaxEdit.setText(str(maxCountPerLine))
-		# 段落分割符
-		splitParaSep = initValue(self.mainConfig, 'splitParaSep', '\\r\\n')
-		self.splitSepEdit.setText(splitParaSep)
-		# 固定长度
-		fixedMaxPerLine = initValue(self.mainConfig, 'fixedMaxPerLine', False)
-		self.fixedMaxCheck.setChecked(fixedMaxPerLine)
-		# bin纯文本模式
-		checked = initValue(self.mainConfig, 'pureText', False)
-		self.binPureTextCheck.setChecked(checked)
-		# 译文替换
-		checked = initValue(self.mainConfig, 'transReplace', True)
-		self.transReplaceCheck.setChecked(checked)
-		# 分割前替换
-		checked = initValue(self.mainConfig, 'preReplace', False)
-		self.preReplaceCheck.setChecked(checked)
-		# 段落：skip不影响ctrl（lastCtrl不会置为None）
-		checked = initValue(self.mainConfig, 'skipIgnoreCtrl', False)
-		self.skipIgnoreCtrlCheck.setChecked(checked)
-		# 段落：skip不影响unfinish（不会添加predel_unfinish）
-		checked = initValue(self.mainConfig, 'skipIgnoreUnfinish', False)
-		self.skipIgnoreUnfinishCheck.setChecked(checked)
-		# 结束
-		self.engineNameBox.setCurrentIndex(self.engineCode)
-		self.initEnd = True
-		self.selectEngine(self.engineCode)
 
 	#---------------------------------------------------------------
 	#选择主文件夹
@@ -284,29 +193,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'outputPartMode':self.outputPartBox.currentIndex(),
 			'nameList':self.nameListEdit.text(),
 			'regDic':regDic,
-			'cutoff':self.cutoffCheck.isChecked(),
-			'cutoffCopy':self.cutoffCopyCheck.isChecked(),
 			'outputFormatExtra':self.outputFileExtraBox.currentIndex() - 1,
-			'noInput':  self.noInputCheck.isChecked(),
 			'encode': self.txtEncodeBox.currentText(),
 			'print': self.getExtractPrintSetting(),
-			'splitAuto': self.splitCheck.isChecked(),
 			'splitParaSep': self.splitSepEdit.text(),
-			'ignoreSameLineCount': self.ignoreSameCheck.isChecked(),
-			'fixedMaxPerLine': self.fixedMaxCheck.isChecked(),
 			'maxCountPerLine': int(self.splitMaxEdit.text()),
-			'binEncodeValid': self.binEncodeCheck.isChecked(),
-			'pureText': self.binPureTextCheck.isChecked(),
-			'tunnelJis': self.tunnelJisCheck.isChecked(),
-			'subsJis': self.subsJisCheck.isChecked(),
-			'transReplace': self.transReplaceCheck.isChecked(),
-			'preReplace': self.preReplaceCheck.isChecked(),
-			'skipIgnoreCtrl': self.skipIgnoreCtrlCheck.isChecked(),
-			'skipIgnoreUnfinish': self.skipIgnoreUnfinishCheck.isChecked()
 		}
+		self.configManager.addCheck2Args(args)
 		var.window = self
 		#保存配置
-		self.saveConfig(args, group)
+		self.configManager.saveConfig(args, group)
 		print('---------------------------------')
 		print(args)
 		if fileType == 'txt': 
@@ -318,38 +214,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		else:
 			print('extractFile:', 'Error file type.')
 
-	def saveConfig(self, args, group):
-		self.mainConfig.setValue('mainDirPath', args['workpath'])
-		self.mainConfig.setValue('engineCode', self.engineCode)
-		self.mainConfig.setValue('outputFormat', args['outputFormat'])
-		self.mainConfig.setValue('outputPartMode', args['outputPartMode'])
-		if args['nameList'] != '':
-			self.mainConfig.setValue(group+'_nameList', args['nameList'])
-		else:
-			self.mainConfig.remove(group+'_nameList')
-		self.mainConfig.setValue('regIndex', self.regIndex)
-		self.mainConfig.setValue('cutoff', args['cutoff'])
-		self.mainConfig.setValue('cutoffCopy', args['cutoffCopy'])
-		self.mainConfig.setValue('maxCountPerLine', args['maxCountPerLine'])
-		if self.regNameTab.isEnabled():
-			regName = self.regNameBox.currentText()
-			if re.match(r'_*Custom', regName):
-				#保存自定义规则
-				textAll = self.sampleBrowser.toPlainText()
-				if not re.match(r'sample', textAll):
-					self.mainConfig.setValue('reg' + regName, textAll)
-		self.mainConfig.setValue('encodeIndex', self.txtEncodeBox.currentIndex())
-		#窗口大小
-		self.mainConfig.setValue('windowSize', self.size())
-		self.mainConfig.setValue('splitAuto', self.splitCheck.isChecked())
-		self.mainConfig.setValue('splitParaSep', args['splitParaSep'])
-		self.mainConfig.setValue('ignoreSameLineCount', self.ignoreSameCheck.isChecked())
-		self.mainConfig.setValue('fixedMaxPerLine', self.fixedMaxCheck.isChecked())
-		self.mainConfig.setValue('pureText', self.binPureTextCheck.isChecked())
-		self.mainConfig.setValue('transReplace', self.transReplaceCheck.isChecked())
-		self.mainConfig.setValue('preReplace', self.preReplaceCheck.isChecked())
-		self.mainConfig.setValue('skipIgnoreCtrl', self.skipIgnoreCtrlCheck.isChecked())
-		self.mainConfig.setValue('skipIgnoreUnfinish', self.skipIgnoreUnfinishCheck.isChecked())
+	
 		
 	#提取打印设置
 	def getExtractPrintSetting(self):

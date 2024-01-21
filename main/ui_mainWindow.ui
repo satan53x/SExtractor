@@ -803,44 +803,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QGroupBox" name="groupBox_15">
-          <property name="title">
-           <string>正则配置</string>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_14">
-           <property name="leftMargin">
-            <number>5</number>
-           </property>
-           <property name="topMargin">
-            <number>5</number>
-           </property>
-           <property name="rightMargin">
-            <number>5</number>
-           </property>
-           <property name="bottomMargin">
-            <number>5</number>
-           </property>
-           <item>
-            <widget class="QCheckBox" name="skipIgnoreCtrlCheck">
-             <property name="text">
-              <string>段落：skip不影响上一个ctrl</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="skipIgnoreUnfinishCheck">
-             <property name="text">
-              <string>段落：skip不影响上一个unfinish</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
          <widget class="QGroupBox" name="groupBox_14">
           <property name="title">
-           <string>文本处理</string>
+           <string>导入</string>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_31" stretch="5,5,10">
            <property name="leftMargin">
@@ -991,6 +956,41 @@
             <widget class="QCheckBox" name="noInputCheck">
              <property name="text">
               <string>仅提取不写入</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_15">
+          <property name="title">
+           <string>正则配置</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_14">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <item>
+            <widget class="QCheckBox" name="skipIgnoreCtrlCheck">
+             <property name="text">
+              <string>段落：skip不影响上一个ctrl</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="skipIgnoreUnfinishCheck">
+             <property name="text">
+              <string>段落：skip不影响上一个unfinish</string>
              </property>
             </widget>
            </item>
