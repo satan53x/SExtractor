@@ -281,19 +281,3 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 	#收集
 	def collectFiles(self):
 		self.statusBar.showMessage('暂不支持此功能')
-
-#---------------------------------------------------------------
-#设置初始值
-def initValue(setting, name, v):
-	if setting.value(name) == None:
-		if v != None:
-			setting.setValue(name, v)
-			print('New Config', name, v)
-	else:
-		v = setting.value(name)
-		#print('Load Config', name, v)
-		if v == 'false':
-			v = False
-		elif v == 'true':
-			v = True
-	return v
