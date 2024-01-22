@@ -201,8 +201,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		}
 		self.configManager.addCheck2Args(args)
 		var.window = self
-		#保存配置
-		self.configManager.saveConfig(args, group)
 		print('---------------------------------')
 		print(args)
 		if fileType == 'txt': 
@@ -213,7 +211,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			mainExtractJson(args)
 		else:
 			print('extractFile:', 'Error file type.')
-
+		#保存配置
+		self.configManager.saveConfig(args, group)
 	
 		
 	#提取打印设置
