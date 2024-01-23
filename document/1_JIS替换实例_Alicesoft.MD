@@ -80,13 +80,13 @@ structure=paragraph
 示例正则并不严谨，只是大概方向，跟游戏自身的文本结构有关，请自行修改。（导出jam才能有充足的信息）
 ## 导入
 * 最后用文本编辑器批量把s或m前的;去掉，才能使文本修改有效。
-* 导入时选择`生成UniversalInjector的JIS替换配置`，会额外生成一个uif_config。
+* SE导入时选择`生成UniversalInjector的JIS替换配置`，会额外生成一个uif_config，用于UIF进行还原方法1。
 
 ## JIS替换
 > * 原理：通过字典，将json译文中的简体中文替换为合法的日文汉字导入txt（但并不是标准的日繁对应关系），最后通过`UIF`的hook或者ttf/otf字体还原简体。
 > * 还原方法1：UIF的`character_substitution`模块hook系统函数。（示例游戏不生效）
 > * 还原方法2：使用JIS替换字典对应的ttf字体，通过UIF的`font_manager`模块加载。
-> * 还原方法3：直接安装ttf字体。
+> * 还原方法3：不需要UIF，直接安装ttf字体。
 
 # 使用JIS替换字体
 `tools/font`文件夹下`_msgothic`字体名是`ＭＳ ゴシック`，`_CNJP`是原本字体名。示例使用SimHei黑体，所以需要修改程序的字体名。
