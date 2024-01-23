@@ -1,11 +1,11 @@
 # ------------------------------------------------------------
 # https://github.com/satan53x/SExtractor/tree/main/tools/AST
-# 依赖模块：pip install pylzss
+# 依赖模块：pip install pylzss==0.3.4
 # ------------------------------------------------------------
 import sys
 import os
 from tkinter import filedialog
-import lzss # 模块 pylzss
+import lzss # 模块 pylzss 不要超过0.3.4
 DefaultPath = ''
 Postfix = ''
 Version = 2 #版本号
@@ -46,7 +46,9 @@ def pack():
 		indexSection.append(bs)
 		indexLen += len(bs)
 		#附加文件
-		data = xorBytes(data, b'\xFF') #加密
+		IfCompress = filename.endswith('.adv') #剧本
+		if IfCompress or data[0:4] == b'\x89\x50\x4E\x47': #图片
+			data = xorBytes(data, b'\xFF') #加密
 		if IfCompress:
 			data = lzss.compress(bytes(data)) #压缩
 		fileSection.append(data)
@@ -86,6 +88,15 @@ def write():
 	fileNew.close()
 	print(f'Write done: {name}')
 
+def listFiles(start_path):
+	file_list = []
+	for root, dirs, files in os.walk(start_path):
+		for file in files:
+			# 获取相对路径
+			relative_path = os.path.relpath(os.path.join(root, file), start_path)
+			file_list.append(relative_path)
+	return file_list 
+
 def main():
 	path = DefaultPath
 	if len(sys.argv) < 2:
@@ -98,7 +109,8 @@ def main():
 	if os.path.isdir(path):
 		dirpath = path
 		#print(dirpath)
-		for name in os.listdir(dirpath):
+		files = listFiles(path)
+		for name in files:
 			#print(name)
 			filename = name.replace(Postfix, '')
 			filepath = os.path.join(dirpath, filename+Postfix)
