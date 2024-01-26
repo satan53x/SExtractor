@@ -45,7 +45,7 @@
      <number>2</number>
     </property>
     <item>
-     <widget class="QTabWidget" name="tabWidget">
+     <widget class="QTabWidget" name="mainTab">
       <property name="currentIndex">
        <number>0</number>
       </property>

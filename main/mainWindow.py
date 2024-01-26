@@ -16,14 +16,16 @@ from main.thread import extractThread
 from main.configManager import ConfigManager
 
 class MainWindow(QMainWindow, Ui_MainWindow):
-	def __init__(self, parent=None):
+	def __init__(self, parent=None, version='1.0.0'):
 		super(MainWindow, self).__init__(parent)
+		self.version = version
 		self.setupUi(self)
 		self.initEnd = False
 		# 设置图标
 		icon = QIcon("main/main.ico")
 		self.setWindowIcon(icon)
 		ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("myappid")
+		self.mainTab.currentChanged.connect(self.changeTab)
 		#提取
 		self.mainDirButton.clicked.connect(self.chooseMainDir)
 		self.extractButton.clicked.connect(self.extractFile)
@@ -40,6 +42,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		#配置
 		self.configManager = ConfigManager(self)
 		self.configManager.showSeq()
+
+	def changeTab(self, index):
+		if index == 3: #readme
+			self.statusBar.showMessage(f'版本号：Ver{self.version}')
 
 	#初始化
 	def beforeShow(self):
