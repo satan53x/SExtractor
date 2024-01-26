@@ -26,7 +26,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("myappid")
 		#提取
 		self.mainDirButton.clicked.connect(self.chooseMainDir)
-		self.extractButton.clicked.connect(self.extractFileThread)
+		self.extractButton.clicked.connect(self.extractFile)
 		self.engineNameBox.currentIndexChanged.connect(self.selectEngine)
 		#self.outputFileBox.currentIndexChanged.connect(self.selectFormat)
 		#self.outputPartBox.currentIndexChanged.connect(self.selectOutputPart)
@@ -178,6 +178,29 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.sampleBrowser.setText(textPart0 + textPart1 + textPart2)
 
 	#提取
+	def extractFileThread(self):
+		args = self.args
+		print('---------------------------------')
+		print(args)
+		if args['file'] == 'txt': 
+			mainExtractTxt(args)
+		elif args['file'] == 'bin':
+			mainExtractBin(args)
+		elif args['file'] == 'json':
+			mainExtractJson(args)
+		else:
+			print('extractFile:', 'Error file type.')
+		
+	#提取打印设置
+	def getExtractPrintSetting(self):
+		lst = []
+		lst.append(self.printCheck0.isChecked()) #info
+		lst.append(self.printCheck1.isChecked()) #info
+		lst.append(self.printCheck2.isChecked()) #warningGreen
+		lst.append(self.printCheck3.isChecked()) #warning
+		lst.append(self.printCheck4.isChecked()) #error
+		return lst
+
 	def extractFile(self):
 		engineName = self.engineNameBox.currentText()
 		group = "Engine_" + engineName
@@ -201,35 +224,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		}
 		self.configManager.addCheck2Args(args)
 		var.window = self
-		print('---------------------------------')
-		print(args)
-		if fileType == 'txt': 
-			mainExtractTxt(args)
-		elif fileType == 'bin':
-			mainExtractBin(args)
-		elif fileType == 'json':
-			mainExtractJson(args)
-		else:
-			print('extractFile:', 'Error file type.')
-		#保存配置
-		self.configManager.saveConfig(args, group)
-	
-		
-	#提取打印设置
-	def getExtractPrintSetting(self):
-		lst = []
-		lst.append(self.printCheck0.isChecked()) #info
-		lst.append(self.printCheck1.isChecked()) #info
-		lst.append(self.printCheck2.isChecked()) #warningGreen
-		lst.append(self.printCheck3.isChecked()) #warning
-		lst.append(self.printCheck4.isChecked()) #error
-		return lst
-
-	def extractFileThread(self):
+		self.args = args
+		#运行子线程
 		self.thread = extractThread()
 		self.thread.window = self
 		self.thread.finished.connect(self.handleThreadFinished)
 		self.thread.start()
+		#保存配置
+		self.configManager.saveConfig(args, group)
+		
 
 	def handleThreadFinished(self, ret):
 		if ret == 1:
