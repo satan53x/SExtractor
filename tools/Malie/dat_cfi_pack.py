@@ -2,14 +2,18 @@
 # https://github.com/satan53x/SExtractor/tree/main/tools/Malie
 # 依赖模块 tqdm
 # ------------------------------------------------------------
+import base64
 import sys
 import os
 from tkinter import filedialog
 from tqdm import tqdm
-DefaultPath = ''
+from encoder_cfi import EncryptCfi, getDatabaseCfi
+
 PackName = 'new.dat'
-GameType = 30 #见脚本末尾
+GameType = 'Silverio Trinity'
 IfEncrypt = True
+#ExpectHeader = None
+ExpectHeader = bytes.fromhex('22 15 D1 8C') #ExpectHeader为原包开头4字节，不为空时会自动匹配配置
 
 # ------------------------------------------------------------
 #var
@@ -17,22 +21,15 @@ dirpath = ''
 filenameList = [] 
 content = []
 
+DefaultPath = ''
 BlockLen = 0x10
+Signature = 'LIBP'.encode('cp932')
 
 config = None
 indexSection = []
 offsetSection = []
 fileSection = []
 indexSeq = 0
-
-def test():
-	filepath = os.path.join(dirpath, 'tmp.dat')
-	fileOld = open(filepath, 'rb')
-	data = fileOld.read()
-	fileOld.close()
-	data = encrypt(bytearray(data), 0)
-	global content
-	content = [data]
 
 # ------------------------------------------------------------
 def pack():
@@ -47,7 +44,7 @@ def pack():
 	#写入
 	#head
 	output = bytearray(0x10)
-	output[0:4] = 'LIBP'.encode('cp932')
+	output[0:4] = Signature
 	output[4:8] = len(indexSection).to_bytes(4, byteorder='little')
 	output[8:12] = len(offsetSection).to_bytes(4, byteorder='little')
 	#index
@@ -120,10 +117,12 @@ def fillingAlign(output):
 	bs = bytes([0x00] * (size - remain))
 	output.extend(bs)
 
-def encrypt(data, offset=0):
-	enc = EncryptCfi()
+def encrypt(data, offset=0, printed=True):
+	enc = EncryptCfi(config)
 	r = range(len(data) // BlockLen)
-	for line in tqdm(r, desc="Processing", unit="line"):
+	if printed:
+		r = tqdm(r, desc="Processing", unit="line")
+	for line in r:
 		start = line * BlockLen
 		end = start + BlockLen
 		block = enc.encryptBlock(data[start:end], offset)
@@ -164,43 +163,6 @@ class File():
 		offsetSection.append(self.offset)
 
 # ------------------------------------------------------------
-class EncryptCfi():
-	def encryptBlock(self, block, offset):
-		#位移
-		data32 = [0,0,0,0]
-		for i in range(4):
-			data32[i] = int.from_bytes(block[i*4:(i+1)*4], byteorder='little')
-		offset >>= 4
-		self.rotateEnc(data32, offset, config['RotateKey'], config['Key'])
-		for i in range(4):
-			block[i*4:(i+1)*4] = data32[i].to_bytes(4, byteorder='little')
-		#异或
-		first = block[0]
-		for i in range(1, BlockLen):
-			block[i] ^= first
-		return block
-
-	def rotateEnc(self, data32, offset, rotateKey, key):
-		k = rotateRight(rotateKey[0], key[offset & 0x1F] ^ 0xA5)
-		data32[0] = rotateLeft(data32[0], key[(offset + 12) & 0x1F] ^ 0xA5) ^ k
-		k = rotateLeft(rotateKey[1], key[(offset + 3) & 0x1F] ^ 0xA5)
-		data32[1] = rotateRight(data32[1], key[(offset + 15) & 0x1F] ^ 0xA5) ^ k
-		k = rotateRight(rotateKey[2], key[(offset + 6) & 0x1F] ^ 0xA5)
-		data32[2] = rotateLeft(data32[2], key[(offset - 14) & 0x1F] ^ 0xA5) ^ k
-		k = rotateLeft(rotateKey[3], key[(offset + 9) & 0x1F] ^ 0xA5)
-		data32[3] = rotateRight(data32[3], key[(offset - 11) & 0x1F] ^ 0xA5) ^ k
-
-BitLen = 32
-ValueMask = (1 << BitLen) - 1
-def rotateRight(value, shift):
-	value = (value >> shift) | (value << (BitLen - shift)) 
-	return value & ValueMask
-
-def rotateLeft(value, shift):
-	value = (value << shift) | (value >> (BitLen - shift)) 
-	return value & ValueMask
-
-# ------------------------------------------------------------
 def write():
 	path = os.path.join(dirpath, '..')
 	if not os.path.exists(path):
@@ -227,8 +189,8 @@ def main():
 		path = filedialog.askdirectory(initialdir=path)
 	else:
 		path = sys.argv[1]
-	global dirpath, config
-	config = GameConfig[GameType]
+	global dirpath
+	initConfig()
 	if os.path.isdir(path):
 		dirpath = path
 		files = listFiles(path)
@@ -236,12 +198,29 @@ def main():
 		pack()
 
 # ------------------------------------------------------------
-GameConfig = { # From Garbro
-	30 : {
-		'DataAlign' : 0x400,
-		'Key' : bytes.fromhex('a4 a7 a6 a1 a0 a3 a2 ac af ae a9 a8 ab aa b4 b7 b6 b1 b0 b3 b2 bc bf be b9 b8 bb ba a1 a9 b1 b9'),
-		'RotateKey' : [0x79404664, 0x772d7635, 0x346b7230, 0x6e7e7935],
-	}
-}
+def initConfig():
+	global config
+	database = getDatabaseCfi()
+	if ExpectHeader:
+		print('Try to find expect...')
+		for i, c in database.items():
+			bs = bytearray(BlockLen)
+			bs[0:4] = Signature
+			config = c
+			bs = encrypt(bs, 0, False)
+			if bs[0:4] == ExpectHeader:
+				print('Find expect config:', i)
+				return
+		print('Cannot find expect config.')
+	config = database[GameType]
+
+def test():
+	filepath = os.path.join(dirpath, 'tmp.dat')
+	fileOld = open(filepath, 'rb')
+	data = fileOld.read()
+	fileOld.close()
+	data = encrypt(bytearray(data), 0)
+	global content
+	content = [data]
 
 main()
