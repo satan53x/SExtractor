@@ -14,12 +14,13 @@ class extractThread(QThread):
 		start = time.perf_counter()
 		ret = 0
 		try:
-			self.window.extractFile()
+			self.window.extractFileThread()
 		except Exception as ex:
 			print('\033[31m---------------------------提取或导入时发生错误---------------------------\033[0m')
 			traceback.print_exc()
 			print('\033[31m--------------------------------------------------------------------------\033[0m')
 			ret = 1
+			#raise
 		end = time.perf_counter()
 		interval = (end - start) * 1000 // 1 / 1000
 		print(f"运行时间：{interval} 秒")
