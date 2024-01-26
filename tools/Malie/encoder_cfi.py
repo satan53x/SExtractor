@@ -5,12 +5,13 @@
 import base64
 import json
 import os
+from tqdm import tqdm
 
 BlockLen = 0x10
 # ------------------------------------------------------------
 def getDatabaseCfi():
 	dirpath = os.path.dirname(os.path.realpath(__file__))
-	file = open(os.path.join(dirpath, 'database.json'), 'r') 
+	file = open(os.path.join(dirpath, 'database_malie.json'), 'r') 
 	data = json.load(file)
 	file.close()
 	db = {}
@@ -22,9 +23,20 @@ def getDatabaseCfi():
 	return db
 
 # ------------------------------------------------------------
-class EncryptCfi():
+class EncoderCfi():
 	def __init__(self, config) -> None:
 		self.config = config
+
+	def encryptAll(self, data, offset=0, printed=True):
+		r = range(len(data) // BlockLen) #因为会填充对齐，所以必定是整数倍
+		if printed:
+			r = tqdm(r, desc="Processing", unit="line")
+		for line in r:
+			start = line * BlockLen
+			end = start + BlockLen
+			block = self.encryptBlock(data[start:end], offset)
+			data[start:end] = block
+			offset += BlockLen
 
 	def encryptBlock(self, block, offset):
 		#位移

@@ -2,18 +2,16 @@
 # https://github.com/satan53x/SExtractor/tree/main/tools/Malie
 # 依赖模块 tqdm
 # ------------------------------------------------------------
-import base64
 import sys
 import os
 from tkinter import filedialog
-from tqdm import tqdm
-from encoder_cfi import EncryptCfi, getDatabaseCfi
+from encoder_cfi import EncoderCfi, getDatabaseCfi
 
 PackName = 'new.dat'
-GameType = 'Silverio Trinity'
-IfEncrypt = True
 #ExpectHeader = None
-ExpectHeader = bytes.fromhex('22 15 D1 8C') #ExpectHeader为原包开头4字节，不为空时会自动匹配配置
+ExpectHeader = bytes.fromhex('22 15 D1 8C') #在此处填写原包开头4字节，不为空时会自动匹配配置
+GameType = 'Silverio Trinity' #仅在ExpectHeader无效时使用
+IfEncrypt = True
 
 # ------------------------------------------------------------
 #var
@@ -118,17 +116,10 @@ def fillingAlign(output):
 	output.extend(bs)
 
 def encrypt(data, offset=0, printed=True):
-	enc = EncryptCfi(config)
-	r = range(len(data) // BlockLen)
-	if printed:
-		r = tqdm(r, desc="Processing", unit="line")
-	for line in r:
-		start = line * BlockLen
-		end = start + BlockLen
-		block = enc.encryptBlock(data[start:end], offset)
-		data[start:end] = block
-		offset += BlockLen
+	enc = EncoderCfi(config)
+	enc.encryptAll(data, offset, printed)
 	return data
+
 # ------------------------------------------------------------
 class Index():
 	def __init__(self, name, indexSeq) -> None:
