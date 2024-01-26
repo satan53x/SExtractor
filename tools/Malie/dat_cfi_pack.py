@@ -8,8 +8,7 @@ from tkinter import filedialog
 from tqdm import tqdm
 DefaultPath = ''
 PackName = 'new.dat'
-BlockLen = 0x10
-GameType = 30
+GameType = 30 #见脚本末尾
 IfEncrypt = True
 
 # ------------------------------------------------------------
@@ -17,6 +16,8 @@ IfEncrypt = True
 dirpath = ''
 filenameList = [] 
 content = []
+
+BlockLen = 0x10
 
 config = None
 indexSection = []
@@ -189,13 +190,15 @@ class EncryptCfi():
 		k = rotateLeft(rotateKey[3], key[(offset + 9) & 0x1F] ^ 0xA5)
 		data32[3] = rotateRight(data32[3], key[(offset - 11) & 0x1F] ^ 0xA5) ^ k
 
-def rotateRight(value, shift, bitLen=32):
-	value = (value >> shift) | (value << (bitLen - shift)) 
-	return value & ((1 << bitLen) - 1)
+BitLen = 32
+ValueMask = (1 << BitLen) - 1
+def rotateRight(value, shift):
+	value = (value >> shift) | (value << (BitLen - shift)) 
+	return value & ValueMask
 
-def rotateLeft(value, shift, bitLen=32):
-	value = (value << shift) | (value >> (bitLen - shift)) 
-	return value & ((1 << bitLen) - 1)
+def rotateLeft(value, shift):
+	value = (value << shift) | (value >> (BitLen - shift)) 
+	return value & ValueMask
 
 # ------------------------------------------------------------
 def write():
