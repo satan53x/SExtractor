@@ -1928,4 +1928,14 @@ database_malie = {
     ],
     "Align": 0x400
   },
+  "Dies irae Interview with Kaziklu Bey [ENG]": {
+    "Key": "pKemoaCjoqyvrqmoq6q0t7axsLOyvL++ubi7uqGpsbk=",
+    "RotateKey": [
+      0x3C787768,
+      0x466E2D69,
+      0x35726440,
+      0x612B6743
+    ],
+    "Align": 0x400
+  },
 }
