@@ -111,7 +111,7 @@ def traverse(path, index):
 	return 
 
 def fillingAlign(output):
-	size = config['DataAlign']
+	size = config['Align']
 	remain = len(output) - len(output) // size * size 
 	if remain == 0: return
 	#填充
