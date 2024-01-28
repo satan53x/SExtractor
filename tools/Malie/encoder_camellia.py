@@ -2,20 +2,15 @@
 # https://github.com/satan53x/SExtractor/tree/main/tools/Malie
 # database.json generated from Garbro
 # ------------------------------------------------------------
-import json
-import os
 import struct
 from tqdm import tqdm
+from database_malie import database_malie
 
 BlockLen = 0x10
 # ------------------------------------------------------------
 def getDatabaseCameliia():
-	dirpath = os.path.dirname(os.path.realpath(__file__))
-	file = open(os.path.join(dirpath, 'database_malie.json'), 'r') 
-	data = json.load(file)
-	file.close()
 	db = {}
-	for name, item in data.items():
+	for name, item in database_malie.items():
 		if 'RotateKey' in item: continue
 		db[name] = item
 		#item['Align'] = 0x1000

@@ -1,4 +1,5 @@
-{
+database_malie = {
+	# ---------------- https://github.com/morkt/GARbro ----------------
   "Aki Uso -The only neat thing to do-": {
     "Key": [
       1041479107,
@@ -1895,5 +1896,36 @@
       1130521699
     ],
     "Align": 1024
-  }
+  },
+  # ---------------- https://github.com/Dir-A/MalieTools ----------------
+  "Silverio Ragnarok": {
+    "Key": "pKemoaCjoqyvrqmoq6q0t7axsLOyvL++ubi7uqGpsbk=",
+    "RotateKey": [
+      0x70752D37,
+      0x4A526B58,
+      0x7841457A,
+      0x67416155
+    ],
+    "Align": 0x100
+  },
+  "Silverio Vendetta -Verse of Orpheus-": {
+    "Key": "pKemoaCjoqyvrqmoq6q0t7axsLOyvL++ubi7uqGpsbk=",
+    "RotateKey": [
+      0x62466D43,
+      0x2B347A65,
+      0x74456279,
+      0x6D467A6F
+    ],
+    "Align": 0x100
+  },
+  "Silverio Trinity -Beyond the Horizon-": {
+    "Key": "pKemoaCjoqyvrqmoq6q0t7axsLOyvL++ubi7uqGpsbk=",
+    "RotateKey": [
+      0x372D3668,
+      0x336B6234,
+      0x6635662B,
+      0x78723869
+    ],
+    "Align": 0x100
+  },
 }

@@ -3,19 +3,14 @@
 # database.json generated from Garbro
 # ------------------------------------------------------------
 import base64
-import json
-import os
 from tqdm import tqdm
+from database_malie import database_malie
 
 BlockLen = 0x10
 # ------------------------------------------------------------
 def getDatabaseCfi():
-	dirpath = os.path.dirname(os.path.realpath(__file__))
-	file = open(os.path.join(dirpath, 'database_malie.json'), 'r') 
-	data = json.load(file)
-	file.close()
 	db = {}
-	for name, item in data.items():
+	for name, item in database_malie.items():
 		if 'RotateKey' not in item: continue
 		db[name] = item
 		item['Key'] = base64.b64decode(item['Key'])
