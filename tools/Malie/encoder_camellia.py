@@ -2,7 +2,6 @@
 # https://github.com/satan53x/SExtractor/tree/main/tools/Malie
 # database.json generated from Garbro
 # ------------------------------------------------------------
-import base64
 import json
 import os
 import struct

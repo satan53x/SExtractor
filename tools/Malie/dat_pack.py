@@ -2,7 +2,6 @@
 # https://github.com/satan53x/SExtractor/tree/main/tools/Malie
 # 依赖模块 tqdm
 # ------------------------------------------------------------
-import json
 import sys
 import os
 from tkinter import filedialog
