@@ -10,7 +10,7 @@ from encoder_camellia import EncoderCamellia, getDatabaseCameliia
 
 PackName = 'new.dat'
 #ExpectHeader = None
-ExpectHeader = bytes.fromhex('99 37 D0 EC C5 D1 57 B6') #在此处填写原包开头第0x10~0x17字节，不为空时会自动匹配配置
+ExpectHeader = bytes.fromhex('AC BF 54 63 AA 01 6E 32') #在此处填写原包开头第0x10~0x17字节，不为空时会自动匹配配置
 GameType = '' #仅在ExpectHeader无效时使用
 IfEncrypt = True
 CheckPlain = [0] * 0x10 #需要检查的明文
@@ -142,7 +142,7 @@ class Offset():
 		self.addr = 0 #在包里的地址
 	
 	def set(self, fileAddr, output):
-		i = fileAddr // config['DataAlign']
+		i = fileAddr // 0x400 #固定
 		output[self.addr:self.addr+4] = i.to_bytes(4, byteorder='little')
 
 class File():

@@ -18,7 +18,7 @@ def getDatabaseCameliia():
 	for name, item in data.items():
 		if 'RotateKey' in item: continue
 		db[name] = item
-		item['DataAlign'] = 0x400
+		item['DataAlign'] = 0x1000
 		item['Encoder'] = EncoderCamellia
 	return db
 
