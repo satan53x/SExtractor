@@ -1906,7 +1906,7 @@ database_malie = {
       0x7841457A,
       0x67416155
     ],
-    "Align": 0x100
+    "Align": 0x400
   },
   "Silverio Vendetta -Verse of Orpheus-": {
     "Key": "pKemoaCjoqyvrqmoq6q0t7axsLOyvL++ubi7uqGpsbk=",
@@ -1916,7 +1916,7 @@ database_malie = {
       0x74456279,
       0x6D467A6F
     ],
-    "Align": 0x100
+    "Align": 0x400
   },
   "Silverio Trinity -Beyond the Horizon-": {
     "Key": "pKemoaCjoqyvrqmoq6q0t7axsLOyvL++ubi7uqGpsbk=",
@@ -1926,6 +1926,6 @@ database_malie = {
       0x6635662B,
       0x78723869
     ],
-    "Align": 0x100
+    "Align": 0x400
   },
 }
