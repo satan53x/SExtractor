@@ -221,8 +221,10 @@ def initConfig():
 	config = None
 	if GameType in databaseCfi:
 		config = databaseCfi[GameType]
+		print('Find config by GameType:', GameType)
 	elif GameType in databaseCamellia:
 		config = databaseCamellia[GameType]
+		print('Find config by GameType:', GameType)
 	else:
 		print('Cannot find expect GameType.')
 
