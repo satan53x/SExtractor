@@ -20,6 +20,7 @@ def getDatabaseCfi():
 		db[name] = item
 		item['Key'] = base64.b64decode(item['Key'])
 		item['DataAlign'] = 0x400
+		item['Encoder'] = EncoderCfi
 	return db
 
 # ------------------------------------------------------------

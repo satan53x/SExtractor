@@ -2,15 +2,17 @@
 # https://github.com/satan53x/SExtractor/tree/main/tools/Malie
 # 依赖模块 tqdm
 # ------------------------------------------------------------
+import json
 import sys
 import os
 from tkinter import filedialog
 from encoder_cfi import EncoderCfi, getDatabaseCfi
+from encoder_camellia import EncoderCamellia, getDatabaseCameliia
 
 PackName = 'new.dat'
 #ExpectHeader = None
-ExpectHeader = bytes.fromhex('22 15 D1 8C') #在此处填写原包开头4字节，不为空时会自动匹配配置
-GameType = 'Silverio Trinity' #仅在ExpectHeader无效时使用
+ExpectHeader = bytes.fromhex('99 37 D0 EC C5 D1 57 B6') #在此处填写原包开头第0x10~0x18字节，不为空时会自动匹配配置
+GameType = '' #仅在ExpectHeader无效时使用
 IfEncrypt = True
 
 # ------------------------------------------------------------
@@ -22,6 +24,8 @@ content = []
 DefaultPath = ''
 BlockLen = 0x10
 Signature = 'LIBP'.encode('cp932')
+CheckPlain = [0]*0x10
+CheckOffset = 0x10
 
 config = None
 indexSection = []
@@ -116,7 +120,7 @@ def fillingAlign(output):
 	output.extend(bs)
 
 def encrypt(data, offset=0, printed=True):
-	enc = EncoderCfi(config)
+	enc = config['Encoder'](config)
 	enc.encryptAll(data, offset, printed)
 	return data
 
@@ -181,8 +185,9 @@ def main():
 	else:
 		path = sys.argv[1]
 	global dirpath
-	initConfig()
 	if os.path.isdir(path):
+		initConfig()
+		if not config: return
 		dirpath = path
 		files = listFiles(path)
 		filenameList.extend(files)
@@ -191,19 +196,36 @@ def main():
 # ------------------------------------------------------------
 def initConfig():
 	global config
-	database = getDatabaseCfi()
+	databaseCfi = getDatabaseCfi()
+	databaseCamellia = getDatabaseCameliia()
 	if ExpectHeader:
 		print('Try to find expect...')
-		for i, c in database.items():
+		#查找cfi加密
+		for i, c in databaseCfi.items():
 			bs = bytearray(BlockLen)
-			bs[0:4] = Signature
+			bs[0:16] = CheckPlain
 			config = c
-			bs = encrypt(bs, 0, False)
-			if bs[0:4] == ExpectHeader:
+			bs = encrypt(bs, CheckOffset, False)
+			if bs[0:8] == ExpectHeader:
 				print('Find expect config:', i)
 				return
-		print('Cannot find expect config.')
-	config = database[GameType]
+		#查找camellia加密
+		for i, c in databaseCamellia.items():
+			bs = bytearray(BlockLen)
+			bs[0:16] = CheckPlain
+			config = c
+			bs = encrypt(bs, CheckOffset, False)
+			if bs[0:8] == ExpectHeader:
+				print('Find expect config:', i)
+				return
+		print('Cannot find expect ExpectHeader.')
+	config = None
+	if GameType in databaseCfi:
+		config = databaseCfi[GameType]
+	elif GameType in databaseCamellia:
+		config = databaseCamellia[GameType]
+	else:
+		print('Cannot find expect GameType.')
 
 def test():
 	filepath = os.path.join(dirpath, 'tmp.dat')
