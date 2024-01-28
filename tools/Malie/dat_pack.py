@@ -13,6 +13,8 @@ PackName = 'new.dat'
 ExpectHeader = bytes.fromhex('99 37 D0 EC C5 D1 57 B6') #在此处填写原包开头第0x10~0x18字节，不为空时会自动匹配配置
 GameType = '' #仅在ExpectHeader无效时使用
 IfEncrypt = True
+CheckPlain = [0] * 0x10 #需要检查的明文
+CheckOffset = 0x10 #需要检查的明文长度
 
 # ------------------------------------------------------------
 #var
@@ -23,8 +25,6 @@ content = []
 DefaultPath = ''
 BlockLen = 0x10
 Signature = 'LIBP'.encode('cp932')
-CheckPlain = [0]*0x10
-CheckOffset = 0x10
 
 config = None
 indexSection = []
