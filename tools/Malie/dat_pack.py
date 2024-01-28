@@ -10,7 +10,7 @@ from encoder_camellia import EncoderCamellia, getDatabaseCameliia
 
 PackName = 'new.dat'
 #ExpectHeader = None
-ExpectHeader = bytes.fromhex('99 37 D0 EC C5 D1 57 B6') #在此处填写原包开头第0x10~0x18字节，不为空时会自动匹配配置
+ExpectHeader = bytes.fromhex('99 37 D0 EC C5 D1 57 B6') #在此处填写原包开头第0x10~0x17字节，不为空时会自动匹配配置
 GameType = '' #仅在ExpectHeader无效时使用
 IfEncrypt = True
 CheckPlain = [0] * 0x10 #需要检查的明文
@@ -205,7 +205,7 @@ def initConfig():
 			bs[0:16] = CheckPlain
 			config = c
 			bs = encrypt(bs, CheckOffset, False)
-			if bs[0:8] == ExpectHeader:
+			if bs[0:len(ExpectHeader)] == ExpectHeader:
 				print('Find expect config:', i)
 				return
 		#查找camellia加密
@@ -214,7 +214,7 @@ def initConfig():
 			bs[0:16] = CheckPlain
 			config = c
 			bs = encrypt(bs, CheckOffset, False)
-			if bs[0:8] == ExpectHeader:
+			if bs[0:len(ExpectHeader)] == ExpectHeader:
 				print('Find expect config:', i)
 				return
 		print('Cannot find expect ExpectHeader.')
