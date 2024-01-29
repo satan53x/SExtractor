@@ -70,7 +70,7 @@ def replaceEndImp(content):
 	
 # -----------------------------------
 Signature = b'[SCR-MESSAGE]'
-def readFileDataImp(fileOld, contentSeprate):
+def readFileDataImp(fileOld, contentSeparate):
 	initExtra()
 	#读取
 	data = fileOld.read()

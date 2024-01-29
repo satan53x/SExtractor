@@ -5,7 +5,7 @@ from extract_TXT import ParseVar, searchLine, initParseVar
 from extract_TXT import replaceOnceImp as replaceOnceImpTXT
 from helper_text import getBytes, OldEncodeName
 
-seprate = ''
+separate = ''
 validCols = []
 nameCols = []
 writeOffset = 0
@@ -40,7 +40,7 @@ def parseText(content, var:ParseVar):
 		#按列处理
 		start = 0
 		col = 0
-		ret = re.finditer(seprate, content[contentIndex])
+		ret = re.finditer(separate, content[contentIndex])
 		for r in ret:
 			end = r.start()
 			if start < end and col in validCols:
@@ -98,16 +98,16 @@ def replaceEndImp(content):
 import csv
 def init(fileOld):
 	global writeOffset
-	global seprate
-	seprate = ExVar.contentSeprate
+	global separate
+	separate = ExVar.contentSeparate
 	writeOffset = int(ExVar.writeOffset)
 	if ExVar.structure == 'nohead':
-		content = pd.read_csv(fileOld, header=None, sep=seprate, quoting=csv.QUOTE_MINIMAL)
+		content = pd.read_csv(fileOld, header=None, sep=separate, quoting=csv.QUOTE_MINIMAL)
 		contentNames = None
 		row = content.iloc[0]
 		colMax = len(row)
 	else:
-		content = pd.read_csv(fileOld, sep=seprate, quoting=csv.QUOTE_MINIMAL)
+		content = pd.read_csv(fileOld, sep=separate, quoting=csv.QUOTE_MINIMAL)
 		contentNames = content.columns.tolist()
 		colMax = len(contentNames)
 	setValid(contentNames, colMax)
@@ -115,13 +115,13 @@ def init(fileOld):
 
 def initText(content):
 	#分隔符
-	global seprate
-	seprate = f'[{ExVar.contentSeprate}\\n]'
+	global separate
+	separate = f'[{ExVar.contentSeparate}\\n]'
 	if ExVar.structure == 'nohead':
 		contentNames = None
 	else:
 		head = content[0].lstrip('#')
-		contentNames = re.split(seprate, head)
+		contentNames = re.split(separate, head)
 	setValid(contentNames)
 
 def setValid(contentNames, colMax=9999):
@@ -147,7 +147,7 @@ def setValid(contentNames, colMax=9999):
 			if re.search(valid, name):
 				validCols.append(col)
 
-def readFileDataImp(fileOld, contentSeprate):
+def readFileDataImp(fileOld, contentSeparate):
 	if ExVar.pureText:
 		#TXT模式
 		content = fileOld.readlines()

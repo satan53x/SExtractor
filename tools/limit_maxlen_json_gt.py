@@ -10,7 +10,7 @@ DefaultPath = ''
 EncodeName = 'utf-8'
 Postfix = '.json'
 MaxLen = 26
-Seprate = '\n'
+Separate = '\n'
 
 # ------------------------------------------------------------
 #var
@@ -39,7 +39,7 @@ def replace():
 	allJson = json.load(fileOld)
 	for item in allJson:
 		if 'message' not in item: continue
-		text = limitMaxLen(item['message'], MaxLen, Seprate)
+		text = limitMaxLen(item['message'], MaxLen, Separate)
 		item['message'] = text
 	write()
 	fileOld.close()

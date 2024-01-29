@@ -442,7 +442,7 @@ def chooseEngine(args):
 		showMessage("该引擎暂不支持此输出格式。(额外)")
 		return 2
 	#分割符
-	var.contentSeprate = settings.value('contentSeprate')
+	var.contentSeparate = settings.value('contentSeparate')
 	#导入模块
 	#print(var.EncodeName, var.Postfix, engineName)
 	module = import_module('extract_' + engineName)
@@ -475,8 +475,8 @@ def setRegDic(str):
 			continue
 		pair = line.split('=', 1)
 		# 控制
-		if pair[0] == 'seprate':
-			var.contentSeprate = pair[1]
+		if pair[0] == 'separate':
+			var.contentSeparate = pair[1]
 			continue
 		elif pair[0] == 'startline':
 			var.startline = int(pair[1])

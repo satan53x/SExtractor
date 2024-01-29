@@ -41,7 +41,7 @@ class ExtractVar():
 	#-------------------
 	Postfix = '.txt'
 	EncodeRead = 'utf-8'
-	contentSeprate = None
+	contentSeparate = None
 	fileType = '' #引擎类型
 	nameList = []
 	regDic = {}
@@ -51,7 +51,7 @@ class ExtractVar():
 	indent = 2 #缩进
 	#-------------------
 	symbolPattern = '[\\u3000-\\u303F\\uFF00-\\uFF65\\u2000-\\u206F]' #重新分割匹配字符
-	addSeprate = True
+	addSeparate = True
 	printSetting = None
 	splitAuto = False
 	splitParaSep = '\r\n' #段落分割符

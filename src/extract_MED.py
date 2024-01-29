@@ -49,7 +49,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 	return replaceOnceImpBIN(content, lCtrl, lTrans)
 	
 # -----------------------------------
-def readFileDataImp(fileOld, contentSeprate):
+def readFileDataImp(fileOld, contentSeparate):
 	data = fileOld.read()
 	skip = int.from_bytes(data[4:8], byteorder='little') + int.from_bytes(data[10:12], byteorder='little')*2 + 0x10
 	#print('skip start', skip)
@@ -59,6 +59,6 @@ def readFileDataImp(fileOld, contentSeprate):
 	#if isShiftJis(data[skip], data[skip+1]) == False:
 		#print('not start with shift-jis')
 	realData = data[skip:]
-	content = re.split(contentSeprate, realData)
+	content = re.split(contentSeparate, realData)
 	insertContent = { 0 : data[0:skip] }
 	return content, insertContent

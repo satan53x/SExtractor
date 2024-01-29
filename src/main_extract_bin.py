@@ -24,7 +24,7 @@ def write():
 		#写入译文
 		replace()
 		#反转义
-		seprate = var.contentSeprate.decode('unicode_escape').encode('latin-1')
+		separate = var.contentSeparate.decode('unicode_escape').encode('latin-1')
 		#新文件
 		#print(len(var.content))
 		filepath = os.path.join(var.workpath, 'new', var.filename+var.Postfix)
@@ -36,8 +36,8 @@ def write():
 				fileNew.write(var.insertContent[i])
 			fileNew.write(var.content[i])
 			if i < length-1:
-				if var.addSeprate:
-					fileNew.write(seprate)
+				if var.addSeparate:
+					fileNew.write(separate)
 		if length in var.insertContent:
 			fileNew.write(var.insertContent[length])
 		fileNew.close()
@@ -48,13 +48,13 @@ def parse():
 	#print('解析文件: '+var.filename)
 	fileOld = read()
 	if var.readFileDataImp:
-		var.content, var.insertContent = var.readFileDataImp(fileOld, var.contentSeprate)
+		var.content, var.insertContent = var.readFileDataImp(fileOld, var.contentSeparate)
 	else:
 		data = fileOld.read()
-		if var.contentSeprate == b'':
+		if var.contentSeparate == b'':
 			var.content = [bytearray(data)]
 		else:
-			var.content = re.split(var.contentSeprate, data)
+			var.content = re.split(var.contentSeparate, data)
 		var.insertContent.clear()
 	fileOld.close()
 	#print(var.content)
@@ -69,11 +69,11 @@ def parse():
 			#os.remove(filepath)
 
 def initDone():
-	var.contentSeprate = var.contentSeprate.encode('latin-1')
-	if var.contentSeprate.startswith(b'(') or var.contentSeprate == '':
-		var.addSeprate = False
+	var.contentSeparate = var.contentSeparate.encode('latin-1')
+	if var.contentSeparate.startswith(b'(') or var.contentSeparate == '':
+		var.addSeparate = False
 	else:
-		var.addSeprate = True
+		var.addSeparate = True
 
 #args = {workpath, engineName, outputFormat, outputPartMode, nameList, regDic}
 def mainExtractBin(args):

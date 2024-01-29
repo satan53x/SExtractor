@@ -7,7 +7,7 @@ OldEncodeName = 'cp932'
 NewEncodeName = 'gbk'
 
 # ---------------- Engine: Custom -------------------
-# content按配置中contentSeprate分割
+# content按配置中contentSeparate分割
 def parseImp(content, listCtrl, dealOnce):
 	for contentIndex in range(len(content)):
 		lineData = content[contentIndex]

@@ -39,7 +39,7 @@ def writeMerge():
 	settings = QSettings('main/config.ini', QSettings.IniFormat)
 	settings.setValue('filenameList', cache)
 
-def writeSeprate(seq):
+def writeSeparate(seq):
 	name = None
 	if OnceLinesCount == 0:
 		name = filenameList[seq][1] + Postfix
@@ -65,14 +65,14 @@ def read(funcIndex):
 		if funcIndex == 0:
 			mergeDic(content)
 		else:
-			seprateDic(content)
+			separateDic(content)
 	elif isinstance(content, list):
 		jsonType = 1
 		#列表
 		if funcIndex == 0:
 			mergeList(content)
 		else:
-			seprateList(content)
+			separateList(content)
 	else:
 		print('请检查Json格式。')
 		return
@@ -91,54 +91,54 @@ def mergeList(content):
 	for item in content:
 		allJson[1].append(item)
 
-def seprateDic(content):
+def separateDic(content):
 	count = 0
 	seq = 0
 	for key, value in content.items():
 		while getOnceLinesCount(seq) == 0:
-			writeSeprate(seq)
+			writeSeparate(seq)
 			seq += 1
 			count = 0
 			allJson[0].clear()
 		allJson[0][key] = value
 		count += 1
 		if count >= OnceLinesCount:
-			writeSeprate(seq)
+			writeSeparate(seq)
 			seq += 1
 			count = 0
 			allJson[0].clear()
 	if count != 0:
-		writeSeprate(seq)
+		writeSeparate(seq)
 		seq += 1
 	elif OnceLinesCount == 0:
 		allJson[0].clear()
 		while seq < len(filenameList) - 1:
-			writeSeprate(seq)
+			writeSeparate(seq)
 			seq += 1
 
-def seprateList(content):
+def separateList(content):
 	count = 0
 	seq = 0
 	for item in content:
 		while getOnceLinesCount(seq) == 0:
-			writeSeprate(seq)
+			writeSeparate(seq)
 			seq += 1
 			count = 0
 			allJson[1].clear()
 		allJson[1].append(item)
 		count += 1
 		if count >= getOnceLinesCount(seq):
-			writeSeprate(seq)
+			writeSeparate(seq)
 			seq += 1
 			count = 0
 			allJson[1].clear()
 	if count != 0:
-		writeSeprate(seq)
+		writeSeparate(seq)
 		seq += 1
 	elif OnceLinesCount == 0:
 		allJson[1].clear()
 		while seq < len(filenameList) - 1:
-			writeSeprate(seq)
+			writeSeparate(seq)
 			seq += 1
 
 def getOnceLinesCount(seq):

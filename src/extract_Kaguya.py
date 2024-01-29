@@ -120,7 +120,7 @@ def replaceEndImp(content:list):
 			fileNew.close()
 
 # -----------------------------------
-def readFileDataImp(fileOld, contentSeprate):
+def readFileDataImp(fileOld, contentSeparate):
 	data = fileOld.read()
 	global MagicNumberLen
 	if data[0:4] == 'UF01'.encode('ascii'):

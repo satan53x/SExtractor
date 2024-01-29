@@ -118,7 +118,7 @@ def replaceEndImp(content):
 	insertContent[len(content)] = manager.otherSec
 	
 # -----------------------------------
-def readFileDataImp(fileOld, contentSeprate):
+def readFileDataImp(fileOld, contentSeparate):
 	if not re.match(r'yst\d+', ExVar.filename):
 		#控制脚本
 		if ExVar.filename == 'ysc':

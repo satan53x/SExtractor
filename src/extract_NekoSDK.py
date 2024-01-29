@@ -73,7 +73,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 	return True
 
 # -----------------------------------
-def readFileDataImp(fileOld, contentSeprate):
+def readFileDataImp(fileOld, contentSeparate):
 	data = fileOld.read()
 	initExtra()
 	content = []

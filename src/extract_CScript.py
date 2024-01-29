@@ -29,13 +29,13 @@ def initExtra():
 				
 def getSep():
 	lst = config[fileType]
-	seprate = bytearray(rb'[')
+	separate = bytearray(rb'[')
 	for i in range(0, len(lst), 2):
 		for j in lst[i]:
 			bs = f'\\x{j:02X}'.encode('ASCII')
-			seprate.extend(bs)
-	seprate.extend(rb']\0\0\0')
-	return bytes(seprate)
+			separate.extend(bs)
+	separate.extend(rb']\0\0\0')
+	return bytes(separate)
 
 # ---------------- Engine: CScript -------------------
 def parseImp(content, listCtrl, dealOnce):
@@ -105,7 +105,7 @@ def replaceEndImp(content:list):
 	insertContent[0][-4:] = int2bytes(uncomLen)
 
 # -----------------------------------
-def readFileDataImp(fileOld, contentSeprate):
+def readFileDataImp(fileOld, contentSeparate):
 	data = fileOld.read()
 	#文件头
 	global fileType
@@ -135,8 +135,8 @@ def readFileDataImp(fileOld, contentSeprate):
 	pos = 0
 	content.clear()
 	headerList.clear()
-	seprate = getSep()
-	pattern = re.compile(seprate)
+	separate = getSep()
+	pattern = re.compile(separate)
 	start = 0
 	while True:
 		#查找

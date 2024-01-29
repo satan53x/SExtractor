@@ -13,7 +13,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 	return replaceOnceImpBIN(content, lCtrl, lTrans)
 
 # -----------------------------------
-def readFileDataImp(fileOld, contentSeprate):
+def readFileDataImp(fileOld, contentSeparate):
 	data = fileOld.read()
 	#文本为第一区块
 	start = readInt(data, 8)
@@ -23,7 +23,7 @@ def readFileDataImp(fileOld, contentSeprate):
 		print('error: 区块结束超过了文件末尾')
 		return [], {}
 	realData = data[start:end]
-	content = re.split(contentSeprate, realData)
+	content = re.split(contentSeparate, realData)
 	insertContent = { 
 		0 : data[0:start],
 		len(content) : data[end:]

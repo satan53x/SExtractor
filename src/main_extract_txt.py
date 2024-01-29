@@ -40,7 +40,7 @@ def parse():
 	#print('解析文件: '+filename)
 	fileOld = read() #判断流程
 	if var.readFileDataImp:
-		var.content, _ = var.readFileDataImp(fileOld, var.contentSeprate)
+		var.content, _ = var.readFileDataImp(fileOld, var.contentSeparate)
 	else:
 		var.content = fileOld.readlines() #会保留换行符
 		if var.content:

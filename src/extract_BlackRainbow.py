@@ -53,7 +53,7 @@ def replaceEndImp(content:list):
 	insertContent[0][-4:] = int2bytes(totalLen)
 
 # -----------------------------------
-def readFileDataImp(fileOld, contentSeprate):
+def readFileDataImp(fileOld, contentSeparate):
 	initExtra()
 	data = fileOld.read()
 	pos = 0x4C

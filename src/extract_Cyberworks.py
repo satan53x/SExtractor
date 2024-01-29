@@ -64,7 +64,7 @@ def replaceEndImp(content):
 		content[contentIndex] = data
 	
 # -----------------------------------
-def readFileDataImp(fileOld, contentSeprate):
+def readFileDataImp(fileOld, contentSeparate):
 	initExtra()
 	#读取
 	data = fileOld.read()

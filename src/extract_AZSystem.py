@@ -123,7 +123,7 @@ def replaceEndImp(content):
 			lineData[4:8] = int2bytes(jumpAddr, 4)
 
 # -----------------------------------
-def readFileDataImp(fileOld, contentSeprate):
+def readFileDataImp(fileOld, contentSeparate):
 	data = fileOld.read()
 	pos = 0x10 #文件头部长度
 	insertContent = {
