@@ -78,7 +78,7 @@ class ExtractVar():
 		self.outputCount = 0 #导出文件个数
 		#各引擎参数
 		self.startline = 0 #起始行数
-		self.extractName = '^.'
+		self.extractKey = 'name'
 		self.structure = ''
 		self.extraData = '' #引擎自定义的数据
 		self.ignoreDecodeError = False #忽略编码错误
@@ -92,5 +92,6 @@ class ExtractVar():
 		self.pureText = False #bin模式下如果为纯文本，则会先转为utf再进行正则
 		self.writeOffset = '0' #写入偏移
 		self.keepFormat = True #保持格式
+		self.jsonWrite = 1 #dump模式 0-rapidjson.WM_COMPACT 1-rapidjson.WM_PRETTY
 
 gExtractVar = ExtractVar()

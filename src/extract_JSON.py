@@ -1,7 +1,3 @@
-import re
-import sys
-import os
-import struct
 from common import *
 from extract_TXT import ParseVar, GetRegList, searchLine, initParseVar
 

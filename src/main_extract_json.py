@@ -1,9 +1,8 @@
 import os
-import sys
-import json
 import re
 from main_extract import *
 from main_extract_part import mainExtractPart
+import rapidjson
 
 def read():
 	var.listOrig.clear()
@@ -26,7 +25,7 @@ def write():
 		filepath = os.path.join(var.workpath, 'new', var.filename+var.Postfix)
 		#print(filepath)
 		fileNew = open(filepath, 'w', encoding=var.EncodeRead)
-		json.dump(var.content, fileNew, ensure_ascii=False, indent=var.indent, separators=var.contentSeprate)
+		rapidjson.dump(var.content, fileNew, ensure_ascii=False, indent=var.indent, write_mode=var.jsonWrite)
 		fileNew.close()
 		#print('导出:', filename+Postfix)
 		var.outputCount += 1
@@ -35,7 +34,7 @@ def parse():
 	var.indent = 2
 	#print('解析文件: '+filename)
 	fileOld = read() #判断流程
-	var.content = json.load(fileOld)
+	var.content = rapidjson.load(fileOld)
 	fileOld.close()
 	#print(content)
 	var.parseImp(var.content, var.listCtrl, dealOnce)
