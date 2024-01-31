@@ -25,7 +25,8 @@
 * MED (DxLib改)
 * MoonHir
 * NekoSDK
-* RPGMaker MV
+* RPG Maker MV
+* RPG Maker VX Ace
 * RenPy
 * SystemC
 * WillPlus
