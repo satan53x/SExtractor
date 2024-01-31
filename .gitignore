@@ -1,6 +1,16 @@
+#python
 __pycache__/
 *.spec
+build/
+
+#vs code
 .vscode/
+*.code-workspace
+
+#ruby
+.ruby-version
+
+#custom
 config*.ini
 .backup/
-build/
+tmp/
