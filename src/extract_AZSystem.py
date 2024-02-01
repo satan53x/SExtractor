@@ -7,6 +7,25 @@ from helper_text import generateBytes
 
 headerList = []
 
+class Config():
+	MessageSig = b''
+	SelectSig = b''
+	JumpSig = b''
+
+	@classmethod
+	def init0(self) -> 'Config':
+		self.MessageSig = b'\x1F\x00\x00\x00\x00\x00'
+		self.SelectSig = b'[\x1D\x11\x1C]\x00\x00\x00\x00\x00'
+		self.JumpSig = b'[\x04\x05\x0A\x0D]\x00'
+		return self
+	
+	@classmethod
+	def init1(self) -> 'Config':
+		self.MessageSig = b'\x1B\x00\x00\x00\x00\x00'
+		self.SelectSig = b'[\x16]\x00\x00\x00\x00\x00'
+		self.JumpSig = b'[\x04\x05\x0A\x0D]\x00'
+		return self
+
 # ---------------- Engine: AZSystem Encrypt Isaac -------------------
 def parseImp(content, listCtrl, dealOnce):	
 	var = ParseVar(listCtrl, dealOnce)
@@ -14,7 +33,7 @@ def parseImp(content, listCtrl, dealOnce):
 	initParseVar(var)
 	for contentIndex in range(len(content)):
 		var.lineData:str = content[contentIndex]
-		if re.match(b'\x1F\x00\x00\x00\x00\x00', var.lineData):
+		if re.match(Config.MessageSig, var.lineData):
 			#对话
 			var.contentIndex = contentIndex
 			pos = 10
@@ -28,7 +47,7 @@ def parseImp(content, listCtrl, dealOnce):
 			ret, length, var.searchStart, var.searchEnd = readText(var.lineData, pos)
 			pos += length
 			ctrls = searchLine(var)
-		elif re.match(b'[\x1D\x11\x1C]\x00\x00\x00\x00\x00', var.lineData):
+		elif re.match(Config.SelectSig, var.lineData):
 			#选项
 			var.contentIndex = contentIndex
 			pos = 10
@@ -39,7 +58,7 @@ def parseImp(content, listCtrl, dealOnce):
 				elif ret > 0: continue
 				ctrls = searchLine(var)
 		#elif re.match(b'[\x04\x05\x0A\x0D\x02\x08]\x00', var.lineData):
-		elif re.match(b'[\x04\x05\x0A\x0D]\x00', var.lineData):
+		elif re.match(Config.JumpSig, var.lineData):
 			#跳转
 			var.contentIndex = contentIndex
 			pos = 2
@@ -124,6 +143,10 @@ def replaceEndImp(content):
 
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeparate):
+	if ExVar.extraData == 'type1':
+		Config.init1()
+	else:
+		Config.init0()
 	data = fileOld.read()
 	pos = 0x10 #文件头部长度
 	insertContent = {
