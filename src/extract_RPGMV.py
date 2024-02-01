@@ -82,11 +82,11 @@ class RPGParserMV():
 		if not onlyStr:
 			return nodePath[-1]
 		if isinstance(nodePath[-1], str): 
-			return nodePath[-1]
+			return nodePath[-1].lstrip('@')
 		if len(nodePath) == 1:
 			return 'root'
 		elif isinstance(nodePath[-2], str):
-			return nodePath[-2]
+			return nodePath[-2].lstrip('@')
 		else:
 			return 'nostr'
 
