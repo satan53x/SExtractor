@@ -8,12 +8,13 @@ from extract_RPGMV import RPGParserMV
 # ---------------- Group: RPG Maker VX Ace -------------------
 #解析
 def parseImp(content, listCtrl, dealOnce):
+	ExVar.jsonWrite = 0
 	parser = RPGParserMV()
 	parser.extractKeyList = ['@name']
 	parser.codeTag = '@code'
 	parser.parametersTag = '@parameters'
 	parser.init(listCtrl, dealOnce)
-	
+
 	#处理
 	parser.parseNode(content)
 
