@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(750, 600)
+        MainWindow.resize(750, 650)
         MainWindow.setMinimumSize(QtCore.QSize(600, 500))
         font = QtGui.QFont()
         font.setFamily("Microsoft YaHei UI")

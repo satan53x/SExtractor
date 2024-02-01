@@ -369,8 +369,11 @@ def writeSubsConfig(filepath=''):
 	printWarningGreen('在ctrl文件夹下生成了uif_config.json')
 	
 # ------------------------------------------------------------
-def replaceValue(transDic, replaceDic):
+def replaceValue(transDic, replaceDic, useRE=True):
 	for orig, trans in transDic.items():
 		for old, new in replaceDic.items():
-			trans = re.sub(old, new, trans)
+			if useRE:
+				trans = re.sub(old, new, trans)
+			else:
+				trans = trans.replace(old, new)
 			transDic[orig] = trans

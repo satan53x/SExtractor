@@ -56,6 +56,10 @@ def transReplace():
 				if charset not in key: continue
 				printDebug('进行译文替换')
 				replaceValue(var.transDic, replaceDic)
+		if 'orig_replace' in var.textConf:
+			printDebug('进行译文的原文替换还原')
+			replaceDic = { value: key for key, value in var.textConf['orig_replace'].items() }
+			replaceValue(var.transDic, replaceDic, False)
 		#原文保留
 		if 'orig_keep' in var.textConf:
 			for key, keepList in var.textConf['orig_keep'].items():
@@ -371,6 +375,10 @@ def dealOnce(text, contentIndex=0):
 		printWarning('提取时原文为空', var.filename, str(contentIndex))
 		return False
 	#if orig.isspace(): return False
+	if var.transReplace:
+		if 'orig_replace' in var.textConf:
+			for old, new in var.textConf['orig_replace'].items():
+				orig = orig.replace(old, new)
 	#输出原文
 	var.listOrig.append(orig)
 	#print(orig)
