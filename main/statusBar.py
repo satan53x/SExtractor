@@ -9,7 +9,7 @@ class StatusBar(QStatusBar):
 		super().__init__(parent)
 		self.setStyleSheet("QStatusBar::item { border: 0px solid black; }")
 		self.layer = QStackedWidget()
-		self.layer.setContentsMargins(10, 5, 5, 5)
+		self.layer.setContentsMargins(10, 4, 1, 5)
 		self.addWidget(self.layer, 16)
 		#文本
 		self.label:QLabel = QLabel()

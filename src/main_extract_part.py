@@ -11,7 +11,7 @@ def mainExtractPart(args, parseImp, initDone=None):
 	if len(args) < 4:
 		printError("main_extract参数错误", args)
 		return
-	showMessage("开始处理...")
+	#showMessage("开始处理...")
 	path = args['workpath']
 	var.workpath = path
 	if initArgs(args) != 0: return
