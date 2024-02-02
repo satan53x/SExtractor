@@ -13,11 +13,12 @@ checkLast = True
 class RPGParserMV():
 	extractTextCode = []
 
-	def __init__(self) -> None:
+	def __init__(self, prefix='') -> None:
 		#config
-		self.extractKeyList = ['name']
-		self.codeTag = 'code'
-		self.parametersTag = 'parameters'
+		self.prefix = prefix
+		self.extractKeyList = []
+		self.codeTag = self.prefix + 'code'
+		self.parametersTag = self.prefix + 'parameters'
 
 	def parseNode(self, node, relCode=0, relItem=None):
 		global lastCtrl
@@ -82,11 +83,11 @@ class RPGParserMV():
 		if not onlyStr:
 			return nodePath[-1]
 		if isinstance(nodePath[-1], str): 
-			return nodePath[-1].lstrip('@')
+			return nodePath[-1].lstrip(self.prefix)
 		if len(nodePath) == 1:
 			return 'root'
 		elif isinstance(nodePath[-2], str):
-			return nodePath[-2].lstrip('@')
+			return nodePath[-2].lstrip(self.prefix)
 		else:
 			return 'nostr'
 
@@ -105,7 +106,12 @@ class RPGParserMV():
 		elif ExVar.extractKey == 'all':
 			self.extractKeyList = []
 		else:
-			self.extractKeyList = ExVar.extractKey.split(',')
+			self.extractKeyList.clear()
+			lst = ExVar.extractKey.split(',')
+			for key in lst:
+				if not key.startswith(self.prefix):
+					key = self.prefix + key
+				self.extractKeyList.append(key)
 		#清除
 		nodePath.clear()
 
@@ -151,7 +157,7 @@ def getNode(content, nodePath, replace=None, start=0, end=1):
 EVENT_COMMAND_CODES = {
 	#编号: [用途, 是否提取, 是否中断段落]
 	0 : ["Empty", False, True],
-	101 : ["Show Text Attributes", False, True],
+	101 : ["Show Text Attributes", True, True],
 	102 : ["Show Choices", True, True],
 	103 : ["Input Number", False, True],
 	104 : ["Select Key Item", False, True],

@@ -9,10 +9,7 @@ from extract_RPGMV import RPGParserMV
 #解析
 def parseImp(content, listCtrl, dealOnce):
 	ExVar.jsonWrite = 0
-	parser = RPGParserMV()
-	parser.extractKeyList = ['@name']
-	parser.codeTag = '@code'
-	parser.parametersTag = '@parameters'
+	parser = RPGParserMV('@')
 	parser.init(listCtrl, dealOnce)
 
 	#处理
