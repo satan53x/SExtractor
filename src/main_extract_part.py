@@ -24,24 +24,20 @@ def mainExtractPart(args, parseImp, initDone=None):
 	if os.path.isdir(path):
 		#print(var.workpath)
 		createFolder()
-		for name in os.listdir(var.workpath):
-			#print(name)
-			if var.Postfix == '':
-				var.filename = name
-			else:
-				var.filename = os.path.splitext(name)[0]
-			filepath = os.path.join(var.workpath, var.filename+var.Postfix)
-			#print(name, filepath)
-			if os.path.isfile(filepath):
-				var.curIO = var.io
-				readFormat() #读入译文
-				printDebug('读取文件:', var.filename)
-				parseImp()
-				keepAllOrig()
-				writeFormat()
-				var.curIO = var.ioExtra
-				writeFormat()
-				#break #测试
+		files = getFiles(var.workpath)
+		for i, name in enumerate(files):
+			showProgress(i, len(files))
+			var.filename = name
+			var.curIO = var.io
+			readFormat() #读入译文
+			printDebug('读取文件:', var.filename)
+			parseImp()
+			keepAllOrig()
+			writeFormat()
+			var.curIO = var.ioExtra
+			writeFormat()
+			#break #测试
+		showProgress(100)
 		printInfo('读取文件数:', var.inputCount)
 		printInfo('新建文件数:', var.outputCount)
 		writeCutoffDic()

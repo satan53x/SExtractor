@@ -437,7 +437,7 @@ def chooseEngine(args):
 		var.io.outputFormat = args['outputFormat']
 	else:
 		var.io.outputFormat = -1
-		showMessage("该引擎暂不支持此输出格式。")
+		showMessage("该引擎暂不支持此输出格式。", 'red')
 		return 1
 	# 额外输出
 	if formatList == None or str(args['outputFormatExtra']) in formatList:
@@ -447,7 +447,7 @@ def chooseEngine(args):
 			var.ioExtra.outputFormat = -1
 	else:
 		var.ioExtra.outputFormat = -1
-		showMessage("该引擎暂不支持此输出格式。(额外)")
+		showMessage("该引擎暂不支持此输出格式。(额外)", 'red')
 		return 2
 	#分割符
 	var.contentSeparate = settings.value('contentSeparate')
@@ -536,9 +536,12 @@ def readTextConf():
 	var.textConf = json.load(fileOld)
 	fileOld.close()
 
-def showMessage(msg):
+def showMessage(msg, color='black'):
 	if var.window: 
-		var.window.statusBar.showMessage(msg)
+		var.window.statusBar.sendMessage(msg, color)
+def showProgress(value, max=100):
+	if var.window:
+		var.window.statusBar.sendProgress(value, max)
 
 def initArgs(args):
 	# 打印
@@ -592,6 +595,20 @@ def extractDone():
 	showMessage("处理完成。")
 	print('Done.\n')
 
+def getFiles(dirpath):
+	files = []
+	for name in os.listdir(var.workpath):
+		#print('File:', name)
+		if var.Postfix == '':
+			filename = name
+		else:
+			filename = os.path.splitext(name)[0]
+		filepath = os.path.join(var.workpath, filename+var.Postfix)
+		#print(name, filepath)
+		if os.path.isfile(filepath):
+			files.append(filename)
+	return files
+
 #args = [workpath, engineName, outputFormat, nameList]
 def mainExtract(args, parseImp, initDone=None):
 	if len(args) < 4:
@@ -612,19 +629,15 @@ def mainExtract(args, parseImp, initDone=None):
 		createFolder()
 		var.curIO = var.io
 		readFormat() #读入译文
-		for name in os.listdir(var.workpath):
-			#print('File:', name)
-			if var.Postfix == '':
-				var.filename = name
-			else:
-				var.filename = os.path.splitext(name)[0]
-			filepath = os.path.join(var.workpath, var.filename+var.Postfix)
-			#print(name, filepath)
-			if os.path.isfile(filepath):
-				printDebug('读取文件:', var.filename)
-				parseImp()
-				keepAllOrig()
-				#break #测试
+		files = getFiles(var.workpath)
+		for i, name in enumerate(files):
+			showProgress(i, len(files))
+			var.filename = name
+			printDebug('读取文件:', var.filename)
+			parseImp()
+			keepAllOrig()
+			#break #测试
+		showProgress(100)
 		printInfo('读取文件数:', var.inputCount)
 		writeFormat()
 		printInfo('新建文件数:', var.outputCount)

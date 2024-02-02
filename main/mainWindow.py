@@ -14,6 +14,7 @@ from main_extract import var
 from merge_json import mergeTool, createDicTool
 from main.thread import extractThread
 from main.configManager import ConfigManager
+from main.statusBar import StatusBar
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 	def __init__(self, parent=None, version='1.0.0'):
@@ -21,12 +22,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.version = version
 		self.setupUi(self)
 		self.initEnd = False
-		# 设置图标
+		#设置图标
 		icon = QIcon("main/main.ico")
 		self.setWindowIcon(icon)
 		ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("myappid")
+		#设置状态栏
+		self.statusBar = StatusBar(self)
+		self.setStatusBar(self.statusBar)
+		#信号
 		self.mainTab.currentChanged.connect(self.changeTab)
-		#提取
 		self.mainDirButton.clicked.connect(self.chooseMainDir)
 		self.extractButton.clicked.connect(self.extractFile)
 		self.engineNameBox.currentIndexChanged.connect(self.selectEngine)
@@ -242,7 +246,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 	def handleThreadFinished(self, ret):
 		if ret == 1:
-			self.statusBar.showMessage('提取或导入时发生错误！！！    具体错误详见控制台打印！！！')
+			self.statusBar.showMessage('提取或导入时发生错误！！！    具体错误详见控制台打印！！！', 'red')
 
 	#---------------------------------------------------------------
 	#选择工作目录
@@ -288,4 +292,4 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 	#收集
 	def collectFiles(self):
-		self.statusBar.showMessage('暂不支持此功能')
+		self.statusBar.showMessage('暂不支持此功能', 'red')
