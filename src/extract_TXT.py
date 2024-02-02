@@ -200,10 +200,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 	for i in range(num):
 		# 位置
 		ctrl = lCtrl[i]
-		posData = ctrl['pos']
-		contentIndex = posData[0]
-		start = posData[1]
-		end = posData[2]
+		contentIndex, start, end = ctrl['pos']
 		trans = lTrans[i]
 		if ExVar.subsJis:
 			transData = getBytes(trans, ExVar.NewEncodeName)

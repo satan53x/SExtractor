@@ -66,10 +66,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 	for i, ctrl in enumerate(lCtrl):
 		# 位置
 		ctrl = lCtrl[i]
-		posData = ctrl['pos']
-		contentIndex = posData[0]
-		start = posData[1]
-		end = posData[2]
+		contentIndex, start, end = ctrl['pos']
 		transData = generateBytes(lTrans[i], end - start, ExVar.NewEncodeName)
 		if transData == None:
 			return False

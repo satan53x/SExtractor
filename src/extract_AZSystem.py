@@ -8,10 +8,6 @@ from helper_text import generateBytes
 headerList = []
 
 class Config():
-	MessageSig = b''
-	SelectSig = b''
-	JumpSig = b''
-
 	@classmethod
 	def init0(self) -> 'Config':
 		self.MessageSig = b'\x1F\x00\x00\x00\x00\x00'
@@ -81,16 +77,14 @@ def parseImp(content, listCtrl, dealOnce):
 
 def readText(data, pos):
 	ret = -1
-	length = 0
-	start = 0
-	end = 0
+	length, start, end = 0, 0, 0
 	if data[pos+1] == 0x07:
 		#文本
 		length = data[pos]
 		start = pos+2
 		end = pos + length - 1 #不包含末尾的\0
 		ret = 0
-	elif data[pos+1] == 0x06 or data[pos+1] == 0x1C or data[pos+1] == 0x05 or data[pos+1] == 0x04:
+	elif data[pos+1] in [ 0x06, 0x1C, 0x05, 0x04 ]:
 		#跳过控制
 		length = data[pos]
 		ret = 1
@@ -100,14 +94,10 @@ def readText(data, pos):
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
-	num = len(lCtrl)
-	for i in range(num):
+	for i in range(len(lCtrl)):
 		# 位置
 		ctrl = lCtrl[i]
-		posData = ctrl['pos']
-		contentIndex = posData[0]
-		start = posData[1]
-		end = posData[2]
+		contentIndex, start, end = ctrl['pos']
 		transData = generateBytes(lTrans[i], end - start, ExVar.NewEncodeName)
 		if transData == None:
 			return False

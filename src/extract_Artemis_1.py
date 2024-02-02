@@ -58,6 +58,7 @@ def parseImp(content, listCtrl, dealOnce):
 		if dealOnce(text, listIndex):
 			listIndex += 1
 			listCtrl.append(ctrl)
+			
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
 	#print(lCtrl)
@@ -66,10 +67,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 	for i in range(num):
 		# 位置
 		ctrl = lCtrl[i]
-		posData = ctrl['pos']
-		contentIndex = posData[0]
-		start = posData[1]
-		end = posData[2]
+		contentIndex, start, end = ctrl['pos']
 		trans = lTrans[i]
 		#写入new
 		strNew = content[contentIndex][:start] + trans + content[contentIndex][end:]

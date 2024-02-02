@@ -62,10 +62,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 	for index in range(num):
 		# 位置
 		ctrl = lCtrl[index]
-		posData = ctrl['pos']
-		contentIndex = posData[0]
-		start = posData[1]
-		end = posData[2]
+		contentIndex, start, end = ctrl['pos']
 		trans = lTrans[index]
 		#写入new
 		i = contentIndex[0]
