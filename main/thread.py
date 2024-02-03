@@ -1,6 +1,7 @@
 import time
 from PyQt5.QtCore import QThread, pyqtSignal
 import traceback
+from src.common import ExVar
 
 #import debugpy
 class extractThread(QThread):
@@ -19,6 +20,7 @@ class extractThread(QThread):
 			print('\033[31m---------------------------提取或导入时发生错误---------------------------\033[0m')
 			traceback.print_exc()
 			print('\033[31m--------------------------------------------------------------------------\033[0m')
+			print(f'\033[33m异常中断文件名: {ExVar.filename}\033[0m')
 			ret = 1
 			#raise
 		end = time.perf_counter()
