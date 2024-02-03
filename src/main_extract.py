@@ -569,6 +569,7 @@ def initArgs(args):
 	if '\\' in var.splitParaSep: #需要处理转义
 		var.splitParaSep = var.splitParaSep.encode().decode('unicode_escape')
 	var.ignoreSameLineCount = args['ignoreSameLineCount']
+	var.ignoreNotMaxCount = args['ignoreNotMaxCount']
 	var.fixedMaxPerLine = args['fixedMaxPerLine']
 	var.maxCountPerLine = args['maxCountPerLine']
 	var.pureText = args['pureText']

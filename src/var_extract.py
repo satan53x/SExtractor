@@ -50,12 +50,13 @@ class ExtractVar():
 	noInput = False
 	indent = 2 #缩进
 	#-------------------
-	symbolPattern = '[\\u3000-\\u303F\\uFF00-\\uFF65\\u2000-\\u206F]' #重新分割匹配字符
+	symbolPattern = '[\.~\\u3000-\\u303F\\uFF00-\\uFF65\\u2000-\\u206F\\u2600-\\u27FF]' #重新分割匹配字符
 	addSeparate = True
 	printSetting = None
 	splitAuto = False
 	splitParaSep = '\r\n' #段落分割符
-	ignoreSameLineCount = True
+	ignoreSameLineCount = True #如果行数和原本一致，则忽略
+	ignoreNotMaxCount = True #如果所有行都没有超过最大字符，则忽略
 	maxCountPerLine = 0
 	fixedMaxPerLine = False
 	addSpace = '　' #填充的空格

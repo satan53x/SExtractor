@@ -152,10 +152,20 @@ def redistributeTrans(orig:str, trans:str):
 	newTrans = re.sub(sep, '', trans)
 	if len(origList) == 1:
 		return origList, [newTrans]
-	if ExVar.ignoreSameLineCount:
+	if ExVar.ignoreSameLineCount or ExVar.ignoreNotMaxCount:
 		transList = re.split(sep, trans)
-		if len(origList) == len(transList):
+		#行数一致则忽略
+		if ExVar.ignoreSameLineCount and len(origList) == len(transList):
 			return origList, transList
+		#不超长则忽略
+		if ExVar.ignoreNotMaxCount and len(origList) >= len(transList):
+			if not any(len(t) > ExVar.maxCountPerLine for t in transList):
+				for i in range(len(origList)):
+					if i >= len(transList):
+						transList.append(ExVar.addSpace)
+					elif transList[i] == '':
+						transList[i] = ExVar.addSpace
+				return origList, transList
 	if ExVar.fixedMaxPerLine:
 		#固定长度
 		lineLen = ExVar.maxCountPerLine
