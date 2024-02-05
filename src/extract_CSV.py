@@ -23,6 +23,8 @@ def parse(content, var:ParseVar):
 	for contentIndex, row in content.iterrows():
 		for colIndex in validCols:
 			var.lineData = row[colIndex]
+			if pd.isnull(var.lineData):
+				continue
 			var.contentIndex = [contentIndex, colIndex]
 			ctrls = searchLine(var)
 			if colIndex in nameCols and ctrls and ctrls[0]:
