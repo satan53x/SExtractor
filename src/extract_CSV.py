@@ -22,7 +22,7 @@ def parseImp(content, listCtrl, dealOnce):
 def parse(content, var:ParseVar):
 	for contentIndex, row in content.iterrows():
 		for colIndex in validCols:
-			var.lineData = row[colIndex]
+			var.lineData = row.iloc[colIndex]
 			if pd.isnull(var.lineData):
 				continue
 			var.contentIndex = [contentIndex, colIndex]
