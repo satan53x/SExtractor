@@ -1,4 +1,5 @@
 import re
+import struct
 from common import *
 from extract_TXT import ParseVar, searchLine, initParseVar
 from helper_text import generateBytes
@@ -13,11 +14,12 @@ Codes = [
 	{'min': 0x1F4, 'max': 0x1F4, 'sce': 0x5A, 'sel': 0x1D},
 	{'min': 0x1C2, 'max': 0x22A, 'sce': 0x5B, 'sel': 0x1D},
 	{'min': 0x22B, 'max': 0xFFF, 'sce': 0x6C, 'sel': 0x2B},
+	{'min': 0x0, 'max': 0x1C1, 'sce': 0x57, 'sel': 0x1A, 'retcode': 0x3B},
 	{'min': 0x0, 'max': 0xFFF, 'sce': 0x5A, 'sel': 0x1D},
 ]
 Keys = [
 	{'min': 0x1E1, 'max': 0x1E8, 'key': b'\x0B\x8F\x00\xB1'},
-	{'min': 0x1C2, 'max': 0x22A, 'key': b'\xD3\x6F\xAC\x96'},
+	{'min': 0x0, 'max': 0x22A, 'key': b'\xD3\x6F\xAC\x96'},
 	{'min': 0x22B, 'max': 0xFFF, 'key': b'\xA9\xF8\xCC\x66'},
 ]
 
@@ -38,10 +40,9 @@ def parseImp(content, listCtrl, dealOnce):
 	var = ParseVar(listCtrl, dealOnce)
 	var.OldEncodeName = ExVar.OldEncodeName
 	initParseVar(var)
-	cmdList = manager.splitCmd()
 	paraIndex = 0
-	for i in range(len(cmdList)):
-		code, count, textType = cmdList[i]
+	for i, cmd in enumerate(manager.cmdList):
+		count, textType = cmd[1], cmd[2]
 		if textType == 0:
 			#文本
 			dealStr(content, var, paraIndex)
@@ -106,9 +107,8 @@ def replaceEndImp(content):
 			data = content[contentIndex]
 			offset = data['newOff'] #新的偏移
 		#参数区
-		manager.paraSec.extend(int2bytes(other))
-		manager.paraSec.extend(int2bytes(length))
-		manager.paraSec.extend(int2bytes(offset))
+		bs = struct.pack('<III', other, length, offset)
+		manager.paraSec.extend(bs)
 	#合并
 	manager.fixSections(content)
 	insertContent[0] = manager.headerSec + manager.cmdSec + manager.paraSec
@@ -126,7 +126,10 @@ def readFileDataImp(fileOld, contentSeparate):
 	#解析
 	if not manager.init(data):
 		return [], {}
-	content = manager.splitParaStr()
+	if manager.structType == 2:
+		content = manager.splitParaStr2()
+	else:
+		content = manager.splitParaStr()
 	insertContent.clear()
 	insertContent[0] = b''
 	#insertContent[len(content)] = manager.otherSec
@@ -135,32 +138,28 @@ def readFileDataImp(fileOld, contentSeparate):
 # -----------------------------------
 #管理器
 class DataManager():
+	OneParaLen = 12
+	structType = 1 #文件结构 1:v>=1C2, 2:v<1C2
+
 	def splitParaStr(self):
+		self.splitCmd()
 		self.paraList = []
 		dataDic = {}
 		pos = 0
 		while pos < self.paraLen:
 			#单个para对应单个str
-			other = readInt(self.paraSec, pos)
-			pos += 4
-			length = readInt(self.paraSec, pos)
-			pos += 4
-			offset = readInt(self.paraSec, pos)
-			pos += 4
+			other, length, offset = struct.unpack('<III', self.paraSec[pos:pos+self.OneParaLen])
+			pos += self.OneParaLen
 			#正常保存字节
-			self.paraList.append([
-				other,
-				length,
-				offset
-			])
+			self.paraList.append([other, length, offset])
 			if length > 0:
 				#关联str
 				if offset not in dataDic:
 					#新增
-					dataDic[offset] = {
-						'oldOff': offset,
-						'ref': []
-					}
+					dataDic[offset] = {'oldOff': offset, 'ref': []}
+		return self.splitContent(dataDic)
+
+	def splitContent(self, dataDic):
 		#字典排序
 		dataDic = dict(sorted(dataDic.items()))
 		content = []
@@ -188,7 +187,7 @@ class DataManager():
 		return self.offsetDic[offset]
 
 	def splitCmd(self):
-		cmdList = []
+		self.cmdList = []
 		pos = 0
 		while pos < self.cmdLen:
 			#单个command
@@ -202,16 +201,14 @@ class DataManager():
 			elif code == self.codeSel: #选项
 				textType = 1
 			#正常保存字节
-			cmdList.append([
-				code,
-				count,
-				textType
-			])
-		return cmdList
+			self.cmdList.append([code, count, textType])
 
 	def fixSections(self, content:list):
-		if self.version >= 0x1C2:
-			self.headerSec[20:24] = int2bytes(self.strLen)
+		if self.structType == 2:
+			self.headerSec[0xC:0x10] = int2bytes(self.strLen)
+			self.fixSectionCmd2()
+		else:
+			self.headerSec[0x14:0x18] = int2bytes(self.strLen)
 		#还原content
 		self.strSec = bytearray()
 		for i, data in enumerate(content):
@@ -231,10 +228,17 @@ class DataManager():
 		else:
 			self.version = readInt(data, 4)
 		if self.version >= 0x1C2:
-			self.cmdLen = readInt(data, 12)
-			self.paraLen = readInt(data, 16)
-			self.strLen = readInt(data, 20)
-			self.otherLen = readInt(data, 24)
+			self.cmdLen = readInt(data, 0xC)
+			self.paraLen = readInt(data, 0x10)
+			self.strLen = readInt(data, 0x14)
+			self.otherLen = readInt(data, 0x18)
+			self.structType = 1
+		elif self.version < 0x1C2:
+			self.cmdLen = readInt(data, 0x8)
+			self.paraLen = 0
+			self.strLen = readInt(data, 0xC)
+			self.otherLen = 0
+			self.structType = 2
 		else:
 			print(f'\033[33m当前ybn版本暂不支持\033[0m: 0x{self.version:X}')
 			return None
@@ -249,6 +253,8 @@ class DataManager():
 		if item:
 			self.codeSce = item['sce']
 			self.codeSel = item['sel']
+			if 'retcode' in item:
+				self.codeRetcode = item['retcode']
 		#header
 		start = 0
 		end = self.headerLen
@@ -256,7 +262,7 @@ class DataManager():
 		#cmd
 		start = end
 		end = start + self.cmdLen
-		self.cmdSec = data[start:end]
+		self.cmdSec = bytearray(data[start:end])
 		#para
 		start = end
 		end = start + self.paraLen
@@ -288,11 +294,14 @@ class DataManager():
 			#escape
 			self.xorKey =  ExVar.decrypt.encode().decode('unicode_escape').encode('latin-1')
 		#解密验证
-		bOffset = xorBytes(self.paraSec[8:12], self.xorKey) #第一个偏移，一般应该为0
+		if self.structType == 2:
+			bOffset = xorBytes(self.cmdSec[0xE:0x12], self.xorKey) #第一个偏移，一般应该为0
+		else:
+			bOffset = xorBytes(self.paraSec[0x8:0xC], self.xorKey) #第一个偏移，一般应该为0
 		if readInt(bOffset, 0) != 0:
 			key = xorBytes(bOffset, self.xorKey)
 			keyStr = f'\\x{key[0]:02X}\\x{key[1]:02X}\\x{key[2]:02X}\\x{key[3]:02X}'
-			if ExVar.decrypt == 'auto':
+			if ExVar.decrypt == 'auto' and self.structType != 2:
 				self.xorKey = key
 				printWarning('默认密钥可能不正确，密钥已自动替换为:', keyStr)
 			else:
@@ -328,6 +337,9 @@ class DataManager():
 			elif text == 'GOSUB':
 				Codes[-1]['sel'] = cmdCode
 				printInfo('命令：', text, hex(cmdCode), paraCount)
+			elif text == 'RETURNCODE':
+				Codes[-1]['retcode'] = cmdCode
+				printInfo('命令：', text, hex(cmdCode), paraCount)
 			#else:
 				#printDebug('命令：', text, hex(cmdCode), paraCount)
 			for paraCode in range(paraCount):
@@ -336,5 +348,61 @@ class DataManager():
 				#text = bs.decode('cp932')
 				pos += len(bs) + 3
 				#printDebug('    参数：', text, hex(paraCode))
+
+	#-------------------------- structType 2 ------------------------------
+	def splitParaStr2(self):
+		self.splitCmd2()
+		self.paraList = []
+		dataDic = {}
+		pos = 0
+		for _, count, textType, headLen in self.cmdList:
+			pos += headLen
+			for i in range(count):
+				#单个para对应单个str
+				other, length, offset = struct.unpack('<III', self.cmdSec[pos:pos+self.OneParaLen])
+				pos += self.OneParaLen
+				#正常保存字节
+				self.paraList.append([other, length, offset])
+				if length > 0:
+					#关联str
+					if offset not in dataDic:
+						#新增
+						dataDic[offset] = {'oldOff': offset, 'ref': []}
+		return self.splitContent(dataDic)
+
+	def splitCmd2(self):
+		self.cmdList = []
+		pos = 0
+		while pos < self.cmdLen:
+			#单个command
+			code, count = struct.unpack('<BB', self.cmdSec[pos:pos+2])
+			headLen = 6
+			textType = -1
+			if code == self.codeSce: #文本
+				textType = 0
+			elif code == self.codeSel: #选项
+				textType = 1
+			elif code == self.codeRetcode: #retcode
+				count = 0
+				headLen += 8
+			#printInfo(f'{pos:06X}, {code:02X}, {count:02X}')
+			pos += headLen
+			pos += count * self.OneParaLen
+			#正常保存字节
+			self.cmdList.append([code, count, textType, headLen])
+
+	def fixSectionCmd2(self):
+		#该结构并没有paraSec，并入cmdSec
+		posInPara = 0
+		pos = 0
+		for _, count, textType, headLen in self.cmdList:
+			pos += headLen
+			for i in range(count):
+				#单个para对应单个str
+				self.cmdSec[pos:pos+self.OneParaLen] = self.paraSec[posInPara:posInPara+self.OneParaLen]
+				pos += self.OneParaLen
+				posInPara += self.OneParaLen
+		#清空paraSec
+		self.paraSec = b''
 
 manager = DataManager()

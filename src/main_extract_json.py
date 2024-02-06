@@ -42,7 +42,7 @@ def parse():
 	num = len(var.listOrig)
 	#print('count:', num, len(transDic))
 	if num == 0:
-		printWarningGreen('没有解析到有效内容', var.filename)
+		printWarningGreen('该文件没有提取到文本', var.filename)
 		#filepath = os.path.join(var.workpath, var.filename+var.Postfix)
 		#if os.path.exists(filepath):
 			#os.remove(filepath)
