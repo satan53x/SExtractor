@@ -58,7 +58,10 @@ def transReplace():
 				replaceValue(var.transDic, replaceDic)
 		if 'orig_replace' in var.textConf:
 			printDebug('进行译文的原文替换还原')
-			replaceDic = { value: key for key, value in var.textConf['orig_replace'].items() }
+			replaceDic = {}
+			for key, value in var.textConf['orig_replace'].items():
+				if value == '': continue
+				replaceDic[value] = key
 			replaceValue(var.transDic, replaceDic, False)
 		#原文保留
 		if 'orig_keep' in var.textConf:
