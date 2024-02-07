@@ -3,7 +3,7 @@ import sys
 from PyQt5.QtWidgets import QApplication
 from main.mainWindow import MainWindow
 
-Version = '1.1.2' #软件版本号
+Version = '1.2.0' #软件版本号
 
 if __name__ == "__main__":
     #固定的，PyQt5程序都需要QApplication对象。sys.argv是命令行参数列表，确保程序可以双击运行
