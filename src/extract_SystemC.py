@@ -10,7 +10,8 @@ def parseImp(content, listCtrl, dealOnce):
 	var.OldEncodeName = ExVar.OldEncodeName
 	lastCtrl = None
 	regSkip = [ 
-		[re.compile(rb'^[A-Za-z/\*]'), re.compile(rb'^$')] 
+		re.compile(rb'^[A-Za-z/\*]'), 
+		re.compile(rb'^$')
 	]
 	regName = [ 
 		[re.compile(r'^(?P<name>.+?)　（'.encode(ExVar.OldEncodeName)), 'search'] 
