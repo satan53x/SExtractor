@@ -301,7 +301,7 @@ class DataManager():
 		if readInt(bOffset, 0) != 0:
 			key = xorBytes(bOffset, self.xorKey)
 			keyStr = f'\\x{key[0]:02X}\\x{key[1]:02X}\\x{key[2]:02X}\\x{key[3]:02X}'
-			if ExVar.decrypt == 'auto' and self.structType != 2:
+			if ExVar.decrypt == 'auto':
 				self.xorKey = key
 				printWarning('默认密钥可能不正确，密钥已自动替换为:', keyStr)
 			else:
