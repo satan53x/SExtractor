@@ -84,7 +84,7 @@ class ConfigManager():
 		mainWindow.mergeDirEdit.setText(mainWindow.mergeDirPath)
 		text = initValue(self.mainConfig, 'mergeSkipReg', mainWindow.skipRegEdit.text())
 		mainWindow.skipRegEdit.setText(text)
-		collectSep = initValue(self.mainConfig, 'collectSep', '__')
+		collectSep = initValue(self.mainConfig, 'collectSep', '+')
 		mainWindow.collectSepEdit.setText(collectSep)
 		# 设置匹配规则
 		mainWindow.regIndex = int(initValue(self.mainConfig, 'regIndex', 0))
