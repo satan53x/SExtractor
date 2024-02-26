@@ -75,7 +75,8 @@ def readFileDataImp(fileOld, contentSeparate):
 	initExtra()
 	content = []
 	start = 0
-	pat = rb'\x5B\x83\x65\x83\x4C\x83\x58\x83\x67\x95\x5C\x8E\xA6\x5D'
+	# [テキスト表示] 或 [ログ追加]
+	pat = rb'\x5B\x83\x65\x83\x4C\x83\x58\x83\x67\x95\x5C\x8E\xA6\x5D|\x5B\x83\x8D\x83\x4F\x92\xC7\x89\xC1\x5D'
 	iter = re.finditer(pat, data)
 	for r in iter:
 		end = r.start() - 4 #长度
