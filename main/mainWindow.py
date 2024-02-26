@@ -11,7 +11,7 @@ from main_extract_txt import mainExtractTxt
 from main_extract_bin import mainExtractBin
 from main_extract_json import mainExtractJson
 from main_extract import var
-from merge_json import mergeTool, createDicTool
+from merge_json import mergeTool, createDicTool, collectFilesTool, distFilesTool
 from main.thread import extractThread
 from main.configManager import ConfigManager
 from main.statusBar import StatusBar
@@ -41,6 +41,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.mergeDirButton.clicked.connect(self.chooseMergeDir)
 		self.mergeButton.clicked.connect(self.mergeFile)
 		self.collectButton.clicked.connect(self.collectFiles)
+		self.distButton.clicked.connect(self.distFiles)
 		#创建字典
 		self.createDicButton.clicked.connect(self.createDic)
 		#配置
@@ -293,4 +294,42 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 	#---------------------------------------------------------------
 	#收集
 	def collectFiles(self):
-		self.statusBar.showMessage('暂不支持此功能', 'red')
+		mergePath = self.mergeDirEdit.text()
+		extractPath = self.mainDirEdit.text()
+		filenameReg = self.collectFilenameEdit.text() #文件名匹配
+		collectSep = self.collectSepEdit.text() #多级目录分割符
+		args = {
+			'mergePath':mergePath,
+			'extractPath':extractPath,
+			'filenameReg':filenameReg,
+			'collectSep':collectSep,
+		}
+		print('---------------------------------')
+		print(args)
+		collectFilesTool(args)
+		self.statusBar.showMessage('收集完成。')
+		#保存配置
+		self.mainConfig.setValue('mergeDirPath', mergePath)
+		self.mainConfig.setValue('mainDirPath', extractPath)
+		self.mainConfig.setValue('collectSep', collectSep)
+
+	#分发
+	def distFiles(self):
+		mergePath = self.mergeDirEdit.text()
+		extractPath = self.mainDirEdit.text()
+		filenameReg = self.collectFilenameEdit.text() #文件名匹配
+		collectSep = self.collectSepEdit.text() #多级目录分割符
+		args = {
+			'mergePath':mergePath,
+			'extractPath':extractPath,
+			'filenameReg':filenameReg,
+			'collectSep':collectSep,
+		}
+		print('---------------------------------')
+		print(args)
+		distFilesTool(args)
+		self.statusBar.showMessage('分发完成。')
+		#保存配置
+		self.mainConfig.setValue('mergeDirPath', mergePath)
+		self.mainConfig.setValue('mainDirPath', extractPath)
+		self.mainConfig.setValue('collectSep', collectSep)

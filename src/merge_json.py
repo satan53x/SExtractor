@@ -1,3 +1,4 @@
+import shutil
 import sys
 import os
 import json 
@@ -273,4 +274,61 @@ def setPair(key, value, skipReg):
 
 #----------------------------收集分发-------------------------------
 def collectFilesTool(args):
-	pass
+	mergePath = args['mergePath']
+	extractPath = args['extractPath']
+	filenameReg = args['filenameReg']
+	collectSep = args['collectSep']
+	files = listFiles(mergePath)
+	count = 0
+	for relativePath in files:
+		filename = os.path.basename(relativePath)
+		if filenameReg:
+			#检查文件名
+			if not re.search(filenameReg, filename):
+				continue
+		#包含路径信息的新名字
+		lst = re.split(r'[\\/]', relativePath)
+		newname = ''
+		for n in lst:
+			if newname != '':
+				newname += collectSep
+			newname += n
+		#收集
+		newpath = os.path.join(extractPath, newname)
+		oldpath = os.path.join(mergePath, relativePath)
+		print('收集文件:', relativePath)
+		shutil.copy(oldpath, newpath)
+		count += 1
+	print('收集完成，处理文件总数:', count)
+
+def distFilesTool(args):
+	mergePath = args['mergePath']
+	extractPath = args['extractPath']
+	filenameReg = args['filenameReg']
+	collectSep = args['collectSep']
+	#检查extractPath下new目录
+	path = os.path.join(extractPath, 'new')
+	if os.path.isdir(path):
+		print('\033[32m提取目录存在new文件夹，目录重定向到new\033[0m')
+		extractPath = path 
+	count = 0
+	for newname in os.listdir(extractPath):
+		if os.path.isdir(newname):
+			continue
+		filename = newname
+		if filenameReg:
+			#检查文件名
+			if not re.search(filenameReg, filename):
+				continue
+		#还原路径
+		lst = newname.split(collectSep)
+		relativePath = os.path.join(*lst)
+		#分发
+		newpath = os.path.join(extractPath, newname)
+		oldpath = os.path.join(mergePath, relativePath)
+		print('分发文件:', relativePath)
+		olddir = os.path.dirname(oldpath)
+		os.makedirs(olddir, exist_ok=True) #创建路径上的文件夹
+		shutil.copy(newpath, oldpath)
+		count += 1
+	print('分发完成，处理文件总数:', count)

@@ -1,4 +1,5 @@
 import bisect
+import os
 import re
 from var_extract import *
 
@@ -147,3 +148,13 @@ def getMatchItem(lst, target):
         if item['min'] <= target <= item['max']:
             return item
     return None
+
+#----------------------------------------------------------
+def listFiles(start_path):
+	file_list = []
+	for root, dirs, files in os.walk(start_path):
+		for file in files:
+			# 获取相对路径
+			relative_path = os.path.relpath(os.path.join(root, file), start_path)
+			file_list.append(relative_path)
+	return file_list 
