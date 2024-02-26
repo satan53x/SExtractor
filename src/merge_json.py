@@ -10,7 +10,7 @@ OnceLinesCount = 0 #为0则需要读入filenameList缓存
 Postfix = '.json'
 
 #var
-workpath = ''
+mergePath = ''
 filename = ''
 
 allJson = [
@@ -28,7 +28,7 @@ def writeMerge():
 	else:
 		name = re.sub(r'\.[0-9]+', '', filename)
 		name = name + '.merge' + Postfix
-	filepath = os.path.join(workpath, name)
+	filepath = os.path.join(mergePath, name)
 	fileNew = open(filepath, 'w', encoding=EncodeName)
 	json.dump(allJson[jsonType], fileNew, ensure_ascii=False, indent=2)
 	fileNew.close()
@@ -46,7 +46,7 @@ def writeSeparate(seq):
 	else:
 		name = filename + '.' + str(seq) + Postfix
 		name = f'{filename}.{seq:04d}{Postfix}'
-	filepath = os.path.join(workpath, name)
+	filepath = os.path.join(mergePath, name)
 	fileNew = open(filepath, 'w', encoding=EncodeName)
 	json.dump(allJson[jsonType], fileNew, ensure_ascii=False, indent=2)
 	fileNew.close()
@@ -55,7 +55,7 @@ def writeSeparate(seq):
 def read(funcIndex):
 	global jsonType
 	print('Load', filename)
-	filepath = os.path.join(workpath, filename+Postfix)
+	filepath = os.path.join(mergePath, filename+Postfix)
 	fileOld = open(filepath, 'r', encoding=EncodeName)
 	content = json.load(fileOld)
 	fileOld.close()
@@ -154,28 +154,28 @@ def loadFilenameList(funcIndex):
 		cache = settings.value('filenameList')
 		filenameList = json.loads(cache)
 
-#args: { workpath, funcIndex, lineCount }
+#args: { mergePath, funcIndex, lineCount }
 def mergeTool(args):
 	if len(args) < 3:
 		print("参数错误")
 		return
-	path = args['workpath']
+	path = args['mergePath']
 	funcIndex = args['funcIndex'] # 0合并 1分割
 	global OnceLinesCount
 	OnceLinesCount = args['lineCount']
 	#print(path)
-	global workpath
+	global mergePath
 	global filename
 	if os.path.isdir(path):
-		workpath = path
-		#print(workpath)
+		mergePath = path
+		#print(mergePath)
 		allJson[0].clear()
 		allJson[1].clear()
 		loadFilenameList(funcIndex)
-		for name in os.listdir(workpath):
+		for name in os.listdir(mergePath):
 			#print('Load', name)
 			filename = name.replace(Postfix, '')
-			filepath = os.path.join(workpath, filename+Postfix)
+			filepath = os.path.join(mergePath, filename+Postfix)
 			if os.path.isfile(filepath):
 				#print(filepath)
 				read(funcIndex)
@@ -186,13 +186,13 @@ def mergeTool(args):
 	else:
 		print('未找到主目录')
 
-#-----------------------------------------------------------
-#args: { workpath }
+#----------------------------生成字典-------------------------------
+#args: { mergePath }
 def createDicTool(args):
 	global OnceLinesCount
-	global workpath
+	global mergePath
 	OnceLinesCount = 0
-	workpath = args['workpath']
+	mergePath = args['mergePath']
 	#正则
 	args['file'] = 'json'
 	ret = createDic(args, 'all.orig.json', 'all.trans.json')
@@ -206,8 +206,8 @@ def createDicTool(args):
 
 def createDic(args, keyName, valueName):
 	#print('开始查找key/value文件:', keyName, valueName)
-	keyPath = os.path.join(workpath, keyName)
-	valuePath = os.path.join(workpath, valueName)
+	keyPath = os.path.join(mergePath, keyName)
+	valuePath = os.path.join(mergePath, valueName)
 	if not os.path.isfile(keyPath) or not os.path.isfile(valuePath):
 		#print('未找到key/value文件', keyName, valueName)
 		return 1
@@ -270,3 +270,7 @@ def createDicByTxt(args, fileKey, fileValue):
 def setPair(key, value, skipReg):
 	if skipReg and re.search(skipReg, key): return 
 	allJson[0][key] = value
+
+#----------------------------收集分发-------------------------------
+def collectFilesTool(args):
+	pass

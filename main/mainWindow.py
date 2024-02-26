@@ -90,7 +90,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		init(autoreset=True)
 
 	#---------------------------------------------------------------
-	#选择主文件夹
+	#选择提取目录
 	def chooseMainDir(self):
 		dirpath = self.mainConfig.value('mainDirPath')
 		dirpath = QFileDialog.getExistingDirectory(None, self.mainDirButton.text(), dirpath)
@@ -249,7 +249,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			self.statusBar.showMessage('提取或导入时发生错误！！！    具体错误详见控制台打印！！！', 'red')
 
 	#---------------------------------------------------------------
-	#选择工作目录
+	#选择合并目录
 	def chooseMergeDir(self):
 		dirpath = self.mainConfig.value('mergeDirPath')
 		dirpath = QFileDialog.getExistingDirectory(None, self.mainDirButton.text(), dirpath)
@@ -260,13 +260,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 	#合并
 	def mergeFile(self):
-		workpath = self.mergeDirEdit.text()
+		mergePath = self.mergeDirEdit.text()
 		funcIndex = self.mergeFuncBox.currentIndex()
 		edit = self.mergeLineEdit.text()
 		lineCount = 0
 		if edit: lineCount = int(edit)
 		args = {
-			'workpath':workpath,
+			'mergePath':mergePath,
 			'funcIndex':funcIndex,
 			'lineCount':lineCount
 		}
@@ -274,15 +274,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		print(args)
 		mergeTool(args)
 		#保存配置
-		self.mainConfig.setValue('mergeDirPath', workpath)
+		self.mainConfig.setValue('mergeDirPath', mergePath)
 
 	#---------------------------------------------------------------
 	#创建字典
 	def createDic(self):
-		workpath = self.mergeDirEdit.text()
+		mergePath = self.mergeDirEdit.text()
 		skipReg = self.skipRegEdit.text()
 		args = {
-			'workpath':workpath,
+			'mergePath':mergePath,
 			'skipReg':skipReg
 		}
 		print('---------------------------------')
@@ -290,6 +290,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		createDicTool(args)
 		self.mainConfig.setValue('mergeSkipReg', skipReg)
 
+	#---------------------------------------------------------------
 	#收集
 	def collectFiles(self):
 		self.statusBar.showMessage('暂不支持此功能', 'red')
