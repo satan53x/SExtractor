@@ -15,7 +15,7 @@ if __name__ == "__main__":
     lang_code = QLocale.system().name()
     if lang_code.startswith('en_'):
         lang_code = 'en_US'
-    lang_code = 'en_US' #test, force Language
+    #lang_code = 'en_US' #test, force Language
     file = './main/locale/' + lang_code + '.qm'
     if os.path.exists(file):
         translator.load(file)
