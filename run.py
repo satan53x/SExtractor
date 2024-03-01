@@ -13,11 +13,11 @@ if __name__ == "__main__":
 
     translator = QTranslator()
     lang_code = QLocale.system().name()
-    if lang_code.startswith('en_'):
-        lang_code = 'en_US'
     #lang_code = 'en_US' #test, force Language
-    file = './main/locale/' + lang_code + '.qm'
-    if os.path.exists(file):
+    if lang_code != 'zh_CN':
+        file = './main/locale/' + lang_code + '.qm'
+        if not os.path.exists(file):
+            file = './main/locale/en_US.qm' # default use EN
         translator.load(file)
         app.installTranslator(translator)
 
