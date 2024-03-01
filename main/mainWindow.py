@@ -1,5 +1,5 @@
 import os
-from PyQt5.QtCore import QSettings
+from PyQt5.QtCore import QSettings, QCoreApplication
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from PyQt5.QtGui import QIcon
 from main.ui_mainWindow import Ui_MainWindow
@@ -127,7 +127,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.nameListEdit.setText(self.nameListConfig)
 		#特殊处理正则
 		if self.engineConfig.value('regDic'):
-			self.sampleLabel.setText('正则匹配规则（可在此编辑）')
+			self.sampleLabel.setText(QCoreApplication.translate('MainWindow', '正则匹配规则（可在此编辑）'))
 			if self.engineConfig.value('regDic') == '1':
 				self.regNameTab.setEnabled(True)
 				self.extraFuncTabs.setCurrentIndex(1)
@@ -144,10 +144,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 				self.regNameTab.setEnabled(False)
 		else:
 			self.regNameTab.setEnabled(False)
-			self.sampleLabel.setText('引擎脚本示例')
+			self.sampleLabel.setText(QCoreApplication.translate('MainWindow', '引擎脚本示例'))
 		#引擎类型
 		file = self.engineConfig.value('file')
-		self.statusBar.showMessage('读取文件方式：'+file)
+		self.statusBar.showMessage(QCoreApplication.translate('MainWindow', '读取文件方式：')+file)
 		self.engineConfig.endGroup()
 
 	#选择预设正则规则
@@ -247,7 +247,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 	def handleThreadFinished(self, ret):
 		if ret == 1:
-			self.statusBar.showMessage('提取或导入时发生错误！！！    具体错误详见控制台打印！！！', 'red')
+			self.statusBar.showMessage(QCoreApplication.translate('MainWindow','提取或导入时发生错误！！！    具体错误详见控制台打印！！！'), 'red')
 
 	#---------------------------------------------------------------
 	#选择合并目录
@@ -307,7 +307,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		print('---------------------------------')
 		print(args)
 		collectFilesTool(args)
-		self.statusBar.showMessage('收集完成。')
+		self.statusBar.showMessage(QCoreApplication.translate('MainWindow','收集完成。'))
 		#保存配置
 		self.mainConfig.setValue('mergeDirPath', mergePath)
 		self.mainConfig.setValue('mainDirPath', extractPath)
@@ -328,7 +328,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		print('---------------------------------')
 		print(args)
 		distFilesTool(args)
-		self.statusBar.showMessage('分发完成。')
+		self.statusBar.showMessage(QCoreApplication.translate('MainWindow','分发完成。'))
 		#保存配置
 		self.mainConfig.setValue('mergeDirPath', mergePath)
 		self.mainConfig.setValue('mainDirPath', extractPath)
