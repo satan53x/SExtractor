@@ -245,7 +245,7 @@ def generateJisList():
 	for i in lst:
 		for j in range(0x01, 0x40):
 			if j in lowBytesToAvoid: continue
-			tunnelJisList.append(i.to_bytes(1) + j.to_bytes(1))
+			tunnelJisList.append(i.to_bytes(1, byteorder='little') + j.to_bytes(1, byteorder='little'))
 
 #插入VNT的字符表，生成JIS编码文本
 def generateTunnelJis(text, maxLen=0):
