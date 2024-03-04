@@ -568,7 +568,7 @@ def initArgs(args):
 		printWarningGreen('已启用: 编码也对BIN生效', var.EncodeRead)
 	# 分割
 	var.splitAuto = args['splitAuto']
-	var.splitParaSep:str = args['splitParaSep']
+	var.splitParaSep = args['splitParaSep']
 	if '\\' in var.splitParaSep: #需要处理转义
 		var.splitParaSep = var.splitParaSep.encode().decode('unicode_escape')
 	var.ignoreSameLineCount = args['ignoreSameLineCount']
