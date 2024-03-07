@@ -32,6 +32,7 @@ class ConfigManager():
 			'preReplace': [mainWindow.preReplaceCheck, True, False], #分割前替换
 			'skipIgnoreCtrl': [mainWindow.skipIgnoreCtrlCheck, True, False],
 			'skipIgnoreUnfinish': [mainWindow.skipIgnoreUnfinishCheck, True, False],
+			'ignoreEmptyFile': [mainWindow.ignoreEmptyFileCheck, True, True], #提取到的内容为空则不导出
 		}
 
 	def showSeq(self):

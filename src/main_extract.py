@@ -228,6 +228,9 @@ def readFormatXlsx():
 # --------------------------- 写 ---------------------------------
 def writeFormat():
 	code = var.curIO.outputFormat
+	if var.ignoreEmptyFile:
+		if not var.allOrig:
+			return
 	if code == 0:
 		writeFormatDirect(var.transDic)
 	elif code == 1:

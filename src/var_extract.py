@@ -67,6 +67,7 @@ class ExtractVar():
 	ouputTmp = False #输出中间临时文件
 	skipIgnoreCtrl = False #段落：skip不影响ctrl（lastCtrl不会置为None）
 	skipIgnoreUnfinish = False #段落：skip不影响unfinish（不会添加predel_unfinish）
+	ignoreEmptyFile = True #提取到的内容为空则不导出
 
 	#-------------------
 	def clear(self):
