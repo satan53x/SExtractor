@@ -50,7 +50,7 @@ class ExtractVar():
 	noInput = False
 	indent = 2 #缩进
 	#-------------------
-	symbolPattern = '[\.~\\u3000-\\u303F\\uFF00-\\uFF65\\u2000-\\u206F\\u2600-\\u27FF]' #重新分割匹配字符
+	symbolPattern = '[\.~ \\u3000-\\u303F\\uFF00-\\uFF65\\u2000-\\u206F\\u2600-\\u27FF]' #重新分割匹配字符
 	addSeparate = True
 	printSetting = None
 	splitAuto = False
