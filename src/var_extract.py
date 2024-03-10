@@ -68,6 +68,7 @@ class ExtractVar():
 	skipIgnoreCtrl = False #段落：skip不影响ctrl（lastCtrl不会置为None）
 	skipIgnoreUnfinish = False #段落：skip不影响unfinish（不会添加predel_unfinish）
 	ignoreEmptyFile = True #提取到的内容为空则不导出
+	jsonWrite = 1 #dump模式 0-rapidjson.WM_COMPACT 1-rapidjson.WM_PRETTY
 
 	#-------------------
 	def clear(self):
@@ -94,6 +95,5 @@ class ExtractVar():
 		self.pureText = False #bin模式下如果为纯文本，则会先转为utf再进行正则
 		self.writeOffset = '0' #写入偏移
 		self.keepFormat = True #保持格式
-		self.jsonWrite = 1 #dump模式 0-rapidjson.WM_COMPACT 1-rapidjson.WM_PRETTY
-
+		
 gExtractVar = ExtractVar()

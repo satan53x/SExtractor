@@ -2,10 +2,11 @@
  从GalGame脚本提取和导入文本（大部分需要明文）
  
 ## Python依赖模块：
-国内推荐先配置镜像再下载：`pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple`
+python版本需要3.9及以上。
 * pyqt5
 * colorama
 * pandas
+* python-rapidjson
 
 ## 支持的引擎：
 同引擎不同游戏的格式也可能不同，请参看程序内示例使用。
@@ -50,7 +51,9 @@
 * Nexas
 * RealLive (选项分开提取)
 * RPGMV_System
-* SFA(AOS)
+* RPGVX_NotMap
+* SFA_AOS
+* Valkyria_dat_txt
 * Valkyria_ODN
 * Yuris_txt (非ybn)
 * BIN暴力匹配
@@ -75,6 +78,83 @@
 * Silky: 封Azurite包
 * Unity: data.dsm加解密
 * UniversalInjectorFramework: dll
+
+## 正则相关说明
+读取文件方式分为`txt`和`bin`两大类，前者按字符串处理，后者按字节处理。
+* `separate=reg` bin方式下的分割符，默认为`separate=\r\n`，导入时会补上separate字符串`\r\n`；如果带捕获分组例如`separate=([\x01-\x02]\x00|\x00)`，则会提取出分割符。
+* `startline=0` 每个文件起始处理行数；默认为0。
+* `structure=paragraph` 提取结构，当为`paragraph`时才会处理非name或msg的分组名，比如`unfinish`。（不是所有引擎的正则都支持，`TXT`和`BIN`引擎肯定支持）
+* `extraData=data` data为引擎自定义的参数，具体参考每个引擎的默认正则，用法不定。
+* `ignoreDecodeError=1` bin方式下，忽略文本在提取时的decode编码错误。
+* `checkJIS=reg` bin方式下，检查字节是否符合shift-jis编码，默认只允许双字节，`reg`为支持的单字节。比如`checkJIS=[\n]`表示支持换行符。
+* `postSkip=reg` 在提取中，对于已经提取到的文本进行`re.search(reg, text)`匹配，如果匹配正则成功则忽略掉该文本，不导出。比如`postSkip=^[0-9]`表示忽略数字开头的文本。
+* `sepStr=reg` 仅Krkr_Reg引擎使用，表示分割符匹配；默认为`sepStr=[^\[\]]+`，表示以中括号分割。
+* `endStr=reg` 仅Krkr_Reg引擎使用，表示段落结束的匹配。
+* `ctrlStr=reg` 仅Krkr_Reg引擎使用，表示需要跳过的控制段的匹配。（类似通用的postSkip）
+* `version=0` 主要由Yuris使用，表示文件结构版本
+* `decrypt=auto` 主要由Yuris使用，表示解密。auto表示自动猜测，也可以强制指定，如`decrypt=\xD3\x6F\xAC\x96`。如果已解密则删除该行。
+* `pureText=1` 等同于勾选`BIN启用纯文本正则模式`
+* `writeOffset=1` 主要由CSV使用，向右偏移写入列。
+
+### 正则例子
+对于每行文本都会从上到下进行匹配。
+```
+00_skip=^error
+10_search=^(?P<name>Name.*)$
+20_search=^(?P<pre_name>「.+」)$
+21_search=^(?P<pre_nameANDunfinish>「.*)$
+25_search=^(.+?)(?<=」|。)$
+26_search=^(?P<unfinish>.+?)$
+postSkip=^[0-9]
+structure=paragraph
+```
+* 00 跳过`error`开头的行，skip会打断段落结构（如果用postSkip处理error则不会）
+* 10 提取`Name`开头的行，切指定自身为`name`（`name`默认会`predel_unfinish`）
+* 20 提取带`「」`的一行，且指定前一行为`name`
+* 21 提取`「`开头的一行，切指定前一行为`name`，且自身为`unfinish`
+* 25 提取`」`结尾的一行
+* 26 提取任意字符的一行（.不包含换行符）
+* postSkip 数字开头则跳过，不会打断段落结构
+* 最后顺序合并文本，如果是`unfinish`则添加\r\n且不会切换到下一个message。
+* 分组名`pre_`和`predel_`后可以自由组合，比如`name`和`unfinish`。`AND`也可以有任意个。
+* 原始txt:
+```
+Text0
+Name1
+Text1。
+MaybeName2
+「Text2」
+MaybeName3
+「
+Text3
+33text
+Text333
+error
+」
+```
+* 提取为：
+```
+[
+  {
+    "message": "Text0"
+  },
+  {
+    "name": "Name1",
+    "message": "Text1。"
+  },
+  {
+    "name": "MaybeName2",
+    "message": "「Text2」"
+  },
+  {
+    "name": "MaybeName3",
+    "message": "「\r\nText3\r\nText333"
+  },
+  {
+    "message": "」"
+  }
+]
+```
 
 ## 支持的导出格式：
 * json字典 { 文本 : "" }
