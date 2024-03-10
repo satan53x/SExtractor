@@ -1,6 +1,7 @@
 import os
 import sys
 #PyQt5中使用的基本控件都在PyQt5.QtWidgets模块中
+from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QLocale, QTranslator
 from main.mainWindow import MainWindow
@@ -8,6 +9,9 @@ from main.mainWindow import MainWindow
 Version = '1.4.0' #软件版本号
 
 if __name__ == "__main__":
+    # 使程序按系统比例放大，免得字体变形
+    QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+    QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
     #固定的，PyQt5程序都需要QApplication对象。sys.argv是命令行参数列表，确保程序可以双击运行
     app = QApplication(sys.argv)
 
