@@ -109,9 +109,9 @@ postSkip=^[0-9]
 structure=paragraph
 ```
 * 00 跳过`error`开头的行，skip会打断段落结构（如果用postSkip处理error则不会）
-* 10 提取`Name`开头的行，切指定自身为`name`（`name`默认会`predel_unfinish`）
+* 10 提取`Name`开头的行，且指定自身为`name`（`name`默认会`predel_unfinish`）
 * 20 提取带`「」`的一行，且指定前一行为`name`
-* 21 提取`「`开头的一行，切指定前一行为`name`，且自身为`unfinish`
+* 21 提取`「`开头的一行，且指定前一行为`name`，且自身为`unfinish`
 * 25 提取`」`结尾的一行
 * 26 提取任意字符的一行（.不包含换行符）
 * postSkip 数字开头则跳过，不会打断段落结构
