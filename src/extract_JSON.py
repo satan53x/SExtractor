@@ -1,5 +1,5 @@
 from common import *
-from extract_TXT import ParseVar, GetRegList, searchLine, initParseVar, dealLastCtrl
+from extract_TXT import ParseVar, GetRegList, searchLine, initParseVar, dealLastCtrl, dealTransLine
 
 copyKeyToValue = True
 
@@ -84,11 +84,13 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		if j == None:
 			#一层
 			strOld = content[i]
+			trans = dealTransLine(trans, strOld[start:end])
 			strNew = strOld[:start] + trans + strOld[end:]
 			content[i] = strNew
 		else:
 			#两层
 			strOld = content[i][j]
+			trans = dealTransLine(trans, strOld[start:end])
 			strNew = strOld[:start] + trans + strOld[end:]
 			content[i][j] = strNew
 			

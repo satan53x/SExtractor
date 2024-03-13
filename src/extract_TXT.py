@@ -205,17 +205,22 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		ctrl = lCtrl[i]
 		contentIndex, start, end = ctrl['pos']
 		trans = lTrans[i]
-		if ExVar.subsJis:
-			transData = getBytes(trans, ExVar.NewEncodeName)
-			trans = transData.decode(OldEncodeName)
-		elif ExVar.cutoff:
-			origData = content[contentIndex][start:end].encode(OldEncodeName)
-			transData = generateBytes(trans, len(origData), NewEncodeName)
-			if transData == None:
-				return False
-			trans = transData.decode(NewEncodeName)
+		#处理trans
+		dealTransLine(trans, content[contentIndex][start:end])
 		#写入new
 		strNew = content[contentIndex][:start] + trans + content[contentIndex][end:]
 		#print(strNew)
 		content[contentIndex] = strNew
 	return True
+
+def dealTransLine(trans, orig):
+	if ExVar.subsJis:
+		transData = getBytes(trans, ExVar.NewEncodeName)
+		trans = transData.decode(OldEncodeName)
+	elif ExVar.cutoff:
+		origData = orig.encode(OldEncodeName)
+		transData = generateBytes(trans, len(origData), NewEncodeName)
+		if transData == None:
+			return False
+		trans = transData.decode(NewEncodeName)
+	return trans
