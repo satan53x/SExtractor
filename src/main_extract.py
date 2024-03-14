@@ -330,10 +330,15 @@ def keepAllOrig():
 	listIndex = -1
 	item = {}
 	ctrl = {}
+	checkRN = 1
+	if not var.splitParaSep == '\r\n':
+		checkRN = 0
 	while(listIndex < len(var.listOrig) - 1):
 		listIndex += 1
 		ctrl = var.listCtrl[listIndex]
 		orig = var.listOrig[listIndex]
+		if checkRN > 0 and var.splitParaSep in orig:
+			checkRN = -1
 		#print(listIndex, orig, ctrl)
 		if 'name'in ctrl:
 			item = tryAddToDic(item, ctrl) #前一个结束
@@ -354,6 +359,8 @@ def keepAllOrig():
 				continue
 			item = tryAddToDic(item, ctrl)
 	item = tryAddToDic(item, ctrl)
+	if checkRN < 0:
+		printWarning('文本内容与段落分隔符重复，建议修改设置中分隔符', repr(var.splitParaSep))
 
 def tryAddToDic(item:dict, ctrl):
 	if item != {}:
