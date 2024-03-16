@@ -499,9 +499,6 @@ def setRegDic(str):
 		if pair[0] == 'separate':
 			var.contentSeparate = pair[1]
 			continue
-		elif pair[0] == 'startline':
-			var.startline = int(pair[1])
-			continue
 		elif pair[0] == 'flag':
 			lst = pair[1].split(',')
 			for flag in lst:
@@ -510,14 +507,22 @@ def setRegDic(str):
 				else:
 					printWarning('没有找到预设的参数名:', flag) 
 			continue
-		elif ('skip' not in pair[0]) and ('search' not in pair[0]):
+		elif ('_skip' not in pair[0]) and ('_search' not in pair[0]):
 			if hasattr(var, pair[0]):
+				if pair[1] == 'False' or pair[1] == 'false':
+					pair[1] = False
+				elif pair[1] == 'True' or pair[1] == 'true':
+					pair[1] = True
+				elif pair[1].isdecimal():
+					pair[1] = int(pair[1])
 				setattr(var, pair[0], pair[1])
+				printInfo('额外参数:', pair[0], pair[1])
 			else:
 				printWarning('没有找到预设的参数名:', pair[0])
+			continue
 		# 规则
 		var.regDic[pair[0]] = pair[1]
-		print('正则规则:', pair[0], pair[1])
+		printInfo('正则规则:', pair[0], pair[1])
 
 def readCutoffDic():
 	var.cutoffDic.clear()

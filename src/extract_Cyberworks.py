@@ -14,7 +14,7 @@ def initExtra():
 	lst = ExVar.extraData.split(',')
 	existTextLen = 'noTextLen' not in lst
 	decrypt = existTextLen #有长度字节才会进行加解密
-	if ExVar.decrypt == '0':
+	if ExVar.decrypt == 0:
 		decrypt = False #强制指定
 	#默认编码
 	if 'readJIS' in lst: return
