@@ -95,5 +95,6 @@ class ExtractVar():
 		self.pureText = False #bin模式下如果为纯文本，则会先转为utf再进行正则
 		self.writeOffset = '0' #写入偏移
 		self.keepFormat = True #保持格式
+		self.linebreak = '' #标识换行的字符串
 		
 gExtractVar = ExtractVar()

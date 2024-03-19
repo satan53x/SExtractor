@@ -1,8 +1,8 @@
 import re
 from common import *
-from extract_TXT import searchLine, ParseVar, dealLastCtrl, initParseVar
 from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_BIN import parseImp as parseImpBIN
+from helper_text import generateBytes, getBytes
 
 headerList = []
 decrypt = True #进行加密和解密
@@ -28,7 +28,38 @@ def parseImp(content, listCtrl, dealOnce):
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
-	replaceOnceImpBIN(content, lCtrl, lTrans)
+	num = len(lCtrl)
+	for i in range(num):
+		# 位置
+		ctrl = lCtrl[i]
+		contentIndex, start, end = ctrl['pos']
+		headerMain = headerList[contentIndex]
+		if ExVar.linebreak and headerMain['type'] == 'S':
+			#暂不支持'T'格式
+			transList = re.split(ExVar.linebreak, lTrans[i])
+		else:
+			transList = [lTrans[i]]
+		#主文本放入原位置
+		transData = generateBytes(transList[0], end - start, ExVar.NewEncodeName)
+		if transData == None:
+			return False
+		#写入new
+		strNew = content[contentIndex][:start] + transData + content[contentIndex][end:]
+		content[contentIndex] = strNew
+		#其他文本则新建
+		for j in range(1, len(transList)):
+			header = {
+				'type': headerMain['type'],
+				'pre': headerMain['pre'],
+			}
+			if 'post' in headerMain:
+				header['post'] = headerMain['post']
+			transData = getBytes(transList[j], ExVar.NewEncodeName)
+			if transData == None:
+				return False
+			content.insert(contentIndex+j, transData)
+			headerList.insert(contentIndex+j, header)
+	return True
 
 def replaceEndImp(content):
 	for contentIndex in range(len(content)):
