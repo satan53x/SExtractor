@@ -514,7 +514,8 @@ def setRegDic(str):
 				elif pair[1] == 'True' or pair[1] == 'true':
 					pair[1] = True
 				elif pair[1].isdecimal():
-					pair[1] = int(pair[1])
+					if pair[0] not in ['extraData']:
+						pair[1] = int(pair[1])
 				setattr(var, pair[0], pair[1])
 				printInfo('额外参数:', pair[0], pair[1])
 			else:
