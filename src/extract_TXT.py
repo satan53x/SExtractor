@@ -206,7 +206,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		contentIndex, start, end = ctrl['pos']
 		trans = lTrans[i]
 		#处理trans
-		dealTransLine(trans, content[contentIndex][start:end])
+		trans = dealTransLine(trans, content[contentIndex][start:end])
 		#写入new
 		strNew = content[contentIndex][:start] + trans + content[contentIndex][end:]
 		#print(strNew)

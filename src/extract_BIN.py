@@ -10,11 +10,11 @@ from helper_text import generateBytes
 
 # ---------------- Group: BIN -------------------
 def parseImp(content, listCtrl, dealOnce):
+	lastCtrl = None
 	checkLast = ExVar.structure.startswith('para')
 	var = ParseVar(listCtrl, dealOnce)
 	var.OldEncodeName = ExVar.OldEncodeName
 	initParseVar(var)
-	lastCtrl = None
 	for contentIndex in range(len(content)):
 		if contentIndex < ExVar.startline: continue 
 		var.lineData = content[contentIndex]
