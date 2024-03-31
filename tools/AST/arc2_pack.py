@@ -11,6 +11,7 @@ Postfix = ''
 Version = 2 #版本号
 IfCompress = True
 PackName = 'dat_new'
+NeedToCompress = ['.adv', '.anm', '.db']
 
 # ------------------------------------------------------------
 #var
@@ -30,6 +31,7 @@ def pack():
 	#子文件区
 	fileSection = []
 	for i, filename in enumerate(filenameList):
+		print('Pack:', filename)
 		#读取文件
 		filepath = os.path.join(dirpath, filename+Postfix)
 		fileOld = open(filepath, 'rb')
@@ -46,7 +48,7 @@ def pack():
 		indexSection.append(bs)
 		indexLen += len(bs)
 		#附加文件
-		IfCompress = filename.endswith('.adv') #剧本
+		IfCompress = any(filename.endswith(postfix) for postfix in NeedToCompress) #需要压缩
 		if IfCompress or data[0:4] == b'\x89\x50\x4E\x47': #图片
 			data = xorBytes(data, b'\xFF') #加密
 		if IfCompress:
@@ -88,14 +90,35 @@ def write():
 	fileNew.close()
 	print(f'Write done: {name}')
 
+# 广度优先
+# def listFiles(start_path):
+# 	file_list = []
+# 	for root, dirs, files in os.walk(start_path):
+# 		for file in files:
+# 			# 获取相对路径
+# 			relative_path = os.path.relpath(os.path.join(root, file), start_path)
+# 			file_list.append(relative_path)
+# 	return file_list 
+
+# 深度优先
+file_list = []
+root_path = ''
 def listFiles(start_path):
-	file_list = []
-	for root, dirs, files in os.walk(start_path):
-		for file in files:
-			# 获取相对路径
-			relative_path = os.path.relpath(os.path.join(root, file), start_path)
+	global root_path
+	root_path = start_path
+	file_list.clear()
+	listDir('')
+	return file_list
+
+def listDir(middle_path):
+	dir_path = os.path.join(root_path, middle_path)
+	for filename in os.listdir(dir_path):
+		relative_path = os.path.join(middle_path, filename)
+		abs_path = os.path.join(root_path, relative_path)
+		if os.path.isdir(abs_path):
+			listDir(relative_path)
+		else:
 			file_list.append(relative_path)
-	return file_list 
 
 def main():
 	path = DefaultPath
