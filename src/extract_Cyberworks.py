@@ -7,6 +7,7 @@ from helper_text import generateBytes, getBytes
 headerList = []
 decrypt = True #进行加密和解密
 existTextLen = True #存在文本长度字节
+TextEndBytes = b'\xFE'
 
 def initExtra():
 	global decrypt, existTextLen
@@ -44,8 +45,8 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		if transData == None:
 			return False
 		#写入new
-		strNew = content[contentIndex][:start] + transData + content[contentIndex][end:]
-		content[contentIndex] = strNew
+		str0 = content[contentIndex][:start] + transData + content[contentIndex][end:]
+		content[contentIndex] = str0
 		#其他文本则新建
 		for j in range(1, len(transList)):
 			header = {
@@ -57,6 +58,8 @@ def replaceOnceImp(content, lCtrl, lTrans):
 			transData = getBytes(transList[j], ExVar.NewEncodeName)
 			if transData == None:
 				return False
+			if str0.endswith(TextEndBytes):
+				transData += TextEndBytes
 			content.insert(contentIndex+j, transData)
 			headerList.insert(contentIndex+j, header)
 	return True
