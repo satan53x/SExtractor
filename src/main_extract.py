@@ -24,14 +24,17 @@ def setIOFileName(io:IOConfig):
 		elif io.outputFormat == 8:
 			io.ouputFileName = 'transDic.output.xlsx'
 			io.inputFileName = 'transDic.xlsx'
+		elif io.outputFormat == 9:
+			io.ouputFileName = 'transDic.output.txt'
+			io.inputFileName = 'transDic.txt'
 		else:
 			io.ouputFileName = 'transDic.output.json'
 			io.inputFileName = 'transDic.json'
 	else: #每个文件对应一个输出文档
-		if io.outputFormat == 5 or io.outputFormat == 6:
+		if io.outputFormat == 5 or io.outputFormat == 6 or io.outputFormat == 9:
 			io.ouputFileName = var.filename + '.txt'
 			io.inputFileName = var.filename + '.txt'
-		if io.outputFormat == 8:
+		elif io.outputFormat == 8:
 			io.ouputFileName = var.filename + '.xlsx'
 			io.inputFileName = var.filename + '.xlsx'
 		else:
@@ -98,6 +101,8 @@ def readFormat():
 		readFormatList()
 	elif fmt == 8:
 		readFormatXlsx()
+	elif fmt == 9:
+		readFormatTxtTwoLine()
 	#修正译文
 	transReplace()
 
@@ -223,6 +228,38 @@ def readFormatXlsx():
 		var.isInput = True
 		#print(list(var.transDic.values())[0])
 
+def readFormatTxtTwoLine():
+	#读入txt
+	filepath = os.path.join(var.workpath, var.inputDir, var.curIO.inputFileName)
+	if os.path.isfile(filepath):
+		#列表
+		fileTransDic = open(filepath, 'r', encoding='utf-8')
+		content = fileTransDic.readlines()
+		allOrig = []
+		allTrans = []
+		for line in content:
+			ret = re.search(r'^☆\d+?☆', line)
+			if ret:
+				orig = line[ret.end():-1]
+				allOrig.append(orig)
+				continue
+			ret = re.search(r'^★\d+?★', line)
+			if ret:
+				trans = line[ret.end():-1]
+				allTrans.append(trans)
+				continue
+		printInfo('读入Txt:', len(allTrans), var.curIO.inputFileName)
+		if len(allTrans) != len(allOrig):
+			printError('列表有效行数不一致', var.curIO.inputFileName)
+			return
+		var.isInput = True
+		#合并 
+		for i in range(len(allOrig)):
+			orig = allOrig[i]
+			trans = allTrans[i]
+			var.transDic[orig] = trans
+		fileTransDic.close()
+
 # --------------------------- 写 ---------------------------------
 def writeFormat():
 	fmt = var.curIO.outputFormat
@@ -247,22 +284,20 @@ def writeFormat():
 		writeFormatListByItem(var.allOrig)
 	elif fmt == 8:
 		writeFormatXlsx(var.transDic)
+	elif fmt == 9:
+		writeFormatTxtTwoLine(var.transDic)
 
 def writeFormatDirect(targetJson):
-	#print(filepath)
 	printInfo('输出Json:', len(targetJson), var.curIO.ouputFileName)
 	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 	fileOutput = open(filepath, 'w', encoding='utf-8')
-	#print(targetJson)
 	json.dump(targetJson, fileOutput, ensure_ascii=False, indent=2)
 	fileOutput.close()
 
 def writeFormatCopyKey(targetJson):
-	#print(filepath)
 	printInfo('输出Json:', len(targetJson), var.curIO.ouputFileName)
 	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 	fileOutput = open(filepath, 'w', encoding='utf-8')
-	#print(targetJson)
 	tmpDic = {}
 	for orig,trans in targetJson.items():
 		if trans == '':
@@ -273,21 +308,17 @@ def writeFormatCopyKey(targetJson):
 	fileOutput.close()
 
 def writeFormatTxt(targetJson):
-	#print(filepath)
 	printInfo('输出Txt:', len(targetJson), var.curIO.ouputFileName)
 	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 	fileOutput = open(filepath, 'w', encoding='utf-8')
-	#print(targetJson)
 	for orig in targetJson.keys():
 		fileOutput.write(orig + '\n')
 	fileOutput.close()
 
 def writeFormatTxtByItem(targetJson):
-	#print(filepath)
 	printInfo('输出Txt:', len(targetJson), var.curIO.ouputFileName)
 	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 	fileOutput = open(filepath, 'w', encoding='utf-8')
-	#print(targetJson)
 	for item in targetJson:
 		if 'name' in item:
 			fileOutput.write(item['name'] + '\n')
@@ -296,11 +327,9 @@ def writeFormatTxtByItem(targetJson):
 	fileOutput.close()
 
 def writeFormatListByItem(targetJson):
-	#print(filepath)
 	printInfo('输出Json:', len(targetJson), var.curIO.ouputFileName)
 	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
 	fileOutput = open(filepath, 'w', encoding='utf-8')
-	#print(targetJson)
 	tmpList = []
 	for item in targetJson:
 		if 'name' in item:
@@ -311,14 +340,21 @@ def writeFormatListByItem(targetJson):
 	fileOutput.close()
 
 def writeFormatXlsx(targetJson):
-	#print(filepath)
 	printInfo('输出Xlsx:', len(targetJson), var.curIO.ouputFileName)
 	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
-	#fileOutput = open(filepath, 'w', encoding='utf-8')
-	#print(targetJson)
 	df = pandas.DataFrame(list(targetJson.items()), columns=['Key', 'Value'], dtype=str)
 	df.to_excel(filepath, index=False, engine='openpyxl')
-	#fileOutput.close()
+	
+def writeFormatTxtTwoLine(targetJson):
+	printInfo('输出Txt:', len(targetJson), var.curIO.ouputFileName)
+	filepath = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
+	fileOutput = open(filepath, 'w', encoding='utf-8')
+	for i, orig in enumerate(targetJson.keys()):
+		id = i + 1
+		fileOutput.write(f'☆{id:06d}☆{orig}' + '\n')
+		fileOutput.write(f'★{id:06d}★{orig}' + '\n')
+		fileOutput.write('\n')
+	fileOutput.close()
 
 # ------------------------------------------------------------
 def keepAllOrig():
