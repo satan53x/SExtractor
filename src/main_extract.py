@@ -77,26 +77,26 @@ def transReplace():
 def readFormat():
 	setIOFileName(var.io)
 	setIOFileName(var.ioExtra)
-	code = var.curIO.outputFormat
+	fmt = var.curIO.outputFormat
 	var.isInput = False
 	var.transDic.clear()
 	var.transDicIO.clear()
 	var.allOrig.clear()
 	if var.noInput: #不读取译文
 		return
-	if code == 0 or code == 1:
+	if fmt == 0 or fmt == 1:
 		readFormatDic()
-	elif code == 2:
+	elif fmt == 2:
 		readFormatItemList()
-	elif code == 3 or code == 4:
+	elif fmt == 3 or fmt == 4:
 		readFormatDicIO()
-	elif code == 5:
+	elif fmt == 5:
 		readFormatTxt(False)
-	elif code == 6:
+	elif fmt == 6:
 		readFormatTxt(True)
-	elif code == 7:
+	elif fmt == 7:
 		readFormatList()
-	elif code == 8:
+	elif fmt == 8:
 		readFormatXlsx()
 	#修正译文
 	transReplace()
@@ -153,8 +153,6 @@ def readFormatTxt(boolSplit):
 				var.transDic[orig] = trans
 		fileAllOrig.close()
 		fileAllTrans.close()
-
-
 
 def readFormatItemList():
 	#读入带换行文本item的all.orig列表和all.trans列表
@@ -227,27 +225,27 @@ def readFormatXlsx():
 
 # --------------------------- 写 ---------------------------------
 def writeFormat():
-	code = var.curIO.outputFormat
+	fmt = var.curIO.outputFormat
 	if var.ignoreEmptyFile:
 		if not var.allOrig:
 			return
-	if code == 0:
+	if fmt == 0:
 		writeFormatDirect(var.transDic)
-	elif code == 1:
+	elif fmt == 1:
 		writeFormatCopyKey(var.transDic)
-	elif code == 2:
+	elif fmt == 2:
 		writeFormatDirect(var.allOrig)
-	elif code == 3:
+	elif fmt == 3:
 		writeFormatDirect(var.transDicIO)
-	elif code == 4:
+	elif fmt == 4:
 		writeFormatCopyKey(var.transDicIO)
-	elif code == 5:
+	elif fmt == 5:
 		writeFormatTxt(var.transDic)
-	elif code == 6:
+	elif fmt == 6:
 		writeFormatTxtByItem(var.allOrig)
-	elif code == 7:
+	elif fmt == 7:
 		writeFormatListByItem(var.allOrig)
-	elif code == 8:
+	elif fmt == 8:
 		writeFormatXlsx(var.transDic)
 
 def writeFormatDirect(targetJson):

@@ -1,9 +1,6 @@
 
 class IOConfig():
-	#输入输出格式:
-	# 0 json {orig:''}
-	# 1 json {orig:orig}
-	# 2 json [{name,message}]
+	#输入输出格式: 见engine.ini
 	outputFormat = 0
 	ouputFileName = ''
 	inputFileName = ''
