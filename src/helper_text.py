@@ -7,7 +7,7 @@ __all__ = ['splitToTransDic', 'splitToTransDicAuto',
 		'generateJisList', 'generateTunnelJis', 'generateTunnelJisMap',
 		'generateSubsDic', 'generateSubsJis', 'generateSubsConfig',
 		'writeSubsConfig',
-		'replaceValue',
+		'replaceValue', 'keepFirstTrans',
 		'getBytes', 'OldEncodeName'
 ]
 
@@ -126,13 +126,11 @@ def splitToTransDic(orig, trans):
 		msgTrans = ExVar.addSpace
 		if j<len(listMsgTrans) and listMsgTrans[j] != '':
 			msgTrans = listMsgTrans[j]
-		if  msgOrig not in ExVar.transDic or \
-			ExVar.transDic[msgOrig] == '' or \
-			ExVar.transDic[msgOrig] == '　' or \
-			ExVar.transDic[msgOrig] == ' ':
-			if len(msgTrans) > ExVar.maxCountPerLine:
-				printWarning('长度超过设置阈值', msgTrans)
-			ExVar.transDic[msgOrig] = msgTrans
+		if msgOrig not in ExVar.transDic:
+			ExVar.transDic[msgOrig] = []
+		ExVar.transDic[msgOrig].append(msgTrans)
+		if len(msgTrans) > ExVar.maxCountPerLine:
+			printWarning('长度超过设置阈值', msgTrans)
 
 #自动重新分割
 def splitToTransDicAuto(orig, trans):
@@ -142,7 +140,9 @@ def splitToTransDicAuto(orig, trans):
 		msgTrans = listMsgTrans[j]
 		if len(msgTrans) > ExVar.maxCountPerLine:
 			printWarning('长度超过设置阈值', msgTrans)
-		ExVar.transDic[msgOrig] = msgTrans
+		if msgOrig not in ExVar.transDic:
+			ExVar.transDic[msgOrig] = []
+		ExVar.transDic[msgOrig].append(msgTrans)
 
 #重新分割
 def redistributeTrans(orig:str, trans:str):
@@ -382,8 +382,17 @@ def writeSubsConfig(filepath=''):
 def replaceValue(transDic, replaceDic, useRE=True):
 	for orig, trans in transDic.items():
 		for old, new in replaceDic.items():
-			if useRE:
-				trans = re.sub(old, new, trans)
-			else:
-				trans = trans.replace(old, new)
-			transDic[orig] = trans
+			for i, t in enumerate(trans):
+				if useRE:
+					trans[i] = re.sub(old, new, t)
+				else:
+					trans[i] = t.replace(old, new)
+
+#只保留第一个，用于输出
+def keepFirstTrans(transDic):
+	if not isinstance(transDic, dict):
+		return transDic
+	newDic = {}
+	for orig, trans in transDic.items():
+		newDic[orig] = trans[0]
+	return newDic

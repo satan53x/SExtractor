@@ -74,7 +74,8 @@ def transReplace():
 				for orig, trans in var.transDic.items():
 					for keep in keepList:
 						if keep == orig:
-							var.transDic[orig] = ''
+							for i, t in enumerate(trans):
+								trans[i] = ''
 
 # --------------------------- 读 ---------------------------------
 def readFormat():
@@ -115,6 +116,8 @@ def readFormatDic():
 		printInfo('读入Json: ', len(var.transDic), var.curIO.inputFileName)
 		var.isInput = True
 		#print(list(var.transDic.values())[0])
+		for orig, trans in var.transDic.items():
+			var.transDic[orig] = [trans]
 
 def readFormatDicIO():
 	#读入带换行文本的transDicIO字典
@@ -126,7 +129,7 @@ def readFormatDicIO():
 		var.isInput = True
 		#print(list(var.transDic.values())[0])
 		#还原transDic
-		for orig,trans in var.transDicIO.items():
+		for orig, trans in var.transDicIO.items():
 			splitToTransDic(orig, trans)
 
 def readFormatTxt(boolSplit):
@@ -155,7 +158,7 @@ def readFormatTxt(boolSplit):
 				splitToTransDic(orig, trans)
 			else:
 				#不分割
-				var.transDic[orig] = trans
+				var.transDic[orig] = [trans]
 		fileAllOrig.close()
 		fileAllTrans.close()
 
@@ -182,7 +185,7 @@ def readFormatItemList():
 			itemTrans = allTrans[i]
 			if 'name' in itemOrig: #名字
 				if itemOrig['name'] not in var.transDic:
-					var.transDic[itemOrig['name']] = itemTrans['name']
+					var.transDic[itemOrig['name']] = [itemTrans['name']]
 			if 'message' in itemOrig: #对话
 				splitToTransDic(itemOrig['message'], itemTrans['message'])
 		fileAllOrig.close()
@@ -221,9 +224,9 @@ def readFormatXlsx():
 		for index, row in df.iterrows():
 			value = row['Value']
 			if pandas.notna(value):
-				var.transDic[row['Key']] = value
+				var.transDic[row['Key']] = [value]
 			else:
-				var.transDic[row['Key']] = ''
+				var.transDic[row['Key']] = ['']
 		printInfo('读入Xlsx: ', len(var.transDic), var.curIO.inputFileName)
 		var.isInput = True
 		#print(list(var.transDic.values())[0])
@@ -257,7 +260,7 @@ def readFormatTxtTwoLine():
 		for i in range(len(allOrig)):
 			orig = allOrig[i]
 			trans = allTrans[i]
-			var.transDic[orig] = trans
+			var.transDic[orig] = [trans]
 		fileTransDic.close()
 
 # --------------------------- 写 ---------------------------------
@@ -266,10 +269,11 @@ def writeFormat():
 	if var.ignoreEmptyFile:
 		if not var.allOrig:
 			return
+	transDic = keepFirstTrans(var.transDic) #value转为单字符串
 	if fmt == 0:
-		writeFormatDirect(var.transDic)
+		writeFormatDirect(transDic)
 	elif fmt == 1:
-		writeFormatCopyKey(var.transDic)
+		writeFormatCopyKey(transDic)
 	elif fmt == 2:
 		writeFormatDirect(var.allOrig)
 	elif fmt == 3:
@@ -277,15 +281,15 @@ def writeFormat():
 	elif fmt == 4:
 		writeFormatCopyKey(var.transDicIO)
 	elif fmt == 5:
-		writeFormatTxt(var.transDic)
+		writeFormatTxt(transDic)
 	elif fmt == 6:
 		writeFormatTxtByItem(var.allOrig)
 	elif fmt == 7:
 		writeFormatListByItem(var.allOrig)
 	elif fmt == 8:
-		writeFormatXlsx(var.transDic)
+		writeFormatXlsx(transDic)
 	elif fmt == 9:
-		writeFormatTxtTwoLine(var.transDic)
+		writeFormatTxtTwoLine(transDic)
 
 def writeFormatDirect(targetJson):
 	printInfo('输出Json:', len(targetJson), var.curIO.ouputFileName)
@@ -431,20 +435,28 @@ def dealOnce(text, contentIndex=0):
 	#print(orig)
 	if orig not in var.transDic:
 		#print('Add to transDic', orig, var.filename, str(contentIndex))
-		var.transDic[orig] = ''
+		var.transDic[orig] = []
+		var.transDic[orig].append('')
 	return True
 
 def replace():
 	for listIndex in range(len(var.listOrig)-1, -1, -1): #倒序
 		orig = var.listOrig[listIndex]
 		ctrl = var.listCtrl[listIndex]
-		trans = var.transDic[orig]
-		if trans == '':
+		trans:list = var.transDic[orig]
+		if len(trans) == 0:
+			printError('译文列表中元素个数不足:', var.filename, orig)
+			newStr = ''
+		else:
+			newStr = trans.pop()
+			if len(trans) == 0:
+				trans.append('')
+		if newStr == '':
 			printWarningGreen('译文为空, 不替换', var.filename, orig)
 			#trans = 'te'.format(listIndex) #测试
 			continue
 		#开始处理段落
-		ret = var.replaceOnceImp(var.content, [ctrl], [trans])
+		ret = var.replaceOnceImp(var.content, [ctrl], [newStr])
 		if ret == False:
 			printError('替换错误，请检查文本', var.filename, trans)
 			continue
@@ -564,8 +576,8 @@ def readCutoffDic():
 	#读入cutoff字典
 	filepath = os.path.join(var.workpath, 'ctrl', 'cutoff.json')
 	if os.path.isfile(filepath):
-		fileTransDic = open(filepath, 'r', encoding='utf-8')
-		var.cutoffDic = json.load(fileTransDic)
+		fileCutoffDic = open(filepath, 'r', encoding='utf-8')
+		var.cutoffDic = json.load(fileCutoffDic)
 		printInfo('读入Json: ', len(var.cutoffDic), 'cutoff.json')
 
 def writeCutoffDic():

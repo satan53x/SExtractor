@@ -23,7 +23,7 @@ class ExtractVar():
 	inputDir = 'ctrl'
 
 	#-------------------
-	transDic = {}
+	transDic = {} #字典的value为字符串list
 	transDicIO = {} #读取写入时的原本字典，不参与write()，模式01则不需要
 	allOrig = []
 
