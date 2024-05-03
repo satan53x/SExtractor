@@ -461,7 +461,7 @@ def replace():
 		#开始处理段落
 		ret = var.replaceOnceImp(var.content, [ctrl], [newStr])
 		if ret == False:
-			printError('替换错误，请检查文本', var.filename, trans)
+			printError('替换错误，请检查文本', var.filename, newStr)
 			continue
 		#break #测试
 	if var.replaceEndImp:
