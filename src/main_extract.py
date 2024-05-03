@@ -184,8 +184,10 @@ def readFormatItemList():
 			itemOrig = allOrig[i]
 			itemTrans = allTrans[i]
 			if 'name' in itemOrig: #名字
-				if itemOrig['name'] not in var.transDic:
-					var.transDic[itemOrig['name']] = [itemTrans['name']]
+				key = itemOrig['name']
+				if key not in var.transDic:
+					var.transDic[key] = []
+				var.transDic[key].append(itemTrans['name'])
 			if 'message' in itemOrig: #对话
 				splitToTransDic(itemOrig['message'], itemTrans['message'])
 		fileAllOrig.close()
@@ -448,9 +450,10 @@ def replace():
 			printError('译文列表中元素个数不足:', var.filename, orig)
 			newStr = ''
 		else:
-			newStr = trans.pop()
-			if len(trans) == 0:
-				trans.append('')
+			if len(trans) == 1:
+				newStr = trans[0]
+			else:
+				newStr = trans.pop()
 		if newStr == '':
 			printWarningGreen('译文为空, 不替换', var.filename, orig)
 			#trans = 'te'.format(listIndex) #测试
