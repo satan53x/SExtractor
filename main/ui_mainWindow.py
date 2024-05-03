@@ -137,6 +137,7 @@ class Ui_MainWindow(object):
         self.sampleLabel.setObjectName("sampleLabel")
         self.verticalLayout.addWidget(self.sampleLabel)
         self.sampleBrowser = QtWidgets.QTextEdit(self.tab)
+        self.sampleBrowser.setAcceptRichText(False)
         self.sampleBrowser.setObjectName("sampleBrowser")
         self.verticalLayout.addWidget(self.sampleBrowser)
         self.extraFuncTabs = QtWidgets.QTabWidget(self.tab)

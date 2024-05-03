@@ -345,7 +345,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QTextEdit" name="sampleBrowser"/>
+         <widget class="QTextEdit" name="sampleBrowser">
+          <property name="acceptRichText">
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QTabWidget" name="extraFuncTabs">
