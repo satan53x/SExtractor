@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QLocale, QTranslator
 from main.mainWindow import MainWindow
 
-Version = '2.0.2' #软件版本号
+Version = '2.1.0' #软件版本号
 
 if __name__ == "__main__":
     # 使程序按系统比例放大，免得字体变形
