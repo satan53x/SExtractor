@@ -1,5 +1,5 @@
 from common import *
-from extract_TXT import ParseVar, GetRegList, searchLine, initParseVar, dealLastCtrl, dealTransLine
+from extract_TXT import ParseVar, searchLine, initParseVar, dealLastCtrl, dealTransLine
 
 copyKeyToValue = True
 

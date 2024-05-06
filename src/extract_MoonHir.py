@@ -2,7 +2,7 @@ import re
 from common import *
 from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_BIN import parseImp as parseImpBIN
-from extract_TXT import GetRegList, ParseVar, searchLine
+from extract_TXT import ParseVar, searchLine
 
 # ---------------- Engine: MoonHir -------------------
 def parseImp(content, listCtrl, dealOnce):

@@ -1,7 +1,7 @@
 import re
 from common import *
 from extract_BIN import replaceOnceImp as replaceOnceImpBIN
-from extract_TXT import searchLine, ParseVar, GetRegList
+from extract_TXT import searchLine, ParseVar
 
 
 # ---------------- Engine: SystemC -------------------
