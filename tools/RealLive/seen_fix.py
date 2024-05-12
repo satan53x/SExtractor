@@ -5,8 +5,8 @@ import os
 import sys
 from tkinter import filedialog
 
-GameType = 21 #此处选择预设游戏
-OffsetStart = 0x100 #如果是arc_conv提取需要把此处改为0x100
+GameType = 4 #此处选择预设游戏
+OffsetStart = 0x100 #如果是arc_conv解包需要把此处改为0x100
 DefaultDir = '.'
 
 #每个游戏可能不同，可以通过异或txt截断处和游戏内ocr提取文本获得
@@ -21,6 +21,9 @@ XorTable = {
 	2: bytearray.fromhex('83 0B CF 51 87 13 5F 6B 96 4D F6 14 4F 21 97 DE'),
 	#プリンセスハートリンク 剣姫たちの艶舞 PKG版
 	3: bytearray.fromhex('83 0B CF 51 87 13 5F 6B AE 68 D7 16 45 23 9B 87'),
+
+	#鬼まり。 ～鬼が夢見し常の世に、至る幼き恋の始まり～
+	4: bytearray.fromhex('AD 2B FE 3E E8 3A 3B 19 82 0D FA 3B 25 01 B5 B5'),
 
 	# >>>>>>> Made by `Cosetto`
 	# 3Ping Lovers！☆一夫二妻の世界へようこそ♪
@@ -60,6 +63,8 @@ def main(args):
 	workpath = DefaultDir
 	if len(args) > 1:
 		workpath = args[1]
+	elif workpath == '.':
+		workpath = filedialog.askdirectory()
 	else:
 		workpath = filedialog.askdirectory(initialdir=workpath)
 		if workpath == '': return
