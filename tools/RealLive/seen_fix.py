@@ -23,6 +23,7 @@ XorTable = {
 	3: bytearray.fromhex('83 0B CF 51 87 13 5F 6B AE 68 D7 16 45 23 9B 87'),
 
 	#鬼まり。 ～鬼が夢見し常の世に、至る幼き恋の始まり～
+	#鬼うた。 ～鬼が来たりて、甘えさせろとのたもうた。～
 	4: bytearray.fromhex('AD 2B FE 3E E8 3A 3B 19 82 0D FA 3B 25 01 B5 B5'),
 
 	# >>>>>>> Made by `Cosetto`
