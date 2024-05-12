@@ -299,20 +299,24 @@ def generateTunnelJisMap(filepath=''):
 # ------------------------------------------------------------
 import json
 subsDic = {} #预设字典，默认来自GalTransl_DumpInjector项目
+subsDicValues = [] #预设字典的Value列表，即替换后的字符列表
 subsJPList = [] #jp
 subsCNList = [] #cn
 subsRemainList = [] #剩余的cn
+subsRepeatList = [] #和替换后字符重复的原始译文字符
 subsConfig = {}
 
 def generateSubsDic():
 	subsJPList.clear()
 	subsCNList.clear()
 	subsRemainList.clear()
-	global subsDic
+	subsRepeatList.clear()
+	global subsDic, subsDicValues
 	if subsDic != {}: return
 	filepath = os.path.join('src', 'subs_cn_jp.json')
 	fileOld = open(filepath, 'r', encoding='utf-8')
 	subsDic = json.load(fileOld)
+	subsDicValues = subsDic.values()
 	printInfo('读入subs字典：', os.path.basename(filepath))
 
 #生成替换后的JIS编码文本
@@ -320,6 +324,9 @@ def generateSubsJis(text, maxLen=0):
 	data = bytearray()
 	cutoffLen = 0
 	for wchar in text:
+		if wchar in subsDicValues:
+			#原始字符和替换后字符重复
+			subsRepeatList.append(wchar)
 		try:
 			b = wchar.encode(OldEncodeName)
 		except Exception as ex:
@@ -352,15 +359,22 @@ def generateSubsJis(text, maxLen=0):
 #生成配置文件
 def generateSubsConfig():
 	readSubsConfig()
-	subsConfig['character_substitution']['source_characters'] = ''.join(subsJPList)
-	subsConfig['character_substitution']['target_characters'] = ''.join(subsCNList)
-	subsConfig['character_substitution']['enable'] = True
+	subs = subsConfig['character_substitution']
+	subs['source_characters'] = ''.join(subsJPList)
+	subs['target_characters'] = ''.join(subsCNList)
+	subs['enable'] = True
 	if subsRemainList != []:
 		lst = list(set(subsRemainList))
-		subsConfig['character_substitution']['remain'] = lst
-		printError('译文中的JIS未匹配字符总览，请人工进行修正，详见uif_config.json中remain：\n', ''.join(lst))
-	elif 'remain' in subsConfig['character_substitution']:
-		del subsCNList['character_substitution']['remain']
+		subs['remain'] = lst
+		printError('译文存在替换字典未匹配字符，请进行修正；详见uif_config.json中remain：\n', ''.join(lst))
+	elif 'remain' in subs:
+		del subs['remain']
+	if subsRepeatList != []:
+		lst = list(set(subsRepeatList))
+		subs['repeat'] = lst
+		printError('原始译文含有替换后字符，如果使用字体请进行修正，如果使用hook则无需修正；详见uif_config.json中repeat：\n', ''.join(lst))
+	elif 'repeat' in subs:
+		del subs['repeat']
 	writeSubsConfig()
 
 def readSubsConfig():
