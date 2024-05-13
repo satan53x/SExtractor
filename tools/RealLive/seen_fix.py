@@ -5,9 +5,9 @@ import os
 import sys
 from tkinter import filedialog
 
-GameType = 4 #此处选择预设游戏
+GameType = 5 #此处选择预设游戏
 OffsetStart = 0x100 #如果是arc_conv解包需要把此处改为0x100
-DefaultDir = '.'
+DefaultDir = ''
 
 #每个游戏可能不同，可以通过异或txt截断处和游戏内ocr提取文本获得
 XorTable = {
@@ -25,6 +25,9 @@ XorTable = {
 	#鬼まり。 ～鬼が夢見し常の世に、至る幼き恋の始まり～
 	#鬼うた。 ～鬼が来たりて、甘えさせろとのたもうた。～
 	4: bytearray.fromhex('AD 2B FE 3E E8 3A 3B 19 82 0D FA 3B 25 01 B5 B5'),
+
+	#クドわふたー
+	5: bytearray.fromhex('67 1C 21 BE 6F EF B5 16 4A 82 39 2B AD 3A 71 3F'),
 
 	# >>>>>>> Made by `Cosetto`
 	# 3Ping Lovers！☆一夫二妻の世界へようこそ♪
@@ -64,12 +67,13 @@ def main(args):
 	workpath = DefaultDir
 	if len(args) > 1:
 		workpath = args[1]
-	elif workpath == '.':
+	elif workpath == '':
 		workpath = filedialog.askdirectory()
 	else:
 		workpath = filedialog.askdirectory(initialdir=workpath)
-		if workpath == '': return
 	print('工作目录', workpath)
+	if workpath == '':
+		return
 	#创建new文件夹
 	path = os.path.join(workpath, 'new')
 	if not os.path.exists(path):
