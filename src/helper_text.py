@@ -101,7 +101,7 @@ def generateBytes(text, lenOrig, NewEncodeName):
 
 #固定分割
 def splitToTransDic(orig, trans):
-	if trans == '': return #整体译文为空则不处理
+	#if trans == '': return #整体译文为空则不处理
 	if ExVar.preReplace:
 		#分割前替换
 		if 'replace_before_split' in ExVar.textConf:
@@ -123,9 +123,12 @@ def splitToTransDic(orig, trans):
 			listMsgTrans.pop(j)
 	for j in range(len(listMsgOrig)):
 		msgOrig = listMsgOrig[j]
-		msgTrans = ExVar.addSpace
-		if j<len(listMsgTrans) and listMsgTrans[j] != '':
-			msgTrans = listMsgTrans[j]
+		if trans == '': #整体为空则不需要补齐
+			msgTrans = ''
+		else:
+			msgTrans = ExVar.addSpace
+			if j<len(listMsgTrans):
+				msgTrans = listMsgTrans[j]
 		if msgOrig not in ExVar.transDic:
 			ExVar.transDic[msgOrig] = []
 		ExVar.transDic[msgOrig].append(msgTrans)
