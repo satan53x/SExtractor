@@ -120,7 +120,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		if self.nameListConfig == None:
 			self.nameListConfig = self.engineConfig.value('nameList')
 		if self.nameListConfig == None:
-			self.nameListTab.setEnabled(False)
+			self.nameListTab.setEnabled(True)
 			self.nameListConfig = ''
 		else:
 			self.nameListTab.setEnabled(True)
