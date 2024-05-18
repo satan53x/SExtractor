@@ -54,7 +54,10 @@ def parseImp(content, listCtrl, dealOnce):
 			start = r.start()
 			end = r.end()
 			lastCtrl = {'pos':[contentIndex, start, end]}
-			lastCtrl['unfinish'] = True
+			if text in var.nameList: #强制检查名字
+				lastCtrl['name'] = True #名字标记
+			else:
+				lastCtrl['unfinish'] = True
 			if dealOnce(text, contentIndex):
 				listCtrl.append(lastCtrl)
 
