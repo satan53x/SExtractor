@@ -363,7 +363,7 @@ def writeFormatTxtTwoLine(targetJson):
 	fileOutput.close()
 
 # ------------------------------------------------------------
-def keepAllOrig():
+def keepAllOrig(insertBegin=False):
 	# if len(var.listCtrl) > 0:
 	# 	if 'name' in var.listCtrl[-1] or 'unfinish' in var.listCtrl[-1]:
 	# 		printError('listCtrl结束行错误', var.filename, var.listCtrl[-1], var.listOrig[-1])
@@ -371,6 +371,7 @@ def keepAllOrig():
 	item = {}
 	ctrl = {}
 	checkRN = 1
+	allOrig = []
 	if not var.splitParaSep == '\r\n':
 		checkRN = 0
 	while(listIndex < len(var.listOrig) - 1):
@@ -381,7 +382,7 @@ def keepAllOrig():
 			checkRN = -1
 		#print(listIndex, orig, ctrl)
 		if 'name'in ctrl:
-			item = tryAddToDic(item, ctrl) #前一个结束
+			item = tryAddToDic(item, ctrl, allOrig) #前一个结束
 			item['name'] = orig
 			continue
 		else:
@@ -397,14 +398,18 @@ def keepAllOrig():
 					continue #最后一行
 				item['message'] += var.splitParaSep
 				continue
-			item = tryAddToDic(item, ctrl)
-	item = tryAddToDic(item, ctrl)
+			item = tryAddToDic(item, ctrl, allOrig)
+	item = tryAddToDic(item, ctrl, allOrig)
 	if checkRN < 0:
 		printWarning('文本内容与段落分隔符重复，建议修改设置中分隔符', repr(var.splitParaSep))
+	if insertBegin:
+		var.allOrig = allOrig + var.allOrig
+	else:
+		var.allOrig = var.allOrig + allOrig
 
-def tryAddToDic(item:dict, ctrl):
+def tryAddToDic(item:dict, ctrl, allOrig):
 	if item != {}:
-		var.allOrig.append(item)
+		allOrig.append(item)
 		#加入transDicIO
 		if 'name' in item:
 			if item['name'] not in var.transDicIO:
@@ -678,7 +683,7 @@ def getFiles(dirpath):
 			files.append(filename)
 	return files
 
-#args = [workpath, engineName, outputFormat, nameList]
+#合并为单文档导出
 def mainExtract(args, parseImp, initDone=None):
 	if len(args) < 4:
 		printError("main_extract参数错误", args)
@@ -699,12 +704,18 @@ def mainExtract(args, parseImp, initDone=None):
 		var.curIO = var.io
 		readFormat() #读入译文
 		files = getFiles(var.workpath)
+		fmt = var.curIO.outputFormat
+		if fmt in [2, 6, 7]: #属于列表格式
+			needReverse = True
+			files = list(reversed(files))
+		else:
+			needReverse = False
 		for i, name in enumerate(files):
 			showProgress(i, len(files))
 			var.filename = name
 			printDebug('读取文件:', var.filename)
 			parseImp()
-			keepAllOrig()
+			keepAllOrig(needReverse)
 			#break #测试
 		showProgress(100)
 		printInfo('读取文件数:', var.inputCount)
