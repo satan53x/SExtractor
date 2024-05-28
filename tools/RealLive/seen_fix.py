@@ -47,7 +47,17 @@ XorTable = {
 	
 	# >>>>>>> Made by `Morph`
 	#『彼氏いない歴＝年齢』じゃ、どうしてイケナイのよ!?
-	41: bytearray.fromhex('73 ED 33 9F 63 D1 B9 CE 5E 8E 2B D8 A1 E1 7D 22')
+	41: bytearray.fromhex('73 ED 33 9F 63 D1 B9 CE 5E 8E 2B D8 A1 E1 7D 22'),
+
+	# >>>>>>> Made by `Steins;Gate` & `先依`
+	#素直くーる
+	51: bytearray.fromhex('8F 1F C5 41 9E 09 5B 30 A2 7C DD 06 5C 39 9F DC'),
+
+	#ふりフリ～ふつうのまいにちにわりこんできた、フシギなリンジンたちのおはなしおはなし～
+	52: bytearray.fromhex('9D 6C AE 33 E2 68 29 0F CD 09 A8 77 39 5E A7 AD'),
+
+	#お姉さん×すくらっち
+	53: bytearray.fromhex('B5 3B C6 55 9F 14 5F 69 F8 3B 89 47 1B 7A C5 8D'),
 }
 
 #加密解密函数相同
