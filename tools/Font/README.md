@@ -4,12 +4,12 @@
 
 ## 文件v2
 * 原字体：`WenQuanYi.ttf`（WenQuanYi / WenQuanYi Micro Hei）
-* 字体属性修正后：`MSGothic_WenQuanYi.ttf`（ＭＳ ゴシック）
+* 用FontCreator修改字体名：`MSGothic_WenQuanYi.ttf`（伪装为：ＭＳ ゴシック）
 * 原字体进行JIS替换：`WenQuanYi_cnjp.ttf`（WenQuanYi / WenQuanYi Micro Hei）
-* 修正后进行JIS替换：`MSGothic_WenQuanYi_cnjp.ttf`（ＭＳ ゴシック）
+* 修改后进行JIS替换：`MSGothic_WenQuanYi_cnjp.ttf`（伪装为：ＭＳ ゴシック）
 > 注意：现在只有文件名包含`cnjp`的才是JIS替换字体。
 
-### subs_cn_jp变化
+## subs_cn_jp变化
 * 因为提前了字体名修正步骤，现在可以自行修改`subs_cn_jp.json`后直接运行`font_CN_JP.py`生成ＭＳ ゴシック字体了。
 * 删除即左边中文无法再使用，右边日文则可以正常使用。
 #### 2024.06.01
