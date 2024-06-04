@@ -22,6 +22,8 @@ class ParseVar():
 	ignoreDecodeError = False
 	postSkip = None
 	checkJIS = None
+	checkLast = False
+	lastCtrl = None
 
 	def __init__(self, listCtrl=None, dealOnce=None):
 		self.listCtrl = listCtrl
@@ -178,6 +180,8 @@ def initParseVar(var:ParseVar, regDic=None):
 		if var.OldEncodeName:
 			var.checkJIS = var.checkJIS.encode(var.OldEncodeName)
 		var.checkJIS = re.compile(var.checkJIS)
+	var.checkLast = ExVar.structure.startswith('para')
+	var.lastCtrl = None
 
 # ---------------- Group: TXT -------------------
 def parseImp(content, listCtrl, dealOnce):
