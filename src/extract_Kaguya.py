@@ -5,8 +5,6 @@ from extract_TXT import ParseVar, initParseVar, searchLine
 from helper_text import generateBytes
 
 XorTable = b'\xFF'
-StartLine = 1
-MagicNumberLen = 4
 
 fixLength = True #修正索引长度
 exportAri = False #导出索引文件ari
@@ -26,7 +24,7 @@ def parseImp(content, listCtrl, dealOnce):
 	var.OldEncodeName = ExVar.OldEncodeName
 	initParseVar(var)
 	for contentIndex in range(len(content)):
-		textType, length = headerList[contentIndex]
+		textType, length, id = headerList[contentIndex]
 		lineData = content[contentIndex]
 		# 每行
 		start = 0
@@ -49,11 +47,12 @@ def parseImp(content, listCtrl, dealOnce):
 			var.searchEnd = end
 			var.contentIndex = contentIndex
 			ctrls = searchLine(var)
-			if textType == 2: #名字类型
-				ctrls[0]['name'] = True
-			lastCtrl = ctrls[-1]
-			if lastCtrl and 'unfinish' in lastCtrl:
-				del lastCtrl['unfinish']
+			if ctrls:
+				if textType == 2: #名字类型
+					ctrls[0]['name'] = True
+				lastCtrl = ctrls[-1]
+				if lastCtrl and 'unfinish' in lastCtrl:
+					del lastCtrl['unfinish']
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
@@ -67,7 +66,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 			return False
 		#加密
 		transData = xorBytes(transData, XorTable)
-		textType, length = headerList[contentIndex]
+		textType, length, id = headerList[contentIndex]
 		lineData = content[contentIndex]
 		#修正长度
 		if fixLength:
@@ -84,33 +83,40 @@ def replaceOnceImp(content, lCtrl, lTrans):
 def replaceEndImp(content:list):
 	#遍历
 	ariBuffer = bytearray(b'\0\0\0\0') #ARI头部长度4，文本个数
-	addr = MagicNumberLen + 4
+	addr = manager.arcHeaderLen
 	ariCount = 1 #好像ari头部本身也算一个count
 	for contentIndex in range(len(headerList)):
-		textType, length = headerList[contentIndex]
+		textType, length, id = headerList[contentIndex]
 		#还原控制段
-		prefix = int2bytes(textType) + int2bytes(length)
+		if manager.arcType == 2:
+			prefix = int2bytes(id) + int2bytes(length, 2)
+		else:
+			prefix = int2bytes(textType) + int2bytes(length)
 		content[contentIndex] = prefix + content[contentIndex]
 		#索引
-		if textType == 0 or MagicNumberLen > 0:
+		if textType == 0 or manager.arcType == 1:
 			#为ari添加索引
 			ariCount += 1
 			ariBuffer.extend(int2bytes(addr))
 		#下一个地址
-		addr += 8 + length #字符串header长度为8字节
+		addr += manager.headerLen + length #字符串header长度为8字节
 	#写入arc包长
-	b = int2bytes(addr, 4)
-	ExVar.insertContent[0][MagicNumberLen:MagicNumberLen+4] = b
+	if manager.arcType != 2:
+		bs = int2bytes(addr, 4)
+		ExVar.insertContent[0][manager.magicNumberLen:manager.magicNumberLen+4] = bs
 	#修正ari头部
 	ariBuffer[0:4] = int2bytes(ariCount)
-	if MagicNumberLen > 0 and fixLength:
-		#ari包含在arc中
-		ExVar.insertContent[len(content)] = ariBuffer[4:] #不需要个数
+	if fixLength:
+		if manager.arcType == 1:
+			#ari包含在arc中
+			ExVar.insertContent[len(content)] = ariBuffer[4:] #不需要个数
 	if exportAri:
-		if MagicNumberLen > 0:
-			print('此版本ARC已包含ARI')
+		if manager.arcType == 1:
+			printInfo('此版本ARC已包含ARI')
+		elif manager.arcType == 2:
+			printInfo('此版本没有ARI')
 		else:
-			#导出ari
+			#导出ari文件
 			filepath = os.path.join(ExVar.workpath, 'new', 'TBLSTR.ARI')
 			fileNew = open(filepath, 'wb')
 			fileNew.write(ariBuffer)
@@ -119,28 +125,53 @@ def replaceEndImp(content:list):
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeparate):
 	data = fileOld.read()
-	global MagicNumberLen
-	if data[0:4] == 'UF01'.encode('ascii'):
-		MagicNumberLen = 4
-	else:
-		MagicNumberLen = 0
-	pos = MagicNumberLen
-	strMaxAddr = readInt(data, pos) #字符区最大位置
+	manager.init(data)
+	pos = manager.arcHeaderLen
 	content = []
 	insertContent = {
-		0: bytearray(data[0:pos+4]) #header
+		0: bytearray(data[0:pos]) #header
 	}
 	headerList.clear()
-	pos += 4 
-	while pos < strMaxAddr:
-		textType = readInt(data, pos)
-		pos += 4
-		length = readInt(data, pos)
-		pos += 4
+	while pos < manager.strMaxAddr:
+		if manager.arcType == 2:
+			id = readInt(data, pos)
+			pos += 4
+			length = readInt(data, pos, 2)
+			pos += 2
+			headerList.append([0, length, id]) #没有字符串类型区别
+		else:
+			textType = readInt(data, pos)
+			pos += 4
+			length = readInt(data, pos)
+			pos += 4
+			headerList.append([textType, length, 0])
 		end = pos + length
-		headerList.append([textType, length])
 		content.append(data[pos:end])
 		pos = end
-	if MagicNumberLen > 0:
-		insertContent[len(content)] = data[strMaxAddr:] #ari索引区
+	if manager.arcType == 1:
+		insertContent[len(content)] = data[manager.strMaxAddr:] #ari索引区
 	return content, insertContent
+
+class Manager():
+	def init(self, data):
+		#类型
+		if data[0:4] == 'UF01'.encode('ascii'):
+			self.arcType = 1
+			self.magicNumberLen = 4
+		elif data[0:8] == '[STRTBL]'.encode('ascii'):
+			self.arcType = 2
+			self.magicNumberLen = 8
+		else:
+			self.arcType = 0
+			self.magicNumberLen = 0
+		#字符区最大位置
+		if self.arcType == 2:
+			self.arcHeaderLen = self.magicNumberLen + 8 #4字符串个数+4未知字节
+			self.strMaxAddr = len(data) - self.arcHeaderLen
+			self.headerLen = 6 #每个字符串前的控制长度
+		else:
+			self.arcHeaderLen = self.magicNumberLen + 4 #4字符区地址
+			self.strMaxAddr = readInt(data, self.magicNumberLen) 
+			self.headerLen = 8
+
+manager = Manager()
