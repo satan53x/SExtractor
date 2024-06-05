@@ -29,7 +29,7 @@ def parseImp(content, listCtrl, dealOnce):
 		# 每行
 		start = 0
 		end = length
-		index = lineData.find(b'\x00')
+		index = lineData.find(manager.endStr)
 		if index > 0:
 			end = index
 		#解密
@@ -169,9 +169,11 @@ class Manager():
 			self.arcHeaderLen = self.magicNumberLen + 8 #4字符串个数+4未知字节
 			self.strMaxAddr = len(data) - self.arcHeaderLen
 			self.headerLen = 6 #每个字符串前的控制长度
+			self.endStr = bytes(xorBytes(b'\x00', XorTable))
 		else:
 			self.arcHeaderLen = self.magicNumberLen + 4 #4字符区地址
 			self.strMaxAddr = readInt(data, self.magicNumberLen) 
 			self.headerLen = 8
+			self.endStr = b'\x00'
 
 manager = Manager()
