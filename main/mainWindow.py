@@ -6,6 +6,7 @@ from main.ui_mainWindow import Ui_MainWindow
 import re
 import sys
 import ctypes
+import platform
 sys.path.append('./src')
 from main_extract_txt import mainExtractTxt
 from main_extract_bin import mainExtractBin
@@ -25,7 +26,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		#设置图标
 		icon = QIcon("main/main.ico")
 		self.setWindowIcon(icon)
-		ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("myappid")
+		if platform.system() == "Windows":
+			ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("myappid")
 		#设置状态栏
 		self.statusBar = StatusBar(self)
 		self.setStatusBar(self.statusBar)
