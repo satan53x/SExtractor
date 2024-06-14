@@ -1781,7 +1781,7 @@ database_malie = {
       1698185779,
       1634498932
     ],
-    "Align": 4096
+    "Align": 1024
   },
   "Zettai Meikyuu Grimm": {
     "Key": [
