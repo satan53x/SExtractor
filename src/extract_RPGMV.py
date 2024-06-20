@@ -17,6 +17,7 @@ class RPGParserMV():
 		#config
 		self.prefix = prefix
 		self.extractKeyList = []
+		self.extractKeyReverse = False
 		self.codeTag = self.prefix + 'code'
 		self.parametersTag = self.prefix + 'parameters'
 
@@ -65,16 +66,15 @@ class RPGParserMV():
 				return
 			#其他进行递归
 			for index, child in node.items():
+				parentIndex = None
 				if self.extractKeyList != None:
 					#提取指定key
-					if (len(self.extractKeyList) == 0) or (index in self.extractKeyList):
+					if (len(self.extractKeyList) == 0) or \
+					(not self.extractKeyReverse and index in self.extractKeyList) or \
+					(self.extractKeyReverse and index not in self.extractKeyList):
 						parentIndex = self.getParentIndex(True)
-						nodePath.append(index)
-						self.parseNode(child, relItem=parentIndex)
-						nodePath.pop()
-						continue
 				nodePath.append(index)
-				self.parseNode(child)
+				self.parseNode(child, relItem=parentIndex)
 				nodePath.pop()
 
 	def getParentIndex(self, onlyStr=False):
@@ -106,8 +106,12 @@ class RPGParserMV():
 		elif ExVar.extractKey == 'all':
 			self.extractKeyList = []
 		else:
+			keys = ExVar.extractKey
+			if re.match(r'[!^]', keys):
+				keys = keys[1:]
+				self.extractKeyReverse = True
 			self.extractKeyList.clear()
-			lst = ExVar.extractKey.split(',')
+			lst = keys.split(',')
 			for key in lst:
 				if not key.startswith(self.prefix):
 					key = self.prefix + key
