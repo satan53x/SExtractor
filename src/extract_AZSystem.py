@@ -148,9 +148,13 @@ def readFileDataImp(fileOld, contentSeparate):
 		#按长度读取
 		header = { 'addr': pos-0x10 }
 		headerList.append(header)
-		secLen = readInt(data, pos, 2)
-		content.append(data[pos+2: pos+secLen])
-		pos += secLen
+		cmdLen = readInt(data, pos, 2)
+		if cmdLen == 0:
+			printError('命令长度为0，结构不匹配', ExVar.filename, pos)
+			content.clear()
+			break
+		content.append(data[pos+2: pos+cmdLen])
+		pos += cmdLen
 	return content, insertContent
 
 
