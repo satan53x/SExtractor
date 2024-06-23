@@ -6,7 +6,7 @@
   "allocate_console": false,
   "font_manager": {
     "enable": true,
-    "resource_files": [ "WenQuanYi_msgothic.otf" ],
+    "resource_files": [ "MSGothic_WenQuanYi_cnjp.ttf" ],
     "spoof_enumeration": {
       "enable": false,
       "filter_pitch_and_family": 0,
