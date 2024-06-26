@@ -1,6 +1,6 @@
 ## 相关
-原版地址：https://github.com/AtomCrafty/UniversalInjectorFramework
-改版地址：https://github.com/satan53x/UniversalInjectorFramework
+* 原版地址：https://github.com/AtomCrafty/UniversalInjectorFramework
+* 改版地址：https://github.com/satan53x/UniversalInjectorFramework
 
 ## 修改
 * 修改了JIS隧道对某些游戏exe无法生效的问题。(`MultiByteToWideCharHook`)
