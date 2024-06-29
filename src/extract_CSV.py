@@ -101,7 +101,7 @@ import csv
 def init(fileOld):
 	global writeOffset
 	global separate
-	separate = ExVar.contentSeparate
+	separate = ExVar.contentSeparate.encode().decode('unicode_escape')
 	writeOffset = int(ExVar.writeOffset)
 	if ExVar.structure == 'nohead':
 		content = pd.read_csv(fileOld, header=None, sep=separate, quoting=csv.QUOTE_MINIMAL)
