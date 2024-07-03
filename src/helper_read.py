@@ -257,14 +257,7 @@ def readFormatDicList():
 	printInfo('读入Json:', len(itemList), var.curIO.inputFileName)
 	var.isInput = True
 	#合并
-	for i in range(len(itemList)):
-		origList = list(itemList[i].keys())
-		transList = list(itemList[i].values())
-		if len(origList) >= 2: #含名字
-			orig = origList[0]
-			if orig not in var.transDic:
-				var.transDic[orig] = []
-			var.transDic[orig].append(transList[0])
-		#对话
-		splitToTransDic(origList[-1], transList[-1])
+	for item in itemList:
+		for orig, trans in item.items():
+			splitToTransDic(orig, trans)
 	fileAll.close()
