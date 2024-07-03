@@ -1,0 +1,123 @@
+import json
+import pandas
+from common import *
+from helper_text import *
+
+var = ExVar
+filepathOrig = ''
+# --------------------------- 写 ---------------------------------
+def writeFormat():
+	fmt = var.curIO.outputFormat
+	if var.ignoreEmptyFile:
+		if not var.allOrig:
+			return
+	transDic = keepFirstTrans(var.transDic) #value转为单字符串
+	global filepathOrig
+	filepathOrig = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
+	if fmt == 0:
+		writeFormatDirect(transDic)
+	elif fmt == 1:
+		writeFormatCopyKey(transDic)
+	elif fmt == 2:
+		writeFormatDirect(var.allOrig)
+	elif fmt == 3:
+		writeFormatDirect(var.transDicIO)
+	elif fmt == 4:
+		writeFormatCopyKey(var.transDicIO)
+	elif fmt == 5:
+		writeFormatTxt(transDic)
+	elif fmt == 6:
+		writeFormatTxtByItem(var.allOrig)
+	elif fmt == 7:
+		writeFormatListByItem(var.allOrig)
+	elif fmt == 8:
+		writeFormatXlsx(transDic)
+	elif fmt == 9:
+		writeFormatTxtTwoLine(transDic)
+	elif fmt == 10:
+		writeFormatListCopyKey(var.allOrig, True)
+	elif fmt == 11:
+		writeFormatListCopyKey(var.allOrig, False)
+
+def writeFormatDirect(targetJson):
+	printInfo('输出Json:', len(targetJson), var.curIO.ouputFileName)
+	fileOutput = open(filepathOrig, 'w', encoding='utf-8')
+	json.dump(targetJson, fileOutput, ensure_ascii=False, indent=2)
+	fileOutput.close()
+
+def writeFormatCopyKey(targetJson):
+	printInfo('输出Json:', len(targetJson), var.curIO.ouputFileName)
+	fileOutput = open(filepathOrig, 'w', encoding='utf-8')
+	tmpDic = {}
+	for orig,trans in targetJson.items():
+		if trans == '':
+			tmpDic[orig] = orig
+		else:
+			tmpDic[orig] = trans
+	json.dump(tmpDic, fileOutput, ensure_ascii=False, indent=2)
+	fileOutput.close()
+
+def writeFormatTxt(targetJson):
+	printInfo('输出Txt:', len(targetJson), var.curIO.ouputFileName)
+	fileOutput = open(filepathOrig, 'w', encoding='utf-8')
+	for orig in targetJson.keys():
+		fileOutput.write(orig + '\n')
+	fileOutput.close()
+
+def writeFormatTxtByItem(targetJson):
+	printInfo('输出Txt:', len(targetJson), var.curIO.ouputFileName)
+	fileOutput = open(filepathOrig, 'w', encoding='utf-8')
+	for item in targetJson:
+		if 'name' in item:
+			fileOutput.write(item['name'] + '\n')
+		if 'message' in item:
+			fileOutput.write(item['message'] + '\n')
+	fileOutput.close()
+
+def writeFormatListByItem(targetJson):
+	printInfo('输出Json:', len(targetJson), var.curIO.ouputFileName)
+	fileOutput = open(filepathOrig, 'w', encoding='utf-8')
+	tmpList = []
+	for item in targetJson:
+		if 'name' in item:
+			tmpList.append(item['name'])
+		if 'message' in item:
+			tmpList.append(item['message'])
+	json.dump(tmpList, fileOutput, ensure_ascii=False, indent=2)
+	fileOutput.close()
+
+def writeFormatXlsx(targetJson):
+	printInfo('输出Xlsx:', len(targetJson), var.curIO.ouputFileName)
+	df = pandas.DataFrame(list(targetJson.items()), columns=['Key', 'Value'], dtype=str)
+	df.to_excel(filepathOrig, index=False, engine='openpyxl')
+	
+def writeFormatTxtTwoLine(targetJson):
+	printInfo('输出Txt:', len(targetJson), var.curIO.ouputFileName)
+	fileOutput = open(filepathOrig, 'w', encoding='utf-8')
+	for i, orig in enumerate(targetJson.keys()):
+		id = i + 1
+		fileOutput.write(f'☆{id:06d}☆{orig}' + '\n')
+		fileOutput.write(f'★{id:06d}★{orig}' + '\n')
+		fileOutput.write('\n')
+	fileOutput.close()
+
+#mergeName 是否合并name到message相同的dic
+def writeFormatListCopyKey(targetJson, mergeName):
+	printInfo('输出Json:', len(targetJson), var.curIO.ouputFileName)
+	fileOutput = open(filepathOrig, 'w', encoding='utf-8')
+	tmpList = []
+	for item in targetJson:
+		if not mergeName:
+			if 'name' in item:
+				tmpList.append({item['name']:item['name']})
+			if 'message' in item:
+				tmpList.append({item['message']:item['message']})
+		else:
+			newItem = {}
+			if 'name' in item:
+				newItem[item['name']] = item['name']
+			if 'message' in item:
+				newItem[item['message']] = item['message']
+			tmpList.append(newItem)
+	json.dump(tmpList, fileOutput, ensure_ascii=False, indent=2)
+	fileOutput.close()
