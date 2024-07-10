@@ -305,6 +305,7 @@ def initArgs(args):
 	var.preReplace = args['preReplace']
 	var.skipIgnoreCtrl = args['skipIgnoreCtrl']
 	var.skipIgnoreUnfinish = args['skipIgnoreUnfinish']
+	var.nameMoveUp = args['nameMoveUp']
 	readTextConf()
 	# 正则
 	setRegDic(args['regDic'])

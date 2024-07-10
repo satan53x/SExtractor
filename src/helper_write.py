@@ -6,11 +6,28 @@ from helper_text import *
 var = ExVar
 filepathOrig = ''
 # --------------------------- 写 ---------------------------------
+def getAllOrig():
+	if var.nameMoveUp:
+		#名字上移
+		allOrig = []
+		for i in range(len(var.allOrig)):
+			item = {}
+			if i < len(var.allOrig)-1 and 'name' in var.allOrig[i+1]:
+				item['name'] = var.allOrig[i+1]['name']
+			if 'message' in var.allOrig[i]:
+				item['message'] = var.allOrig[i]['message']
+			if item:
+				allOrig.append(item)
+		return allOrig
+	return var.allOrig
+	
+# --------------------------- 写 ---------------------------------
 def writeFormat():
 	fmt = var.curIO.outputFormat
 	if var.ignoreEmptyFile:
 		if not var.allOrig:
 			return
+	allOrig = getAllOrig()
 	transDic = keepFirstTrans(var.transDic) #value转为单字符串
 	global filepathOrig
 	filepathOrig = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
@@ -19,7 +36,7 @@ def writeFormat():
 	elif fmt == 1:
 		writeFormatCopyKey(transDic)
 	elif fmt == 2:
-		writeFormatDirect(var.allOrig)
+		writeFormatDirect(allOrig)
 	elif fmt == 3:
 		writeFormatDirect(var.transDicIO)
 	elif fmt == 4:
@@ -27,17 +44,17 @@ def writeFormat():
 	elif fmt == 5:
 		writeFormatTxt(transDic)
 	elif fmt == 6:
-		writeFormatTxtByItem(var.allOrig)
+		writeFormatTxtByItem(allOrig)
 	elif fmt == 7:
-		writeFormatListByItem(var.allOrig)
+		writeFormatListByItem(allOrig)
 	elif fmt == 8:
 		writeFormatXlsx(transDic)
 	elif fmt == 9:
 		writeFormatTxtTwoLine(transDic)
 	elif fmt == 10:
-		writeFormatListCopyKey(var.allOrig, True)
+		writeFormatListCopyKey(allOrig, True)
 	elif fmt == 11:
-		writeFormatListCopyKey(var.allOrig, False)
+		writeFormatListCopyKey(allOrig, False)
 
 def writeFormatDirect(targetJson):
 	printInfo('输出Json:', len(targetJson), var.curIO.ouputFileName)

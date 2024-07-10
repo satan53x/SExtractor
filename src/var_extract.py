@@ -93,5 +93,6 @@ class ExtractVar():
 		self.writeOffset = '0' #写入偏移
 		self.keepFormat = True #保持格式
 		self.linebreak = '' #标识换行的字符串
+		self.nameMoveUp = False #name向上移动
 		
 gExtractVar = ExtractVar()

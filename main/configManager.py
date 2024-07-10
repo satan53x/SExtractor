@@ -33,6 +33,7 @@ class ConfigManager():
 			'skipIgnoreCtrl': [mainWindow.skipIgnoreCtrlCheck, True, False],
 			'skipIgnoreUnfinish': [mainWindow.skipIgnoreUnfinishCheck, True, False],
 			'ignoreEmptyFile': [mainWindow.ignoreEmptyFileCheck, True, True], #提取到的内容为空则不导出
+			'nameMoveUp': [mainWindow.nameMoveUpCheck, False, False], #导出时名字向上移动一位
 		}
 
 	def showSeq(self):
