@@ -2,7 +2,7 @@ import json
 import subprocess
 import sys
 
-FontSrc = 'MSGothic_WenQuanYi.ttf' #替换前的字体名
+FontSrc = 'WenQuanYi.ttf' #替换前的字体名
 SubsJson = '../../src/subs_cn_jp.json' #替换字典路径
 Reverse = True #字典键值交换位置
 
