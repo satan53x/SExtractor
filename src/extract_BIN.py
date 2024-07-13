@@ -10,8 +10,6 @@ from helper_text import generateBytes
 
 # ---------------- Group: BIN -------------------
 def parseImp(content, listCtrl, dealOnce):
-	lastCtrl = None
-	checkLast = ExVar.structure.startswith('para')
 	var = ParseVar(listCtrl, dealOnce)
 	var.OldEncodeName = ExVar.OldEncodeName
 	initParseVar(var)
@@ -22,8 +20,8 @@ def parseImp(content, listCtrl, dealOnce):
 		#print('>>> Line ' + str(contentIndex), ': ', var.lineData)
 		var.contentIndex = contentIndex
 		ctrls = searchLine(var)
-		if checkLast:
-			lastCtrl = dealLastCtrl(lastCtrl, ctrls, contentIndex)
+		if var.checkLast:
+			var.lastCtrl = dealLastCtrl(var.lastCtrl, ctrls, contentIndex)
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):

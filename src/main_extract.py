@@ -211,6 +211,8 @@ def setRegDic(str):
 					printWarning('没有找到预设的参数名:', flag) 
 			continue
 		elif ('_skip' not in pair[0]) and ('_search' not in pair[0]):
+			if pair[0] == 'struct':
+				pair[0] = 'structure'
 			if hasattr(var, pair[0]):
 				if pair[1] == 'False' or pair[1] == 'false':
 					pair[1] = False

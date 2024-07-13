@@ -185,21 +185,19 @@ def initParseVar(var:ParseVar, regDic=None):
 
 # ---------------- Group: TXT -------------------
 def parseImp(content, listCtrl, dealOnce):
-	checkLast = ExVar.structure.startswith('para')
 	var = ParseVar(listCtrl, dealOnce)
 	initParseVar(var)
-	lastCtrl = None
 	for contentIndex in range(len(content)):
 		if contentIndex < ExVar.startline: continue 
 		var.lineData = content[contentIndex][:-1] #不检查末尾换行
 		#print('>>> Line ' + str(contentIndex), ': ', var.lineData)
 		var.contentIndex = contentIndex
 		ctrls = searchLine(var)
-		if checkLast:
-			lastCtrl = dealLastCtrl(lastCtrl, ctrls, contentIndex)
+		if var.checkLast:
+			var.lastCtrl = dealLastCtrl(var.lastCtrl, ctrls, contentIndex)
 	#文末处理
-	if lastCtrl and 'unfinish' in lastCtrl:
-		del lastCtrl['unfinish'] #段落结束
+	if var.lastCtrl and 'unfinish' in var.lastCtrl:
+		del var.lastCtrl['unfinish'] #段落结束
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):

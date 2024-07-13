@@ -13,8 +13,6 @@ def parseImp(content, listCtrl, dealOnce):
 	skipKeyReg = None
 	if ExVar.extraData:
 		skipKeyReg = re.compile(ExVar.extraData) #跳过key
-	checkLast = ExVar.structure.startswith('para')
-	lastCtrl = None
 	if isinstance(content, dict):
 		#字典: 子项为字符串key:value
 		if copyKeyToValue:
@@ -31,8 +29,8 @@ def parseImp(content, listCtrl, dealOnce):
 			var.contentIndex = [i, None]
 			var.lineData = lineData
 			ctrls = searchLine(var)
-			if checkLast:
-				lastCtrl = dealLastCtrl(lastCtrl, ctrls, i)
+			if var.checkLast:
+				var.lastCtrl = dealLastCtrl(var.lastCtrl, ctrls, i)
 	else:
 		#列表
 		if isinstance(content[0], dict):
@@ -47,8 +45,8 @@ def parseImp(content, listCtrl, dealOnce):
 					var.contentIndex = [i, j]
 					var.lineData = lineData
 					ctrls = searchLine(var)
-					if checkLast:
-						lastCtrl = dealLastCtrl(lastCtrl, ctrls, i)
+					if var.checkLast:
+						var.lastCtrl = dealLastCtrl(var.lastCtrl, ctrls, i)
 					elif ExVar.keepFormat:
 						#保持格式
 						if ctrls and len(ctrls) > 0:
@@ -67,8 +65,8 @@ def parseImp(content, listCtrl, dealOnce):
 				var.contentIndex = [i, None]
 				var.lineData = lineData
 				ctrls = searchLine(var)
-				if checkLast:
-					lastCtrl = dealLastCtrl(lastCtrl, ctrls, i)
+				if var.checkLast:
+					var.lastCtrl = dealLastCtrl(var.lastCtrl, ctrls, i)
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
