@@ -94,5 +94,6 @@ class ExtractVar():
 		self.keepFormat = True #保持格式
 		self.linebreak = '' #标识换行的字符串
 		self.nameMoveUp = False #name向上移动
+		self.keepBytes = '' #保留字节
 		
 gExtractVar = ExtractVar()

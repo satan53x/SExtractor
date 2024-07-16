@@ -3,7 +3,7 @@ import sys
 import os
 import struct
 from common import *
-from helper_text import generateBytes, getBytes
+from helper_text import generateBytes, getBytes, keepBytes
 
 OldEncodeName = 'cp932' #仅用于TXT模式截断和JIS替换
 NewEncodeName = 'gbk' #仅用于TXT模式截断
@@ -70,20 +70,23 @@ def searchLine(var:ParseVar):
 				for i in range(1, len(r.groups())+1):
 					if r.group(i) == None: continue
 					start, end = GetPos(var, searchData, r, i)
+					data = var.lineData[start:end]
 					if var.OldEncodeName: # bin
 						try:
+							if ExVar.keepBytes:
+								data = keepBytes(data, ExVar.keepBytes)
 							if var.checkJIS != None:
-								ret = checkJIS(var.lineData[start:end], var.checkJIS)
+								ret = checkJIS(data, var.checkJIS)
 								if not ret:
 									continue
-							text = var.lineData[start:end].decode(var.OldEncodeName)
+							text = data.decode(var.OldEncodeName)
 						except Exception as ex:
 							if var.ignoreDecodeError:
 								continue
 							else:
 								raise
 					else: # txt
-						text = var.lineData[start:end]
+						text = data
 					#匹配后跳过
 					if var.postSkip:
 						if var.postSkip.search(text):

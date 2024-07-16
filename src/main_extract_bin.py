@@ -74,6 +74,8 @@ def initDone():
 		var.addSeparate = False
 	else:
 		var.addSeparate = True
+	if var.keepBytes:
+		var.keepBytes = var.keepBytes.encode('latin-1')
 
 #args = {workpath, engineName, outputFormat, outputPartMode, nameList, regDic}
 def mainExtractBin(args):

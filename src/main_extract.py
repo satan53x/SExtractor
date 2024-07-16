@@ -69,7 +69,7 @@ def tryAddToDic(item:dict, ctrl, allOrig):
 				#print('Add to transDicIO', orig, listIndex, var.filename)
 				var.transDicIO[item['message']] = ''
 		else:
-			printWarning('message为空', var.filename, ctrl)
+			printWarning('message为空', var.filename, ctrl, item['name'])
 		item = {}
 	return item
 

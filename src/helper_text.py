@@ -1,6 +1,7 @@
 import math
 import os
 import re
+import time
 from common import *
 
 __all__ = ['splitToTransDic', 'splitToTransDicAuto', 
@@ -8,10 +9,12 @@ __all__ = ['splitToTransDic', 'splitToTransDicAuto',
 		'generateSubsDic', 'generateSubsJis', 'generateSubsConfig',
 		'writeSubsConfig',
 		'replaceValue', 'keepFirstTrans',
-		'getBytes', 'OldEncodeName'
+		'getBytes', 'OldEncodeName',
+		'keepBytes'
 ]
 
 OldEncodeName = 'cp932'
+BytePadding = ord(' ') #字节补齐，默认为英文空格
 #----------------------------------------------------------
 def getBytes(text, NewEncodeName):
 	transData = None
@@ -21,7 +24,7 @@ def getBytes(text, NewEncodeName):
 		transData, _ = generateSubsJis(text)
 	else:
 		try:
-			transData = text.encode(NewEncodeName)
+			transData, _ = encodeText(text, NewEncodeName)
 		except Exception as ex:
 			print(ex)
 			return None
@@ -36,18 +39,10 @@ def getBytesMax(text, NewEncodeName, maxLen):
 		transData, cutoffLen = generateSubsJis(text, maxLen)
 	else:
 		try:
-			transData = text.encode(NewEncodeName)
+			transData, cutoffLen = encodeText(text, NewEncodeName, maxLen)
 		except Exception as ex:
 			print(ex)
 			return None, 0
-		if maxLen < len(transData): #截断
-			try:
-				cutoffLen = maxLen
-				newData = transData[0:cutoffLen]
-				newData.decode(NewEncodeName)
-				return newData, maxLen - len(transData)
-			except Exception as ex:
-				cutoffLen = maxLen - 1
 	totalLen = len(transData)
 	if cutoffLen > 0: #截断
 		transData = transData[0:cutoffLen]
@@ -89,9 +84,62 @@ def generateBytes(text, lenOrig, NewEncodeName):
 		#print(transData)
 		empty = bytearray(lost)
 		for i in range(int(lost)):
-			empty[i] = 0x20
+			empty[i] = BytePadding
 		transData += empty
 	return transData
+
+#----------------------------------------------------------
+#保留字节
+def keepBytes(data, reg):
+	newdata = bytearray()
+	iter = re.finditer(reg, data)
+	preEnd = 0
+	for match in iter:
+		start = match.start()
+		if start > preEnd:
+			newdata.extend(data[preEnd:start])
+		end = start + len(match.group())
+		text:bytes = data[start:end]
+		text = text.hex().upper()
+		newdata.extend(f'<{text}>'.encode('ascii'))
+		preEnd = end
+	if preEnd == 0:
+		return data
+	if preEnd < len(data):
+		newdata.extend(data[preEnd:])
+	return newdata
+
+#encode
+def encodeText(text, NewEncodeName, maxLen=0):
+	if ExVar.keepBytes or ExVar.cutoff:
+		cutoffLen = 0
+		data = bytearray()
+		pos = 0
+		while pos < len(text):
+			bs, pos = encodeChar(text, NewEncodeName, pos)
+			data.extend(bs)
+			if maxLen > 0 and len(data) > maxLen and cutoffLen == 0:
+				cutoffLen = len(data) - len(bs)
+		return data, cutoffLen
+	return text.encode(NewEncodeName), 0
+
+#encode one
+#返回值:
+#	1成功; -1字节还原
+keepBytesSearch = re.compile(r'<[0-9a-zA-Z]+?>')
+def encodeChar(text, NewEncodeName, pos):
+	wchar = text[pos]
+	if ExVar.keepBytes:
+		if wchar == '<':
+			#字节还原
+			match = keepBytesSearch.match(text, pos=pos)
+			if match:
+				pos = match.end()
+				bs = bytes.fromhex(match.group()[1:-1])
+				return bs, pos
+	bs = wchar.encode(NewEncodeName)
+	pos += 1
+	return bs, pos
 
 #----------------------------------------------------------
 #sep = '\r\n'
@@ -254,10 +302,13 @@ def generateJisList():
 def generateTunnelJis(text, maxLen=0):
 	data = bytearray()
 	cutoffLen = 0
-	for wchar in text:
+	pos = 0
+	while pos < len(text):
 		try:
-			b = wchar.encode(OldEncodeName)
+			b, pos = encodeChar(text, OldEncodeName, pos)
 		except Exception as ex:
+			wchar = text[pos]
+			pos += 1
 			if wchar in tunnelUnicodeList:
 				#已存在
 				index = tunnelUnicodeList.index(wchar)
@@ -319,20 +370,25 @@ def generateSubsDic():
 	filepath = os.path.join('src', 'subs_cn_jp.json')
 	fileOld = open(filepath, 'r', encoding='utf-8')
 	subsDic = json.load(fileOld)
-	subsDicValues = subsDic.values()
+	subsDicValues = set(subsDic.values()) #集合提高效率
 	printInfo('读入subs字典：', os.path.basename(filepath))
 
 #生成替换后的JIS编码文本
 def generateSubsJis(text, maxLen=0):
 	data = bytearray()
 	cutoffLen = 0
-	for wchar in text:
+	pos = 0
+	while pos < len(text):
+		wchar = text[pos]
 		if wchar in subsDicValues:
 			#原始字符和替换后字符重复
 			subsRepeatList.append(wchar)
 		try:
-			b = wchar.encode(OldEncodeName)
+			#b = wchar.encode(OldEncodeName)
+			#pos += 1
+			b, pos = encodeChar(text, OldEncodeName, pos)
 		except Exception as ex:
+			pos += 1
 			if wchar in subsDic:
 				#存在预设
 				if wchar not in subsCNList:
