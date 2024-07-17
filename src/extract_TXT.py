@@ -1,7 +1,5 @@
+from collections import OrderedDict
 import re
-import sys
-import os
-import struct
 from common import *
 from helper_text import generateBytes, getBytes, keepBytes
 
@@ -62,7 +60,7 @@ def searchLine(var:ParseVar):
 				return None #skip则返回None
 		else:
 			# 搜索
-			tmpDic = {}
+			tmpDic = OrderedDict()
 			matched = False
 			iter = pattern.finditer(searchData) 
 			for r in iter:
@@ -119,8 +117,7 @@ def searchLine(var:ParseVar):
 					matched = True
 			if matched :
 				#按文本中顺序处理
-				for key in sorted(tmpDic.keys()):
-					value = tmpDic[key]
+				for key, value in tmpDic.items():
 					if var.dealOnce(value[0], var.contentIndex):
 						var.listCtrl.append(value[1])
 						ctrls.append(value[1])
