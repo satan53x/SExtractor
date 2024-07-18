@@ -151,6 +151,7 @@ def chooseEngine(args):
 	formatList = settings.value('formatList')
 	if formatList == None or str(args['outputFormat']) in formatList:
 		var.io.outputFormat = args['outputFormat']
+		var.io.init()
 	else:
 		var.io.outputFormat = -1
 		showMessage("该引擎暂不支持此输出格式。", 'red')
@@ -161,6 +162,7 @@ def chooseEngine(args):
 		var.ioExtra.prefix = 'extra_'
 		if var.ioExtra.outputFormat == var.io.outputFormat:
 			var.ioExtra.outputFormat = -1
+		var.ioExtra.init()
 	else:
 		var.ioExtra.outputFormat = -1
 		showMessage("该引擎暂不支持此输出格式。(额外)", 'red')

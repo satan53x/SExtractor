@@ -25,7 +25,7 @@ def setIOFileName(io:IOConfig):
 			io.ouputFileName = 'transDic.output.json'
 			io.inputFileName = 'transDic.json'
 	else: #每个文件对应一个输出文档
-		if io.outputFormat == 5 or io.outputFormat == 6 or io.outputFormat == 9:
+		if io.isTxt:
 			io.ouputFileName = var.filename + '.txt'
 			io.inputFileName = var.filename + '.txt'
 		elif io.outputFormat == 8:
@@ -224,18 +224,17 @@ def readFormatTxtTwoLine():
 	#列表
 	fileTransDic = open(filepathTrans, 'r', encoding='utf-8')
 	content = fileTransDic.readlines()
+	fileTransDic.close()
 	allOrig = []
 	allTrans = []
 	for line in content:
-		ret = re.search(r'^☆\d+?☆', line)
+		ret = re.match(r'☆', line)
 		if ret:
-			orig = line[ret.end():-1]
-			allOrig.append(orig)
+			allOrig.append(line[:-1])
 			continue
-		ret = re.search(r'^★\d+?★', line)
+		ret = re.match(r'★', line)
 		if ret:
-			trans = line[ret.end():-1]
-			allTrans.append(trans)
+			allTrans.append(line[:-1])
 			continue
 	printInfo('读入Txt:', len(allTrans), var.curIO.inputFileName)
 	if len(allTrans) != len(allOrig):
@@ -243,11 +242,24 @@ def readFormatTxtTwoLine():
 		return
 	var.isInput = True
 	#合并 
+	sep = ExVar.splitParaSep
+	sepInTxt = repr(sep)[1:-1]
 	for i in range(len(allOrig)):
-		orig = allOrig[i]
-		trans = allTrans[i]
-		var.transDic[orig] = [trans]
-	fileTransDic.close()
+		origLine = allOrig[i]
+		origList = re.split(r'☆', origLine, 3)
+		transLine = allTrans[i]
+		transList = re.split(r'★', transLine, 3)
+		if len(origList) >= 4:
+			#有名字
+			splitToTransDic(origList[2], transList[2])
+		#文本
+		if sep != sepInTxt:	
+			orig = origList[-1].replace(sepInTxt, sep)
+			trans = transList[-1].replace(sepInTxt, sep)
+		else:
+			orig = origList[-1]
+			trans = transList[-1]
+		splitToTransDic(orig, trans)
 
 def readFormatDicList():
 	#读入带换行文本字典的transDic列表

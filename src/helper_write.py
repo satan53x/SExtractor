@@ -50,7 +50,7 @@ def writeFormat():
 	elif fmt == 8:
 		writeFormatXlsx(transDic)
 	elif fmt == 9:
-		writeFormatTxtTwoLine(transDic)
+		writeFormatTxtTwoLineByItem(allOrig)
 	elif fmt == 10:
 		writeFormatListCopyKey(allOrig, True)
 	elif fmt == 11:
@@ -116,6 +116,30 @@ def writeFormatTxtTwoLine(targetJson):
 		fileOutput.write(f'☆{id:06d}☆{orig}' + '\n')
 		fileOutput.write(f'★{id:06d}★{orig}' + '\n')
 		fileOutput.write('\n')
+	fileOutput.close()
+
+def writeFormatTxtTwoLineByItem(targetJson):
+	sep = ExVar.splitParaSep
+	sepInTxt = repr(sep)[1:-1]
+	printInfo('输出Txt:', len(targetJson), var.curIO.ouputFileName)
+	fileOutput = open(filepathOrig, 'w', encoding='utf-8')
+	for i, item in enumerate(targetJson):
+		id = i + 1
+		list1 = [f'☆{id:06d}☆']
+		list2 = [f'★{id:06d}★']
+		if 'name' in item:
+			list1.extend([item['name'], '☆'])
+			list2.extend([item['name'], '★'])
+		if 'message' in item:
+			if sep != sepInTxt:
+				orig = item['message'].replace(sep, sepInTxt)
+			else:
+				orig = item['message']
+			list1.extend([orig, '\n'])
+			list2.extend([orig, '\n'])
+		list2.append('\n')
+		text = ''.join(list1 + list2)
+		fileOutput.write(text)
 	fileOutput.close()
 
 #mergeName 是否合并name到message相同的dic
