@@ -249,6 +249,9 @@ def readFormatTxtTwoLine():
 		origList = re.split(r'☆', origLine, 3)
 		transLine = allTrans[i]
 		transList = re.split(r'★', transLine, 3)
+		if len(origList) != len(transList):
+			printError('☆★个数不一致', var.curIO.inputFileName, origLine)
+			continue
 		if len(origList) >= 4:
 			#有名字
 			splitToTransDic(origList[2], transList[2])
