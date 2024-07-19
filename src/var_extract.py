@@ -5,9 +5,9 @@ class IOConfig():
 	ouputFileName = ''
 	inputFileName = ''
 	prefix = ''
-	isTxt = False
 	def init(self):
-		self.isTxt = self.outputFormat in [5, 6, 9]
+		self.isTxt = self.outputFormat in (5, 6, 9)
+		self.isList = self.outputFormat in (2, 6, 7, 9, 10, 11)
 
 class ExtractVar():
 	parseImp = None

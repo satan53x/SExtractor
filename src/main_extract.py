@@ -358,8 +358,7 @@ def mainExtract(args, parseImp, initDone=None):
 		var.curIO = var.io
 		readFormat() #读入译文
 		files = getFiles(var.workpath)
-		fmt = var.curIO.outputFormat
-		if fmt in [2, 6, 7]: #属于列表格式
+		if var.curIO.isList: #属于列表格式
 			needReverse = True
 			files = list(reversed(files))
 		else:

@@ -84,7 +84,7 @@ def readText(data, pos):
 		start = pos+2
 		end = pos + length - 1 #不包含末尾的\0
 		ret = 0
-	elif data[pos+1] in [ 0x06, 0x1C, 0x05, 0x04 ]:
+	elif data[pos+1] in (0x06, 0x1C, 0x05, 0x04):
 		#跳过控制
 		length = data[pos]
 		ret = 1
