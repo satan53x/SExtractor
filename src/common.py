@@ -6,14 +6,6 @@ from var_extract import *
 ExVar = gExtractVar
 
 #----------------------------------------------------------
-globalDic = {}
-
-def GetG(key):
-	return globalDic[key]
-
-def SetG(key, value):
-	globalDic[key] = value
-
 def printError(tip, *args):
     if not ExVar.printSetting[4]: return
     print(f'\033[31m{tip}\033[0m', end=' ')
@@ -158,3 +150,25 @@ def listFiles(start_path):
 			relative_path = os.path.relpath(os.path.join(root, file), start_path)
 			file_list.append(relative_path)
 	return file_list 
+
+#----------------------------------------------------------
+class AddrFixer:
+	def __init__(self) -> None:
+		self.pointList = []
+		self.realList = []
+	
+	#pointAddr 指针地址
+	#realAddr 真实地址
+	def listen(self, pointAddr, realAddr):
+		if pointAddr in self.pointList:
+			return
+		self.pointList.append(pointAddr)
+		self.realList.append(realAddr)
+		
+	def fix(self, addr, diff):
+		for i, pointAddr in enumerate(self.pointList):
+			if addr < pointAddr:
+				self.pointList[i] += diff
+		for i, realAddr in enumerate(self.realList):
+			if addr < realAddr:
+				self.realList[i] += diff
