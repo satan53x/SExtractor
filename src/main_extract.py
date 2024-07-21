@@ -82,6 +82,10 @@ def dealOnce(text, contentIndex=0):
 		printWarning('提取时原文为空', var.filename, str(contentIndex))
 		return False
 	#if orig.isspace(): return False
+	if var.engineName in TextConfig['orig_fix']:
+		dic = TextConfig['orig_fix'][var.engineName]
+		for old, new in dic.items():
+			orig = re.sub(old, new, orig)
 	if var.transReplace:
 		if 'orig_replace' in var.textConf:
 			for old, new in var.textConf['orig_replace'].items():
@@ -138,12 +142,12 @@ def createFolder():
 			os.makedirs(path)
 
 def chooseEngine(args):
-	engineName = args['engineName']
+	var.engineName = args['engineName']
 	var.clear()
 	var.fileType = args['file']
 	#读取配置
 	settings = QSettings('src/engine.ini', QSettings.IniFormat)
-	strEngine = 'Engine_' + engineName
+	strEngine = 'Engine_' + var.engineName
 	settings.beginGroup(strEngine)
 	var.Postfix = settings.value('postfix')
 	var.EncodeRead = settings.value('encode')
@@ -170,8 +174,8 @@ def chooseEngine(args):
 	#分割符
 	var.contentSeparate = settings.value('contentSeparate')
 	#导入模块
-	#print(var.EncodeName, var.Postfix, engineName)
-	module = import_module('extract_' + engineName)
+	#print(var.EncodeName, var.Postfix, var.engineName)
+	module = import_module('extract_' + var.engineName)
 	var.parseImp = getattr(module, 'parseImp')
 	var.replaceOnceImp = getattr(module, 'replaceOnceImp')
 	if hasattr(module, 'readFileDataImp'):

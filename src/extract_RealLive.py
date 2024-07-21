@@ -4,12 +4,15 @@ from common import *
 from extract_BIN import parseImp as parseImpBIN
 from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from helper_text import generateBytes
+from tools.RealLive.seen_fix import fixSeenSub
 
 manager = None
 
 # ---------------- Engine: RealLive -------------------
 def parseImp(content, listCtrl, dealOnce):
+	ExVar.keepBytes = ''
 	parseImpBIN(content, listCtrl, dealOnce)
+	ExVar.keepBytes = 'auto'
 	
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
@@ -26,8 +29,8 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		#修正地址
 		diff = len(transData) - (end-start)
 		if diff != 0:
-			textEnd = manager.infoList[contentIndex][1] #文本在文件中的结束位置
-			addrFixer.fix(textEnd, diff)
+			cmd = manager.infoList[contentIndex]
+			addrFixer.fix(cmd.strEnd, diff)
 	return True
 
 def replaceEndImp(content):
@@ -36,11 +39,12 @@ def replaceEndImp(content):
 	data = bytearray()
 	pre = 0
 	for i, lineData in enumerate(content):
-		start, end = manager.infoList[i]
-		if pre < start:
-			data.extend(manager.data[pre:start])
-		data.extend(lineData)
-		pre = end
+		cmd = manager.infoList[i]
+		if cmd.type == TextType.MESSAGE or cmd.type == TextType.SELECT:
+			if pre < cmd.strStart:
+				data.extend(manager.data[pre:cmd.strStart])
+			data.extend(lineData)
+			pre = cmd.strEnd
 	if pre < len(manager.data):
 		data.extend(manager.data[pre:])
 	#修正地址
@@ -48,21 +52,45 @@ def replaceEndImp(content):
 		realAddr = addrFixer.realList[i]
 		saveAddr = realAddr - manager.cmdStart
 		data[pointAddr:pointAddr+4] = int2bytes(saveAddr)
+	#加密
+	if isinstance(ExVar.decrypt, int):
+		data = fixSeenSub(data, ExVar.decrypt)
 	#恢复
 	content.clear()
 	content.append(data)
 
 # -----------------------------------
+NotePattern = re.compile(rb'\x23\x00\x03\x78\x00(?:\x00\x00\x01|\x01\x00\x00\x28[^\x29]*?\x29)(?:\x40[\x00-\xFF]{2})?')
+LinebreakPattern = re.compile(rb'\x23\x00\x03\xC9\x00\x00\x00\x00(?:\x40[\x00-\xFF]{2})?')
+
 def readFileDataImp(fileOld, contentSeparate):
-	data = fileOld.read()
+	data = bytearray(fileOld.read())
 	content = []
 	global manager
 	manager = Manager()
+	#解密
+	if isinstance(ExVar.decrypt, int):
+		data = fixSeenSub(data, ExVar.decrypt)
+	#修正
+	lst = ExVar.extraData.split(',')
+	if 'fixNote' in lst:
+		for match in NotePattern.finditer(data):
+			data[match.start():match.end()] = b'\x20'*len(match.group())
+	if 'fixLinebreak' in lst:
+		for match in LinebreakPattern.finditer(data):
+			data[match.start():match.end()] = b'\x20'*len(match.group())
+			data[match.start():match.start()+3] = b'<n>'
+	#解析
 	manager.init(data)
-	for info in manager.infoList:
-		text = data[info[0]:info[1]]
-		content.append(text)
+	for cmd in manager.infoList:
+		if cmd.type == TextType.MESSAGE or cmd.type == TextType.SELECT:
+			#文本
+			text = data[cmd.strStart:cmd.strEnd]
+			content.append(text)
+		else:
+			content.append(b'')
 	return content, {}
+
 
 # -----------------------------------
 headConfig = { 
@@ -100,7 +128,7 @@ class Manager():
 		self.current_module = None
 		self.current_function = None
 		self.cmdList = [] #指令列表
-		self.infoList = [] #文本信息列表
+		self.infoList = [] #文本信息列表，元素为cmd
 		self.pos = self.cmdStart
 		while self.cmdStart <= self.pos < self.cmdEnd:
 			Command().init()
@@ -120,6 +148,8 @@ def readInteger(length):
 class Command():
 	# ------------------------------------
 	def init(self) -> None:
+		#类型：0默认, 1文本, 3选项, -1注音下标，-2注音上标，-3段落结束
+		#self.type = 0
 		self.code = read(1)
 		self.start = manager.pos
 		if self.code == b'\0':
@@ -196,6 +226,10 @@ class Command():
 		elif manager.current_module == config.SELECT_MODULE:
 			self.read_select()
 
+		# if self.is_current_function_one_of(config.PARAGRAPH_END_FUNCTIONS):
+		# 	self.type = -3
+		# 	manager.infoList.append(self)
+
 		manager.current_module = None
 		manager.current_function = None
 
@@ -231,10 +265,23 @@ class Command():
 			elif quoted and i == ord(b'"'):
 				break
 		end = manager.pos
-		#保存
-		if not self.is_in_function_call() or self.is_current_function_one_of(config.MESSAGE_FUNCTIONS):
-			if not self.range_equals(start, end-start, config.SCENE_END_MARKER):	
-				manager.infoList.append([start, end]) #文本起始地址， 文本结束地址
+		#保存文本：没有模块 or MESSAGE模块 or 选择模块
+		if not self.is_in_function_call() or self.is_current_function_one_of(config.MESSAGE_FUNCTIONS): 
+			if not self.range_equals(start, end-start, config.SCENE_END_MARKER):
+				self.type = TextType.MESSAGE
+				self.strStart = start
+				self.strEnd = end
+				manager.infoList.append(self)
+		elif manager.current_module == config.SELECT_MODULE:
+			self.type = TextType.SELECT
+			self.strStart = start
+			self.strEnd = end
+			manager.infoList.append(self)
+		# elif self.is_current_function_one_of(config.NOTE_FUNCTIONS):
+		# 	#注音的上标
+		# 	#self.type = -2
+		# 	for i in range(start, end):
+		# 		manager.data[i] = 0x20
 
 	# -----------------------------------
 	#跳转
@@ -337,3 +384,12 @@ class Config:
 		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
 	])
 	SELECT_MODULE = 0x02
+	NOTE_FUNCTIONS = {
+		0x03: [0x0078]
+	}
+	LINEBREAK_FUNCTIONS = {
+		0x03: [0x00C9]
+	}
+	# PARAGRAPH_END_FUNCTIONS = {
+	# 	0x03: [0x0011]
+	# }

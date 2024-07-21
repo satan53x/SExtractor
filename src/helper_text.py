@@ -10,8 +10,21 @@ __all__ = ['splitToTransDic', 'splitToTransDicAuto',
 		'writeSubsConfig',
 		'replaceValue', 'keepFirstTrans',
 		'getBytes', 'OldEncodeName',
-		'keepBytes'
+		'keepBytes', 'TextConfig'
 ]
+
+TextConfig = {
+	'orig_fix': {
+		'RealLive': {
+			' +': '' #删除fix填充的空格
+		}
+	},
+	'trans_fix': {
+		'RealLive': {
+			'<n>': '<230003C900000000>' #还原换行字节
+		}
+	}
+}
 
 OldEncodeName = 'cp932'
 BytePadding = ord(' ') #字节补齐，默认为英文空格

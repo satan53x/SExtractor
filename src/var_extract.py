@@ -39,6 +39,7 @@ class ExtractVar():
 	textConf = {}
 
 	#-------------------
+	engineName = ''
 	Postfix = '.txt'
 	EncodeRead = 'utf-8'
 	contentSeparate = None

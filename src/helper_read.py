@@ -70,6 +70,10 @@ def transReplace():
 						if keep == orig:
 							for i, t in enumerate(trans):
 								trans[i] = ''
+	if var.engineName in TextConfig['trans_fix']:
+		replaceDic = TextConfig['trans_fix'][var.engineName]
+		printDebug('进行译文修正')
+		replaceValue(var.transDic, replaceDic)
 
 # --------------------------- 读 ---------------------------------
 def readFormat():

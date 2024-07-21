@@ -6,6 +6,12 @@ from var_extract import *
 ExVar = gExtractVar
 
 #----------------------------------------------------------
+class TextType:
+     MESSAGE = 1
+     NAME = 2
+     SELECT = 3
+
+#----------------------------------------------------------
 def printError(tip, *args):
     if not ExVar.printSetting[4]: return
     print(f'\033[31m{tip}\033[0m', end=' ')

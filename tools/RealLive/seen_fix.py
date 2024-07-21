@@ -5,7 +5,7 @@ import os
 import sys
 from tkinter import filedialog
 
-GameType = 5 #此处选择预设游戏
+GameType = 6 #此处选择预设游戏
 OffsetStart = 0x100 #如果是arc_conv解包需要把此处改为0x100
 DefaultDir = ''
 
@@ -28,6 +28,9 @@ XorTable = {
 
 	#クドわふたー
 	5: bytearray.fromhex('67 1C 21 BE 6F EF B5 16 4A 82 39 2B AD 3A 71 3F'),
+
+	#仕舞妻 ～姉妹妻3～
+	6: bytearray.fromhex('EC 7D BC 6E B2 2A 66 1D C8 4C AC 73 78 49 B2 A4'),
 
 	# >>>>>>> Made by `Cosetto`
 	# 3Ping Lovers！☆一夫二妻の世界へようこそ♪
@@ -106,4 +109,5 @@ def main(args):
 		print('已处理:', name)
 	print('完成')
 
-main(sys.argv)
+if __name__ == '__main__':
+	main(sys.argv)
