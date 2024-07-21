@@ -38,6 +38,10 @@ def keepAllOrig(insertBegin=False):
 			if 'message' not in item:
 				item['message'] = ""
 			item['message'] += orig
+			if var.outputTextType:
+				#导出文本类型标记
+				if 'select' in ctrl:
+					item['type'] = 'select'
 			if 'unfinish' in ctrl:
 				if listIndex < len(var.listCtrl) - 1:
 					nextCtrl = var.listCtrl[listIndex + 1]
@@ -314,6 +318,7 @@ def initArgs(args):
 	var.skipIgnoreCtrl = args['skipIgnoreCtrl']
 	var.skipIgnoreUnfinish = args['skipIgnoreUnfinish']
 	var.nameMoveUp = args['nameMoveUp']
+	var.outputTextType = args['outputTextType']
 	readTextConf()
 	# 正则
 	setRegDic(args['regDic'])

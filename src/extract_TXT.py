@@ -108,12 +108,12 @@ def searchLine(var:ParseVar):
 						else:
 							keys = [key]
 						for key in keys:
-							if key == 'name' or key == 'unfinish':
-								ctrl[key] = True #标记
-							else:
+							if key.startswith('pre'):
 								if 'flags' not in ctrl:
 									ctrl['flags'] = []
 								ctrl['flags'].append(key)
+							else: #name, unfinish, select
+								ctrl[key] = True #标记
 					matched = True
 			if matched :
 				#按文本中顺序处理

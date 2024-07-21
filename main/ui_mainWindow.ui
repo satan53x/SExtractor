@@ -13,7 +13,7 @@
   <property name="minimumSize">
    <size>
     <width>600</width>
-    <height>500</height>
+    <height>550</height>
    </size>
   </property>
   <property name="font">
@@ -1012,7 +1012,7 @@
            </item>
            <item>
             <widget class="QWidget" name="widget_18" native="true">
-             <layout class="QHBoxLayout" name="horizontalLayout_25">
+             <layout class="QHBoxLayout" name="horizontalLayout_25" stretch="4,3,2">
               <property name="spacing">
                <number>0</number>
               </property>
@@ -1034,6 +1034,26 @@
                  <string>导出时name向上移动一位</string>
                 </property>
                </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="outputTextTypeCheck">
+                <property name="text">
+                 <string>导出文本类型标记</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_6">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
              </layout>
             </widget>

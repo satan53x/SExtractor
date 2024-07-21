@@ -70,6 +70,7 @@ class ExtractVar():
 	skipIgnoreUnfinish = False #段落：skip不影响unfinish（不会添加predel_unfinish）
 	ignoreEmptyFile = True #提取到的内容为空则不导出
 	jsonWrite = 1 #dump模式 0-rapidjson.WM_COMPACT 1-rapidjson.WM_PRETTY
+	outputTextType = False #输出文本类型
 
 	#-------------------
 	def clear(self):

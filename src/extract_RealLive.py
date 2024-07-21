@@ -3,6 +3,7 @@ import re
 from common import *
 from extract_BIN import parseImp as parseImpBIN
 from extract_BIN import replaceOnceImp as replaceOnceImpBIN
+from extract_TXT import ParseVar, initParseVar, searchLine, dealLastCtrl
 from helper_text import generateBytes
 from tools.RealLive.seen_fix import fixSeenSub
 
@@ -11,7 +12,22 @@ manager = None
 # ---------------- Engine: RealLive -------------------
 def parseImp(content, listCtrl, dealOnce):
 	ExVar.keepBytes = ''
-	parseImpBIN(content, listCtrl, dealOnce)
+	var = ParseVar(listCtrl, dealOnce)
+	var.OldEncodeName = ExVar.OldEncodeName
+	initParseVar(var)
+	for contentIndex in range(len(content)):
+		if contentIndex < ExVar.startline: continue
+		var.lineData = content[contentIndex]
+		#每行
+		var.contentIndex = contentIndex
+		ctrls = searchLine(var)
+		if len(ctrls) > 0:
+			info = manager.infoList[contentIndex]
+			if info.type == TextType.SELECT:
+				#选项标记
+				ctrls[-1]['select'] = True
+		if var.checkLast:
+			var.lastCtrl = dealLastCtrl(var.lastCtrl, ctrls, contentIndex)
 	ExVar.keepBytes = 'auto'
 	
 # -----------------------------------
@@ -29,8 +45,8 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		#修正地址
 		diff = len(transData) - (end-start)
 		if diff != 0:
-			cmd = manager.infoList[contentIndex]
-			addrFixer.fix(cmd.strEnd, diff)
+			info = manager.infoList[contentIndex]
+			addrFixer.fix(info.strEnd, diff)
 	return True
 
 def replaceEndImp(content):
@@ -39,12 +55,12 @@ def replaceEndImp(content):
 	data = bytearray()
 	pre = 0
 	for i, lineData in enumerate(content):
-		cmd = manager.infoList[i]
-		if cmd.type == TextType.MESSAGE or cmd.type == TextType.SELECT:
-			if pre < cmd.strStart:
-				data.extend(manager.data[pre:cmd.strStart])
+		info = manager.infoList[i]
+		if info.type == TextType.MESSAGE or info.type == TextType.SELECT:
+			if pre < info.strStart:
+				data.extend(manager.data[pre:info.strStart])
 			data.extend(lineData)
-			pre = cmd.strEnd
+			pre = info.strEnd
 	if pre < len(manager.data):
 		data.extend(manager.data[pre:])
 	#修正地址
@@ -82,10 +98,10 @@ def readFileDataImp(fileOld, contentSeparate):
 			data[match.start():match.start()+3] = b'<n>'
 	#解析
 	manager.init(data)
-	for cmd in manager.infoList:
-		if cmd.type == TextType.MESSAGE or cmd.type == TextType.SELECT:
+	for info in manager.infoList:
+		if info.type == TextType.MESSAGE or info.type == TextType.SELECT:
 			#文本
-			text = data[cmd.strStart:cmd.strEnd]
+			text = data[info.strStart:info.strEnd]
 			content.append(text)
 		else:
 			content.append(b'')
@@ -128,7 +144,7 @@ class Manager():
 		self.current_module = None
 		self.current_function = None
 		self.cmdList = [] #指令列表
-		self.infoList = [] #文本信息列表，元素为cmd
+		self.infoList = [] #文本信息列表
 		self.pos = self.cmdStart
 		while self.cmdStart <= self.pos < self.cmdEnd:
 			Command().init()
@@ -148,8 +164,6 @@ def readInteger(length):
 class Command():
 	# ------------------------------------
 	def init(self) -> None:
-		#类型：0默认, 1文本, 3选项, -1注音下标，-2注音上标，-3段落结束
-		#self.type = 0
 		self.code = read(1)
 		self.start = manager.pos
 		if self.code == b'\0':
@@ -227,8 +241,7 @@ class Command():
 			self.read_select()
 
 		# if self.is_current_function_one_of(config.PARAGRAPH_END_FUNCTIONS):
-		# 	self.type = -3
-		# 	manager.infoList.append(self)
+		# 	pass
 
 		manager.current_module = None
 		manager.current_function = None
@@ -268,18 +281,11 @@ class Command():
 		#保存文本：没有模块 or MESSAGE模块 or 选择模块
 		if not self.is_in_function_call() or self.is_current_function_one_of(config.MESSAGE_FUNCTIONS): 
 			if not self.range_equals(start, end-start, config.SCENE_END_MARKER):
-				self.type = TextType.MESSAGE
-				self.strStart = start
-				self.strEnd = end
-				manager.infoList.append(self)
+				manager.infoList.append(Info(TextType.MESSAGE, start, end))
 		elif manager.current_module == config.SELECT_MODULE:
-			self.type = TextType.SELECT
-			self.strStart = start
-			self.strEnd = end
-			manager.infoList.append(self)
+			manager.infoList.append(Info(TextType.SELECT, start, end))
 		# elif self.is_current_function_one_of(config.NOTE_FUNCTIONS):
 		# 	#注音的上标
-		# 	#self.type = -2
 		# 	for i in range(start, end):
 		# 		manager.data[i] = 0x20
 
@@ -355,6 +361,13 @@ class Command():
 			return False
 		ret = manager.data[offset:offset+length] == compare_to
 		return ret
+
+class Info:
+	def __init__(self, type, strStart, strEnd):
+		#类型：0默认, 1文本, 3选项, -1注音下标，-2注音上标，-3段落结束
+		self.type = type
+		self.strStart = strStart
+		self.strEnd = strEnd
 
 # -----------------------------------
 class Config:
