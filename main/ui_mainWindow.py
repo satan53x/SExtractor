@@ -87,7 +87,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_11.setSpacing(0)
         self.horizontalLayout_11.setObjectName("horizontalLayout_11")
         self.engineNameBox = QtWidgets.QComboBox(self.groupBox)
-        self.engineNameBox.setMaxVisibleItems(25)
+        self.engineNameBox.setMaxVisibleItems(30)
         self.engineNameBox.setObjectName("engineNameBox")
         self.horizontalLayout_11.addWidget(self.engineNameBox)
         self.horizontalLayout_2.addWidget(self.groupBox)

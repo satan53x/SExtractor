@@ -28,7 +28,7 @@ def parseImp(content, listCtrl, dealOnce):
 	var.OldEncodeName = ExVar.OldEncodeName
 	initParseVar(var)
 	for contentIndex in range(len(content)):
-		var.lineData:str = content[contentIndex]
+		var.lineData = content[contentIndex]
 		if re.match(Config.MessageSig, var.lineData):
 			#对话
 			var.contentIndex = contentIndex
