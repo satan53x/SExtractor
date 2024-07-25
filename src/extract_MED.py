@@ -5,7 +5,6 @@ from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 
 # ---------------- Engine: MED -------------------
 def parseImp(content, listCtrl, dealOnce):
-	listIndex = 0
 	#print(len(content))
 	for contentIndex in range(len(content)):
 		#if contentIndex < 1: continue 
@@ -31,11 +30,10 @@ def parseImp(content, listCtrl, dealOnce):
 		text = lineData[start:end].decode(ExVar.OldEncodeName)
 		ctrl['pos'] = [contentIndex, start, end]
 		#print(ctrl)
-		if dealOnce(text, listIndex):
-			listIndex += 1
+		if dealOnce(text, ctrl):
 			listCtrl.append(ctrl)
 	#结束处理 删除从最后一行开始的unfinish
-	pos = listIndex - 1
+	pos = len(listCtrl) - 1
 	while pos >= 0:
 		ctrl = listCtrl[pos]
 		if 'name' in ctrl: break

@@ -20,7 +20,8 @@ def parseImp(content, listCtrl, dealOnce):
 		ctrl = {'pos':[contentIndex, start, end]}
 		#ctrl['name'] = True #名字
 		#ctrl['unfinish'] = True #段落未完结
-		if dealOnce(text): listCtrl.append(ctrl)
+		if dealOnce(text, ctrl):
+			listCtrl.append(ctrl)
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):

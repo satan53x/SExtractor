@@ -118,7 +118,7 @@ def searchLine(var:ParseVar):
 			if matched :
 				#按文本中顺序处理
 				for key, value in tmpDic.items():
-					if var.dealOnce(value[0], var.contentIndex):
+					if var.dealOnce(value[0], value[1]):
 						var.listCtrl.append(value[1])
 						ctrls.append(value[1])
 				break #已匹配则停止

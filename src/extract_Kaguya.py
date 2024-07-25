@@ -39,7 +39,7 @@ def parseImp(content, listCtrl, dealOnce):
 			ctrl = {'pos':[contentIndex, start, end]}
 			if textType == 2: #名字类型
 				ctrl['name'] = True
-			if dealOnce(text, contentIndex): 
+			if dealOnce(text, ctrl): 
 				listCtrl.append(ctrl)
 		else:
 			var.lineData = text

@@ -6,7 +6,6 @@ from common import *
 
 # ---------------- Group: Artemis  -------------------
 def parseImp(content, listCtrl, dealOnce):
-	listIndex = 0
 	dealText = False
 	serialCount = 0 #连续计数
 	for contentIndex in range(len(content)):
@@ -62,9 +61,8 @@ def parseImp(content, listCtrl, dealOnce):
 		if re.match(r'\s*name=', lineData):
 			ctrl['name'] = True #名字标记
 		#print(ctrl)
-		ret = dealOnce(text, listIndex)
+		ret = dealOnce(text, ctrl)
 		if ret: #成功
-			listIndex += 1
 			listCtrl.append(ctrl)
 			#break #测试
 

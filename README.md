@@ -13,6 +13,7 @@ python版本需要3.9及以上。
 * TXT纯文本 (正则匹配。可选utf-8，utf-8-sig，utf-16(LE BOM))
 * BIN二进制文本 (正则匹配。默认读shift-jis写GBK)
 * JSON文本 (正则匹配，只搜索value，value为空则先自动复制key到value)
+* ANIM
 * AZ System (Encrypt Isaac)
 * Artemis
 * Black Rainbow
@@ -28,6 +29,7 @@ python版本需要3.9及以上。
 * NekoSDK
 * RPG Maker MV
 * RPG Maker VX Ace
+* RealLive
 * RenPy
 * SystemC
 * WillPlus
@@ -37,11 +39,18 @@ python版本需要3.9及以上。
 * 可以导出VNT的JIS隧道文件`sjis_ext.bin`，需要配合[VNTProxy](#相关项目)使用。(同时也会导出UIF配置)
 * 可以导出UIF的JIS替换配置`uif_config.json`，需要配合[UniversalInjectorFramework](#相关项目)使用。
 * `Tools/Font`下有JIS替换字体，以备dll无法hook游戏时使用。
-* `text_conf.json`进行文本处理配置，优先读取工作目录ctrl文件下配置，如果没有则读取工具根目录默认配置。
 * 文件夹下自定义的`config*.ini`都会被读取，*中不能以数字开头。(例：`configTest.ini`)
+* `text_conf.json`进行文本处理配置，优先读取工作目录ctrl文件下配置，如果没有则读取工具根目录默认配置。
+```
+text_conf.json:
+  "replace_before_split" 分割前替换
+  "trans_replace" 译文替换，受导入编码限制
+  "orig_replace" 原文替换与还原
+  "name_replace" 仅限name的原文替换与还原
+```
 
 ## 当前正则预设
->（更多预设正则详见根目录`预设正则.fake.ini`）
+<font color=red>（更多预设正则详见根目录`预设正则.fake.ini`）</font>
 * AST
 * Artemis
 * Cyberworks_JIS

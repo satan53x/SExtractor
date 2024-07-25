@@ -8,7 +8,8 @@ __all__ = ['splitToTransDic', 'splitToTransDicAuto',
 		'generateJisList', 'generateTunnelJis', 'generateTunnelJisMap',
 		'generateSubsDic', 'generateSubsJis', 'generateSubsConfig',
 		'writeSubsConfig',
-		'replaceValue', 'keepFirstTrans',
+		'replaceValue', 'replaceValueRE', 'replaceValueFull', 
+		'keepFirstTrans',
 		'getBytes', 'OldEncodeName',
 		'keepBytes', 'TextConfig'
 ]
@@ -465,14 +466,24 @@ def writeSubsConfig(filepath=''):
 	printWarningGreen('在ctrl文件夹下生成了uif_config.json')
 	
 # ------------------------------------------------------------
-def replaceValue(transDic, replaceDic, useRE=True):
+def replaceValue(transDic, replaceDic):
 	for orig, trans in transDic.items():
 		for old, new in replaceDic.items():
 			for i, t in enumerate(trans):
-				if useRE:
-					trans[i] = re.sub(old, new, t)
-				else:
-					trans[i] = t.replace(old, new)
+				trans[i] = t.replace(old, new)
+
+def replaceValueRE(transDic, replaceDic):
+	for orig, trans in transDic.items():
+		for old, new in replaceDic.items():
+			for i, t in enumerate(trans):
+				trans[i] = re.sub(old, new, t)	
+
+def replaceValueFull(transDic, replaceDic):
+	for orig, trans in transDic.items():
+		for old, new in replaceDic.items():
+			for i, t in enumerate(trans):
+				if t == old:
+					trans[i] = new
 
 #只保留第一个，用于输出
 def keepFirstTrans(transDic):

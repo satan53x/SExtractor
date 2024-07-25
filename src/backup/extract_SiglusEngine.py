@@ -3,7 +3,6 @@ from common import *
 
 # ---------------- Group: SiglusEngine -------------------
 def parseImp(content, listCtrl, dealOnce):
-	listIndex = 0
 	nameList = ExVar.nameList
 	for contentIndex in range(len(content)):
 		#if contentIndex < 0: continue #起始跳过行数
@@ -21,8 +20,7 @@ def parseImp(content, listCtrl, dealOnce):
 			if text in nameList:
 				ctrl['name'] = True #名字标记
 			#print(ctrl)
-			if dealOnce(text, listIndex):
-				listIndex += 1
+			if dealOnce(text, ctrl):
 				listCtrl.append(ctrl)
 
 # -----------------------------------

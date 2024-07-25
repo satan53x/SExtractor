@@ -6,7 +6,6 @@ from common import *
 
 # ---------------- Group: AST -------------------
 def parseImp(content, listCtrl, dealOnce):
-	listIndex = 0
 	dealText = 0 # 0不处理 1已读WINDOW 尝试处理 2已进行处理至少一行
 	for contentIndex in range(len(content)):
 		if contentIndex < 1: continue #起始跳过行数
@@ -28,8 +27,7 @@ def parseImp(content, listCtrl, dealOnce):
 					ctrl = {'pos':[contentIndex, start, end]}
 					ctrl['name'] = True #名字标记
 					#print(ctrl)
-					if dealOnce(text, listIndex):
-						listIndex += 1
+					if dealOnce(text, ctrl):
 						listCtrl.append(ctrl)
 			continue
 		#处理对话
@@ -51,8 +49,7 @@ def parseImp(content, listCtrl, dealOnce):
 			ctrl = {'pos':[contentIndex, start, end]}
 			ctrl['unfinish'] = True
 			#print(ctrl)
-			if dealOnce(text, listIndex):
-				listIndex += 1
+			if dealOnce(text, ctrl):
 				listCtrl.append(ctrl)
 
 # -----------------------------------

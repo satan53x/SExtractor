@@ -63,8 +63,7 @@ def parseImp(content, listCtrl, dealOnce):
 				#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 				ctrl = {'pos':[contentIndex, start, end]}
 				#print(ctrl)
-				if dealOnce(text, var.listIndex):
-					var.listIndex += 1
+				if dealOnce(text, ctrl):
 					var.listCtrl.append(ctrl)
 				start = end + 5
 				ret = re.search(b'\0', lineData[start:]) #跳过下一句

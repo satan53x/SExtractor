@@ -6,7 +6,6 @@ from common import *
 
 # ---------------- Group: Kirikiri -------------------
 def parseImp(content, listCtrl, dealOnce):
-	listIndex = 0
 	#print(len(content))
 	for contentIndex in range(len(content)):
 		if contentIndex < 1: continue 
@@ -58,8 +57,7 @@ def parseImp(content, listCtrl, dealOnce):
 		#按文本中顺序处理
 		for key in sorted(tmpDic.keys()):
 			value = tmpDic[key]
-			if dealOnce(value[0], listIndex):
-				listIndex += 1
+			if dealOnce(value[0], ctrl):
 				listCtrl.append(value[1])
 
 # -----------------------------------

@@ -77,13 +77,13 @@ def tryAddToDic(item:dict, ctrl, allOrig):
 		item = {}
 	return item
 
-def dealOnce(text, contentIndex=0):
+def dealOnce(text, ctrl):
 	#print(orig)
 	orig = text
 	#if orig.isspace() == False:
 		#orig = orig.strip()
 	if orig == '': 
-		printWarning('提取时原文为空', var.filename, str(contentIndex))
+		printWarning('提取时原文为空', var.filename, str(ctrl))
 		return False
 	#if orig.isspace(): return False
 	if var.engineName in TextConfig['orig_fix']:
@@ -94,6 +94,10 @@ def dealOnce(text, contentIndex=0):
 		if 'orig_replace' in var.textConf:
 			for old, new in var.textConf['orig_replace'].items():
 				orig = orig.replace(old, new)
+		if 'name' in ctrl and 'name_replace' in var.textConf:
+			for old, new in var.textConf['name_replace'].items():
+				if orig == old:
+					orig = new
 	#输出原文
 	var.listOrig.append(orig)
 	#print(orig)
@@ -121,6 +125,11 @@ def replace():
 			#trans = 'te'.format(listIndex) #测试
 			continue
 		#开始处理段落
+		if var.transReplace:
+			if 'name' in ctrl and 'name_replace' in var.textConf:
+				for old, new in var.textConf['name_replace'].items():
+					if newStr == new:
+						newStr = old
 		ret = var.replaceOnceImp(var.content, [ctrl], [newStr])
 		if ret == False:
 			printError('替换错误，请检查文本', var.filename, newStr)
@@ -177,6 +186,8 @@ def chooseEngine(args):
 		return 2
 	#分割符
 	var.contentSeparate = settings.value('contentSeparate')
+	if var.contentSeparate == None:
+		var.contentSeparate = ''
 	#导入模块
 	#print(var.EncodeName, var.Postfix, var.engineName)
 	module = import_module('extract_' + var.engineName)
@@ -315,6 +326,7 @@ def initArgs(args):
 		generateSubsDic()
 	var.transReplace = args['transReplace']
 	var.preReplace = args['preReplace']
+	var.ignoreEmptyFile = args['ignoreEmptyFile']
 	var.skipIgnoreCtrl = args['skipIgnoreCtrl']
 	var.skipIgnoreUnfinish = args['skipIgnoreUnfinish']
 	var.nameMoveUp = args['nameMoveUp']

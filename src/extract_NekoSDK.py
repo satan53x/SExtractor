@@ -30,7 +30,8 @@ def parseImp(content, listCtrl, dealOnce):
 			text = var.lineData[pos:end].decode(ExVar.OldEncodeName)
 			ctrl = {'pos':[contentIndex, pos, end]}
 			ctrl['name'] = True
-			if var.dealOnce(text, contentIndex): listCtrl.append(ctrl)
+			if var.dealOnce(text, ctrl): 
+				listCtrl.append(ctrl)
 			ctrl['lenPos'] = pos - 4
 		pos += length
 		#对话/旁边

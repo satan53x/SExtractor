@@ -52,14 +52,14 @@ def transReplace():
 			for key, replaceDic in var.textConf['trans_replace'].items():
 				if charset not in key: continue
 				printDebug('进行译文替换')
-				replaceValue(var.transDic, replaceDic)
+				replaceValueRE(var.transDic, replaceDic)
 		if 'orig_replace' in var.textConf:
 			printDebug('进行译文的原文替换还原')
 			replaceDic = {}
 			for key, value in var.textConf['orig_replace'].items():
 				if value == '': continue
 				replaceDic[value] = key
-			replaceValue(var.transDic, replaceDic, False)
+			replaceValue(var.transDic, replaceDic)
 		#原文保留
 		if 'orig_keep' in var.textConf:
 			for key, keepList in var.textConf['orig_keep'].items():
@@ -73,7 +73,7 @@ def transReplace():
 	if var.engineName in TextConfig['trans_fix']:
 		replaceDic = TextConfig['trans_fix'][var.engineName]
 		printDebug('进行译文修正')
-		replaceValue(var.transDic, replaceDic)
+		replaceValueRE(var.transDic, replaceDic)
 
 # --------------------------- 读 ---------------------------------
 def readFormat():

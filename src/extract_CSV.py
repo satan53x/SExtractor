@@ -55,7 +55,7 @@ def parseText(content, var:ParseVar):
 				ctrl = {'pos':[contentIndex, start, end]}
 				if col in nameCols or text in var.nameList: #强制检查名字
 					ctrl['name'] = True #名字标记
-				if var.dealOnce(text, contentIndex):
+				if var.dealOnce(text, ctrl):
 					var.listCtrl.append(ctrl)
 			start = r.end()
 			col += 1
