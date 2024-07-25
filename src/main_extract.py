@@ -125,8 +125,10 @@ def replace():
 			#trans = 'te'.format(listIndex) #测试
 			continue
 		#开始处理段落
-		if var.transReplace:
-			if 'name' in ctrl and 'name_replace' in var.textConf:
+		if 'name' in ctrl:
+			if var.dontImportName: #不导入名字
+				continue
+			if var.transReplace and 'name_replace' in var.textConf:
 				for old, new in var.textConf['name_replace'].items():
 					if newStr == new:
 						newStr = old

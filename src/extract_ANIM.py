@@ -2,11 +2,47 @@ import re
 from common import *
 from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_BIN import parseImp as parseImpBIN
+from extract_TXT import ParseVar, initParseVar, searchLine, dealLastCtrl
 
 headSec = None
+NameVarPattern = re.compile(r'^[a-zA-Z0-9]')
+InvalidNamePattern = re.compile(r'」$|^.{8,}$')
+#此处可以自行填写固定名字
+nameDic = {}
+
 # ---------------- Engine: ANIM -------------------
 def parseImp(content, listCtrl, dealOnce):
-	parseImpBIN(content, listCtrl, dealOnce)
+	guessName = ExVar.extraData == 'guessName'
+	addName = None
+	nameDic.clear()
+	var = ParseVar(listCtrl, dealOnce)
+	var.OldEncodeName = ExVar.OldEncodeName
+	initParseVar(var)
+	for contentIndex in range(len(content)):
+		if contentIndex < ExVar.startline: continue 
+		var.lineData = content[contentIndex]
+		# 每行
+		var.contentIndex = contentIndex
+		ctrls = searchLine(var)
+		if var.checkLast:
+			var.lastCtrl = dealLastCtrl(var.lastCtrl, ctrls, contentIndex)
+		if guessName and ctrls:
+			if addName:
+				text = ExVar.listOrig[-1]
+				printWarningGreen('尝试加入名字自动转换字典', addName, text)
+				if InvalidNamePattern.search(text):
+					printWarning('名字可能不正确，取消加入', text)
+				else:
+					nameDic[addName] = text
+			elif 'name' in ctrls[-1]:
+				nameVar = ExVar.listOrig[-1]
+				if nameVar in nameDic:
+					#printDebug('转换名字:', nameVar, nameDic[nameVar])
+					ExVar.listOrig[-1] = nameDic[nameVar]
+				elif NameVarPattern.search(nameVar):
+					addName = nameVar
+					continue
+			addName = None
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
