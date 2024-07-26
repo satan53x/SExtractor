@@ -3,12 +3,15 @@ import sys
 import os
 import json 
 import re
+
+import pandas as pd
 from common import *
 from PyQt5.QtCore import QSettings
 
 EncodeName = 'utf-8'
 OnceLinesCount = 0 #为0则需要读入filenameList缓存
 Postfix = '.json'
+PostfixXlsx = '.xlsx'
 
 #var
 mergePath = ''
@@ -21,6 +24,7 @@ allJson = [
 jsonType = 0
 filenameList = []
 
+#----------------------------合并/分割json-------------------------------
 def writeMerge():
 	#print(filename)
 	name = None
@@ -174,18 +178,55 @@ def mergeTool(args):
 		allJson[1].clear()
 		loadFilenameList(funcIndex)
 		for name in os.listdir(mergePath):
-			#print('Load', name)
-			filename = name.replace(Postfix, '')
-			filepath = os.path.join(mergePath, filename+Postfix)
-			if os.path.isfile(filepath):
-				#print(filepath)
-				read(funcIndex)
-				#break
+			if name.endswith(PostfixXlsx):
+				filename = name.replace(PostfixXlsx, '')
+				filepath = os.path.join(mergePath, filename+PostfixXlsx)
+				if os.path.isfile(filepath):
+					readXlsx(funcIndex)
+			else:
+				#print('Load', name)
+				filename = name.replace(Postfix, '')
+				filepath = os.path.join(mergePath, filename+Postfix)
+				if os.path.isfile(filepath):
+					#print(filepath)
+					read(funcIndex)
+					#break
 		if funcIndex == 0:
-			writeMerge()
+			if jsonType == -1:
+				writeMergeXlsx()
+			else:
+				writeMerge()
 		print('处理结束')
 	else:
 		print('未找到主目录')
+
+#----------------------------合并/分割xlsx-------------------------------
+def readXlsx(funcIndex):
+	global jsonType
+	jsonType = -1 #xlsx
+	filepath = os.path.join(mergePath, filename+PostfixXlsx)
+	xls = pd.ExcelFile(filepath)
+	if funcIndex == 0:
+		#合并
+		sheet_name = xls.sheet_names[0]
+		df = pd.read_excel(filepath)
+		allJson[0][sheet_name] = df
+	else:
+		#分割
+		for sheet_name in xls.sheet_names:
+			df = pd.read_excel(filepath, sheet_name=sheet_name)
+			filenameNew = sheet_name + PostfixXlsx
+			filepathNew = os.path.join(mergePath, filenameNew)
+			df.to_excel(filepathNew, index=False, sheet_name=sheet_name)
+			print('输出完成:', filenameNew)
+
+def writeMergeXlsx():
+	filepath = os.path.join(mergePath, 'merge'+PostfixXlsx)
+	writer = pd.ExcelWriter(filepath)
+	dic = allJson[0]
+	for sheet_name, df in dic.items():
+		df.to_excel(writer, sheet_name=sheet_name, index=False)
+	writer.close()
 
 #----------------------------生成字典-------------------------------
 #args: { mergePath }
