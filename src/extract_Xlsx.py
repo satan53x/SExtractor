@@ -44,6 +44,9 @@ def initXlsx(fileOld):
 	return content
 
 def readFileDataImp(fileOld, contentSeparate):
+	if ExVar.pureText:
+		printError('xlsx不支持纯文本模式，请勿勾选')
+		return [], {}
 	content = initXlsx(fileOld)
 	return content, {}
 
