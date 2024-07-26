@@ -188,6 +188,8 @@ def dealText(data, pos, header):
 	pos += 4
 	lineData.append(data[pos:pos+msgLen])
 	pos += msgLen
+	if pos >= len(data) or msgLen > 0x200:
+		return None, 0
 	#检查
 	dig = readInt(data, pos)
 	if dig != 0:
