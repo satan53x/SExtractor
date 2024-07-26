@@ -131,7 +131,7 @@ def setValid(contentNames, colMax=9999):
 	validCols.clear()
 	nameCols.clear()
 	if not ExVar.extraData: return validCols
-	if not contentNames:
+	if not contentNames or ExVar.structure == 'useIndex':
 		#按列索引
 		valid = ExVar.extraData.split(',')
 		for s in valid:
