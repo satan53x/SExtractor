@@ -2,7 +2,7 @@ import json
 import subprocess
 import sys
 
-FontSrc = 'WenQuanYi.ttf' #替换前的字体名
+FontSrc = 'MSGothic_WenQuanYi.ttf' #替换前的字体名
 SubsJson = '../../src/subs_cn_jp.json' #替换字典路径
 Reverse = True #字典键值交换位置
 
@@ -39,7 +39,7 @@ def main():
         #更改定义
         #changeDef(obj)
     
-    subprocess.run(['otfccbuild.exe', '-O3', '-o', '%s_cnjp.ttf' % fnt[0:fnt.rfind('.')]], input=json.dumps(obj), encoding='utf-8')
+    subprocess.run(['otfccbuild.exe', '--keep-average-char-width', '-O3', '-o', '%s_cnjp.ttf' % fnt[0:fnt.rfind('.')]], input=json.dumps(obj), encoding='utf-8')
     print('Done.')
 
 

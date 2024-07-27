@@ -442,8 +442,10 @@ def generateSubsConfig():
 		printError('译文存在替换字典未匹配字符，请进行修正；详见uif_config.json中remain：\n', ''.join(lst))
 	elif 'remain' in subs:
 		del subs['remain']
-	if subsRepeatList != []:
-		lst = list(set(subsRepeatList))
+	lst = list(set(subsRepeatList))
+	if '―' in lst: #不处理
+		lst.remove('―')
+	if lst != []:
 		subs['repeat'] = lst
 		printError('原始译文含有替换后字符，如果使用字体请进行修正，如果使用hook则无需修正；详见uif_config.json中repeat：（常用汉字修正请留言https://github.com/satan53x/SExtractor/issues/74）\n', ''.join(lst))
 	elif 'repeat' in subs:
