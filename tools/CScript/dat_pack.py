@@ -58,6 +58,17 @@ def write():
 	fileNew.close()
 	print(f'Write done: {name}')
 
+def setLocale():
+	lst = ['Japanese_Japan.932', 'ja-JP', 'ja_JP', 'japanese', 'jpn_JPN', 'ja']
+	for loc in lst:
+		try:
+			locale.setlocale(locale.LC_ALL, loc)
+			print('设置地区成功: ' + loc)
+			break
+		except:
+			continue
+
+
 #广度优先，系统排序
 file_list = []
 root_path = ''
@@ -65,7 +76,7 @@ def listFiles(start_path):
 	global root_path
 	root_path = start_path
 	file_list.clear()
-	locale.setlocale(locale.LC_ALL, 'ja_JP')
+	setLocale()
 	listDir('')
 	return file_list
 
