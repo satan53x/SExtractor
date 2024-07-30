@@ -163,6 +163,7 @@ def encodeChar(text, NewEncodeName, pos):
 
 #固定分割
 def splitToTransDic(orig, trans):
+	if orig == '': return #整体原文为空则不处理
 	#if trans == '': return #整体译文为空则不处理
 	if ExVar.preReplace:
 		#分割前替换

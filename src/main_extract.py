@@ -74,6 +74,7 @@ def tryAddToDic(item:dict, ctrl, allOrig):
 				var.transDicIO[item['message']] = ''
 		else:
 			printWarning('message为空', var.filename, ctrl, item['name'])
+			item['message'] = '' #message为空时补一个空字符串
 		item = {}
 	return item
 
