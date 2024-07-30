@@ -3,6 +3,8 @@ from common import *
 from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_BIN import parseImp as parseImpBIN
 
+insertContent = {}
+
 # ---------------- Engine: MED -------------------
 def parseImp(content, listCtrl, dealOnce):
 	parseImpBIN(content, listCtrl, dealOnce)
@@ -10,6 +12,15 @@ def parseImp(content, listCtrl, dealOnce):
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
 	return replaceOnceImpBIN(content, lCtrl, lTrans)
+	
+def replaceEndImp(content):
+	totalLen = 0
+	for i in range(len(content)):
+		totalLen += len(content[i]) + 1
+	totalLen -= 1 #末尾没有\0
+	headSec = insertContent[0]
+	totalLen += len(headSec) - 0x10
+	headSec[0:4] = int2bytes(totalLen, 4)
 	
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeparate):
@@ -23,5 +34,6 @@ def readFileDataImp(fileOld, contentSeparate):
 		#print('not start with shift-jis')
 	realData = data[skip:]
 	content = re.split(contentSeparate, realData)
-	insertContent = { 0 : data[0:skip] }
+	insertContent.clear()
+	insertContent[0] = bytearray(data[0:skip])
 	return content, insertContent
