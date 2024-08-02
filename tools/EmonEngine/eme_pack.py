@@ -7,7 +7,7 @@ import os
 import lzss_s
 from tkinter import filedialog
 DefaultPath = ''
-CtrlDir = '../..' #控制目录相对路径，需要放入原始eme文件
+CtrlDir = '..' #控制目录相对路径，需要放入原始eme文件
 ArcOld = 'BKscene.eme'
 ArcNew = 'BKscene.new.eme'
 FilenamesTxt = 'filenames.txt' #如果有文件列表txt，优先使用txt内容
