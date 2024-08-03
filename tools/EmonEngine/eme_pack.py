@@ -22,17 +22,20 @@ content = []
 class Arc:
 	def __init__(self):
 		#旧
-		print(f'Read old archive: {ArcOld}')
 		path = os.path.join(dirpath, CtrlDir, ArcOld)
-		f = open(path, 'rb')
-		dataOld = f.read()
-		f.close()
-		self.arcHeadSec = dataOld[0:8] #文件头
-		self.filesSec = [] #子文件区
-		count = int.from_bytes(dataOld[-4:], 'little')
-		indexAddr = len(dataOld) - 4 - count * IndexLen
-		self.keySec = dataOld[indexAddr-0x28:indexAddr] #密钥区
+		if os.path.isfile(path):
+			print(f'Read old archive: {ArcOld}')
+			f = open(path, 'rb')
+			dataOld = f.read()
+			f.close()
+			self.arcHeadSec = dataOld[0:8] #文件头
+			#count = int.from_bytes(dataOld[-4:], 'little')
+			#indexAddr = len(dataOld) - 4 - count * IndexLen
+			#self.keySec = dataOld[indexAddr-0x28:indexAddr] #密钥区
+		else:
+			self.arcHeadSec = 'RREDATA '.encode('ascii') #文件头
 		#新
+		self.filesSec = [] #子文件区
 		self.keySec = bytearray(0x28) #全0，等效于不加密
 		self.count = len(filenameList)
 		self.indexSec = [] #索引区
