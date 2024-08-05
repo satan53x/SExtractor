@@ -260,7 +260,7 @@ class Command():
 		quoted = read(1, False) == b'"'
 		self.read_string(quoted)
 
-	special_chars = set(b'\0\n!@,?#$\\a(){}[]')
+	special_chars = tuple(b'\0\n!@,?#$\\a(){}[]')
 	#quoted 是否首尾有引号
 	def read_string(self, quoted):
 		start = manager.pos
@@ -270,13 +270,20 @@ class Command():
 				raise ValueError("Invalid data: expected opening quotation mark")
 		while True:
 			i = readInteger(1)
-			if i in self.special_chars:
-				manager.pos -= 1 # Move back one byte
-				break
+			if quoted:
+				#引号字符串
+				if i == ord(b'\\'):
+					read(1)
+					continue
+				elif i == ord(b'"'):
+					break
+			else:
+				#非引号字符串
+				if i in self.special_chars:
+					manager.pos -= 1 # Move back one byte
+					break
 			if isShiftJis(i, 0x40):
 				read(1)
-			elif quoted and i == ord(b'"'):
-				break
 		end = manager.pos
 		#保存文本：没有模块 or MESSAGE模块 or 选择模块
 		if not self.is_in_function_call() or self.is_current_function_one_of(config.MESSAGE_FUNCTIONS): 
