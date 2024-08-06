@@ -36,6 +36,7 @@ def mainExtractPart(args, parseImp, initDone=None):
 			var.curIO = var.ioExtra
 			writeFormat()
 			#break #测试
+			var.isStart = False
 		showProgress(100)
 		printInfo('读取文件数:', var.inputCount)
 		printInfo('新建文件数:', var.outputCount)

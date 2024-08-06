@@ -1,0 +1,1 @@
+GSP_Editor.exe -mode pack -folder dec/new/ -gsp data.gsp

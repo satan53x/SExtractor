@@ -32,6 +32,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		# 位置
 		ctrl = lCtrl[i]
 		contentIndex, start, end = ctrl['pos']
+		if contentIndex < 0: continue #不写回
 		transData = generateBytes(lTrans[i], end - start, ExVar.NewEncodeName)
 		if transData == None:
 			return False

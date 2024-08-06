@@ -1,3 +1,6 @@
+#git
+.gitkeep
+
 #python
 __pycache__/
 *.spec

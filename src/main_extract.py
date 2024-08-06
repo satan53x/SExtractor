@@ -337,6 +337,7 @@ def initArgs(args):
 	readTextConf()
 	# 正则
 	setRegDic(args['regDic'])
+	var.isStart = True
 	return 0
 
 def extractDone():
@@ -347,18 +348,20 @@ def extractDone():
 	showMessage("处理完成。")
 	print('Done.\n')
 
-def getFiles(dirpath):
+def getFiles(dirpath, reverse=False):
 	files = []
-	for name in os.listdir(var.workpath):
+	for name in os.listdir(dirpath):
 		#print('File:', name)
 		if var.Postfix == '':
 			filename = name
 		else:
 			filename = os.path.splitext(name)[0]
-		filepath = os.path.join(var.workpath, filename+var.Postfix)
+		filepath = os.path.join(dirpath, filename+var.Postfix)
 		#print(name, filepath)
 		if os.path.isfile(filepath):
 			files.append(filename)
+	if reverse:
+		files = list(reversed(files))
 	return files
 
 #合并为单文档导出
@@ -381,12 +384,11 @@ def mainExtract(args, parseImp, initDone=None):
 		createFolder()
 		var.curIO = var.io
 		readFormat() #读入译文
-		files = getFiles(var.workpath)
 		if var.curIO.isList: #属于列表格式
 			needReverse = True
-			files = list(reversed(files))
 		else:
 			needReverse = False
+		files = getFiles(var.workpath, needReverse)
 		for i, name in enumerate(files):
 			showProgress(i, len(files))
 			var.filename = name
@@ -394,6 +396,7 @@ def mainExtract(args, parseImp, initDone=None):
 			parseImp()
 			keepAllOrig(needReverse)
 			#break #测试
+			var.isStart = False
 		showProgress(100)
 		printInfo('读取文件数:', var.inputCount)
 		writeFormat()

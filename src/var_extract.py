@@ -33,6 +33,7 @@ class ExtractVar():
 	filename = ''
 	content = None
 	isInput = False #是否写入译文
+	isStart = True #是否是单次提取开始
 	listOrig = [] #原文表
 	listCtrl = [] #控制表
 	cutoffDic = {}
@@ -84,7 +85,7 @@ class ExtractVar():
 		self.outputCount = 0 #导出文件个数
 		#各引擎参数
 		self.startline = 0 #起始行数
-		self.extractKey = 'name'
+		self.extractKey = ''
 		self.structure = ''
 		self.extraData = '' #引擎自定义的数据
 		self.ignoreDecodeError = False #忽略编码错误
