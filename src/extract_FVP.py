@@ -60,7 +60,7 @@ def parseImp(content, listCtrl, dealOnce):
 				name = searchName(var)
 				if name:
 					#额外增加不写回的名字
-					ctrlName = {'pos':[0, -1, -1]}
+					ctrlName = {'pos':[-1, -1, -1]}
 					ctrlName['name'] = True
 					if dealOnce(name, ctrlName):
 						listCtrl.append(ctrlName)
@@ -122,7 +122,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		# 位置
 		ctrl = lCtrl[i]
 		contentIndex, start, end = ctrl['pos']
-		if start < 0: continue #不写回
+		if contentIndex < 0: continue #不写回
 		transData = generateBytes(lTrans[i], end - start, ExVar.NewEncodeName)
 		if transData == None:
 			return False

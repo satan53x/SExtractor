@@ -140,6 +140,14 @@ def xorBytes(input, xorTable):
         result.append(b ^ xorByte)
     return result
 
+def printHex(b):
+    c = -1
+    for i in b:
+        c += 1
+        if c % 16 == 0 and c > 0: print('')
+        print(f'{i:02X} ', end='')
+    print('')
+
 #----------------------------------------------------------
 def getMatchItem(lst, target):
     for item in lst:
