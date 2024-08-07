@@ -128,7 +128,7 @@ def GetRegList(items, OldEncodeName):
 	lst = []
 	for key, value in items:
 		if OldEncodeName and ExVar.pureText == False:
-			if OldEncodeName.startswith('UTF-16'):
+			if OldEncodeName.lower().startswith('utf-16'):
 				value = value.encode('latin-1') #utf-16不兼容ascii，不能用于BIN正则
 			else:
 				value = value.encode(OldEncodeName)

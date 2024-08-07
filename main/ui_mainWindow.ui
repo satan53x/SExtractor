@@ -543,6 +543,11 @@
                      <string>gbk</string>
                     </property>
                    </item>
+                   <item>
+                    <property name="text">
+                     <string>utf-16-le</string>
+                    </property>
+                   </item>
                   </widget>
                  </item>
                 </layout>
