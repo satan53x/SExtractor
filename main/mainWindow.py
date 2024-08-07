@@ -85,6 +85,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			self.regNameBox.addItem(group)
 		#刷新
 		self.configManager.refreshConfig()
+		self.configManager.checkDirIni()
 
 	#初始化
 	def afterShow(self):
@@ -99,8 +100,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		dirpath = QFileDialog.getExistingDirectory(None, self.mainDirButton.text(), dirpath)
 		if dirpath != '':
 			self.mainDirPath = dirpath
+			self.configManager.isCheckDirIni = True
+			self.configManager.checkDirIni()
 			self.mainDirEdit.setText(dirpath)
 			self.mainConfig.setValue('mainDirPath', dirpath)
+			#检查是否是内置ini
+			if self.mainConfig != self.configManager.builtinConfig:
+				self.configManager.builtinConfig.setValue('mainDirPath', dirpath)
 
 	#选择引擎
 	def selectEngine(self, index):

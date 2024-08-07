@@ -11,6 +11,9 @@ class ConfigManager():
 	#data
 	configCount = 4 #默认配置数
 	configName = 'main/config.ini' #默认配置名字
+	isCheckDirIni = True
+	isChangeMainDir = True
+	builtinConfig = None #内置ini
 
 	def __init__(self, mw) -> None:
 		global mainWindow, checkDic
@@ -50,8 +53,10 @@ class ConfigManager():
 				mainWindow.configSeqBox.addItem(name)
 		mainWindow.configSeqBox.currentIndexChanged.connect(self.selectConfig)
 
-	def selectConfig(self, index):
-		if index == 0:
+	def selectConfig(self, index, path=None):
+		if path:
+			self.configName = path
+		elif index == 0:
 			self.configName = 'main/config.ini'
 		else:
 			self.configName = f'main/config{mainWindow.configSeqBox.currentText()}.ini'
@@ -63,12 +68,17 @@ class ConfigManager():
 		self.mainConfig = QSettings(self.configName, QSettings.IniFormat)
 		self.mainConfig.setIniCodec('utf-8')
 		mainWindow.mainConfig = self.mainConfig
+		if self.configName.startswith('main'):
+			#内置ini
+			self.builtinConfig = self.mainConfig
 		# 窗口大小
 		windowSize = initValue(self.mainConfig, 'windowSize', None)
 		if windowSize: mainWindow.resize(windowSize)
 		# 主目录
-		mainWindow.mainDirPath = initValue(self.mainConfig, 'mainDirPath', '.')
-		mainWindow.mainDirEdit.setText(mainWindow.mainDirPath)
+		if self.isChangeMainDir:
+			mainWindow.mainDirPath = initValue(self.mainConfig, 'mainDirPath', '.')
+			mainWindow.mainDirEdit.setText(mainWindow.mainDirPath)
+		self.isChangeMainDir = True
 		# 当前引擎
 		mainWindow.engineCode = int(initValue(self.mainConfig, 'engineCode', 0))
 		#print(mainWindow.engineCode)
@@ -109,6 +119,14 @@ class ConfigManager():
 		mainWindow.initEnd = True
 		mainWindow.selectEngine(mainWindow.engineCode)
 	
+	def checkDirIni(self):
+		if self.isCheckDirIni:
+			self.isCheckDirIni = False
+			path = os.path.join(mainWindow.mainDirPath, 'ctrl', 'config.ini')
+			if os.path.isfile(path):
+				self.isChangeMainDir = False
+				self.selectConfig(-1, path)
+
 	def readCheck(self):
 		for key, value in checkDic.items():
 			if value[1]:
@@ -150,6 +168,9 @@ class ConfigManager():
 		self.mainConfig.setValue('splitParaSep', args['splitParaSep'])
 		#写入check
 		self.writeCheck()
+		#检查是否是内置ini
+		if self.mainConfig != self.builtinConfig:
+			self.builtinConfig.setValue('mainDirPath', args['workpath'])
 
 #---------------------------------------------------------------
 #设置初始值
