@@ -175,9 +175,9 @@ def splitToTransDic(orig, trans):
 		#重新分割
 		splitToTransDicAuto(orig, trans) 
 		return
-	sep = ExVar.splitParaSep
-	listMsgOrig = re.split(sep, orig)
-	listMsgTrans = re.split(sep, trans)
+	sepRegex = ExVar.splitParaSepRegex
+	listMsgOrig = re.split(sepRegex, orig)
+	listMsgTrans = re.split(sepRegex, trans)
 	if len(listMsgTrans) > len(listMsgOrig):
 		#合并末尾多余行数
 		i = len(listMsgOrig) - 1
@@ -201,6 +201,15 @@ def splitToTransDic(orig, trans):
 #自动重新分割
 def splitToTransDicAuto(orig, trans):
 	listMsgOrig, listMsgTrans = redistributeTrans(orig, trans)
+	if ExVar.joinAfterSplit:
+		#重新分割，但是再合并
+		sep = ExVar.splitParaSep
+		orig = sep.join(listMsgOrig)
+		trans = sep.join(listMsgTrans)
+		if orig not in ExVar.transDic:
+			ExVar.transDic[orig] = []
+		ExVar.transDic[orig].append(trans)
+		return
 	for j in range(len(listMsgOrig)):
 		msgOrig = listMsgOrig[j]
 		msgTrans = listMsgTrans[j]
@@ -212,14 +221,14 @@ def splitToTransDicAuto(orig, trans):
 
 #重新分割
 def redistributeTrans(orig:str, trans:str):
-	sep = ExVar.splitParaSep
+	sepRegex = ExVar.splitParaSepRegex
 	#分割原文
-	origList = re.split(sep, orig)
-	newTrans = re.sub(sep, '', trans)
+	origList = re.split(sepRegex, orig)
+	newTrans = re.sub(sepRegex, '', trans)
 	if len(origList) == 1:
 		return origList, [newTrans]
 	if ExVar.ignoreSameLineCount or ExVar.ignoreNotMaxCount:
-		transList = re.split(sep, trans)
+		transList = re.split(sepRegex, trans)
 		#行数一致则忽略
 		if ExVar.ignoreSameLineCount and len(origList) == len(transList):
 			return origList, transList

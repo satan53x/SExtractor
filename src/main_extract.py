@@ -313,9 +313,8 @@ def initArgs(args):
 		printWarningGreen('已启用: 编码也对BIN生效', var.EncodeRead)
 	# 分割
 	var.splitAuto = args['splitAuto']
-	var.splitParaSep = args['splitParaSep']
-	if '\\' in var.splitParaSep: #需要处理转义
-		var.splitParaSep = var.splitParaSep.encode().decode('unicode_escape')
+	var.splitParaSepRegex = args['splitParaSep']
+	var.splitParaSep = var.splitParaSepRegex.encode().decode('unicode_escape')
 	var.ignoreSameLineCount = args['ignoreSameLineCount']
 	var.ignoreNotMaxCount = args['ignoreNotMaxCount']
 	var.fixedMaxPerLine = args['fixedMaxPerLine']
@@ -335,6 +334,7 @@ def initArgs(args):
 	var.nameMoveUp = args['nameMoveUp']
 	var.outputTextType = args['outputTextType']
 	var.dontExportWhenImport = args['dontExportWhenImport']
+	var.joinAfterSplit = args['joinAfterSplit']
 	readTextConf()
 	# 正则
 	setRegDic(args['regDic'])

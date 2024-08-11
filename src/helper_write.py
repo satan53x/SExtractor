@@ -123,7 +123,7 @@ def writeFormatTxtTwoLine(targetJson):
 
 def writeFormatTxtTwoLineByItem(targetJson):
 	sep = ExVar.splitParaSep
-	sepInTxt = repr(sep)[1:-1]
+	sepRegex = ExVar.splitParaSepRegex
 	printInfo('输出Txt:', len(targetJson), var.curIO.ouputFileName)
 	fileOutput = open(filepathOrig, 'w', encoding='utf-8')
 	for i, item in enumerate(targetJson):
@@ -134,8 +134,8 @@ def writeFormatTxtTwoLineByItem(targetJson):
 			list1.extend([item['name'], '☆'])
 			list2.extend([item['name'], '★'])
 		if 'message' in item:
-			if sep != sepInTxt:
-				orig = item['message'].replace(sep, sepInTxt)
+			if sep != sepRegex:
+				orig = item['message'].replace(sep, sepRegex)
 			else:
 				orig = item['message']
 			list1.extend([orig, '\n'])

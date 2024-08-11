@@ -39,6 +39,7 @@ class ConfigManager():
 			'nameMoveUp': [mainWindow.nameMoveUpCheck, False, False], #导出时名字向上移动一位
 			'outputTextType': [mainWindow.outputTextTypeCheck, True, False], #输出文本类型
 			'dontExportWhenImport': [mainWindow.dontExportCheck, True, False], #写入时不导出
+			'joinAfterSplit': [mainWindow.joinAfterSplitCheck, True, False], #分割后再合并为一句
 		}
 
 	def showSeq(self):

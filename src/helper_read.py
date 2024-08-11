@@ -247,7 +247,7 @@ def readFormatTxtTwoLine():
 	var.isInput = True
 	#合并 
 	sep = ExVar.splitParaSep
-	sepInTxt = repr(sep)[1:-1]
+	sepRegex = ExVar.splitParaSepRegex
 	for i in range(len(allOrig)):
 		origLine = allOrig[i]
 		origList = re.split(r'☆', origLine, 3)
@@ -260,9 +260,9 @@ def readFormatTxtTwoLine():
 			#有名字
 			splitToTransDic(origList[2], transList[2])
 		#文本
-		if sep != sepInTxt:	
-			orig = origList[-1].replace(sepInTxt, sep)
-			trans = transList[-1].replace(sepInTxt, sep)
+		if sep != sepRegex:	
+			orig = origList[-1].replace(sepRegex, sep)
+			trans = transList[-1].replace(sepRegex, sep)
 		else:
 			orig = origList[-1]
 			trans = transList[-1]

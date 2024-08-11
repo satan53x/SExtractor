@@ -57,6 +57,7 @@ class ExtractVar():
 	printSetting = None
 	splitAuto = False
 	splitParaSep = '\r\n' #段落分割符
+	splitParaSepRegex = '\\r\\n' #段落分割符的regex
 	ignoreSameLineCount = True #如果行数和原本一致，则忽略
 	ignoreNotMaxCount = True #如果所有行都没有超过最大字符，则忽略
 	maxCountPerLine = 0
@@ -74,6 +75,7 @@ class ExtractVar():
 	outputTextType = False #输出文本类型
 	dontImportName = False #不导入name
 	dontExportWhenImport = False #导入时不导出
+	joinAfterSplit = False #分割后再合并为一句
 
 	#-------------------
 	def clear(self):
