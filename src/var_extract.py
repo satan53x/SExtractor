@@ -73,6 +73,7 @@ class ExtractVar():
 	jsonWrite = 1 #dump模式 0-rapidjson.WM_COMPACT 1-rapidjson.WM_PRETTY
 	outputTextType = False #输出文本类型
 	dontImportName = False #不导入name
+	dontExportWhenImport = False #导入时不导出
 
 	#-------------------
 	def clear(self):

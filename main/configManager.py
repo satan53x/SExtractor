@@ -38,6 +38,7 @@ class ConfigManager():
 			'ignoreEmptyFile': [mainWindow.ignoreEmptyFileCheck, True, True], #提取到的内容为空则不导出
 			'nameMoveUp': [mainWindow.nameMoveUpCheck, False, False], #导出时名字向上移动一位
 			'outputTextType': [mainWindow.outputTextTypeCheck, True, False], #输出文本类型
+			'dontExportWhenImport': [mainWindow.dontExportCheck, True, False], #写入时不导出
 		}
 
 	def showSeq(self):

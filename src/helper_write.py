@@ -23,6 +23,9 @@ def getAllOrig():
 	
 # --------------------------- 写 ---------------------------------
 def writeFormat():
+	if var.isInput:
+		if var.dontExportWhenImport:
+			return
 	fmt = var.curIO.outputFormat
 	if var.ignoreEmptyFile:
 		if not var.allOrig:

@@ -334,6 +334,7 @@ def initArgs(args):
 	var.skipIgnoreUnfinish = args['skipIgnoreUnfinish']
 	var.nameMoveUp = args['nameMoveUp']
 	var.outputTextType = args['outputTextType']
+	var.dontExportWhenImport = args['dontExportWhenImport']
 	readTextConf()
 	# 正则
 	setRegDic(args['regDic'])

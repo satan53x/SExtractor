@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>750</width>
-    <height>650</height>
+    <height>675</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -595,6 +595,31 @@
                <widget class="QCheckBox" name="binEncodeCheck">
                 <property name="text">
                  <string>编码也对BIN生效</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="widget_19" native="true">
+             <layout class="QHBoxLayout" name="horizontalLayout_32">
+              <property name="leftMargin">
+               <number>5</number>
+              </property>
+              <property name="topMargin">
+               <number>2</number>
+              </property>
+              <property name="rightMargin">
+               <number>5</number>
+              </property>
+              <property name="bottomMargin">
+               <number>2</number>
+              </property>
+              <item>
+               <widget class="QCheckBox" name="dontExportCheck">
+                <property name="text">
+                 <string>写入时不再导出原文文件</string>
                 </property>
                </widget>
               </item>
