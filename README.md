@@ -2,7 +2,7 @@
  从GalGame脚本提取和导入文本（大部分需要明文）
  
 ## Python依赖模块：
-python版本需要3.9及以上。
+python版本需要3.9及以上。（推荐使用3.11）
 * pyqt5
 * colorama
 * pandas
@@ -18,7 +18,7 @@ python版本需要3.9及以上。
 * Artemis
 * Black Rainbow
 * CSV
-* CScript
+* CScript (有预编译模块，推荐使用python 3.11)
 * Cyberworks / CSystem
 * EAGLS
 * FVP
