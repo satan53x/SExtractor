@@ -23,7 +23,7 @@ class ConfigManager():
 			'cutoff': [mainWindow.cutoffCheck, True, False], #截断
 			'cutoffCopy': [mainWindow.cutoffCopyCheck, True, True],
 			'noInput': [mainWindow.noInputCheck, False, False], #不导入
-			'splitAuto': [mainWindow.splitCheck, True, False], #译文
+			'splitAuto': [mainWindow.splitCheck, True, False], #译文重新分割
 			'ignoreSameLineCount': [mainWindow.ignoreSameCheck, True, False],
 			'ignoreNotMaxCount': [mainWindow.ignoreNotMaxCheck, True, False],
 			'fixedMaxPerLine': [mainWindow.fixedMaxCheck, True, False], #固定长度

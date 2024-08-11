@@ -21,7 +21,7 @@ def keepAllOrig(insertBegin=False):
 	ctrl = {}
 	checkRN = 1
 	allOrig = []
-	if not var.splitParaSep == '\r\n':
+	if not var.splitParaSep == '\r\n' or (var.splitAuto and var.joinAfterSplit):
 		checkRN = 0
 	while(listIndex < len(var.listOrig) - 1):
 		listIndex += 1
