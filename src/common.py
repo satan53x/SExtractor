@@ -186,3 +186,9 @@ class AddrFixer:
 		for i, realAddr in enumerate(self.realList):
 			if addr < realAddr:
 				self.realList[i] += diff
+
+	def apply(self, data, start=0):
+		for i, pointAddr in enumerate(self.pointList):
+			realAddr = self.realList[i]
+			saveAddr = realAddr - start
+			data[pointAddr:pointAddr+4] = int2bytes(saveAddr)

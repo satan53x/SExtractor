@@ -6,6 +6,7 @@ from extract_TXT import ParseVar, initParseVar, searchLine
 headerList = []
 content = []
 insertContent = {}
+addrFixer = None
 
 writeCompress = True
 fileType = 0
@@ -72,6 +73,12 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		#写入new
 		strNew = content[contentIndex][lineIndex][:start] + transData + content[contentIndex][lineIndex][end:]
 		content[contentIndex][lineIndex] = strNew
+		#修正地址
+		origLen  = end - start
+		diff = len(transData) - origLen
+		if diff != 0:
+			addrEnd = headerList[contentIndex]['addr'][lineIndex] + origLen
+			addrFixer.fix(addrEnd, diff)
 	return True
 
 def replaceEndImp(content:list):
@@ -85,11 +92,16 @@ def replaceEndImp(content:list):
 				length = len(lineData)
 				if i < len(header['pre']):
 					bs.extend(header['pre'][i])
+				if header['segType'] in config[fileType][4]:
+					#跳转
+					continue
 				bs.extend(int2bytes(length))
 				bs.extend(lineData)
 		else:
 			bs = header['pre'] + content[contentIndex]
 		data.extend(bs)
+	#修正跳转地址
+	addrFixer.apply(data)
 	#压缩
 	uncomLen = len(data)
 	if writeCompress:
@@ -106,6 +118,8 @@ def replaceEndImp(content:list):
 
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeparate):
+	global addrFixer
+	addrFixer = AddrFixer()
 	data = fileOld.read()
 	#文件头
 	global fileType
@@ -174,6 +188,7 @@ def readFileDataImp(fileOld, contentSeparate):
 def dealText(data, pos, header):
 	header['pre'][0].extend(data[pos:pos+4]) #序号
 	pos += 4
+	header['addr'] = []
 	lineData = []
 	#名字
 	header['name'] = 0
@@ -181,11 +196,13 @@ def dealText(data, pos, header):
 	if nameLen < 0 or nameLen > 0x40:
 		return None, 0
 	pos += 4
+	header['addr'].append(pos)
 	lineData.append(data[pos:pos+nameLen])
 	pos += nameLen
 	#消息
 	msgLen = readInt(data, pos)
 	pos += 4
+	header['addr'].append(pos)
 	lineData.append(data[pos:pos+msgLen])
 	pos += msgLen
 	if pos >= len(data) or msgLen > 0x200:
@@ -203,6 +220,7 @@ def dealSel(data, pos, header):
 		return None, 0
 	header['pre'][0].extend(data[pos:pos+8]) #个数和0A
 	pos += 8
+	header['addr'] = []
 	lineData = []
 	for i in range(count):
 		#选项
@@ -210,6 +228,7 @@ def dealSel(data, pos, header):
 		if msgLen < 0 or msgLen > 0x400:
 			return None, 0
 		pos += 4
+		header['addr'].append(pos)
 		lineData.append(data[pos:pos+msgLen])
 		pos += msgLen
 	#选项后的0A,0A
@@ -220,6 +239,7 @@ def dealSel(data, pos, header):
 def dealText0(data, pos, header):
 	header['pre'][0].extend(data[pos:pos+0x11]) #序号
 	pos += 0x11
+	header['addr'] = []
 	lineData = []
 	#名字
 	header['name'] = 0
@@ -227,6 +247,7 @@ def dealText0(data, pos, header):
 	if nameLen < 0 or nameLen > 0x40:
 		return None, 0
 	pos += 4
+	header['addr'].append(pos)
 	lineData.append(data[pos:pos+nameLen])
 	pos += nameLen
 	#消息
@@ -234,19 +255,21 @@ def dealText0(data, pos, header):
 	pos += 5
 	msgLen = readInt(data, pos)
 	pos += 4
+	header['addr'].append(pos)
 	lineData.append(data[pos:pos+msgLen])
 	pos += msgLen
 	return lineData, pos
 
 #选项：sig 0
 def dealSel0(data, pos, header):
-	header['pre'][0].extend(data[pos:pos+0x14]) #未知
-	pos += 0x14
+	header['pre'][0].extend(data[pos:pos+0x8]) #未知
+	pos += 0x8
 	count = readInt(data, pos) #选项个数
 	if count < 2 or count > 4:
 		return None, 0
-	header['pre'][0].extend(data[pos:pos+9]) #个数和00
-	pos += 9
+	header['pre'][0].extend(data[pos:pos+0x15]) #个数和00
+	pos += 0x15
+	header['addr'] = []
 	lineData = []
 	for i in range(count):
 		#选项
@@ -257,13 +280,44 @@ def dealSel0(data, pos, header):
 		if msgLen < 0 or msgLen > 0x100:
 			return None, 0
 		pos += 4
+		header['addr'].append(pos)
 		lineData.append(data[pos:pos+msgLen])
 		pos += msgLen
 	return lineData, pos
+
+JumpCheck = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+#跳转（选项）：sig 0
+def dealJump0(data, pos, header):
+	bs = data[pos:pos+len(JumpCheck)]
+	if bs != JumpCheck:
+		return None, 0
+	header['pre'][0].extend(data[pos:pos+0xC]) #未知
+	pos += 0xC
+	count = readInt(data, pos) #跳转个数
+	if count < 2 or count > 4:
+		return None, 0
+	header['pre'][0].extend(data[pos:pos+0x4]) #个数
+	pos += 0x4
+	header['addr'] = []
+	lineData = []
+	for i in range(count):
+		#跳转
+		if i > 0:
+			header['pre'].append(data[pos:pos+0x28]) #固定长度
+			pos += 0x28
+		#添加监听
+		realAddr = readInt(data, pos)
+		if realAddr >= len(data):
+			return None, 0
+		addrFixer.listen(pos, realAddr)
+		header['addr'].append(pos)
+		lineData.append(b'')
+	return lineData, pos
+
 # -----------------------------------
 config = {
-	0: [[0x3F], dealText0, [0x15,0x1A], dealSel0],
-	0x35: [[0x11], dealText, [0x14], dealSel],
+	0: [[0x3F], dealText0, [0x15,0x1A], dealSel0, [0x21], dealJump0],
+	0x35: [[0x11], dealText, [0x14], dealSel, [], dealJump0], #TODO跳转
 }
 # -----------------------------------
 from libs.lzss import lzss_s
