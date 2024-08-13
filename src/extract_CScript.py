@@ -9,13 +9,21 @@ insertContent = {}
 addrFixer = None
 
 writeCompress = True
+fixJumpNormal = True
 fileType = 0
+TextSeq = 0
+SelectSeq = 2
+JumpSeq = 4
+JumpNormalSeq = 6
 
 def initExtra():
 	#写入是否压缩
-	global writeCompress
+	global writeCompress, fixNormalJump
 	lst = ExVar.extraData.split(',')
 	writeCompress = 'compress' in lst
+	fixJumpNormal = 'fixJump' in lst
+	if not fixJumpNormal:
+		config[fileType][JumpNormalSeq] = []
 	#类型控制
 	if ExVar.ctrlStr:
 		lst = ExVar.ctrlStr.split(',')
@@ -92,7 +100,7 @@ def replaceEndImp(content:list):
 				length = len(lineData)
 				if i < len(header['pre']):
 					bs.extend(header['pre'][i])
-				if header['segType'] in config[fileType][4]:
+				if header['segType'] in config[fileType][JumpSeq] or header['segType'] in config[fileType][JumpNormalSeq]:
 					#跳转
 					continue
 				bs.extend(int2bytes(length))
@@ -285,11 +293,11 @@ def dealSel0(data, pos, header):
 		pos += msgLen
 	return lineData, pos
 
-JumpCheck = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
-#跳转（选项）：sig 0
+JumpPostBytes = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+#跳转（分支）：sig 0
 def dealJump0(data, pos, header):
-	bs = data[pos:pos+len(JumpCheck)]
-	if bs != JumpCheck:
+	bs = data[pos:pos+len(JumpPostBytes)]
+	if bs != JumpPostBytes:
 		return None, 0
 	header['pre'][0].extend(data[pos:pos+0xC]) #未知
 	pos += 0xC
@@ -298,7 +306,6 @@ def dealJump0(data, pos, header):
 		return None, 0
 	header['pre'][0].extend(data[pos:pos+0x4]) #个数
 	pos += 0x4
-	header['addr'] = []
 	lineData = []
 	for i in range(count):
 		#跳转
@@ -306,18 +313,55 @@ def dealJump0(data, pos, header):
 			header['pre'].append(data[pos:pos+0x28]) #固定长度
 			pos += 0x28
 		#添加监听
-		realAddr = readInt(data, pos)
-		if realAddr >= len(data):
+		realAddr, end, jumpStr = checkJump(data, pos)
+		if realAddr < 0:
 			return None, 0
 		addrFixer.listen(pos, realAddr)
-		header['addr'].append(pos)
 		lineData.append(b'')
+		printDebug('分支跳转：', i, hex(pos), jumpStr.decode('ascii'))
 	return lineData, pos
+
+#跳转（普通）：sig 0
+def dealJumpNormal0(data, pos, header):
+	realAddr, end, jumpStr = checkJump(data, pos)
+	if realAddr < 0:
+		return None, 0
+	lineData = []
+	addrFixer.listen(pos, realAddr)
+	lineData.append(b'')
+	printDebug('普通跳转：', hex(pos), jumpStr.decode('ascii'))
+	header['pre'][0].extend(data[pos:end])
+	pos = end
+	return lineData, pos
+
+patZero = re.compile(b'\x00')
+patAscii = re.compile(b'^[ -~]{1,32}$')
+def checkJump(data, pos):
+	realAddr = readInt(data, pos)
+	pos += 4
+	if realAddr >= len(data) or realAddr == 0:
+		return -1, 0, b''
+	m = patZero.search(data, pos)
+	if m:
+		jumpStr = data[pos:m.start()]
+		if patAscii.search(jumpStr):
+			return realAddr, m.start(), jumpStr
+	return -2, 0, b''
 
 # -----------------------------------
 config = {
-	0: [[0x3F], dealText0, [0x15,0x1A], dealSel0, [0x21], dealJump0],
-	0x35: [[0x11], dealText, [0x14], dealSel, [], dealJump0], #TODO跳转
+	0: [
+		[0x3F], dealText0, 
+		[0x15,0x1A], dealSel0, 
+		[0x21,0xE5], dealJump0,
+		[0x14], dealJumpNormal0,
+	],
+	0x35: [
+		[0x11], dealText, 
+		[0x14], dealSel, 
+		[], dealJump0, #TODO跳转
+		[], dealJumpNormal0, #TODO跳转
+	], 
 }
 # -----------------------------------
 from libs.lzss import lzss_s
