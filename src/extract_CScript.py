@@ -224,7 +224,7 @@ def dealText(data, pos, header):
 #选项
 def dealSel(data, pos, header):
 	count = readInt(data, pos) #选项个数
-	if count < 2 or count > 4:
+	if count < 2 or count > 5:
 		return None, 0
 	header['pre'][0].extend(data[pos:pos+8]) #个数和0A
 	pos += 8
@@ -233,7 +233,7 @@ def dealSel(data, pos, header):
 	for i in range(count):
 		#选项
 		msgLen = readInt(data, pos)
-		if msgLen < 0 or msgLen > 0x400:
+		if msgLen <= 0 or msgLen >= 0x200:
 			return None, 0
 		pos += 4
 		header['addr'].append(pos)
@@ -273,7 +273,7 @@ def dealSel0(data, pos, header):
 	header['pre'][0].extend(data[pos:pos+0x8]) #未知
 	pos += 0x8
 	count = readInt(data, pos) #选项个数
-	if count < 2 or count > 4:
+	if count < 2 or count > 5:
 		return None, 0
 	header['pre'][0].extend(data[pos:pos+0x15]) #个数和00
 	pos += 0x15
@@ -285,7 +285,7 @@ def dealSel0(data, pos, header):
 			header['pre'].append(data[pos:pos+5]) #空
 			pos += 5
 		msgLen = readInt(data, pos)
-		if msgLen < 0 or msgLen > 0x100:
+		if msgLen <= 0 or msgLen >= 0x100:
 			return None, 0
 		pos += 4
 		header['addr'].append(pos)
