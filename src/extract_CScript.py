@@ -302,7 +302,7 @@ def dealJump0(data, pos, header):
 	header['pre'][0].extend(data[pos:pos+0xC]) #未知
 	pos += 0xC
 	count = readInt(data, pos) #跳转个数
-	if count < 2 or count > 4:
+	if count < 2 or count > 15:
 		return None, 0
 	header['pre'][0].extend(data[pos:pos+0x4]) #个数
 	pos += 0x4
