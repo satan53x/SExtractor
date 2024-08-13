@@ -142,7 +142,8 @@ def readFormatTxt(boolSplit):
 	#原文
 	fileAllOrig = open(filepathOrig, 'r', encoding='utf-8')
 	allOrig = fileAllOrig.readlines()
-	printInfo('读入Txt:', len(allOrig), var.curIO.ouputFileName)
+	if var.partMode == 0:
+		printInfo('读入Txt:', len(allOrig), var.curIO.ouputFileName)
 	if len(allTrans) != len(allOrig):
 		printError('导入与导出文件行数不一致', var.curIO.inputFileName)
 		return
@@ -169,7 +170,8 @@ def readFormatItemList():
 	#原文
 	fileAllOrig = open(filepathOrig, 'r', encoding='utf-8')
 	allOrig = json.load(fileAllOrig)
-	printInfo('读入Json:', len(allOrig), var.curIO.ouputFileName)
+	if var.partMode == 0:
+		printInfo('读入Json:', len(allOrig), var.curIO.ouputFileName)
 	if len(allTrans) != len(allOrig):
 		printError('导入与导出文件行数不一致', var.curIO.inputFileName)
 		return
@@ -197,7 +199,8 @@ def readFormatList():
 	#原文
 	fileAllOrig = open(filepathOrig, 'r', encoding='utf-8')
 	allOrig = json.load(fileAllOrig)
-	printInfo('读入Json:', len(allOrig), var.curIO.ouputFileName)
+	if var.partMode == 0:
+		printInfo('读入Json:', len(allOrig), var.curIO.ouputFileName)
 	if len(allTrans) != len(allOrig):
 		printError('导入与导出文件行数不一致', var.curIO.inputFileName)
 		return
