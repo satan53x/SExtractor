@@ -1,3 +1,4 @@
+import json
 import re
 from common import *
 from helper_text import generateBytes
@@ -26,15 +27,20 @@ def initExtra():
 		config[fileType][JumpNormalSeq] = []
 	#类型控制
 	if ExVar.ctrlStr:
-		lst = ExVar.ctrlStr.split(',')
+		lst = eval(ExVar.ctrlStr)
 		for i, cs in enumerate(lst):
-			l = cs.split('|')
-			for j, v in enumerate(l):
-				#字符转为int
-				v = eval(v)
-				l[j] = v
+			if cs == None: continue
 			#修改控制字节
-			config[fileType][i * 2] = l
+			newCs = []
+			start = 0
+			if len(cs) > 0:
+				if cs[0] == None:
+					#保留原始，即追加
+					newCs = config[fileType][i * 2]
+					start = 1
+			for i in range(start, len(cs)):
+				newCs.append(cs[i])
+			config[fileType][i * 2] = newCs
 				
 def getSep():
 	lst = config[fileType]
