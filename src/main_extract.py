@@ -212,7 +212,7 @@ def setNameList(str):
 	var.nameList = [x for x in l if x != '']
 
 def setRegDic(str):
-	var.regDic.clear()
+	var.regDic = {}
 	if str == None or str == '': return
 	list = re.split('\n', str)
 	for line in list:
@@ -255,7 +255,7 @@ def setRegDic(str):
 		printInfo('正则规则:', pair[0], pair[1])
 
 def readCutoffDic():
-	var.cutoffDic.clear()
+	var.cutoffDic = {}
 	#读入cutoff字典
 	filepath = os.path.join(var.workpath, 'ctrl', 'cutoff.json')
 	if os.path.isfile(filepath):
@@ -292,6 +292,10 @@ def showProgress(value, max=100):
 		var.window.statusBar.sendProgress(value, max)
 
 def initArgs(args):
+	#遍历参数
+	for key, value in args.items():
+		if hasattr(var, key):
+			setattr(var, key, value)
 	# 打印
 	var.printSetting = args['print']
 	ret = chooseEngine(args)
@@ -300,11 +304,7 @@ def initArgs(args):
 	# 匹配
 	setNameList(args['nameList'])
 	# 截断
-	var.cutoff = args['cutoff']
-	var.cutoffCopy = args['cutoffCopy']
 	readCutoffDic()
-	# 是否不读取译文
-	var.noInput =  args['noInput']
 	# 编码
 	var.EncodeRead = args['encode']
 	if args['binEncodeValid']:
@@ -312,29 +312,11 @@ def initArgs(args):
 		var.NewEncodeName = var.EncodeRead
 		printWarningGreen('已启用: 编码也对BIN生效', var.EncodeRead)
 	# 分割
-	var.splitAuto = args['splitAuto']
-	var.splitParaSepRegex = args['splitParaSep']
 	var.splitParaSep = var.splitParaSepRegex.encode().decode('unicode_escape')
-	var.ignoreSameLineCount = args['ignoreSameLineCount']
-	var.ignoreNotMaxCount = args['ignoreNotMaxCount']
-	var.fixedMaxPerLine = args['fixedMaxPerLine']
-	var.maxCountPerLine = args['maxCountPerLine']
-	var.pureText = args['pureText']
-	var.tunnelJis = args['tunnelJis']
-	var.subsJis = args['subsJis']
 	if var.tunnelJis:
 		generateJisList()
 	elif var.subsJis:
 		generateSubsDic()
-	var.transReplace = args['transReplace']
-	var.preReplace = args['preReplace']
-	var.ignoreEmptyFile = args['ignoreEmptyFile']
-	var.skipIgnoreCtrl = args['skipIgnoreCtrl']
-	var.skipIgnoreUnfinish = args['skipIgnoreUnfinish']
-	var.nameMoveUp = args['nameMoveUp']
-	var.outputTextType = args['outputTextType']
-	var.dontExportWhenImport = args['dontExportWhenImport']
-	var.joinAfterSplit = args['joinAfterSplit']
 	readTextConf()
 	# 正则
 	setRegDic(args['regDic'])
