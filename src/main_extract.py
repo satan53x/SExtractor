@@ -312,6 +312,7 @@ def initArgs(args):
 		var.NewEncodeName = var.EncodeRead
 		printWarningGreen('已启用: 编码也对BIN生效', var.EncodeRead)
 	# 分割
+	var.splitParaSepRegex = args['splitParaSep']
 	var.splitParaSep = var.splitParaSepRegex.encode().decode('unicode_escape')
 	if var.tunnelJis:
 		generateJisList()
