@@ -3,7 +3,7 @@ import re
 from common import *
 from helper_text import generateBytes, getBytes, keepBytes
 
-OldEncodeName = 'cp932' #仅用于TXT模式截断和JIS替换
+#OldEncodeName = 'cp932' #仅用于TXT模式截断和JIS替换
 NewEncodeName = 'gbk' #仅用于TXT模式截断
 
 class ParseVar():
@@ -217,10 +217,10 @@ def replaceOnceImp(content, lCtrl, lTrans):
 
 def dealTransLine(trans, orig):
 	if ExVar.subsJis:
-		transData = getBytes(trans, ExVar.NewEncodeName)
-		trans = transData.decode(OldEncodeName)
+		transData = getBytes(trans, ExVar.JisEncodeName)
+		trans = transData.decode(ExVar.JisEncodeName)
 	elif ExVar.cutoff:
-		origData = orig.encode(OldEncodeName)
+		origData = orig.encode(ExVar.JisEncodeName)
 		transData = generateBytes(trans, len(origData), NewEncodeName)
 		if transData == None:
 			return False

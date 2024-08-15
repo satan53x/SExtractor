@@ -10,7 +10,7 @@ __all__ = ['splitToTransDic', 'splitToTransDicAuto',
 		'writeSubsConfig',
 		'replaceValue', 'replaceValueRE', 'replaceValueFull', 
 		'keepFirstTrans',
-		'getBytes', 'OldEncodeName',
+		'getBytes', #'OldEncodeName',
 		'keepBytes', 'TextConfig'
 ]
 
@@ -27,7 +27,7 @@ TextConfig = {
 	}
 }
 
-OldEncodeName = 'cp932'
+#OldEncodeName = 'cp932'
 BytePadding = ord(' ') #字节补齐，默认为英文空格
 #----------------------------------------------------------
 def getBytes(text, NewEncodeName):
@@ -96,9 +96,14 @@ def generateBytes(text, lenOrig, NewEncodeName):
 	if lost > 0:
 		# 右边补足空格
 		#print(transData)
+		padLen = len(ExVar.padding)
 		empty = bytearray(lost)
-		for i in range(int(lost)):
-			empty[i] = BytePadding
+		end = 0
+		for start in range(0, lost-padLen+1, padLen): #填充padding
+			end = start + padLen
+			empty[start:end] = ExVar.padding
+		for start in range(end, lost): #剩余填充英文空格
+			empty[start] = BytePadding
 		transData += empty
 	return transData
 
@@ -329,7 +334,7 @@ def generateTunnelJis(text, maxLen=0):
 	pos = 0
 	while pos < len(text):
 		try:
-			b, pos = encodeChar(text, OldEncodeName, pos)
+			b, pos = encodeChar(text, ExVar.JisEncodeName, pos)
 		except Exception as ex:
 			wchar = text[pos]
 			pos += 1
@@ -410,7 +415,7 @@ def generateSubsJis(text, maxLen=0):
 		try:
 			#b = wchar.encode(OldEncodeName)
 			#pos += 1
-			b, pos = encodeChar(text, OldEncodeName, pos)
+			b, pos = encodeChar(text, ExVar.JisEncodeName, pos)
 		except Exception as ex:
 			pos += 1
 			if wchar in subsDic:
@@ -419,13 +424,13 @@ def generateSubsJis(text, maxLen=0):
 					#未加入列表
 					subsJPList.append(subsDic[wchar])
 					subsCNList.append(wchar)
-				b = subsDic[wchar].encode(OldEncodeName)
+				b = subsDic[wchar].encode(ExVar.JisEncodeName)
 			else:
 				#不存在预设
 				subsRemainList.append(wchar)
 				#wcharList.append(wchar)
 				printError('JIS替换字典不存在字符：', wchar)
-				b = '　'.encode(OldEncodeName)
+				b = '　'.encode(ExVar.JisEncodeName)
 		#导出
 		data.extend(b)
 		if maxLen > 0 and cutoffLen == 0:

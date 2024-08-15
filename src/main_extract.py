@@ -338,6 +338,12 @@ def initArgs(args):
 	readTextConf()
 	# 正则
 	setRegDic(args['regDic'])
+	# 修正参数
+	if var.tunnelJis or var.subsJis:
+		WirteEncodeName = var.JisEncodeName
+	else:
+		WirteEncodeName = var.NewEncodeName
+	var.padding = var.padding.encode(WirteEncodeName).decode('unicode_escape').encode('latin-1')
 	var.isStart = True
 	return 0
 

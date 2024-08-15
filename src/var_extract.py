@@ -62,7 +62,8 @@ class ExtractVar():
 	ignoreNotMaxCount = True #如果所有行都没有超过最大字符，则忽略
 	maxCountPerLine = 0
 	fixedMaxPerLine = False
-	addSpace = '　' #填充的空格
+	addSpace = '　' #行数补充的空格
+	JisEncodeName = 'cp932'
 	tunnelJis = False
 	subsJis = False
 	transReplace = True #译文替换
@@ -105,5 +106,6 @@ class ExtractVar():
 		self.linebreak = '' #标识换行的字符串
 		self.nameMoveUp = False #name向上移动
 		self.keepBytes = '' #保留字节
+		self.padding = '　' #截断填充默认为全角空格,最后有剩余字节再用半角空格补全
 		
 gExtractVar = ExtractVar()

@@ -3,7 +3,7 @@ import pandas as pd
 from common import *
 from extract_TXT import ParseVar, searchLine, initParseVar
 from extract_TXT import replaceOnceImp as replaceOnceImpTXT
-from helper_text import getBytes, OldEncodeName
+from helper_text import getBytes
 
 separate = ''
 validCols = []
@@ -76,7 +76,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		trans = lTrans[i]
 		if ExVar.subsJis:
 			transData = getBytes(trans, ExVar.NewEncodeName)
-			trans = transData.decode(OldEncodeName)
+			trans = transData.decode(ExVar.JisEncodeName)
 		#写入new
 		strOld = content.iat[contentIndex, colIndex + writeOffset]
 		if writeOffset != 0:
