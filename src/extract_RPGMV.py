@@ -105,7 +105,7 @@ class RPGParserMV():
 		global var
 		var = ParseVar(listCtrl, dealOnce)
 		initParseVar(var)
-		ExVar.indent = 2 #test
+		ExVar.indent = 0 #test
 		#code
 		self.extractTextCode.clear()
 		for code, item in EVENT_COMMAND_CODES.items():
