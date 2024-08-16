@@ -27,11 +27,12 @@ class RPGParserMV():
 	def parseNode(self, node, relCode=0, relItem=None):
 		global lastCtrl
 		if len(nodePath) > 1 and nodePath[-1] in self.compressList:
-			#解压json字符串
-			nodeParent = getNode(self.root, nodePath[0:-1])
-			node = loads(node) #递归解析
-			nodeParent[nodePath[-1]] = node
-			compressNodePathList.append(nodePath[0:])
+			if isinstance(node, str):
+				#解压json字符串
+				nodeParent = getNode(self.root, nodePath[0:-1])
+				node = loads(node) #递归解析
+				nodeParent[nodePath[-1]] = node
+				compressNodePathList.append(nodePath[0:])
 		if isinstance(node, str):
 			text = None
 			if relCode:
