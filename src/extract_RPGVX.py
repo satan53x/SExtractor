@@ -10,7 +10,7 @@ from extract_RPGMV import RPGParserMV
 def parseImp(content, listCtrl, dealOnce):
 	ExVar.jsonWrite = 0
 	parser = RPGParserMV('@')
-	parser.init(listCtrl, dealOnce)
+	parser.init(content, listCtrl, dealOnce)
 
 	#处理
 	parser.parseNode(content)

@@ -95,7 +95,7 @@ def replaceEndImp(content):
 		data = content.to_csv(index=False, header=None, sep=separate)
 	else:
 		data = content.to_csv(index=False, sep=separate)
-	ExVar.newLine = ''
+	ExVar.newline = ''
 	ExVar.content = [data]
 
 	

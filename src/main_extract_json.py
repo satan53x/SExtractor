@@ -24,7 +24,10 @@ def write():
 		#print(len(content))
 		filepath = os.path.join(var.workpath, 'new', var.filename+var.Postfix)
 		#print(filepath)
-		fileNew = open(filepath, 'w', encoding=var.EncodeRead)
+		if ExVar.newline != None:
+			fileNew = open(filepath, 'w', encoding=var.EncodeRead, newline=ExVar.newline)
+		else:
+			fileNew = open(filepath, 'w', encoding=var.EncodeRead)
 		rapidjson.dump(var.content, fileNew, ensure_ascii=False, indent=var.indent, write_mode=var.jsonWrite)
 		fileNew.close()
 		#print('导出:', filename+Postfix)

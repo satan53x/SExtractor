@@ -82,7 +82,7 @@ class ExtractVar():
 	def clear(self):
 		self.OldEncodeName = 'cp932'
 		self.NewEncodeName = 'gbk'
-		self.newLine = None
+		self.newline = None
 		#
 		self.insertContent = {} #需要插入的内容
 		self.inputCount = 0 #导出文件个数

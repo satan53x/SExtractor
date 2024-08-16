@@ -1,12 +1,14 @@
 import re
 from common import *
 from extract_TXT import ParseVar, dealLastCtrl, searchLine, initParseVar
+import rapidjson
 
 #fixed
 HeaderLen = 7 #对每句文本添加的头部长度，不包括<>号
 #var
 var:ParseVar = None
 nodePath = []
+compressNodePathList = []
 lastCtrl = None
 checkLast = True
 # ---------------- Group: RPG Maker MV -------------------
@@ -20,9 +22,16 @@ class RPGParserMV():
 		self.extractKeyReverse = False
 		self.codeTag = self.prefix + 'code'
 		self.parametersTag = self.prefix + 'parameters'
+		self.compressList = []
 
 	def parseNode(self, node, relCode=0, relItem=None):
 		global lastCtrl
+		if len(nodePath) > 1 and nodePath[-1] in self.compressList:
+			#解压json字符串
+			nodeParent = getNode(self.root, nodePath[0:-1])
+			node = loads(node) #递归解析
+			nodeParent[nodePath[-1]] = node
+			compressNodePathList.append(nodePath[0:])
 		if isinstance(node, str):
 			text = None
 			if relCode:
@@ -91,11 +100,12 @@ class RPGParserMV():
 		else:
 			return 'nostr'
 
-	def init(self, listCtrl, dealOnce):
+	def init(self, content, listCtrl, dealOnce):
+		self.root = content
 		global var
 		var = ParseVar(listCtrl, dealOnce)
 		initParseVar(var)
-		ExVar.indent = 0
+		ExVar.indent = 2 #test
 		#code
 		self.extractTextCode.clear()
 		for code, item in EVENT_COMMAND_CODES.items():
@@ -116,14 +126,19 @@ class RPGParserMV():
 				if not key.startswith(self.prefix):
 					key = self.prefix + key
 				self.extractKeyList.append(key)
+		#解压json字符串
+		if ExVar.decrypt:
+			lst = ExVar.decrypt.split(',')
+			self.compressList = lst
 		#清除
 		nodePath.clear()
+		compressNodePathList.clear()
 
 # -----------------------------------
 #解析
 def parseImp(content, listCtrl, dealOnce):
 	parser = RPGParserMV()
-	parser.init(listCtrl, dealOnce)
+	parser.init(content, listCtrl, dealOnce)
 	
 	#处理
 	parser.parseNode(content)
@@ -144,6 +159,13 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		getNode(content, nodePath, trans, start, end)
 	return True
 
+def replaceEndImp(content):
+	for nodePath in compressNodePathList:
+		nodeParent = getNode(content, nodePath[0:-1])
+		node = nodeParent[nodePath[-1]]
+		node = dumps(node) #递归序列化
+		nodeParent[nodePath[-1]] = node
+
 def getNode(content, nodePath, replace=None, start=0, end=1):
 	node = content
 	for i, index in enumerate(nodePath):
@@ -153,6 +175,35 @@ def getNode(content, nodePath, replace=None, start=0, end=1):
 			newStr = oldStr[0:start] + replace + oldStr[end:]
 			node[index] = newStr
 		node = node[index]
+	return node
+
+# -----------------------------------
+#递归解析json字符串
+patIter = re.compile(r'[\[{]')
+def loads(node):
+	if isinstance(node, str):
+		if patIter.match(node):
+			node = rapidjson.loads(node)
+		else:
+			return node
+	if isinstance(node, list):
+		for i, n in enumerate(node):
+			node[i] = loads(n)
+	elif isinstance(node, dict):
+		for k, v in node.items():
+			node[k] = loads(v)
+	return node
+
+#返回值: node-节点, isEnd-不需要继续进行递归
+def dumps(node):
+	if isinstance(node, list):
+		for i, n in enumerate(node):
+			node[i] = dumps(n)
+		node = rapidjson.dumps(node, ensure_ascii=False)
+	elif isinstance(node, dict):
+		for k, v in node.items():
+			node[k] = dumps(v)
+		node = rapidjson.dumps(node, ensure_ascii=False)
 	return node
 
 #------------------------------------------
