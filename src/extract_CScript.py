@@ -39,7 +39,8 @@ def initExtra():
 					newCs = config[fileType][i * 2]
 					start = 1
 			for i in range(start, len(cs)):
-				newCs.append(cs[i])
+				if cs[i] not in newCs:
+					newCs.append(cs[i])
 			config[fileType][i * 2] = newCs
 				
 def getSep():
