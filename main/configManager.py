@@ -40,6 +40,7 @@ class ConfigManager():
 			'outputTextType': [mainWindow.outputTextTypeCheck, True, False], #输出文本类型
 			'dontExportWhenImport': [mainWindow.dontExportCheck, True, False], #写入时不导出
 			'joinAfterSplit': [mainWindow.joinAfterSplitCheck, True, False], #分割后再合并为一句
+			'autoCache': [mainWindow.autoCacheCheck, True, True], #选择文件夹时，自动在ctrl下生成缓存文件config.ini
 		}
 
 	def showSeq(self):
@@ -67,6 +68,7 @@ class ConfigManager():
 	def refreshConfig(self):
 		mainWindow.initEnd = False
 		#选择配置
+		#print('当前缓存配置：', self.configName)
 		self.mainConfig = QSettings(self.configName, QSettings.IniFormat)
 		self.mainConfig.setIniCodec('utf-8')
 		mainWindow.mainConfig = self.mainConfig

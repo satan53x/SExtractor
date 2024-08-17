@@ -1,4 +1,5 @@
 import os
+import shutil
 from PyQt5.QtCore import QSettings, QCoreApplication
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from PyQt5.QtGui import QIcon
@@ -100,6 +101,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		dirpath = QFileDialog.getExistingDirectory(None, self.mainDirButton.text(), dirpath)
 		if dirpath != '':
 			self.mainDirPath = dirpath
+			#是否自动生成ini
+			if self.autoCacheCheck.isChecked():
+				path = os.path.join(self.mainDirPath, 'ctrl', 'config.ini')
+				if not os.path.isfile(path):
+					os.makedirs(os.path.dirname(path), exist_ok=True)
+					shutil.copyfile(self.configManager.configName, path)
+			#检查ini
 			self.configManager.isCheckDirIni = True
 			self.configManager.checkDirIni()
 			self.mainDirEdit.setText(dirpath)
