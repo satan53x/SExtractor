@@ -1,4 +1,5 @@
 # lzssmodule.pyx
+# cython: language_level=3str
 
 # 导入需要的Cython模块
 cimport libc.stdint
