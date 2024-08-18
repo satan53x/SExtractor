@@ -85,8 +85,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			#print(group)
 			self.regNameBox.addItem(group)
 		#刷新
-		self.configManager.refreshConfig()
-		self.configManager.checkDirIni()
+		self.configManager.changeConfigSeq(0)
 
 	#初始化
 	def afterShow(self):

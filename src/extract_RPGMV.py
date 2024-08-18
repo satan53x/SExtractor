@@ -102,11 +102,11 @@ class RPGParserMV():
 			return 'nostr'
 
 	def init(self, content, listCtrl, dealOnce):
+		ExVar.indent = 0 #test
 		self.root = content
 		global var
 		var = ParseVar(listCtrl, dealOnce)
 		initParseVar(var)
-		ExVar.indent = 0 #test
 		#code
 		self.extractTextCode.clear()
 		for code, item in EVENT_COMMAND_CODES.items():

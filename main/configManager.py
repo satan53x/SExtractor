@@ -11,7 +11,7 @@ class ConfigManager():
 	#data
 	configCount = 4 #默认配置数
 	configName = 'main/config.ini' #默认配置名字
-	isCheckDirIni = True
+	isCheckDirIni = False
 	isChangeMainDir = True
 	builtinConfig = None #内置ini
 
@@ -54,7 +54,12 @@ class ConfigManager():
 			if ret:
 				name = ret.group(1)
 				mainWindow.configSeqBox.addItem(name)
-		mainWindow.configSeqBox.currentIndexChanged.connect(self.selectConfig)
+		mainWindow.configSeqBox.currentIndexChanged.connect(self.changeConfigSeq)
+
+	def changeConfigSeq(self, index):
+		self.selectConfig(index)
+		self.isCheckDirIni = True
+		self.checkDirIni()
 
 	def selectConfig(self, index, path=None):
 		if path:
@@ -68,7 +73,7 @@ class ConfigManager():
 	def refreshConfig(self):
 		mainWindow.initEnd = False
 		#选择配置
-		#print('当前缓存配置：', self.configName)
+		#print('切换到缓存：', self.configName)
 		self.mainConfig = QSettings(self.configName, QSettings.IniFormat)
 		self.mainConfig.setIniCodec('utf-8')
 		mainWindow.mainConfig = self.mainConfig

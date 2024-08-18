@@ -28,10 +28,45 @@ def write():
 			fileNew = open(filepath, 'w', encoding=var.EncodeRead, newline=ExVar.newline)
 		else:
 			fileNew = open(filepath, 'w', encoding=var.EncodeRead)
-		rapidjson.dump(var.content, fileNew, ensure_ascii=False, indent=var.indent, write_mode=var.jsonWrite)
+		if var.jsonWrite == 10:
+			#除了第一层，其它WM_COMPACT
+			if isinstance(var.content, list):
+				writeList(fileNew, var.content)
+			elif isinstance(var.content, dict):
+				fileNew.write('{\n')
+				first = True
+				for key, value in var.content.items():
+					if first:
+						first = False
+					else:
+						fileNew.write(',')
+						if isinstance(value, list):
+							fileNew.write('\n')
+					s = rapidjson.dumps(key, ensure_ascii=False, write_mode=0)
+					fileNew.write(s)
+					fileNew.write(': ')
+					if isinstance(value, list):
+						writeList(fileNew, value)
+					else:
+						s = rapidjson.dumps(value, ensure_ascii=False, write_mode=0)
+						fileNew.write(s)
+				fileNew.write('}')
+			else:
+				rapidjson.dump(var.content, fileNew, ensure_ascii=False, indent=var.indent, write_mode=1)
+		else:
+			rapidjson.dump(var.content, fileNew, ensure_ascii=False, indent=var.indent, write_mode=var.jsonWrite)
 		fileNew.close()
 		#print('导出:', filename+Postfix)
 		var.outputCount += 1
+
+def writeList(fileNew, lst):
+	fileNew.write('[\n')
+	for i, item in enumerate(lst):
+		s = rapidjson.dumps(item, ensure_ascii=False, write_mode=0)
+		fileNew.write(s)
+		if i < len(lst)-1:
+			fileNew.write(',\n')
+	fileNew.write('\n]')
 
 def parse():
 	var.indent = 2

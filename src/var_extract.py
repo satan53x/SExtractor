@@ -72,7 +72,7 @@ class ExtractVar():
 	skipIgnoreCtrl = False #段落：skip不影响ctrl（lastCtrl不会置为None）
 	skipIgnoreUnfinish = False #段落：skip不影响unfinish（不会添加predel_unfinish）
 	ignoreEmptyFile = True #提取到的内容为空则不导出
-	jsonWrite = 1 #dump模式 0-rapidjson.WM_COMPACT 1-rapidjson.WM_PRETTY
+	jsonWrite = 1 #dump模式 0-rapidjson.WM_COMPACT 1-rapidjson.WM_PRETTY 10-除了第一层，其它WM_COMPACT
 	outputTextType = False #输出文本类型
 	dontImportName = False #不导入name
 	dontExportWhenImport = False #导入时不导出
