@@ -142,6 +142,9 @@ def readFileDataImp(fileOld, contentSeparate):
 	if sig < 0x10:
 		fileType = 0
 		pos = 0x10
+	elif sig == 0x656373: #sce\0
+		fileType = 0x73
+		pos = 0xC
 	else:
 		fileType = 0x35
 		pos = 0xC
@@ -238,6 +241,9 @@ def dealSel(data, pos, header):
 	header['addr'] = []
 	lineData = []
 	for i in range(count):
+		if i > 0:
+			header['pre'].append(data[pos:pos+4])
+			pos += 4
 		#选项
 		msgLen = readInt(data, pos)
 		if msgLen <= 0 or msgLen >= 0x200:
@@ -364,6 +370,12 @@ config = {
 		[0x14], dealJumpNormal0,
 	],
 	0x35: [
+		[0x11], dealText, 
+		[0x14], dealSel, 
+		[], dealJump0, #TODO跳转
+		[], dealJumpNormal0, #TODO跳转
+	],
+	0x73: [
 		[0x11], dealText, 
 		[0x14], dealSel, 
 		[], dealJump0, #TODO跳转
