@@ -139,14 +139,18 @@ def readFileDataImp(fileOld, contentSeparate):
 	#文件头
 	global fileType
 	sig = readInt(data, 0)
-	if sig < 0x10:
-		fileType = 0
-		pos = 0x10
-	elif sig == 0x656373: #sce\0
-		fileType = 0x73
-		pos = 0xC
+	if isinstance(ExVar.version, str):
+		fileType = int(ExVar.version, 0)
 	else:
-		fileType = 0x35
+		fileType = ExVar.version
+	if fileType == 0:
+		if sig < 0x10:
+			fileType = 1
+		else:
+			fileType = 10
+	if fileType < 10:
+		pos = 0x10
+	else:
 		pos = 0xC
 	comLen = readInt(data, pos)
 	pos += 4
@@ -241,7 +245,7 @@ def dealSel(data, pos, header):
 	header['addr'] = []
 	lineData = []
 	for i in range(count):
-		if i > 0:
+		if fileType == 11 and i > 0:
 			header['pre'].append(data[pos:pos+4])
 			pos += 4
 		#选项
@@ -362,27 +366,6 @@ def checkJump(data, pos):
 	return -2, 0, b''
 
 # -----------------------------------
-config = {
-	0: [
-		[0x3F], dealText0, 
-		[0x15,0x1A], dealSel0, 
-		[0x21,0xE5], dealJump0,
-		[0x14], dealJumpNormal0,
-	],
-	0x35: [
-		[0x11], dealText, 
-		[0x14], dealSel, 
-		[], dealJump0, #TODO跳转
-		[], dealJumpNormal0, #TODO跳转
-	],
-	0x73: [
-		[0x11], dealText, 
-		[0x14], dealSel, 
-		[], dealJump0, #TODO跳转
-		[], dealJumpNormal0, #TODO跳转
-	], 
-}
-# -----------------------------------
 from libs.lzss import lzss_s
 def uncompress(com, uncomSize=0):
 	if uncomSize == 0: uncomSize = len(com)*8 #尽量大
@@ -394,3 +377,25 @@ def compress(uncom):
 	com = bytearray(uncom)
 	realsize = lzss_s.compress(com, uncom)
 	return com[0:realsize]
+
+# -----------------------------------
+config = {
+	1: [
+		[0x3F], dealText0, 
+		[0x15,0x1A], dealSel0, 
+		[0x21,0xE5], dealJump0,
+		[0x14], dealJumpNormal0,
+	],
+	10: [
+		[0x11], dealText, 
+		[0x14], dealSel, 
+		[], dealJump0, #TODO跳转
+		[], dealJumpNormal0, #TODO跳转
+	],
+	11: [
+		[0x11], dealText, 
+		[0x14], dealSel, 
+		[], dealJump0, #TODO跳转
+		[], dealJumpNormal0, #TODO跳转
+	], 
+}
