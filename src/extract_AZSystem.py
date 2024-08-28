@@ -21,6 +21,13 @@ class Config():
 		self.SelectSig = b'[\x16]\x00\x00\x00\x00\x00'
 		self.JumpSig = b'[\x04\x05\x0A\x0D]\x00'
 		return self
+	
+	@classmethod
+	def init2(self) -> 'Config':
+		self.MessageSig = b'\x1E\x00\x00\x00\x00\x00'
+		self.SelectSig = b'[\x1B]\x00\x00\x00\x00\x00'
+		self.JumpSig = b'[\x04\x05\x0A\x0D]\x00'
+		return self
 
 # ---------------- Engine: AZSystem Encrypt Isaac -------------------
 def parseImp(content, listCtrl, dealOnce):	
@@ -133,8 +140,10 @@ def replaceEndImp(content):
 
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeparate):
-	if ExVar.extraData == 'type1':
+	if ExVar.version == 1:
 		Config.init1()
+	elif ExVar.version == 2:
+		Config.init2()
 	else:
 		Config.init0()
 	data = fileOld.read()
