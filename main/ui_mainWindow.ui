@@ -1038,7 +1038,7 @@
                <height>0</height>
               </size>
              </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_16" stretch="4,3,2">
+             <layout class="QHBoxLayout" name="horizontalLayout_16" stretch="5,3,3">
               <property name="spacing">
                <number>0</number>
               </property>
@@ -1086,7 +1086,7 @@
            </item>
            <item>
             <widget class="QWidget" name="widget_18" native="true">
-             <layout class="QHBoxLayout" name="horizontalLayout_25" stretch="4,3,2">
+             <layout class="QHBoxLayout" name="horizontalLayout_25" stretch="5,3,3">
               <property name="spacing">
                <number>0</number>
               </property>
@@ -1117,17 +1117,11 @@
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_6">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+               <widget class="QCheckBox" name="dontInterruptCheck">
+                <property name="text">
+                 <string>单文件异常时不中断</string>
                 </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
+               </widget>
               </item>
              </layout>
             </widget>

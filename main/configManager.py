@@ -41,6 +41,7 @@ class ConfigManager():
 			'dontExportWhenImport': [mainWindow.dontExportCheck, True, False], #写入时不导出
 			'joinAfterSplit': [mainWindow.joinAfterSplitCheck, True, False], #分割后再合并为一句
 			'autoCache': [mainWindow.autoCacheCheck, True, True], #选择文件夹时，自动在ctrl下生成缓存文件config.ini
+			'dontInterrupt': [mainWindow.dontInterruptCheck, True, False], #单文件异常时不中断
 		}
 
 	def showSeq(self):

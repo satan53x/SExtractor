@@ -77,6 +77,7 @@ class ExtractVar():
 	dontImportName = False #不导入name
 	dontExportWhenImport = False #导入时不导出
 	joinAfterSplit = False #分割后再合并为一句
+	dontInterrupt = False #单文件异常时不中断
 
 	#-------------------
 	def clear(self):

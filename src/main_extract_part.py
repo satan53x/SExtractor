@@ -30,7 +30,7 @@ def mainExtractPart(args, parseImp, initDone=None):
 			var.curIO = var.io
 			readFormat() #读入译文
 			printDebug('读取文件:', var.filename)
-			parseImp()
+			parse(parseImp)
 			keepAllOrig()
 			writeFormat()
 			var.curIO = var.ioExtra

@@ -1,6 +1,7 @@
 import os
 import json
 import re
+import traceback
 from PyQt5.QtCore import QSettings
 from importlib import import_module
 from var_extract import *
@@ -357,6 +358,18 @@ def getFiles(dirpath, reverse=False):
 		files = list(reversed(files))
 	return files
 
+def parse(parseImp):
+	try:
+		parseImp()
+	except Exception as ex:
+		if ExVar.dontInterrupt:
+			print('\033[31m---------------------------提取或导入时发生错误---------------------------\033[0m')
+			traceback.print_exc()
+			print('\033[31m--------------------------------------------------------------------------\033[0m')
+			print(f'\033[33m异常中断文件名: {ExVar.filename}\033[0m')
+		else:
+			raise
+
 #合并为单文档导出
 def mainExtract(args, parseImp, initDone=None):
 	if len(args) < 4:
@@ -386,7 +399,7 @@ def mainExtract(args, parseImp, initDone=None):
 			showProgress(i, len(files))
 			var.filename = name
 			printDebug('读取文件:', var.filename)
-			parseImp()
+			parse(parseImp)
 			keepAllOrig(needReverse)
 			#break #测试
 			var.isStart = False
