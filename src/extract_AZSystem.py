@@ -12,16 +12,13 @@ class Config():
 	def init(self, version):
 		self.version = version
 		self.JumpSig = b'[\x04\x05\x0A\x0D]\x00'
-		if version == 0:
-			self.MessageSig = b'\x1F\x00\x00\x00\x00\x00'
-			self.SelectSig = b'[\x1D\x11\x1C]\x00\x00\x00\x00\x00'
-		elif version == 1:
+		if version == 1:
 			self.MessageSig = b'\x1B\x00\x00\x00\x00\x00'
 			self.SelectSig = b'[\x16]\x00\x00\x00\x00\x00'
 		elif version == 2:
 			self.MessageSig = b'\x1E\x00\x00\x00\x00\x00'
 			self.SelectSig = b'[\x1B]\x00\x00\x00\x00\x00'
-		elif version == 10:
+		else:
 			self.MessageSig = b'\x1F\x00\x00\x00\x00\x00'
 			self.SelectSig = b'[\x1D\x11\x1C]\x00\x00\x00\x00\x00'
 
