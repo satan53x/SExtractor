@@ -9,7 +9,7 @@ NewEncodeName = 'gbk' #仅用于TXT模式截断
 class ParseVar():
 	contentIndex = 0
 	lineData = None
-	searchStart = 0
+	searchStart = -1
 	searchEnd = -1
 	listIndex = 0 #准备弃用
 	listCtrl = None
@@ -43,7 +43,7 @@ def GetPos(var:ParseVar, searchData:str, r:re.Match[str], i):
 	return start, end
 # -----------------------------------
 def searchLine(var:ParseVar):
-	if var.searchStart > 0:
+	if var.searchStart >= 0:
 		searchData = var.lineData[var.searchStart:var.searchEnd]
 	else:
 		searchData = var.lineData

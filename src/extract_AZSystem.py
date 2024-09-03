@@ -9,25 +9,21 @@ headerList = []
 
 class Config():
 	@classmethod
-	def init0(self) -> 'Config':
-		self.MessageSig = b'\x1F\x00\x00\x00\x00\x00'
-		self.SelectSig = b'[\x1D\x11\x1C]\x00\x00\x00\x00\x00'
+	def init(self, version):
+		self.version = version
 		self.JumpSig = b'[\x04\x05\x0A\x0D]\x00'
-		return self
-	
-	@classmethod
-	def init1(self) -> 'Config':
-		self.MessageSig = b'\x1B\x00\x00\x00\x00\x00'
-		self.SelectSig = b'[\x16]\x00\x00\x00\x00\x00'
-		self.JumpSig = b'[\x04\x05\x0A\x0D]\x00'
-		return self
-	
-	@classmethod
-	def init2(self) -> 'Config':
-		self.MessageSig = b'\x1E\x00\x00\x00\x00\x00'
-		self.SelectSig = b'[\x1B]\x00\x00\x00\x00\x00'
-		self.JumpSig = b'[\x04\x05\x0A\x0D]\x00'
-		return self
+		if version == 0:
+			self.MessageSig = b'\x1F\x00\x00\x00\x00\x00'
+			self.SelectSig = b'[\x1D\x11\x1C]\x00\x00\x00\x00\x00'
+		elif version == 1:
+			self.MessageSig = b'\x1B\x00\x00\x00\x00\x00'
+			self.SelectSig = b'[\x16]\x00\x00\x00\x00\x00'
+		elif version == 2:
+			self.MessageSig = b'\x1E\x00\x00\x00\x00\x00'
+			self.SelectSig = b'[\x1B]\x00\x00\x00\x00\x00'
+		elif version == 10:
+			self.MessageSig = b'\x1F\x00\x00\x00\x00\x00'
+			self.SelectSig = b'[\x1D\x11\x1C]\x00\x00\x00\x00\x00'
 
 # ---------------- Engine: AZSystem Encrypt Isaac -------------------
 def parseImp(content, listCtrl, dealOnce):	
@@ -140,12 +136,7 @@ def replaceEndImp(content):
 
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeparate):
-	if ExVar.version == 1:
-		Config.init1()
-	elif ExVar.version == 2:
-		Config.init2()
-	else:
-		Config.init0()
+	Config.init(ExVar.version)
 	data = fileOld.read()
 	pos = 0x10 #文件头部长度
 	insertContent = {
