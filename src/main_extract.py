@@ -285,6 +285,15 @@ def readTextConf():
 	var.textConf = json.load(fileOld)
 	fileOld.close()
 
+def readFullWidthDic():
+	if not var.toFullWidth: return
+	filepath = os.path.join('./tools/WideChar.json')
+	if not os.path.isfile(filepath):
+		return
+	fileOld = open(filepath, 'r', encoding='utf-8')
+	var.fullWidthDic = json.load(fileOld)
+	fileOld.close()
+
 def showMessage(msg, color='black'):
 	if var.window: 
 		var.window.statusBar.sendMessage(msg, color)
@@ -325,6 +334,8 @@ def initArgs(args):
 	readTextConf()
 	# 正则
 	setRegDic(args['regDic'])
+	# 其他配置
+	readFullWidthDic()
 	# 修正参数
 	if var.tunnelJis or var.subsJis:
 		WirteEncodeName = var.JisEncodeName

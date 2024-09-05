@@ -892,7 +892,7 @@
           <property name="title">
            <string>导入</string>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_31" stretch="5,5,10">
+          <layout class="QHBoxLayout" name="horizontalLayout_31" stretch="5,5,5,5">
            <property name="leftMargin">
             <number>5</number>
            </property>
@@ -919,6 +919,13 @@
             <widget class="QCheckBox" name="preReplaceCheck">
              <property name="text">
               <string>分割前替换</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="toFullWidthCheck">
+             <property name="text">
+              <string>半角转全角</string>
              </property>
             </widget>
            </item>

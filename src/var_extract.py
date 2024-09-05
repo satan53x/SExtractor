@@ -38,6 +38,7 @@ class ExtractVar():
 	listCtrl = [] #控制表
 	cutoffDic = {}
 	textConf = {}
+	fullWidthDic = {} #全角转半角字典
 
 	#-------------------
 	engineName = ''
@@ -78,6 +79,7 @@ class ExtractVar():
 	dontExportWhenImport = False #导入时不导出
 	joinAfterSplit = False #分割后再合并为一句
 	dontInterrupt = False #单文件异常时不中断
+	toFullWidth = False #半角转全角
 
 	#-------------------
 	def clear(self):

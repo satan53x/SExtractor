@@ -70,6 +70,10 @@ def transReplace():
 						if keep == orig:
 							for i, t in enumerate(trans):
 								trans[i] = ''
+	if var.toFullWidth:
+		printDebug('进行半角转全角')
+		replaceDic = var.fullWidthDic
+		replaceValue(var.transDic, replaceDic)
 	if var.engineName in TextConfig['trans_fix']:
 		replaceDic = TextConfig['trans_fix'][var.engineName]
 		printDebug('进行译文修正')
