@@ -64,6 +64,9 @@ XorTable = {
 
 	#オシオキSweetie＋Sweets！！ HD版
 	54: bytearray.fromhex('97 02 CB 5A 83 0F 5E 30 A7 66 C9 1B 47 22 9D C6'),
+
+	#ボイン姉妹の個人授業
+	55: bytearray.fromhex('8C 05 CC 51 87 1D 41 38 BA 7C D4 16 41 24 9D DB'), 
 }
 
 #加密解密函数相同
