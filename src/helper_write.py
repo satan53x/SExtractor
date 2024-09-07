@@ -27,6 +27,8 @@ def writeFormat():
 		if var.dontExportWhenImport:
 			return
 	fmt = var.curIO.outputFormat
+	if fmt < 0:
+		return
 	if var.ignoreEmptyFile:
 		if not var.allOrig:
 			return

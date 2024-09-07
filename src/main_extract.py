@@ -160,7 +160,6 @@ def createFolder():
 
 def chooseEngine(args):
 	var.engineName = args['engineName']
-	var.clear()
 	var.fileType = args['file']
 	#读取配置
 	settings = QSettings('src/engine.ini', QSettings.IniFormat)
@@ -302,15 +301,16 @@ def showProgress(value, max=100):
 		var.window.statusBar.sendProgress(value, max)
 
 def initArgs(args):
-	#遍历参数
-	for key, value in args.items():
-		if hasattr(var, key):
-			setattr(var, key, value)
+	var.clear()
 	# 打印
 	var.printSetting = args['print']
 	ret = chooseEngine(args)
 	if ret != 0:
 		return ret
+	#遍历参数
+	for key, value in args.items():
+		if hasattr(var, key):
+			setattr(var, key, value)
 	# 匹配
 	setNameList(args['nameList'])
 	# 截断
