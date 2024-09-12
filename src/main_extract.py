@@ -208,6 +208,8 @@ def chooseEngine(args):
 	return 0
 
 def setNameList(str):
+	if str:
+		printWarningGreen('进行强制设定名字')
 	l = str.split(',')
 	var.nameList = [x for x in l if x != '']
 
