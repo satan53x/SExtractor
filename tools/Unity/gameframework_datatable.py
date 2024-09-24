@@ -1,8 +1,9 @@
 # ------------------------------------------------------------
 # https://github.com/satan53x/SExtractor/tree/main/tools/Unity
-# 用于GameFramework的DataTable解压
+# 用于GameFramework的DataTable解压和压缩
 # table结构为开发者自定义，不通用，需要自行添加RowTypeDic
-# read_7bit_encoded_int()函数也可能需要自行修改
+# read_var_int()仅适配于测试游戏：超级星探
+# 其他游戏可能需要修改read_var_int为read_7bit_encoded_int
 # ------------------------------------------------------------
 import csv
 import io
@@ -14,7 +15,7 @@ from tkinter import filedialog
 DefaultPath = r''
 EncodeName = 'utf-8'
 BIN = 'bytes'
-TXT = 'json' #支持格式：csv, json
+TXT = 'csv' #支持格式：csv, json
 IfBin2Txt = True #True: BIN->TXT ; False: TXT->BIN
 
 RowTypeDic = {
@@ -37,11 +38,29 @@ RowTypeDic = {
 		'lst', 'bytes', 
 		'int', 'str', 'str', 'byte6',
 	],
-	# 'tbwechatcontent': [
-	# 	'int', 'int', 'str', 
-	# 	'int', 'int', 'str', 'int',
-	# 	'str', 'dic', 'int', 'int', 'int',
-	# ]
+	'tbwechatcontent': [
+		'int', 'str', 
+		'int', 'int', 'str', 'int',
+		'str', 'dic', 'int', 'int', 'int',
+	],
+	'tbxt_daijia': [
+		'int', 'str', 'str',
+		'dic', 'dic', 'dic', 'dic',
+	],
+	'tbxt_dangan': [
+		'int', 'str', 'int', 
+		'str', 'str', 'str', 'str', 'str', 'str',
+		'int', 'str', 'str',
+		'dic', 'dic', 'dic', 
+	],
+	'tbxt_jishi': [
+		'int', 'str', 'str',
+		'dic', 'dic',
+	],
+	'tbxt_zhidao': [
+		'int', 'str', 'int', 'str',
+		'dic', 'dic', 'dic', 
+	],
 }
 
 # ------------------------------------------------------------
@@ -57,7 +76,7 @@ def decompress():
 		return
 	reader = io.BytesIO(data)
 	#处理
-	rowCount = read_7bit_encoded_int(reader, 7)
+	rowCount = read_var_int(reader)
 	header = []
 	rowConf = RowTypeDic[filename]
 	for i, colType in enumerate(rowConf):
@@ -79,7 +98,7 @@ def compress():
 	writer = io.BytesIO()
 	#处理
 	rowCount = len(content)
-	write_7bit_encoded_int(rowCount, writer)
+	write_var_int(rowCount, writer)
 	rowConf = RowTypeDic[filename]
 	for i in range(rowCount):
 		try:
@@ -109,29 +128,33 @@ def read_row(reader, rowConf):
 				length = int(colType[4:])
 			data = read_bytes(reader, length)
 		else:
-			data = read_7bit_encoded_int(reader)
+			data = read_var_int(reader)
 		if colType in ['dic', 'lst']:
 			if TXT in ['csv']: #不支持嵌套的txt格式
 				data = json.dumps(data, ensure_ascii=False)
 		row.append(data)
 	return row
 
-def read_7bit_encoded_int(reader, max=7):
+#编码方式类似于utf-8，但是不会占用后续字节，目前长度仅支持在第1字节，即max不能超过8
+def read_var_int(reader, max=8):
 	value = 0
-	shift = 0
-	while True:
-		b = reader.read(1)[0]
-		if shift >= max or (b & 0x80) == 0:
-			value <<= 8
-			value += b
+	b = reader.read(1)[0]
+	first = b
+	length = 1
+	for i in range(max-1, 0, -1):
+		check = 1 << i
+		if not (first & check):
 			break
-		value <<= 7
-		value += b & 0x7f
-		shift += 7
+		b ^= check
+		length += 1
+	value = b
+	for i in range(1, length):
+		value <<= 8
+		value += reader.read(1)[0]
 	return value
 
 def read_string(reader):
-	length = read_7bit_encoded_int(reader)
+	length = read_var_int(reader)
 	if length == 0:
 		return ""
 	bs =  reader.read(length)
@@ -139,18 +162,18 @@ def read_string(reader):
 	return s
 
 def read_dic(reader):
-	dic_count = read_7bit_encoded_int(reader)
+	dic_count = read_var_int(reader)
 	if dic_count == 0:
 		return {}
 	dic = {}
 	for i in range(dic_count):
-		key = read_7bit_encoded_int(reader)
+		key = read_var_int(reader)
 		val = read_string(reader)
 		dic[key] = val
 	return dic
 
 def read_lst(reader):
-	lst_count = read_7bit_encoded_int(reader)
+	lst_count = read_var_int(reader)
 	if lst_count == 0:
 		return []
 	lst = []
@@ -186,64 +209,71 @@ def wrtite_row(row, writer, rowConf):
 		elif colType == 'lst':
 			write_lst(data, writer)
 		else:
-			write_7bit_encoded_int(data, writer)
+			write_var_int(data, writer)
 
 
-def write_7bit_encoded_int(value, writer, max=7):
+def write_var_int(value, writer, max=8):
 	ba = []
-	shift = 8
-	b = int(value & 0xFF)
-	ba.append(b)
-	value >>= 8
-	while value > 0:
-		ba.append(int(value & 0x7F) + 0x80)
-		value >>= 7
-		shift += 7
-		if shift >= max:
-			if value > 0:
-				print("Error: too long number for compression")
-				raise ValueError("too long number for compression")
-			break
-	if len(ba) == 1 and ba[0] > 0x7F:
-		ba.append(0x80)
+	first = 0
+	length = 1
+	mask = 1 << (max - 1)
+	while value >= 0x100:
+		ba.append(int(value & 0xFF))
+		value >>= 8
+		length += 1
+		first |= mask
+		mask >>= 1
+	ba.append(int(value & 0xFF))
+	if length > max:
+		print("Error: too long number for compression")
+		raise ValueError("too long number for compression")
+	if ba[-1] < mask:
+		ba[-1] |= first
+	else:
+		first |= mask
+		ba.append(first)
 	for i in reversed(range(len(ba))):
 		writer.write(ba[i].to_bytes(1, byteorder="big"))
 
 def write_string(value, writer):
 	if pd.isnull(value):
-		write_7bit_encoded_int(0, writer)
+		write_var_int(0, writer)
 		return
 	bs = value.encode(EncodeName)
 	length = len(bs)
-	write_7bit_encoded_int(length, writer)
+	write_var_int(length, writer)
 	writer.write(bs)
 
 def write_dic(dic, writer):
 	dic_count = len(dic.items())
-	write_7bit_encoded_int(dic_count, writer)
+	write_var_int(dic_count, writer)
 	for key, value in dic.items():
 		try:
 			key = int(key) #key可能是字符串
 		except Exception:
 			pass
-		write_7bit_encoded_int(key, writer)
+		write_var_int(key, writer)
 		write_string(value, writer)
 
 def write_lst(lst, writer):
 	lst_count = len(lst)
-	write_7bit_encoded_int(lst_count, writer)
+	write_var_int(lst_count, writer)
 	for item in lst:
 		write_string(item, writer)
 
 def write_bytes(str, writer, length=-1):
-	bs = bytes.fromhex(str)
+	if pd.isnull(str):
+		bs = b''
+	else:
+		bs = bytes.fromhex(str)
 	if length < 0:
 		if len(bs) % 8 != 0:
 			print("Error: bytes must be a multiple of 8 bytes.")
 			raise ValueError("bytes must be a multiple of 8 bits.")
 		b = (len(bs) // 8).to_bytes(1, byteorder="big")
 		writer.write(b)
-	writer.write(bs)
+	if bs:
+		writer.write(bs)
 # ------------------------------------------------------------
 def read():
 	#print(filename)
