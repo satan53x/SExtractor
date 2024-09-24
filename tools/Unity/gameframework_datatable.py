@@ -11,20 +11,37 @@ import sys
 import os
 import pandas as pd
 from tkinter import filedialog
-DefaultPath = ''
+DefaultPath = r''
 EncodeName = 'utf-8'
 BIN = 'bytes'
 TXT = 'json' #支持格式：csv, json
-IfBin2Txt = False #True: BIN->TXT ; False: TXT->BIN
+IfBin2Txt = True #True: BIN->TXT ; False: TXT->BIN
 
 RowTypeDic = {
 	'tbachievement': [ 
 		'str', 'int', 'int', 'str', 'int', 'str', 'str', 'str', 
-		'dic', 'dic', 'int' 
+		'dic', 'dic', 'int',
 	],
 	'tbuitextlanguage': [ 
-		'str', 'dic' 
+		'str', 'dic',
 	],
+	'tbchaptercontent': [
+		'int', 'int', 'int', 'lst', 'str', 
+		'lst', 'lst', 
+		'dic', 'dic', 'dic', 
+		'str', 'str',
+	],
+	'tboptionscontent': [
+		'int', 'str', 'str', 'byte9',
+		'dic', 
+		'lst', 'bytes', 
+		'int', 'str', 'str', 'byte6',
+	],
+	# 'tbwechatcontent': [
+	# 	'int', 'int', 'str', 
+	# 	'int', 'int', 'str', 'int',
+	# 	'str', 'dic', 'int', 'int', 'int',
+	# ]
 }
 
 # ------------------------------------------------------------
@@ -83,11 +100,19 @@ def read_row(reader, rowConf):
 			data = read_string(reader)
 		elif colType == 'dic':
 			data = read_dic(reader)
-			if TXT == 'csv':
-				#不支持嵌套的txt格式
-				data = json.dumps(data, ensure_ascii=False)
+		elif colType == 'lst':
+			data = read_lst(reader)
+		elif colType.startswith('byte'):
+			if colType[4] == 's':
+				length = -1
+			else:
+				length = int(colType[4:])
+			data = read_bytes(reader, length)
 		else:
 			data = read_7bit_encoded_int(reader)
+		if colType in ['dic', 'lst']:
+			if TXT in ['csv']: #不支持嵌套的txt格式
+				data = json.dumps(data, ensure_ascii=False)
 		row.append(data)
 	return row
 
@@ -124,17 +149,42 @@ def read_dic(reader):
 		dic[key] = val
 	return dic
 
+def read_lst(reader):
+	lst_count = read_7bit_encoded_int(reader)
+	if lst_count == 0:
+		return []
+	lst = []
+	for i in range(lst_count):
+		val = read_string(reader)
+		lst.append(val)
+	return lst
+
+def read_bytes(reader, length=-1):
+	if length < 0:
+		length = reader.read(1)[0] * 8
+	bs = reader.read(length)
+	return bs.hex()
+
 # ------------------------------------------------------------
 def wrtite_row(row, writer, rowConf):
 	for i, colType in enumerate(rowConf):
 		data = row[i]
+		if colType in ['dic', 'lst']:
+			if TXT in ['csv']:
+				#不支持嵌套的txt格式
+				data = json.loads(data)
 		if colType == 'str':
 			write_string(data, writer)
 		elif colType == 'dic':
-			if TXT == 'csv':
-				#不支持嵌套的txt格式
-				data = json.loads(data)
 			write_dic(data, writer)
+		elif colType.startswith('byte'):
+			if colType[4] == 's':
+				length = -1
+			else:
+				length = int(colType[4:])
+			data = write_bytes(data, writer, length)
+		elif colType == 'lst':
+			write_lst(data, writer)
 		else:
 			write_7bit_encoded_int(data, writer)
 
@@ -179,6 +229,21 @@ def write_dic(dic, writer):
 		write_7bit_encoded_int(key, writer)
 		write_string(value, writer)
 
+def write_lst(lst, writer):
+	lst_count = len(lst)
+	write_7bit_encoded_int(lst_count, writer)
+	for item in lst:
+		write_string(item, writer)
+
+def write_bytes(str, writer, length=-1):
+	bs = bytes.fromhex(str)
+	if length < 0:
+		if len(bs) % 8 != 0:
+			print("Error: bytes must be a multiple of 8 bytes.")
+			raise ValueError("bytes must be a multiple of 8 bits.")
+		b = (len(bs) // 8).to_bytes(1, byteorder="big")
+		writer.write(b)
+	writer.write(bs)
 # ------------------------------------------------------------
 def read():
 	#print(filename)
