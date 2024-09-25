@@ -61,6 +61,14 @@ RowTypeDic = {
 		'int', 'str', 'int', 'str',
 		'dic', 'dic', 'dic', 
 	],
+	'tbhovertip': [
+		'int', 'str', 'str', 'int', 'int',
+		'dic',
+	],
+	'tbminigames': [
+		'int', 'str', 'str', 'str', 'byte4', 'int', 'str',
+		'byte4', 'str', 'str', 'dic', 'int', 'int',
+	]
 }
 
 # ------------------------------------------------------------
