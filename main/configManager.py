@@ -43,7 +43,7 @@ class ConfigManager():
 			'autoCache': [mainWindow.autoCacheCheck, True, True], #选择文件夹时，自动在ctrl下生成缓存文件config.ini
 			'dontInterrupt': [mainWindow.dontInterruptCheck, True, False], #单文件异常时不中断
 			'toFullWidth': [mainWindow.toFullWidthCheck, True, False], #转为全角字符
-			'nameKeepCtrl': [mainWindow.nameKeepCtrlCheck, True, False], #name分组保留lastCtrl
+			'nameKeepCtrl': [mainWindow.nameKeepCtrlCheck, True, True], #name分组保留lastCtrl
 		}
 
 	def showSeq(self):
