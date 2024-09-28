@@ -41,8 +41,8 @@ def keepAllOrig(insertBegin=False):
 			item['message'] += orig
 			if var.outputTextType:
 				#导出文本类型标记
-				if 'select' in ctrl:
-					item['type'] = 'select'
+				if 'type' in ctrl:
+					item['type'] = ctrl['type']
 			if 'unfinish' in ctrl:
 				if listIndex < len(var.listCtrl) - 1:
 					nextCtrl = var.listCtrl[listIndex + 1]

@@ -112,7 +112,9 @@ def searchLine(var:ParseVar):
 								if 'flags' not in ctrl:
 									ctrl['flags'] = []
 								ctrl['flags'].append(key)
-							else: #name, unfinish, select
+							elif key.startswith('type_'):
+								ctrl['type'] = key[5:]
+							else: #name, unfinish
 								ctrl[key] = True #标记
 					matched = True
 			if matched :
@@ -154,7 +156,8 @@ def dealLastCtrl(lastCtrl, ctrls, contentIndex=-1):
 			flags.extend(ctrl['flags'])
 		if 'name' in ctrl: #name匹配
 			flags.append('predel_unfinish')
-			ctrl = None
+			if not ExVar.nameKeepCtrl:
+				ctrl = None
 	#处理flags
 	for flag in flags:
 		if lastCtrl:

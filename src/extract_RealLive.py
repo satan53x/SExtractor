@@ -25,7 +25,7 @@ def parseImp(content, listCtrl, dealOnce):
 			info = manager.infoList[contentIndex]
 			if info.type == TextType.SELECT:
 				#选项标记
-				ctrls[-1]['select'] = True
+				ctrls[-1]['type'] = 'select'
 		if var.checkLast:
 			var.lastCtrl = dealLastCtrl(var.lastCtrl, ctrls, contentIndex)
 	ExVar.keepBytes = 'auto'
