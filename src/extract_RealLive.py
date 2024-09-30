@@ -120,7 +120,7 @@ addrFixer = None
 class Manager():
 	def init(self, data):
 		global config, addrFixer
-		config = Config()
+		config = Config(ExVar.version)
 		addrFixer = AddrFixer()
 		self.data = data
 		self.numStart = readInt(data, headConfig['numStartAddr'])
@@ -237,7 +237,7 @@ class Command():
 			self.read_goto_on(num_args)
 		elif self.is_current_function_one_of(config.GOTO_CASE_FUNCTIONS):
 			self.read_goto_case()
-		elif manager.current_module == config.SELECT_MODULE:
+		elif self.is_current_function_one_of(config.SELECT_MODULE):
 			self.read_select()
 
 		# if self.is_current_function_one_of(config.PARAGRAPH_END_FUNCTIONS):
@@ -289,7 +289,7 @@ class Command():
 		if not self.is_in_function_call() or self.is_current_function_one_of(config.MESSAGE_FUNCTIONS): 
 			if not self.range_equals(start, end-start, config.SCENE_END_MARKER):
 				manager.infoList.append(Info(TextType.MESSAGE, start, end))
-		elif manager.current_module == config.SELECT_MODULE:
+		elif self.is_current_function_one_of(config.SELECT_MODULE):
 			manager.infoList.append(Info(TextType.SELECT, start, end))
 		# elif self.is_current_function_one_of(config.NOTE_FUNCTIONS):
 		# 	#注音的上标
@@ -358,6 +358,8 @@ class Command():
 		if manager.current_module not in functions:
 			return False
 		functions_of_module = functions[manager.current_module]
+		if functions_of_module == []:
+			return True
 		return manager.current_function in functions_of_module
 	
 	def is_in_function_call(self):
@@ -378,38 +380,51 @@ class Info:
 
 # -----------------------------------
 class Config:
-	GOTO_FUNCTIONS = {
-		0x01: [0x0000, 0x0001, 0x0002, 0x0005, 0x0006, 0x0007, 0x0010],
-		0x05: [0x0001, 0x0002, 0x0005, 0x0006, 0x0007]
-	}
-	PARAMETERLESS_GOTO_FUNCTIONS = {
-		0x01: [0x0000, 0x0005],
-		0x05: [0x0001, 0x0005]
-	}
-	GOTO_ON_FUNCTIONS = {
-		0x01: [0x0003, 0x0008],
-		0x05: [0x0003, 0x0008]
-	}
-	GOTO_CASE_FUNCTIONS = {
-		0x01: [0x0004, 0x0009],
-		0x05: [0x0004, 0x0009]
-	}
-	MESSAGE_FUNCTIONS = {
-		0x03: [0x0070]
-	}
-	SCENE_END_MARKER = bytes([
-		0x82, 0x72, 0x82, 0x85, 0x82, 0x85, 0x82, 0x8E, 0x82, 0x64, 0x82, 0x8E,
-		0x82, 0x84, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
-	])
-	SELECT_MODULE = 0x02
-	NOTE_FUNCTIONS = {
-		0x03: [0x0078]
-	}
-	LINEBREAK_FUNCTIONS = {
-		0x03: [0x00C9]
-	}
-	# PARAGRAPH_END_FUNCTIONS = {
-	# 	0x03: [0x0011]
-	# }
+	def __init__(self, version):
+		self.GOTO_FUNCTIONS = {
+			0x01: [0x0000, 0x0001, 0x0002, 0x0005, 0x0006, 0x0007, 0x0010],
+			0x05: [0x0001, 0x0002, 0x0005, 0x0006, 0x0007]
+		}
+		self.PARAMETERLESS_GOTO_FUNCTIONS = {
+			0x01: [0x0000, 0x0005],
+			0x05: [0x0001, 0x0005]
+		}
+		self.GOTO_ON_FUNCTIONS = {
+			0x01: [0x0003, 0x0008],
+			0x05: [0x0003, 0x0008]
+		}
+		self.GOTO_CASE_FUNCTIONS = {
+			0x01: [0x0004, 0x0009],
+			0x05: [0x0004, 0x0009]
+		}
+		self.MESSAGE_FUNCTIONS = {
+			0x03: [0x0070]
+		}
+		self.SCENE_END_MARKER = bytes([
+			0x82, 0x72, 0x82, 0x85, 0x82, 0x85, 0x82, 0x8E, 0x82, 0x64, 0x82, 0x8E,
+			0x82, 0x84, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+			0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+			0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
+		])
+		self.SELECT_MODULE = {
+			0x02: []
+		}
+		self.NOTE_FUNCTIONS = {
+			0x03: [0x0078]
+		}
+		self.LINEBREAK_FUNCTIONS = {
+			0x03: [0x00C9]
+		}
+		# self.PARAGRAPH_END_FUNCTIONS = {
+		# 	0x03: [0x0011]
+		# }
+		# -----------------------------------
+		if version == 2:
+			self.SELECT_MODULE[0x02] = [0x0002, 0x0003]
+		elif version == 3:
+			self.MESSAGE_FUNCTIONS[0x01] = [0x0012]
+			self.SELECT_MODULE[0x02] = [0x0002, 0x0003]
+			
+
+
+

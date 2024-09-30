@@ -66,7 +66,10 @@ XorTable = {
 	54: bytearray.fromhex('97 02 CB 5A 83 0F 5E 30 A7 66 C9 1B 47 22 9D C6'),
 
 	#ボイン姉妹の個人授業
-	55: bytearray.fromhex('8C 05 CC 51 87 1D 41 38 BA 7C D4 16 41 24 9D DB'), 
+	55: bytearray.fromhex('8C 05 CC 51 87 1D 41 38 BA 7C D4 16 41 24 9D DB'),
+
+	#娼姫レティシア～今宵、王女は春を売る～
+	56: bytearray.fromhex('6B C3 28 ED 6F 32 B5 D2 4A 69 39 26 AD DF 71 DE'),
 }
 
 #加密解密函数相同
