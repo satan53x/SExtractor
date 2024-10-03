@@ -71,9 +71,24 @@ XorTable = {
 	#娼姫レティシア～今宵、王女は春を売る～
 	56: bytearray.fromhex('6B C3 28 ED 6F 32 B5 D2 4A 69 39 26 AD DF 71 DE'),
 
-	# >>>>>>> Made by `Summer_Adrenk`
+	# >>>>>>> Made by `Summer_Adrenk` & `先依`
 	#巨乳JKアイドル声優寝取られスタジオ
 	61: bytearray.fromhex('EF 66 B0 2E 82 13 5D 38 BE 68 E5 1D 5A 3E AD C6'),	
+
+	#電マ女と性感男
+	62: bytearray.fromhex('8A 0F C9 58 82 13 5D 38 BE 68 DE 16 40 21 93 DB'),
+
+	#女子校生が語る痴漢電車
+	63: bytearray.fromhex('EB 61 C9 5B 82 13 5D 38 BE 68 E5 19 4D 24 9B DE'),
+
+	#新入生の私が痴漢電車で濡れる時 ～こんなこと…もう、嫌なのに…～
+	64: bytearray.fromhex('8A 0F C9 5B 82 13 5D 38 BE 68 E5 00 40 29 99 DA'),
+
+	#巨乳JK催淫調教 ～キモ兄は妹をミルク飲み人形に～
+	65: bytearray.fromhex('8A 0F C9 5B 82 13 5D 38 BE 68 E5 00 4F 25 9B DB'),
+
+	#夏服痴漢電車 薄着処女の恥辱通学
+	66: bytearray.fromhex('EB 61 C9 5B 82 13 5D 38 BE 68 E5 1D 71 2F 9B DE'),
 }
 
 #加密解密函数相同
