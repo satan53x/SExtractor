@@ -9,13 +9,14 @@ selMinCount = 10 #提取时选项函数最小参数个数
 selMaxCount = 99 #提取时选项函数最大参数个数
 #版本对应code
 Codes = [
-	{'min': 0x1DC, 'max': 0x1DC, 'sce': 0x5A, 'sel': 0x1D},
-	{'min': 0x1E1, 'max': 0x1EB, 'sce': 0x6A, 'sel': 0x2C},
-	{'min': 0x1F4, 'max': 0x1F4, 'sce': 0x5A, 'sel': 0x1D},
-	{'min': 0x1C2, 'max': 0x22A, 'sce': 0x5B, 'sel': 0x1D},
-	{'min': 0x22B, 'max': 0xFFF, 'sce': 0x6C, 'sel': 0x2B},
-	{'min': 0x0, 'max': 0x1C1, 'sce': 0x57, 'sel': 0x1A, 'retcode': 0x3B},
-	{'min': 0x0, 'max': 0xFFF, 'sce': 0x5A, 'sel': 0x1D},
+	{'min': 0x1DC, 'max': 0x1DC, 'sce': [0x5A], 'sel': 0x1D, 'endpara': []},
+	{'min': 0x1E1, 'max': 0x1EB, 'sce': [0x6A], 'sel': 0x2C, 'endpara': []},
+	{'min': 0x1F4, 'max': 0x1F4, 'sce': [0x5A], 'sel': 0x1D, 'endpara': []},
+	{'min': 0x1C2, 'max': 0x22A, 'sce': [0x5B], 'sel': 0x1D, 'endpara': []},
+	{'min': 0x22B, 'max': 0xFFF, 'sce': [0x6C], 'sel': 0x2B, 'endpara': []},
+	{'min': 0x0, 'max': 0xE0, 'sce': [0x4A], 'sel': 0x16, 'endpara': [0x32], 'retcode': 0xFF, 'nostr': [0x1E, 0x32]},
+	{'min': 0x0, 'max': 0x1C1, 'sce': [0x57], 'sel': 0x1A, 'endpara': [], 'retcode': 0x3B, 'nostr': []},
+	{'min': 0x0, 'max': 0xFFF, 'sce': [0x5A], 'sel': 0x1D, 'endpara': []},
 ]
 Keys = [
 	{'min': 0x1E1, 'max': 0x1E8, 'key': b'\x0B\x8F\x00\xB1'},
@@ -43,9 +44,9 @@ def parseImp(content, listCtrl, dealOnce):
 	paraIndex = 0
 	for i, cmd in enumerate(manager.cmdList):
 		count, textType = cmd[1], cmd[2]
-		if textType == 0:
+		if textType == 0 or textType == 10:
 			#文本
-			dealStr(content, var, paraIndex)
+			dealStr(content, var, paraIndex, textType)
 		elif textType == 1:
 			#选项
 			if selMinCount <= count <= selMaxCount:
@@ -54,13 +55,16 @@ def parseImp(content, listCtrl, dealOnce):
 		paraIndex += count
 
 #处理单个bin字符串
-def dealStr(content, var:ParseVar, paraIndex):
+def dealStr(content, var:ParseVar, paraIndex, textType=0):
 	contentIndex = manager.getContentIndex(paraIndex)
 	var.lineData = content[contentIndex]['text']
 	var.contentIndex = contentIndex
 	ctrls = searchLine(var)
 	if ctrls and len(ctrls) > 0:
 		content[contentIndex]['ref'].append(paraIndex)
+		if textType == 10:
+			if 'unfinish' in ctrls[-1]:
+				del ctrls[-1]['unfinish']
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
@@ -90,24 +94,23 @@ def replaceEndImp(content):
 		if diff != 0:
 			#修正para中长度
 			for paraIndex in data['ref']:
-				item = manager.paraList[paraIndex]
-				if item[1] != data['oldLen']:
+				item:ParaItem = manager.paraList[paraIndex]
+				if item.length != data['oldLen']:
 					#检查para中长度
 					print('para和str长度不一致', data)
-				item[1] += diff 
+				item.length += diff 
 		offset += newLen
 	manager.strLen = offset
 	#重建paraSec
 	manager.paraSec = bytearray()
 	for item in manager.paraList:
-		other, length, offset = item
-		if length > 0:
+		if item.length > 0: #长度大于0
 			#修正
-			contentIndex = manager.offsetDic[offset]
+			contentIndex = manager.offsetDic[item.offset]
 			data = content[contentIndex]
-			offset = data['newOff'] #新的偏移
+			item.offset = data['newOff'] #新的偏移
 		#参数区
-		bs = struct.pack('<III', other, length, offset)
+		bs = item.pack()
 		manager.paraSec.extend(bs)
 	#合并
 	manager.fixSections(content)
@@ -138,7 +141,7 @@ def readFileDataImp(fileOld, contentSeparate):
 # -----------------------------------
 #管理器
 class DataManager():
-	OneParaLen = 12
+	OneParaLen = 0xC
 	structType = 1 #文件结构 1:v>=1C2, 2:v<1C2
 
 	def splitParaStr(self):
@@ -148,15 +151,16 @@ class DataManager():
 		pos = 0
 		while pos < self.paraLen:
 			#单个para对应单个str
-			other, length, offset = struct.unpack('<III', self.paraSec[pos:pos+self.OneParaLen])
+			item = ParaItem()
+			item.unpack(self.paraSec[pos:pos+self.OneParaLen])
 			pos += self.OneParaLen
 			#正常保存字节
-			self.paraList.append([other, length, offset])
-			if length > 0:
+			self.paraList.append(item)
+			if item.length > 0:
 				#关联str
-				if offset not in dataDic:
+				if item.offset not in dataDic:
 					#新增
-					dataDic[offset] = {'oldOff': offset, 'ref': []}
+					dataDic[item.offset] = {'oldOff': item.offset, 'ref': []}
 		return self.splitContent(dataDic)
 
 	def splitContent(self, dataDic):
@@ -183,7 +187,7 @@ class DataManager():
 		return content
 	
 	def getContentIndex(self, paraIndex):
-		offset = self.paraList[paraIndex][2]
+		offset = self.paraList[paraIndex].offset
 		return self.offsetDic[offset]
 
 	def splitCmd(self):
@@ -196,7 +200,7 @@ class DataManager():
 			count = readInt(self.cmdSec, pos, 1)
 			pos += 3
 			textType = -1
-			if code == self.codeSce: #文本
+			if code in self.codeSce: #文本
 				textType = 0
 			elif code == self.codeSel: #选项
 				textType = 1
@@ -239,6 +243,10 @@ class DataManager():
 			self.strLen = readInt(data, 0xC)
 			self.otherLen = 0
 			self.structType = 2
+			if self.version <= 0xE0:
+				self.OneParaLen = 0x10
+			else:
+				self.OneParaLen = 0xC
 		else:
 			print(f'\033[33m当前ybn版本暂不支持\033[0m: 0x{self.version:X}')
 			return None
@@ -253,8 +261,16 @@ class DataManager():
 		if item:
 			self.codeSce = item['sce']
 			self.codeSel = item['sel']
+			self.codeEndpara = item['endpara']
 			if 'retcode' in item:
 				self.codeRetcode = item['retcode']
+			if 'nostr' in item:
+				self.codeNostr = item['nostr']
+			if 'var' in item:
+				self.codeNostr = item['nostr']
+		if ExVar.endStr:
+			lst = ExVar.endStr.split(',')
+			self.codeEndpara = [int(c, 16) for c in lst]
 		#header
 		start = 0
 		end = self.headerLen
@@ -294,10 +310,11 @@ class DataManager():
 			#escape
 			self.xorKey =  ExVar.decrypt.encode().decode('unicode_escape').encode('latin-1')
 		#解密验证
+		#第一个偏移，一般应该为0
 		if self.structType == 2:
-			bOffset = xorBytes(self.cmdSec[0xE:0x12], self.xorKey) #第一个偏移，一般应该为0
+			bOffset = xorBytes(self.cmdSec[self.OneParaLen+2:self.OneParaLen+6], self.xorKey)
 		else:
-			bOffset = xorBytes(self.paraSec[0x8:0xC], self.xorKey) #第一个偏移，一般应该为0
+			bOffset = xorBytes(self.paraSec[0x8:0xC], self.xorKey) 
 		if readInt(bOffset, 0) != 0:
 			key = xorBytes(bOffset, self.xorKey)
 			keyStr = f'\\x{key[0]:02X}\\x{key[1]:02X}\\x{key[2]:02X}\\x{key[3]:02X}'
@@ -332,7 +349,7 @@ class DataManager():
 			pos += 1
 			self.codeDic[text] = [cmdCode, paraCount]
 			if text == 'WORD':
-				Codes[-1]['sce'] = cmdCode
+				Codes[-1]['sce'] = [cmdCode]
 				printInfo('命令：', text, hex(cmdCode), paraCount)
 			elif text == 'GOSUB':
 				Codes[-1]['sel'] = cmdCode
@@ -359,15 +376,16 @@ class DataManager():
 			pos += headLen
 			for i in range(count):
 				#单个para对应单个str
-				other, length, offset = struct.unpack('<III', self.cmdSec[pos:pos+self.OneParaLen])
+				item = ParaItem()
+				item.unpack(self.cmdSec[pos:pos+self.OneParaLen], textType <= -2)
 				pos += self.OneParaLen
 				#正常保存字节
-				self.paraList.append([other, length, offset])
-				if length > 0:
+				self.paraList.append(item)
+				if item.length > 0:
 					#关联str
-					if offset not in dataDic:
+					if item.offset not in dataDic:
 						#新增
-						dataDic[offset] = {'oldOff': offset, 'ref': []}
+						dataDic[item.offset] = {'oldOff': item.offset, 'ref': []}
 		return self.splitContent(dataDic)
 
 	def splitCmd2(self):
@@ -378,14 +396,21 @@ class DataManager():
 			code, count = struct.unpack('<BB', self.cmdSec[pos:pos+2])
 			headLen = 6
 			textType = -1
-			if code == self.codeSce: #文本
+			if code in self.codeSce: #文本
 				textType = 0
 			elif code == self.codeSel: #选项
 				textType = 1
 			elif code == self.codeRetcode: #retcode
 				count = 0
 				headLen += 8
-			#printInfo(f'{pos:06X}, {code:02X}, {count:02X}')
+			elif code in self.codeNostr: #无str
+				textType = -2
+			if code in self.codeEndpara: #段落结束
+				if textType == 0:
+					textType = 10
+				elif len(self.cmdList) > 0:
+					if self.cmdList[-1][textType] == 0:
+						self.cmdList[-1][textType] = 10
 			pos += headLen
 			pos += count * self.OneParaLen
 			#正常保存字节
@@ -404,5 +429,31 @@ class DataManager():
 				posInPara += self.OneParaLen
 		#清空paraSec
 		self.paraSec = b''
+
+# ---------------------------------------------------------
+class ParaItem():
+	def __init__(self):
+		self.pre = b''
+		self.length = -1
+		self.offset = -1
+
+	def unpack(self, data, nostr=False):
+		if manager.OneParaLen == 0x10:
+			if nostr:
+				self.pre = struct.unpack('<16s', data)[0] #pre
+			else:
+				self.pre, self.length, self.offset = struct.unpack('<8sII', data)
+		else:
+			self.pre, self.length, self.offset  = struct.unpack('<4sII', data)
+
+	def pack(self):
+		if manager.OneParaLen == 0x10:
+			if self.length < 0:
+				bs = struct.pack('<16s', self.pre)
+			else:
+				bs = struct.pack('<8sII', self.pre, self.length, self.offset)
+		else:
+			bs = struct.pack('<4sII', self.pre, self.length, self.offset)
+		return bs
 
 manager = DataManager()
