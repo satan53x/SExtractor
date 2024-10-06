@@ -14,9 +14,9 @@ Codes = [
 	{'min': 0x1F4, 'max': 0x1F4, 'sce': [0x5A], 'sel': 0x1D, 'endpara': []},
 	{'min': 0x1C2, 'max': 0x22A, 'sce': [0x5B], 'sel': 0x1D, 'endpara': []},
 	{'min': 0x22B, 'max': 0xFFF, 'sce': [0x6C], 'sel': 0x2B, 'endpara': []},
-	{'min': 0x0, 'max': 0xE0, 'sce': [0x4A], 'sel': 0x16, 'endpara': [0x32], 'retcode': 0xFF, 'nostr': [0x1E, 0x32]},
-	{'min': 0x0, 'max': 0x1C1, 'sce': [0x57], 'sel': 0x1A, 'endpara': [], 'retcode': 0x3B, 'nostr': []},
-	{'min': 0x0, 'max': 0xFFF, 'sce': [0x5A], 'sel': 0x1D, 'endpara': []},
+	{'min': 0x0,   'max': 0xE0,  'sce': [0x4A], 'sel': 0x16, 'endpara': [0x32], 'retcode': 0xFF, 'nostr': [0x1E, 0x32]},
+	{'min': 0x0,   'max': 0x1C1, 'sce': [0x57], 'sel': 0x1A, 'endpara': [], 'retcode': 0x3B, 'nostr': []},
+	{'min': 0x0,   'max': 0xFFF, 'sce': [0x5A], 'sel': 0x1D, 'endpara': [], 'retcode': 0xFF, 'nostr': []},
 ]
 Keys = [
 	{'min': 0x1E1, 'max': 0x1E8, 'key': b'\x0B\x8F\x00\xB1'},
@@ -265,8 +265,6 @@ class DataManager():
 			if 'retcode' in item:
 				self.codeRetcode = item['retcode']
 			if 'nostr' in item:
-				self.codeNostr = item['nostr']
-			if 'var' in item:
 				self.codeNostr = item['nostr']
 		if ExVar.endStr:
 			lst = ExVar.endStr.split(',')
