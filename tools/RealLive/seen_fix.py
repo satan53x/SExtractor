@@ -76,7 +76,7 @@ XorTable = {
 	61: bytearray.fromhex('EF 66 B0 2E 82 13 5D 38 BE 68 E5 1D 5A 3E AD C6'),	
 
 	#電マ女と性感男
-	62: bytearray.fromhex('8A 0F C9 58 82 13 5D 38 BE 68 DE 16 40 21 93 DB'),
+	62: bytearray.fromhex('8A 0F C9 5B 82 13 5D 38 BE 68 DE 16 40 21 93 DB'),
 
 	#女子校生が語る痴漢電車
 	63: bytearray.fromhex('EB 61 C9 5B 82 13 5D 38 BE 68 E5 19 4D 24 9B DE'),
