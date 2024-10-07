@@ -22,6 +22,7 @@ class ParseVar():
 	checkJIS = None
 	checkLast = False
 	lastCtrl = None
+	intervalFlag = None #区间保持标记
 
 	def __init__(self, listCtrl=None, dealOnce=None):
 		self.listCtrl = listCtrl
@@ -114,8 +115,14 @@ def searchLine(var:ParseVar):
 								ctrl['flags'].append(key)
 							elif key.startswith('type_'):
 								ctrl['type'] = key[5:]
+							elif key.startswith('start_'):
+								var.intervalFlag = key[6:]
+							elif key.startswith('end_'):
+								var.intervalFlag = None
 							else: #name, unfinish
 								ctrl[key] = True #标记
+					if var.intervalFlag:
+						ctrl[var.intervalFlag] = True
 					matched = True
 			if matched :
 				#按文本中顺序处理
@@ -185,6 +192,7 @@ def initParseVar(var:ParseVar, regDic=None):
 		var.checkJIS = re.compile(var.checkJIS)
 	var.checkLast = ExVar.structure.startswith('para')
 	var.lastCtrl = None
+	var.intervalFlag = None
 
 # ---------------- Group: TXT -------------------
 def parseImp(content, listCtrl, dealOnce):
