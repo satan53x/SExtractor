@@ -58,6 +58,8 @@ def searchLine(var:ParseVar):
 		if regType == 'skip':
 			# 跳过
 			if pattern.search(searchData): #已匹配则停止
+				if not ExVar.skipIgnoreUnfinish:
+					var.intervalFlag = None
 				return None #skip则返回None
 		else:
 			# 搜索
