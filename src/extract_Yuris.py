@@ -119,16 +119,15 @@ def replaceEndImp(content):
 	
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeparate):
+	data = fileOld.read()
 	if not re.match(r'yst\d+', ExVar.filename):
 		#控制脚本
 		if ExVar.filename == 'ysc':
-			data = fileOld.read()
 			manager.initConfig(data)
-		return [], {}
-	data = fileOld.read()
+		return [], {0:data}
 	#解析
 	if not manager.init(data):
-		return [], {}
+		return [], {0:data}
 	if manager.structType == 2:
 		content = manager.splitParaStr2()
 	else:
