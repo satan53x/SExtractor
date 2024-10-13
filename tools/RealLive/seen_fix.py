@@ -89,6 +89,9 @@ XorTable = {
 
 	#夏服痴漢電車 薄着処女の恥辱通学
 	66: bytearray.fromhex('EB 61 C9 5B 82 13 5D 38 BE 68 E5 1D 71 2F 9B DE'),
+
+	#双淫セレブ妻 狂乱の果て
+	67: bytearray.fromhex('8A 0F C9 5B 82 13 5D 38 BE 68 D4 16 45 23 9C DA'),
 }
 
 #加密解密函数相同

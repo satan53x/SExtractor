@@ -96,6 +96,7 @@ def readFileDataImp(fileOld, contentSeparate):
 		for match in LinebreakPattern.finditer(data):
 			data[match.start():match.end()] = b'\x20'*len(match.group())
 			data[match.start():match.start()+3] = b'<n>'
+	manager.checkPos = 'checkPos' in lst
 	#解析
 	manager.init(data)
 	for info in manager.infoList:
@@ -118,6 +119,8 @@ config = None
 addrFixer = None
 
 class Manager():
+	checkPos = False
+
 	def init(self, data):
 		global config, addrFixer
 		config = Config(ExVar.version)
@@ -146,6 +149,7 @@ class Manager():
 		self.cmdList = [] #指令列表
 		self.infoList = [] #文本信息列表
 		self.pos = self.cmdStart
+		self.oldPosList = []
 		while self.cmdStart <= self.pos < self.cmdEnd:
 			Command().init()
 
@@ -161,11 +165,21 @@ def readInteger(length):
 	value = int.from_bytes(bs, byteorder='little')
 	return value
 
+PosCheckCountInterval = 100
+PosCheckMinWidth = 50
 class Command():
 	# ------------------------------------
 	def init(self) -> None:
 		self.code = read(1)
 		self.start = manager.pos
+		if manager.checkPos:
+			manager.oldPosList.append(manager.pos)
+			if len(manager.oldPosList) >= PosCheckCountInterval:
+				oldPos = manager.oldPosList[0]
+				manager.oldPosList.clear()
+				if abs(manager.pos - oldPos) <= PosCheckMinWidth:
+					printError('pos may be wrong', ExVar.filename, hex(manager.pos))
+					raise ValueError('pos may be wrong')
 		if self.code == b'\0':
 			manager.pos = manager.cmdEnd #结束
 		elif self.code == b'\n':
