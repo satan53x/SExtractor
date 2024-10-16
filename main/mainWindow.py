@@ -105,9 +105,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			dirpath = QFileDialog.getExistingDirectory(None, self.mainDirButton.text(), dirpath)
 		else:
 			dirpath = dir
-		if os.path.samefile(dirpath, self.mainDirPath):
-			return #已在当前目录
-		if dirpath != '':
+		if os.path.isdir(dirpath):
+			if os.path.isdir(self.mainDirPath):
+				if os.path.samefile(dirpath, self.mainDirPath):
+					return #已在当前目录
 			self.mainDirPath = dirpath
 			#是否自动生成ini
 			if self.autoCacheCheck.isChecked():

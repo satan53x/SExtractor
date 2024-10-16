@@ -66,7 +66,7 @@ class BatchManager():
 		if len(self.cmdList) == 0:
 			self.resultAppend("支持的命令：")
 			self.resultAppend("extract dirpath")
-			self.resultAppend("simple-command")
+			self.resultAppend("simple-system-command")
 		self.next()
 
 	def next(self):
@@ -93,7 +93,7 @@ class BatchManager():
 		else:
 			# 系统命令
 			if self.runInCurPath:
-				data = f'cd /d "{self.mainWindow.mainDirPath}" && {data}'
+				data = f'cd "{self.mainWindow.mainDirPath}" && {data}'
 			self.resultAppend(f"系统命令：{data}")
 			self.runCommand(data)
 
