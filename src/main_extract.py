@@ -353,7 +353,7 @@ def extractDone():
 	elif var.subsJis:
 		generateSubsConfig()
 	showMessage("处理完成。")
-	print('Done.\n')
+	#print('Done.\n')
 
 def getFiles(dirpath, reverse=False):
 	files = []

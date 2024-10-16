@@ -1,21 +1,30 @@
+import os
+import sys
 import time
 from PyQt5.QtCore import QThread, pyqtSignal
 import traceback
 from src.common import ExVar
 
-#import debugpy
+import debugpy
+isDebug = True if sys.gettrace() else False
 class extractThread(QThread):
 	finished = pyqtSignal(int)  # 自定义信号，用于传递结果
 
-	def __init__(self):
+	def __init__(self, cmd=None):
 		super().__init__()
+		self.cmd = cmd
 
 	def run(self):
-		#debugpy.debug_this_thread()
+		if isDebug:
+			#debugpy.debug_this_thread()
+			pass
 		start = time.perf_counter()
 		ret = 0
 		try:
-			self.window.extractFileThread()
+			if self.cmd:
+				os.system(self.cmd)
+			else:
+				self.window.extractFileThread()
 		except Exception as ex:
 			print('\033[31m---------------------------提取或导入时发生错误---------------------------\033[0m')
 			traceback.print_exc()

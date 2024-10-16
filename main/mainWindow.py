@@ -14,11 +14,12 @@ from main_extract_bin import mainExtractBin
 from main_extract_json import mainExtractJson
 from main_extract import var
 from merge_json import mergeTool, createDicTool, collectFilesTool, distFilesTool
-from main.thread import extractThread
 from main.configManager import ConfigManager
+from main.batchManager import BatchManager
 from main.statusBar import StatusBar
 
 class MainWindow(QMainWindow, Ui_MainWindow):
+
 	def __init__(self, parent=None, version='1.0.0'):
 		super(MainWindow, self).__init__(parent)
 		self.version = version
@@ -50,6 +51,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		#配置
 		self.configManager = ConfigManager(self)
 		self.configManager.showSeq()
+		#批量
+		self.batchManager = BatchManager(self)
+		self.batchStartButton.clicked.connect(self.batchManager.start)
 
 	def changeTab(self, index):
 		if index == 3: #readme
@@ -95,9 +99,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 	#---------------------------------------------------------------
 	#选择提取目录
-	def chooseMainDir(self):
-		dirpath = self.mainConfig.value('mainDirPath')
-		dirpath = QFileDialog.getExistingDirectory(None, self.mainDirButton.text(), dirpath)
+	def chooseMainDir(self, status=False, dir=None):
+		if dir == None:
+			dirpath = self.mainConfig.value('mainDirPath')
+			dirpath = QFileDialog.getExistingDirectory(None, self.mainDirButton.text(), dirpath)
+		else:
+			dirpath = dir
+		if os.path.samefile(dirpath, self.mainDirPath):
+			return #已在当前目录
 		if dirpath != '':
 			self.mainDirPath = dirpath
 			#是否自动生成ini
@@ -202,20 +211,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 				textPart1 += text
 		self.regConfig.endGroup()
 		self.sampleBrowser.setText(textPart0 + textPart1 + textPart2)
-
-	#提取
-	def extractFileThread(self):
-		args = self.args
-		print('---------------------------------')
-		print(args)
-		if args['file'] == 'txt': 
-			mainExtractTxt(args)
-		elif args['file'] == 'bin':
-			mainExtractBin(args)
-		elif args['file'] == 'json':
-			mainExtractJson(args)
-		else:
-			print('extractFile:', 'Error file type.')
 		
 	#提取打印设置
 	def getExtractPrintSetting(self):
@@ -227,7 +222,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		lst.append(self.printCheck4.isChecked()) #error
 		return lst
 
-	def extractFile(self):
+	def prepareArgs(self):
 		engineName = self.engineNameBox.currentText()
 		group = "Engine_" + engineName
 		fileType = self.engineConfig.value(group + '/file')
@@ -251,18 +246,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.configManager.addCheck2Args(args)
 		var.window = self
 		self.args = args
-		#运行子线程
-		self.thread = extractThread()
-		self.thread.window = self
-		self.thread.finished.connect(self.handleThreadFinished)
-		self.thread.start()
 		#保存配置
 		self.configManager.saveConfig(args, group)
-		
 
-	def handleThreadFinished(self, ret):
-		if ret == 1:
-			self.statusBar.showMessage(QCoreApplication.translate('MainWindow','提取或导入时发生错误！！！    具体错误详见控制台打印！！！'), 'red')
+	def extractFile(self):
+		self.prepareArgs()
+		self.batchManager.start(cmd='run')
+	
+	#提取
+	def extractFileThread(self):
+		args = self.args
+		#print('------------------------------------------')
+		print(args)
+		if args['file'] == 'txt': 
+			mainExtractTxt(args)
+		elif args['file'] == 'bin':
+			mainExtractBin(args)
+		elif args['file'] == 'json':
+			mainExtractJson(args)
+		else:
+			print('extractFile:', 'Error file type.')
 
 	#---------------------------------------------------------------
 	#选择合并目录

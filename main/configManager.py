@@ -83,9 +83,14 @@ class ConfigManager():
 		if self.configName.startswith('main'):
 			#内置ini
 			self.builtinConfig = self.mainConfig
-		# 窗口大小
-		windowSize = initValue(self.mainConfig, 'windowSize', None)
-		if windowSize: mainWindow.resize(windowSize)
+		# 不在运行时才进行设置
+		if not mainWindow.batchManager.running:
+			# 窗口大小
+			windowSize = initValue(self.mainConfig, 'windowSize', None)
+			if windowSize: mainWindow.resize(windowSize)
+			# batch
+			text = initValue(self.mainConfig, 'batchCmdListText', '')
+			mainWindow.batchCmdListEdit.setText(text)
 		# 主目录
 		if self.isChangeMainDir:
 			mainWindow.mainDirPath = initValue(self.mainConfig, 'mainDirPath', '.')
