@@ -1665,39 +1665,36 @@ p, li { white-space: pre-wrap; }
         </property>
         <item>
          <widget class="QWidget" name="widget_13" native="true">
-          <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="5,2,5">
+          <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="0,0,0,0">
            <property name="spacing">
-            <number>3</number>
+            <number>9</number>
            </property>
            <property name="leftMargin">
-            <number>3</number>
+            <number>6</number>
            </property>
            <property name="topMargin">
-            <number>3</number>
+            <number>0</number>
            </property>
            <property name="rightMargin">
-            <number>3</number>
+            <number>6</number>
            </property>
            <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
-            <spacer name="horizontalSpacer_8">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+            <widget class="QCheckBox" name="batchCmdCurCheck">
+             <property name="text">
+              <string>系统命令路径设为提取目录</string>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
+             <property name="checked">
+              <bool>true</bool>
              </property>
-            </spacer>
+            </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="batchStartButton">
+            <widget class="QCheckBox" name="batchAutoStartCheck">
              <property name="text">
-              <string>开始</string>
+              <string>提取/写入后自动开始</string>
              </property>
             </widget>
            </item>
@@ -1713,6 +1710,19 @@ p, li { white-space: pre-wrap; }
               </size>
              </property>
             </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="batchStartButton">
+             <property name="minimumSize">
+              <size>
+               <width>110</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>开始</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>

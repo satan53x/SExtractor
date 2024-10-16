@@ -26,23 +26,27 @@ class BatchManager():
 		self.next()
 
 	# ------------------------- 命令 -------------------------
-	def getCmdList(self, text=None):
-		if text == None:
-			text = self.mainWindow.batchCmdListEdit.toPlainText()
-			self.mainWindow.mainConfig.setValue('batchCmdListText', text)
+	def getCmdList(self, text='', join=True):
+		if text == '':
+			join = True
+		if join == True:
+			edit = self.mainWindow.batchCmdListEdit.toPlainText()
+			self.mainWindow.mainConfig.setValue('batchCmdListText', edit) #保存设置
+			self.runInCurPath = self.mainWindow.batchCmdCurCheck.isChecked()
+			text += '\n' + edit
 		cmdList = []
 		strList = re.split(r'[\r\n]+', text)
 		for i, str in enumerate(strList):
 			str = str.strip()
-			if re.match(r'^\s*($|#|//|:: )', str):
+			if re.search(r'^\s*($|#|//|:: |;)', str):
 				continue
-			if re.match(r'^\s*extract ', str):
+			if re.search(r'^extract ', str):
 				dirpath = str[8:]
 				cmd = {
 					"type": "extract",
 					"data": dirpath
 				}
-			elif re.match(r'^\s*run\s*$', str):
+			elif re.search(r'^run$', str):
 				cmd = {
 					"type": "run",
 					"data": None
@@ -55,7 +59,7 @@ class BatchManager():
 			cmdList.append(cmd)
 		return cmdList
 	
-	def start(self, status=False, cmd=None):
+	def start(self, status=False, cmd='', join=False):
 		if self.running:
 			self.resultAppend("正在运行中...")
 			return
@@ -63,7 +67,7 @@ class BatchManager():
 		self.running = True
 		self.oldDir = self.mainWindow.mainDirPath
 		self.index = 0
-		self.cmdList = self.getCmdList(cmd)
+		self.cmdList = self.getCmdList(cmd, join)
 		if len(self.cmdList) == 0:
 			self.resultAppend("支持的命令：")
 			self.resultAppend("extract dirpath")
@@ -83,6 +87,7 @@ class BatchManager():
 		print(f"--------------------------- {self.index}/{len(self.cmdList)} ---------------------------")
 		if cmd["type"] == "run":
 			# 仅运行
+			self.resultAppend(f"提取目录：{self.mainWindow.mainDirPath}")
 			self.runCommand()
 		elif cmd["type"] == "extract":
 			# 提取
@@ -96,6 +101,8 @@ class BatchManager():
 			self.runCommand()
 		else:
 			# 系统命令
+			if self.runInCurPath:
+				data = f'cd /d "{self.mainWindow.mainDirPath}" && {data}'
 			self.resultAppend(f"系统命令：{data}")
 			self.runCommand(data)
 

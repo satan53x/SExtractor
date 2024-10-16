@@ -6,6 +6,7 @@ __all__ = ['ConfigManager']
 
 mainWindow = None
 checkDic = None
+notInRunning = None
 
 class ConfigManager():
 	#data
@@ -16,7 +17,7 @@ class ConfigManager():
 	builtinConfig = None #内置ini
 
 	def __init__(self, mw) -> None:
-		global mainWindow, checkDic
+		global mainWindow, checkDic, notInRunning
 		mainWindow = mw
 		checkDic = {
 			#勾选功能: [对应控件, 是否同步配置文件, 默认值]
@@ -44,7 +45,11 @@ class ConfigManager():
 			'dontInterrupt': [mainWindow.dontInterruptCheck, True, False], #单文件异常时不中断
 			'toFullWidth': [mainWindow.toFullWidthCheck, True, False], #转为全角字符
 			'nameKeepCtrl': [mainWindow.nameKeepCtrlCheck, True, True], #name分组保留lastCtrl
+			'batchCmdCur': [mainWindow.batchCmdCurCheck, True, True], #命令在当前提取目录运行
+			'batchAutoStart': [mainWindow.batchAutoStartCheck, True, False], #批处理在提取/导入后自动运行
 		}
+		#运行中时不进行读写
+		notInRunning = ['batchCmdCur', 'batchAutoStart']
 
 	def showSeq(self):
 		#配置选项
@@ -147,6 +152,8 @@ class ConfigManager():
 	def readCheck(self):
 		for key, value in checkDic.items():
 			if value[1]:
+				if mainWindow.batchManager.running and key in notInRunning:
+					continue
 				#需要读取配置
 				checked = initValue(self.mainConfig, key, value[2])
 				value[0].setChecked(checked)
@@ -158,6 +165,8 @@ class ConfigManager():
 	def writeCheck(self):
 		for key, value in checkDic.items():
 			if value[1]:
+				if mainWindow.batchManager.running and key in notInRunning:
+					continue
 				#需要保存配置
 				self.mainConfig.setValue(key, value[0].isChecked())
 
