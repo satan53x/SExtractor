@@ -46,11 +46,6 @@ class BatchManager():
 					"type": "extract",
 					"data": dirpath
 				}
-			elif re.search(r'^run$', str):
-				cmd = {
-					"type": "run",
-					"data": None
-				}
 			else:
 				cmd = {
 					"type": "command",
@@ -85,11 +80,7 @@ class BatchManager():
 		self.index += 1
 		data = cmd["data"]
 		print(f"--------------------------- {self.index}/{len(self.cmdList)} ---------------------------")
-		if cmd["type"] == "run":
-			# 仅运行
-			self.resultAppend(f"提取目录：{self.mainWindow.mainDirPath}")
-			self.runCommand()
-		elif cmd["type"] == "extract":
+		if cmd["type"] == "extract":
 			# 提取
 			if not os.path.isdir(data):
 				self.resultAppend(f'目录不存在：{data}')

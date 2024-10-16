@@ -250,9 +250,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.configManager.saveConfig(args, group)
 
 	def extractFile(self):
-		self.prepareArgs()
 		auto = self.batchAutoStartCheck.isChecked()
-		self.batchManager.start(cmd='run', join=auto)
+		self.batchManager.start(cmd=f'extract {self.mainDirPath}', join=auto)
 	
 	#提取
 	def extractFileThread(self):
