@@ -11,11 +11,14 @@ addrFixer = None
 
 writeCompress = True
 fixJumpNormal = True
+curConfig = None
 fileType = 0
+jumpCount = 0
 TextSeq = 0
 SelectSeq = 2
 JumpSeq = 4
 JumpNormalSeq = 6
+JumpConditionSeq = 8
 
 def initExtra():
 	#写入是否压缩
@@ -24,7 +27,8 @@ def initExtra():
 	writeCompress = 'compress' in lst
 	fixJumpNormal = 'fixJump' in lst
 	if not fixJumpNormal:
-		config[fileType][JumpNormalSeq] = []
+		curConfig[JumpNormalSeq] = []
+		curConfig[JumpConditionSeq] = []
 	#类型控制
 	if ExVar.ctrlStr:
 		lst = eval(ExVar.ctrlStr)
@@ -36,18 +40,17 @@ def initExtra():
 			if len(cs) > 0:
 				if cs[0] == None:
 					#保留原始，即追加
-					newCs = config[fileType][i * 2]
+					newCs = curConfig[i * 2]
 					start = 1
-			for i in range(start, len(cs)):
-				if cs[i] not in newCs:
-					newCs.append(cs[i])
-			config[fileType][i * 2] = newCs
+			for j in range(start, len(cs)):
+				if cs[j] not in newCs:
+					newCs.append(cs[j])
+			curConfig[i * 2] = newCs
 				
 def getSep():
-	lst = config[fileType]
 	separate = bytearray(rb'[')
-	for i in range(0, len(lst), 2):
-		for j in lst[i]:
+	for i in range(0, len(curConfig), 2):
+		for j in curConfig[i]:
 			bs = f'\\x{j:02X}'.encode('ASCII')
 			separate.extend(bs)
 	separate.extend(rb']\0\0\0')
@@ -71,6 +74,9 @@ def parseImp(content, listCtrl, dealOnce):
 				lastCtrl = ctrls[-1]
 				if lastCtrl and 'unfinish' in lastCtrl:
 					del lastCtrl['unfinish']
+	#打印
+	if ExVar.isStart == 3:
+		printInfo(f'Jump Count: {jumpCount}')
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
@@ -107,7 +113,7 @@ def replaceEndImp(content:list):
 				length = len(lineData)
 				if i < len(header['pre']):
 					bs.extend(header['pre'][i])
-				if header['segType'] in config[fileType][JumpSeq] or header['segType'] in config[fileType][JumpNormalSeq]:
+				if not header['hasText']:
 					#跳转
 					continue
 				bs.extend(int2bytes(length))
@@ -133,11 +139,12 @@ def replaceEndImp(content:list):
 
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeparate):
-	global addrFixer
+	global addrFixer, fileType, jumpCount, curConfig
+	if ExVar.isStart == 1:
+		jumpCount = 0
 	addrFixer = AddrFixer()
 	data = fileOld.read()
-	#文件头
-	global fileType
+	#文件头 
 	sig = readInt(data, 0)
 	if isinstance(ExVar.version, str):
 		fileType = int(ExVar.version, 0)
@@ -152,6 +159,7 @@ def readFileDataImp(fileOld, contentSeparate):
 		pos = 0x10
 	else:
 		pos = 0xC
+	curConfig = config[fileType]
 	comLen = readInt(data, pos)
 	pos += 4
 	uncomLen = readInt(data, pos)
@@ -190,14 +198,19 @@ def readFileDataImp(fileOld, contentSeparate):
 			break
 		#检查文本
 		segType = readInt(data, pos)
-		header = {'segType':segType, 'pre':[bytearray(data[pos:pos+4])]}
+		header = {
+			'segType':segType, 
+			'pre':[bytearray(data[pos:pos+4])],
+			'hasText':False,
+		}
 		pos += 4
 		lineData = None
-		for i in range(0, len(config[fileType]), 2):
-			if segType in config[fileType][i]:
-				deal = config[fileType][i+1]
+		for i in range(0, len(curConfig), 2):
+			if segType in curConfig[i]:
+				deal = curConfig[i+1]
 				lineData, newPos = deal(data, pos, header)
-				break
+				if lineData:
+					break
 		if lineData == None:
 			continue
 		pos = newPos
@@ -283,6 +296,7 @@ def dealText0(data, pos, header):
 	header['addr'].append(pos)
 	lineData.append(data[pos:pos+msgLen])
 	pos += msgLen
+	header['hasText'] = True
 	return lineData, pos
 
 #选项：sig 0
@@ -308,16 +322,17 @@ def dealSel0(data, pos, header):
 		header['addr'].append(pos)
 		lineData.append(data[pos:pos+msgLen])
 		pos += msgLen
+	header['hasText'] = True
 	return lineData, pos
 
-JumpPostBytes = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+JumpPostBytes = b'\x01\x00\x00\x00'
 #跳转（分支）：sig 0
 def dealJump0(data, pos, header):
 	bs = data[pos:pos+len(JumpPostBytes)]
 	if bs != JumpPostBytes:
 		return None, 0
-	header['pre'][0].extend(data[pos:pos+0xC]) #未知
-	pos += 0xC
+	header['pre'][0].extend(data[pos:pos+0x14]) #未知
+	pos += 0x14
 	count = readInt(data, pos) #跳转个数
 	if count < 2 or count > 15:
 		return None, 0
@@ -336,6 +351,8 @@ def dealJump0(data, pos, header):
 		addrFixer.listen(pos, realAddr)
 		lineData.append(b'')
 		printDebug('分支跳转：', i, hex(pos), jumpStr.decode('ascii'))
+		global jumpCount
+		jumpCount += 1
 	return lineData, pos
 
 #跳转（普通）：sig 0
@@ -347,12 +364,34 @@ def dealJumpNormal0(data, pos, header):
 	addrFixer.listen(pos, realAddr)
 	lineData.append(b'')
 	printDebug('普通跳转：', hex(pos), jumpStr.decode('ascii'))
+	global jumpCount
+	jumpCount += 1
+	header['pre'][0].extend(data[pos:end])
+	pos = end
+	return lineData, pos
+
+def dealJumpCondition0(data, pos, header):
+	bs = data[pos:pos+len(JumpPostBytes)]
+	if bs != JumpPostBytes:
+		return None, 0
+	header['pre'][0].extend(data[pos:pos+0x24]) #未知
+	pos += 0x24
+	#跳转地址
+	realAddr, end, jumpStr = checkJump(data, pos)
+	if realAddr < 0:
+		return None, 0
+	lineData = []
+	addrFixer.listen(pos, realAddr)
+	lineData.append(b'')
+	printDebug('条件跳转：', hex(pos), jumpStr.decode('ascii'))
+	global jumpCount
+	jumpCount += 1
 	header['pre'][0].extend(data[pos:end])
 	pos = end
 	return lineData, pos
 
 patZero = re.compile(b'\x00')
-patAscii = re.compile(b'^[ -~]{1,32}$')
+patAscii = re.compile(b'^[A-Za-z0-9_]{1,32}$')
 def checkJump(data, pos):
 	realAddr = readInt(data, pos)
 	pos += 4
@@ -383,19 +422,22 @@ config = {
 	1: [
 		[0x3F], dealText0, 
 		[0x15,0x1A], dealSel0, 
-		[0x21,0xE5], dealJump0,
+		[0x16], dealJump0,
 		[0x14], dealJumpNormal0,
+		[0x18], dealJumpCondition0,
 	],
 	10: [
 		[0x11], dealText, 
 		[0x14], dealSel, 
 		[], dealJump0, #TODO跳转
 		[], dealJumpNormal0, #TODO跳转
+		[], dealJumpCondition0, #TODO跳转
 	],
 	11: [
 		[0x11], dealText, 
 		[0x14], dealSel, 
 		[], dealJump0, #TODO跳转
 		[], dealJumpNormal0, #TODO跳转
+		[], dealJumpCondition0, #TODO跳转
 	], 
 }

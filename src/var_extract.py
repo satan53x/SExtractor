@@ -33,7 +33,7 @@ class ExtractVar():
 	filename = ''
 	content = None
 	isInput = False #是否写入译文
-	isStart = True #是否是单次提取开始
+	isStart = 0 #1-提取第一个文件 2-提取中 3-提取最后一个文件 0-提取结束
 	listOrig = [] #原文表
 	listCtrl = [] #控制表
 	cutoffDic = {}

@@ -26,6 +26,12 @@ def mainExtractPart(args, parseImp, initDone=None):
 		files = getFiles(var.workpath)
 		for i, name in enumerate(files):
 			showProgress(i, len(files))
+			if i == 0:
+				var.isStart = 1
+			elif i == len(files)-1:
+				var.isStart = 3
+			else:
+				var.isStart = 2
 			var.filename = name
 			var.curIO = var.io
 			readFormat() #读入译文
@@ -36,7 +42,6 @@ def mainExtractPart(args, parseImp, initDone=None):
 			var.curIO = var.ioExtra
 			writeFormat()
 			#break #测试
-			var.isStart = False
 		showProgress(100)
 		printInfo('读取文件数:', var.inputCount)
 		printInfo('新建文件数:', var.outputCount)

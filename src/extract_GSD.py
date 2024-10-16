@@ -55,7 +55,7 @@ def replaceEndImp(content):
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeparate):
 	manager.clear()
-	if ExVar.isStart:
+	if ExVar.isStart == 1:
 		#所有提取前，先建立名字字典
 		path = os.path.join(ExVar.workpath, 'global.dat')
 		f = open(path, 'rb')

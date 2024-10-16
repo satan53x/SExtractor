@@ -344,7 +344,6 @@ def initArgs(args):
 	else:
 		WirteEncodeName = var.NewEncodeName
 	var.padding = var.padding.encode(WirteEncodeName).decode('unicode_escape').encode('latin-1')
-	var.isStart = True
 	return 0
 
 def extractDone():
@@ -410,12 +409,17 @@ def mainExtract(args, parseImp, initDone=None):
 		files = getFiles(var.workpath, needReverse)
 		for i, name in enumerate(files):
 			showProgress(i, len(files))
+			if i == 0:
+				var.isStart = 1
+			elif i == len(files)-1:
+				var.isStart = 3
+			else:
+				var.isStart = 2
 			var.filename = name
 			printDebug('读取文件:', var.filename)
 			parse(parseImp)
 			keepAllOrig(needReverse)
 			#break #测试
-			var.isStart = False
 		showProgress(100)
 		printInfo('读取文件数:', var.inputCount)
 		writeFormat()
