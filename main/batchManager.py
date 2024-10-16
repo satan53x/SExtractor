@@ -27,12 +27,18 @@ class BatchManager():
 
 	# ------------------------- 命令 -------------------------
 	def getCmdList(self, text='', join=True):
+		#保存设置
+		edit = self.mainWindow.batchCmdListEdit.toPlainText()
+		self.mainWindow.mainConfig.setValue('batchCmdListText', edit)
+		checked = self.mainWindow.batchAutoStartCheck.isChecked()
+		self.mainWindow.mainConfig.setValue('batchAutoStart', checked)
+		checked = self.mainWindow.batchCmdCurCheck.isChecked()
+		self.mainWindow.mainConfig.setValue('batchCmdCur', checked)
+		self.runInCurPath = checked
+		#拼接
 		if text == '':
 			join = True
 		if join == True:
-			edit = self.mainWindow.batchCmdListEdit.toPlainText()
-			self.mainWindow.mainConfig.setValue('batchCmdListText', edit) #保存设置
-			self.runInCurPath = self.mainWindow.batchCmdCurCheck.isChecked()
 			text += '\n' + edit
 		cmdList = []
 		strList = re.split(r'[\r\n]+', text)
