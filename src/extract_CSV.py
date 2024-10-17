@@ -20,6 +20,7 @@ def parseImp(content, listCtrl, dealOnce):
 		parse(content, var)
 	
 def parse(content, var:ParseVar):
+	ExVar.pureText = 1
 	for contentIndex, row in content.iterrows():
 		for colIndex in validCols:
 			var.lineData = row.iloc[colIndex]
@@ -29,6 +30,7 @@ def parse(content, var:ParseVar):
 			ctrls = searchLine(var)
 			if colIndex in nameCols and ctrls and ctrls[0]:
 				ctrls[0]['name'] = True
+	ExVar.pureText = 0
 
 def parseText(content, var:ParseVar):
 	for contentIndex in range(len(content)):
