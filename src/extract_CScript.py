@@ -98,7 +98,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		origLen  = end - start
 		diff = len(transData) - origLen
 		if diff != 0:
-			addrEnd = headerList[contentIndex]['addr'][lineIndex] + origLen
+			addrEnd = headerList[contentIndex]['addr'][lineIndex] + origLen - 1
 			addrFixer.fix(addrEnd, diff)
 	return True
 
