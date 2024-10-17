@@ -109,7 +109,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			if os.path.isdir(self.mainDirPath):
 				if os.path.samefile(dirpath, self.mainDirPath):
 					return #已在当前目录
-			self.mainDirPath = dirpath
+			self.mainDirPath = os.path.normpath(dirpath)
 			#是否自动生成ini
 			if self.autoCacheCheck.isChecked():
 				path = os.path.join(self.mainDirPath, 'ctrl', 'config.ini')

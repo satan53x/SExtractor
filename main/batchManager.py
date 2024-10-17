@@ -52,6 +52,12 @@ class BatchManager():
 					"type": "extract",
 					"data": dirpath
 				}
+			elif re.search(r'^set ', str):
+				str = str[4:].strip()
+				cmd = {
+					"type": "set",
+					"data": str
+				}
 			else:
 				cmd = {
 					"type": "command",
@@ -67,10 +73,13 @@ class BatchManager():
 		self.mainWindow.batchResultBrowser.clear()
 		self.running = True
 		self.oldDir = self.mainWindow.mainDirPath
+		#设置环境变量
+		os.environ["extract_dir"] = self.mainWindow.mainDirPath
 		self.index = 0
 		self.cmdList = self.getCmdList(cmd, join)
 		if len(self.cmdList) == 0:
-			self.resultAppend("支持的命令：")
+			self.resultAppend("default env: extract_dir")
+			self.resultAppend("Support commands:")
 			self.resultAppend("extract dirpath")
 			self.resultAppend("simple-system-command")
 		self.next()
@@ -88,22 +97,51 @@ class BatchManager():
 		print(f"--------------------------- {self.index}/{len(self.cmdList)} ---------------------------")
 		if cmd["type"] == "extract":
 			# 提取
+			data = self.getStrWithEnv(data)
 			if not os.path.isdir(data):
 				self.resultAppend(f'目录不存在：{data}')
-				self.next()
+			else:
+				self.resultAppend(f"提取目录：{data}")
+				self.mainWindow.chooseMainDir(dir=data) #切换到指定目录
+				os.environ["extract_dir"] = self.mainWindow.mainDirPath
+				self.mainWindow.prepareArgs()
+				self.runCommand()
 				return
-			self.resultAppend(f"提取目录：{data}")
-			self.mainWindow.chooseMainDir(dir=data) #切换到指定目录
-			self.mainWindow.prepareArgs()
-			self.runCommand()
+		elif cmd["type"] == "set":
+			# 设置环境变量
+			m = re.search(r'=', data)
+			if m:
+				key = data[:m.start()]
+				value = data[m.end():]
+				value = self.getStrWithEnv(value)
+				if value:
+					self.resultAppend(f"环境变量：{key}={value}")
+					os.environ[key] = value
+				else:
+					self.resultAppend(f"变量错误：{data}")
+			else:
+				self.resultAppend(f"命令错误：{data}")
 		else:
 			# 系统命令
 			if self.runInCurPath:
 				data = f'cd "{self.mainWindow.mainDirPath}" && {data}'
 			self.resultAppend(f"系统命令：{data}")
 			self.runCommand(data)
+			return
+		self.next()
 
 	# ------------------------- 结果 -------------------------
 	def resultAppend(self, line):
 		self.mainWindow.batchResultBrowser.append(line)
 		print(line)
+
+	def getStrWithEnv(self, string):
+		matches = re.findall(r'%[^%]+?%', string)
+		for key in matches:
+			name = key[1:-1]
+			value = os.environ.get(name)
+			if not value:
+				self.resultAppend(f"未找到环境变量：{key}")
+				return None
+			string = string.replace(key, value)
+		return string
