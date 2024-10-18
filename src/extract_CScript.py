@@ -198,16 +198,17 @@ def readFileDataImp(fileOld, contentSeparate):
 			break
 		#检查文本
 		segType = readInt(data, pos)
-		header = {
-			'segType':segType, 
-			'pre':[bytearray(data[pos:pos+4])],
-			'hasText':False,
-		}
+		pre = bytes(data[pos:pos+4])
 		pos += 4
 		lineData = None
 		for i in range(0, len(curConfig), 2):
 			if segType in curConfig[i]:
 				deal = curConfig[i+1]
+				header = {
+					'segType':segType, 
+					'pre':[bytearray(pre)],
+					'hasText':False,
+				}
 				lineData, newPos = deal(data, pos, header)
 				if lineData:
 					break
