@@ -46,7 +46,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		diff = len(transData) - (end-start)
 		if diff != 0:
 			info = manager.infoList[contentIndex]
-			addrFixer.fix(info.strEnd-1, diff)
+			addrFixer.fix(info.strStart, diff)
 	return True
 
 def replaceEndImp(content):

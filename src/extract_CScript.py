@@ -98,8 +98,8 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		origLen  = end - start
 		diff = len(transData) - origLen
 		if diff != 0:
-			addrEnd = headerList[contentIndex]['addr'][lineIndex] + origLen - 1
-			addrFixer.fix(addrEnd, diff)
+			addrStart = headerList[contentIndex]['addr'][lineIndex]
+			addrFixer.fix(addrStart, diff)
 	return True
 
 def replaceEndImp(content:list):
@@ -423,7 +423,7 @@ config = {
 		[0x3F], dealText0, 
 		[0x15,0x1A], dealSel0, 
 		[0x16], dealJump0,
-		[0x14], dealJumpNormal0,
+		[0x14,0x15], dealJumpNormal0,
 		[0x18], dealJumpCondition0,
 	],
 	10: [
