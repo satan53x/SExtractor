@@ -423,9 +423,9 @@ config = {
 	1: [
 		[0x3F], dealText0, 
 		[0x15,0x1A], dealSel0, 
-		[0x16], dealJump0,
+		[0x16,0x17], dealJump0,
 		[0x14,0x15], dealJumpNormal0,
-		[0x18], dealJumpCondition0,
+		[0x18,0x19], dealJumpCondition0,
 	],
 	10: [
 		[0x11], dealText, 
