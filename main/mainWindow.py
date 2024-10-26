@@ -115,7 +115,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 				path = os.path.join(self.mainDirPath, 'ctrl', 'config.ini')
 				if not os.path.isfile(path):
 					os.makedirs(os.path.dirname(path), exist_ok=True)
-					shutil.copyfile(self.configManager.configName, path)
+					oldConfigName = self.configManager.configName
+					if not os.path.isfile(oldConfigName):
+						oldConfigName = 'main/config.ini'
+					shutil.copyfile(oldConfigName, path)
 			#检查ini
 			self.configManager.isCheckDirIni = True
 			self.configManager.checkDirIni()
