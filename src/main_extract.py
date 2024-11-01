@@ -134,6 +134,9 @@ def replace():
 				for old, new in var.textConf['name_replace'].items():
 					if newStr == new:
 						newStr = old
+		elif 'ignore' in ctrl:
+			#忽略
+			continue
 		ret = var.replaceOnceImp(var.content, [ctrl], [newStr])
 		if ret == False:
 			printError('替换错误，请检查文本', var.filename, newStr)
@@ -319,7 +322,7 @@ def initArgs(args):
 	readCutoffDic()
 	# 编码
 	var.EncodeRead = args['encode']
-	if args['binEncodeValid']:
+	if var.binEncodeValid:
 		var.OldEncodeName = var.EncodeRead
 		var.NewEncodeName = var.EncodeRead
 		printWarningGreen('已启用: 编码也对BIN生效', var.EncodeRead)

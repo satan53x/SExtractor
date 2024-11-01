@@ -81,6 +81,7 @@ class ExtractVar():
 	dontInterrupt = False #单文件异常时不中断
 	toFullWidth = False #半角转全角
 	nameKeepCtrl = False #name分组保留lastCtrl
+	binEncodeValid = False #bin模式下是否应用编码
 
 	#-------------------
 	def clear(self):
