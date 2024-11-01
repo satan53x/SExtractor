@@ -28,7 +28,7 @@ class ConfigManager():
 			'ignoreSameLineCount': [mainWindow.ignoreSameCheck, True, False],
 			'ignoreNotMaxCount': [mainWindow.ignoreNotMaxCheck, True, False],
 			'fixedMaxPerLine': [mainWindow.fixedMaxCheck, True, False], #固定长度
-			'binEncodeValid': [mainWindow.binEncodeCheck, False, False],
+			'binEncodeValid': [mainWindow.binEncodeCheck, True, False],
 			'pureText': [mainWindow.binPureTextCheck, True, False], #bin纯文本模式
 			'tunnelJis': [mainWindow.tunnelJisCheck, True, False],
 			'subsJis': [mainWindow.subsJisCheck, True, False],

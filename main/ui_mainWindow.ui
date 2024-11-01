@@ -229,7 +229,7 @@
               <item>
                <widget class="QComboBox" name="engineNameBox">
                 <property name="maxVisibleItems">
-                 <number>30</number>
+                 <number>25</number>
                 </property>
                </widget>
               </item>
