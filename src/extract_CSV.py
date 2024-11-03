@@ -1,7 +1,7 @@
 import re
 import pandas as pd
 from common import *
-from extract_TXT import ParseVar, searchLine, initParseVar
+from extract_TXT import ParseVar, searchLine, initParseVar, dealLastCtrl
 from extract_TXT import replaceOnceImp as replaceOnceImpTXT
 from helper_text import getBytes
 
@@ -30,6 +30,8 @@ def parse(content, var:ParseVar):
 			ctrls = searchLine(var)
 			if colIndex in nameCols and ctrls and ctrls[0]:
 				ctrls[0]['name'] = True
+			if var.checkLast:
+				var.lastCtrl = dealLastCtrl(var.lastCtrl, ctrls, contentIndex)
 	ExVar.pureText = 0
 
 def parseText(content, var:ParseVar):
@@ -38,6 +40,8 @@ def parseText(content, var:ParseVar):
 		var.lineData = content[contentIndex][:-1] #不检查末尾换行
 		var.contentIndex = contentIndex
 		ctrls = searchLine(var)
+		if var.checkLast:
+			var.lastCtrl = dealLastCtrl(var.lastCtrl, ctrls, contentIndex)
 		if ctrls == None or len(ctrls) > 0:
 			#已匹配
 			continue
@@ -93,7 +97,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 def replaceEndImp(content):
 	if ExVar.pureText: return content
 	#需要改变外部content
-	if ExVar.structure == 'nohead':
+	if ExVar.extraData == 'nohead':
 		data = content.to_csv(index=False, header=None, sep=separate)
 	else:
 		data = content.to_csv(index=False, sep=separate)
@@ -108,7 +112,7 @@ def init(fileOld):
 	global separate
 	separate = ExVar.contentSeparate.encode().decode('unicode_escape')
 	writeOffset = int(ExVar.writeOffset)
-	if ExVar.structure == 'nohead':
+	if ExVar.extraData == 'nohead':
 		content = pd.read_csv(fileOld, header=None, sep=separate, quoting=csv.QUOTE_MINIMAL)
 		contentNames = None
 		row = content.iloc[0]
@@ -124,7 +128,7 @@ def initText(content):
 	#分隔符
 	global separate
 	separate = f'[{ExVar.contentSeparate}\\n]'
-	if ExVar.structure == 'nohead':
+	if ExVar.extraData == 'nohead':
 		contentNames = None
 	else:
 		head = content[0].lstrip('#')
@@ -135,10 +139,10 @@ def setValid(contentNames, colMax=9999):
 	#有效列
 	validCols.clear()
 	nameCols.clear()
-	if not ExVar.extraData: return validCols
-	if not contentNames or ExVar.structure == 'useIndex':
+	if not ExVar.extractKey: return validCols
+	if not contentNames or ExVar.extraData == 'useIndex':
 		#按列索引
-		valid = ExVar.extraData.split(',')
+		valid = ExVar.extractKey.split(',')
 		for s in valid:
 			if s.startswith('name'):
 				i = int(s[4:])
@@ -149,7 +153,7 @@ def setValid(contentNames, colMax=9999):
 				validCols.append(i)
 	else:
 		#按列名
-		valid = ExVar.extraData
+		valid = ExVar.extractKey
 		for col, name in enumerate(contentNames):
 			if re.search(valid, name):
 				validCols.append(col)

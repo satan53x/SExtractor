@@ -1,6 +1,7 @@
 import json
 
 output_file = 'cjk.txt'
+# config from: https://github.com/mskgroup/Unity-Game-localization-tutorial-and-toolkit
 sample_txt_1 = 'CHS1-GBK符号+通用规范汉字表(一级).txt'
 sample_json_1 = '../../src/subs_cn_jp.json'
 list = []

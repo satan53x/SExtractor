@@ -31,7 +31,7 @@ def initXlsx(fileOld):
 	xls = pd.ExcelFile(fileOld)
 	sheetName = xls.sheet_names[0]
 	fileOld.seek(0)
-	if ExVar.structure == 'nohead':
+	if ExVar.extraData == 'nohead':
 		content = pd.read_excel(fileOld, header=None)
 		contentNames = None
 		row = content.iloc[0]
