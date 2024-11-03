@@ -40,8 +40,6 @@ def parseText(content, var:ParseVar):
 		var.lineData = content[contentIndex][:-1] #不检查末尾换行
 		var.contentIndex = contentIndex
 		ctrls = searchLine(var)
-		if var.checkLast:
-			var.lastCtrl = dealLastCtrl(var.lastCtrl, ctrls, contentIndex)
 		if ctrls == None or len(ctrls) > 0:
 			#已匹配
 			continue

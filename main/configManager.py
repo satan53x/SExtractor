@@ -47,6 +47,7 @@ class ConfigManager():
 			'nameKeepCtrl': [mainWindow.nameKeepCtrlCheck, True, True], #name分组保留lastCtrl
 			'batchCmdCur': [mainWindow.batchCmdCurCheck, True, True], #命令在当前提取目录运行
 			'batchAutoStart': [mainWindow.batchAutoStartCheck, True, False], #批处理在提取/导入后自动运行
+			'useStructPara': [mainWindow.useStructParaCheck, True, False],
 		}
 		#运行中时不进行读写
 		notInRunning = ['batchCmdCur', 'batchAutoStart']

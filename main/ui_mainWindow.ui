@@ -1175,7 +1175,7 @@
           <property name="title">
            <string>正则配置</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout" columnstretch="5,5">
+          <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0" columnstretch="5,5,0" rowminimumheight="0,0,0">
            <property name="leftMargin">
             <number>5</number>
            </property>
@@ -1188,6 +1188,20 @@
            <property name="bottomMargin">
             <number>5</number>
            </property>
+           <item row="2" column="0">
+            <widget class="QCheckBox" name="nameKeepCtrlCheck">
+             <property name="text">
+              <string>段落：name保留当前ctrl</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QCheckBox" name="useStructParaCheck">
+             <property name="text">
+              <string>默认开启：struct=para</string>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="0">
             <widget class="QCheckBox" name="skipIgnoreCtrlCheck">
              <property name="text">
@@ -1201,26 +1215,6 @@
               <string>段落：skip不影响上一个unfinish</string>
              </property>
             </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QCheckBox" name="nameKeepCtrlCheck">
-             <property name="text">
-              <string>段落：name保留当前ctrl</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <spacer name="horizontalSpacer_6">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
          </widget>

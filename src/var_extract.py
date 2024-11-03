@@ -82,6 +82,7 @@ class ExtractVar():
 	toFullWidth = False #半角转全角
 	nameKeepCtrl = False #name分组保留lastCtrl
 	binEncodeValid = False #bin模式下是否应用编码
+	useStructPara = False #默认开启struct=para
 
 	#-------------------
 	def clear(self):

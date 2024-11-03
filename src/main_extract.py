@@ -318,6 +318,8 @@ def initArgs(args):
 			setattr(var, key, value)
 	# 匹配
 	setNameList(args['nameList'])
+	if var.useStructPara and not var.structure:
+		var.structure = 'paragraph'
 	# 截断
 	readCutoffDic()
 	# 编码
