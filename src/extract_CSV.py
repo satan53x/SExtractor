@@ -25,7 +25,7 @@ def parse(content, var:ParseVar):
 		for colIndex in validCols:
 			var.lineData = row.iloc[colIndex]
 			if pd.isnull(var.lineData):
-				continue
+				var.lineData = ''
 			var.contentIndex = [contentIndex, colIndex]
 			ctrls = searchLine(var)
 			if colIndex in nameCols and ctrls and ctrls[0]:

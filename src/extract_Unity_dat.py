@@ -47,10 +47,10 @@ def replaceEndImp(content):
 						newRemain = (4 - newLen % 4) % 4
 						if newRemain > oldRemain:
 							#添加
-							nextInfo['pre'] = b'\x00'*(newRemain - oldRemain) + nextInfo['pre']
+							nextInfo['pre'] = bytearray(b'\x00'*(newRemain - oldRemain) + nextInfo['pre'])
 						elif newRemain < oldRemain:
 							#删除
-							nextInfo['pre'] = nextInfo['pre'][oldRemain-newRemain:]
+							nextInfo['pre'] = bytearray(nextInfo['pre'][oldRemain-newRemain:])
 		data.extend(info['pre'])
 		data.extend(lineData)
 	content.clear()
