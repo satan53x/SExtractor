@@ -11,6 +11,7 @@ nodePath = []
 compressNodePathList = []
 lastCtrl = None
 checkLast = True
+jsonPattern = re.compile(r'^\{.+\}$|^\[.+\]$')
 # ---------------- Group: RPG Maker MV -------------------
 class RPGParserMV():
 	extractTextCode = []
@@ -26,8 +27,9 @@ class RPGParserMV():
 
 	def parseNode(self, node, relCode=0, relItem=None):
 		global lastCtrl
-		if len(nodePath) > 1 and nodePath[-1] in self.compressList:
-			if isinstance(node, str):
+		if len(nodePath) > 1 and self.compressList and isinstance(node, str) and isinstance(nodePath[-1], str):
+			if (self.compressList[0] == 'all' and jsonPattern.search(node)) \
+				or nodePath[-1] in self.compressList:
 				#解压json字符串
 				nodeParent = getNode(self.root, nodePath[0:-1])
 				node = loads(node) #递归解析
@@ -131,6 +133,8 @@ class RPGParserMV():
 		if ExVar.decrypt:
 			lst = ExVar.decrypt.split(',')
 			self.compressList = lst
+		else:
+			self.compressList = []
 		#清除
 		nodePath.clear()
 		compressNodePathList.clear()
