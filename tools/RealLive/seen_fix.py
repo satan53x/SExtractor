@@ -5,7 +5,7 @@ import os
 import sys
 from tkinter import filedialog
 
-GameType = 6 #此处选择预设游戏
+GameType = 7 #此处选择预设游戏
 OffsetStart = 0x100 #如果是arc_conv解包需要把此处改为0x100
 DefaultDir = ''
 
@@ -31,6 +31,13 @@ XorTable = {
 
 	#仕舞妻 ～姉妹妻3～
 	6: bytearray.fromhex('EC 7D BC 6E B2 2A 66 1D C8 4C AC 73 78 49 B2 A4'),
+
+	#5 -ファイブ-
+	7: [
+		bytearray.fromhex('E5 E8 20 E8 6E 91 B4 B1 4B C5 34 9E AD 2C 71 32'),
+		bytearray.fromhex('4A 05 AD 8B A4 A9 89 8D D4 E9 87 F8 EE 2E 99 65'),
+		bytearray.fromhex('ED 8D 63 CA 38 3D 3C 9F 2C B3 66 43 02 E8 57 AF'),
+	],
 
 	# >>>>>>> Made by `Cosetto`
 	# 3Ping Lovers！☆一夫二妻の世界へようこそ♪
@@ -98,12 +105,33 @@ XorTable = {
 def fixSeenSub(data, tableType):
 	pos = 0x20
 	start = int.from_bytes(data[pos:pos+4], byteorder='little') + OffsetStart
-	size = len(XorTable[tableType])
-	for i in range(0x101):
+	if isinstance(XorTable[tableType], list):
+		key0 = XorTable[tableType][0]
+		key1 = XorTable[tableType][1]
+		key2 = XorTable[tableType][2]
+	else:
+		#正常情况，区域0和1使用同一个key，总长0x101
+		key0 = XorTable[tableType]
+		key1 = XorTable[tableType]
+		key2 = None
+	#加密区域0
+	fixBytes(data, start, 0x80, key0)
+	#加密区域1
+	start += 0x80
+	fixBytes(data, start, 0x81, key1)
+	#加密区域2
+	start += 0x81
+	fixBytes(data, start, 0x80, key2)
+	return data
+
+def fixBytes(data, start, sectionLen, key):
+	if not key: return
+	size = len(key)
+	for i in range(sectionLen):
 		pos = start + i
 		if pos >= len(data):
 			break
-		b = data[pos] ^ XorTable[tableType][i%size]
+		b = data[pos] ^ key[i%size]
 		data[pos] = b
 	return data
 

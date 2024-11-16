@@ -21,7 +21,7 @@ def parseImp(content, listCtrl, dealOnce):
 		#每行
 		var.contentIndex = contentIndex
 		ctrls = searchLine(var)
-		if len(ctrls) > 0:
+		if ctrls and len(ctrls) > 0:
 			info = manager.infoList[contentIndex]
 			if info.type == TextType.SELECT:
 				#选项标记
@@ -277,6 +277,7 @@ class Command():
 	special_chars = tuple(b'\0\n!@,?#$\\a(){}[]')
 	#quoted 是否首尾有引号
 	def read_string(self, quoted):
+		quotedInline = False
 		start = manager.pos
 		if quoted:
 			open_char = read(1)
@@ -284,15 +285,23 @@ class Command():
 				raise ValueError("Invalid data: expected opening quotation mark")
 		while True:
 			i = readInteger(1)
-			if quoted:
+			if quoted or quotedInline:
 				#引号字符串
 				if i == ord(b'\\'):
 					read(1)
 					continue
 				elif i == ord(b'"'):
-					break
+					if quotedInline:
+						quotedInline = False
+						continue #内部引号不退出
+					else:
+						break
 			else:
 				#非引号字符串
+				if i == ord(b'"'):
+					#内部引号
+					quotedInline = True
+					continue
 				if i in self.special_chars:
 					manager.pos -= 1 # Move back one byte
 					break
