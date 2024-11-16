@@ -33,6 +33,7 @@ XorTable = {
 	6: bytearray.fromhex('EC 7D BC 6E B2 2A 66 1D C8 4C AC 73 78 49 B2 A4'),
 
 	#5 -ファイブ-
+	#https://vndb.org/v834
 	7: [
 		bytearray.fromhex('E5 E8 20 E8 6E 91 B4 B1 4B C5 34 9E AD 2C 71 32'),
 		bytearray.fromhex('4A 05 AD 8B A4 A9 89 8D D4 E9 87 F8 EE 2E 99 65'),
