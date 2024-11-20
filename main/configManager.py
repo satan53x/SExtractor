@@ -104,6 +104,11 @@ class ConfigManager():
 		self.isChangeMainDir = True
 		# 当前引擎
 		mainWindow.engineCode = int(initValue(self.mainConfig, 'engineCode', 0))
+		mainWindow.engineName = initValue(self.mainConfig, 'engineName', '')
+		if mainWindow.engineName != '':
+			index = getQComboBoxIndex(mainWindow.engineNameBox, mainWindow.engineName)
+			if index >= 0:
+				mainWindow.engineCode = index
 		#print(mainWindow.engineCode)
 		#mainWindow.engineNameBox.currentIndexChanged.connect(mainWindow.selectEngine)
 		# 当前输出格式
@@ -174,6 +179,7 @@ class ConfigManager():
 	def saveConfig(self, args, group):
 		self.mainConfig.setValue('mainDirPath', args['workpath'])
 		self.mainConfig.setValue('engineCode', mainWindow.engineCode)
+		self.mainConfig.setValue('engineName', mainWindow.engineName)
 		self.mainConfig.setValue('outputFormat', args['outputFormat'])
 		self.mainConfig.setValue('outputPartMode', args['outputPartMode'])
 		if args['nameList'] != '':
@@ -214,3 +220,10 @@ def initValue(setting, name, v):
 		elif v == 'true':
 			v = True
 	return v
+
+def getQComboBoxIndex(combo, text):
+	items = [combo.itemText(i) for i in range(combo.count())]
+	if text in items:
+		return items.index(text)
+	else:
+		return -1

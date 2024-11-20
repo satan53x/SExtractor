@@ -134,8 +134,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.engineCode = index
 		#print('selectEngine', self.engineCode)
 		#显示示例
-		engineName = self.engineNameBox.currentText()
-		group = 'Engine_' + engineName
+		self.engineName = self.engineNameBox.currentText()
+		group = 'Engine_' + self.engineName
 		self.engineConfig.beginGroup(group)
 		#示例
 		value = self.engineConfig.value('sample')
@@ -165,7 +165,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 				self.extraFuncTabs.setCurrentIndex(1)
 				regName = self.regNameBox.currentText()
 				#只有在custom时才自动替换
-				name = engineName.split('_')[0]
+				name = self.engineName.split('_')[0]
 				if re.match(r'_*Custom', regName) or re.search(name, regName):
 					self.selectReg(self.regNameBox.currentIndex())
 			else:
@@ -186,7 +186,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		regName = self.regNameBox.currentText()
 		if re.match(r'_*None', regName):
 			#还原
-			group = 'Engine_' + self.engineNameBox.currentText()
+			group = 'Engine_' + self.engineName
 			#示例
 			value = self.engineConfig.value(group+'/sample')
 			if value:
@@ -227,8 +227,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		return lst
 
 	def prepareArgs(self):
-		engineName = self.engineNameBox.currentText()
-		group = "Engine_" + engineName
+		group = "Engine_" + self.engineName
 		fileType = self.engineConfig.value(group + '/file')
 		regDic = None
 		if self.engineConfig.value(group + '/regDic'):
@@ -236,7 +235,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		args = {
 			'file':fileType,
 			'workpath':self.mainDirEdit.text(),
-			'engineName':engineName,
+			'engineName':self.engineName,
 			'outputFormat':self.outputFileBox.currentIndex(),
 			'outputPartMode':self.outputPartBox.currentIndex(),
 			'nameList':self.nameListEdit.text(),
