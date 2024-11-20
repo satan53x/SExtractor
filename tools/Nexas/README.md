@@ -20,3 +20,4 @@ if you want to auto split text with image width, you need to:
 ## References
 - [akiWagashi/GIGA_NeXAS](https://github.com/akiWagashi/GIGA_NeXAS)
 - [masagrator/NXGameScripts](https://github.com/masagrator/NXGameScripts/tree/main/Aonatsu%20Line)
+- [libvips-build-win64](https://github.com/libvips/build-win64-mxe/releases)
