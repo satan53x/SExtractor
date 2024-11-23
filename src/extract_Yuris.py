@@ -78,7 +78,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		#写入new
 		data = content[contentIndex]
 		strNew = data['text'][:start] + transData + data['text'][end:]
-		data['text'] = strNew
+		data['text'] = bytearray(strNew)
 	return True
 
 #修正长度与偏移
@@ -95,10 +95,17 @@ def replaceEndImp(content):
 			#修正para中长度
 			for paraIndex in data['ref']:
 				item:ParaItem = manager.paraList[paraIndex]
+				#修正控制str的内部长度
+				if 0x41 <= data['text'][0] <= 0x5A: #A-Z
+					inLen = readInt(data['text'], 1, 2)
+					if inLen == data['oldLen'] - 3: #去掉开头3个控制字节的长度
+						data['text'][1:3] = int2bytes(inLen + diff, 2)
+				#修正外部长度
 				if item.length != data['oldLen']:
 					#检查para中长度
 					print('para和str长度不一致', data)
-				item.length += diff 
+				item.length += diff
+				data['oldLen'] += diff
 		offset += newLen
 	manager.strLen = offset
 	#重建paraSec
