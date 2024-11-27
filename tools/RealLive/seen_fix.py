@@ -43,6 +43,8 @@ XorTable = {
 	# >>>>>>> Made by `Cosetto`
 	# 3Ping Lovers！☆一夫二妻の世界へようこそ♪
 	21: bytearray.fromhex('66 8A 20 D4 6E C3 B4 B8 4B F8 38 93 AC AC 70 0A'),
+	# 3Ping Lovers！☆一夫二妻の世界へようこそ♪ (DLsite)
+	40: bytearray.fromhex('E4 2F 20 C5 6E CD B4 87 4B BC 38 92 AC 92 70 00'),
 
 	# 新妻詩乃
 	22: bytearray.fromhex('8C 03 CC 55 9F 1D 41 38 A1 60 D4 12 5D 2D 85 D4'),
