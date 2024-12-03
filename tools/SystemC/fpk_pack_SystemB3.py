@@ -34,13 +34,13 @@ def pack():
 		fileOld = open(filepath, 'rb')
 		data = fileOld.read()
 		fileOld.close()
-		#索引
-		dataHeader = bytearray()
-		dataHeader.extend(int.to_bytes(offset, 4, byteorder='little')) #子文件偏移
+		#压缩
 		uncomSize = len(data)
 		data = compress(data, len(data))
 		comSize = len(data)
 		#索引
+		dataHeader = bytearray()
+		dataHeader.extend(int.to_bytes(offset, 4, byteorder='little')) #子文件偏移
 		dataHeader.extend(int.to_bytes(comSize, 4, byteorder='little')) #压缩后长度
 		nameBytes = bytearray(NameLen)
 		name = filename.encode('cp932')
