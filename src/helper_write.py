@@ -118,8 +118,8 @@ def writeFormatTxtTwoLine(targetJson):
 	fileOutput = open(filepathOrig, 'w', encoding='utf-8')
 	for i, orig in enumerate(targetJson.keys()):
 		id = i + 1
-		fileOutput.write(f'☆{id:06d}☆{orig}' + '\n')
-		fileOutput.write(f'★{id:06d}★{orig}' + '\n')
+		fileOutput.write(f'{var.twoLineFlag[0]}{id:06d}{var.twoLineFlag[0]}{orig}' + '\n')
+		fileOutput.write(f'{var.twoLineFlag[1]}{id:06d}{var.twoLineFlag[1]}{orig}' + '\n')
 		fileOutput.write('\n')
 	fileOutput.close()
 
@@ -130,11 +130,11 @@ def writeFormatTxtTwoLineByItem(targetJson):
 	fileOutput = open(filepathOrig, 'w', encoding='utf-8')
 	for i, item in enumerate(targetJson):
 		id = i + 1
-		list1 = [f'☆{id:06d}☆']
-		list2 = [f'★{id:06d}★']
+		list1 = [f'{var.twoLineFlag[0]}{id:06d}{var.twoLineFlag[0]}']
+		list2 = [f'{var.twoLineFlag[1]}{id:06d}{var.twoLineFlag[1]}']
 		if 'name' in item:
-			list1.extend([item['name'], '☆'])
-			list2.extend([item['name'], '★'])
+			list1.extend([item['name'], var.twoLineFlag[0]])
+			list2.extend([item['name'], var.twoLineFlag[1]])
 		if 'message' in item:
 			if sep != sepRegex:
 				orig = item['message'].replace(sep, sepRegex)

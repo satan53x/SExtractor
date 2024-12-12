@@ -113,5 +113,6 @@ class ExtractVar():
 		self.nameMoveUp = False #name向上移动
 		self.keepBytes = '' #保留字节
 		self.padding = '　' #截断填充默认为全角空格,最后有剩余字节再用半角空格补全
+		self.twoLineFlag = ['☆', '★'] #双行分割符
 		
 gExtractVar = ExtractVar()

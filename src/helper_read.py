@@ -239,11 +239,11 @@ def readFormatTxtTwoLine():
 	allOrig = []
 	allTrans = []
 	for line in content:
-		ret = re.match(r'☆', line)
+		ret = re.match(var.twoLineFlag[0], line)
 		if ret:
 			allOrig.append(line[:-1])
 			continue
-		ret = re.match(r'★', line)
+		ret = re.match(var.twoLineFlag[1], line)
 		if ret:
 			allTrans.append(line[:-1])
 			continue
@@ -257,11 +257,11 @@ def readFormatTxtTwoLine():
 	sepRegex = ExVar.splitParaSepRegex
 	for i in range(len(allOrig)):
 		origLine = allOrig[i]
-		origList = re.split(r'☆', origLine, 3)
+		origList = re.split(var.twoLineFlag[0], origLine, 3)
 		transLine = allTrans[i]
-		transList = re.split(r'★', transLine, 3)
+		transList = re.split(var.twoLineFlag[1], transLine, 3)
 		if len(origList) != len(transList):
-			printError('☆★个数不一致', var.curIO.inputFileName, origLine)
+			printError(f'{var.twoLineFlag[0]}{var.twoLineFlag[1]}个数不一致', var.curIO.inputFileName, origLine)
 			continue
 		if len(origList) >= 4:
 			#有名字

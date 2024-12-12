@@ -341,6 +341,9 @@ def initArgs(args):
 	readTextConf()
 	# 正则
 	setRegDic(args['regDic'])
+	# 双行标志
+	if isinstance(var.twoLineFlag, str):
+		var.twoLineFlag = var.twoLineFlag.split(',')
 	# 其他配置
 	readFullWidthDic()
 	# 修正参数
