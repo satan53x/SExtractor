@@ -105,6 +105,10 @@ XorTable = {
 
 	#双淫セレブ妻 狂乱の果て
 	67: bytearray.fromhex('8A 0F C9 5B 82 13 5D 38 BE 68 D4 16 45 23 9C DA'),
+
+	# >>>>>>> Made by `Linden10`
+	#孕神～はらかみ～	Harakami
+	81: bytearray.fromhex('67 17 21 BE 6D 27 B5 21 4A 82 39 0E AD C6 73 EE'),
 }
 
 #加密解密函数相同
