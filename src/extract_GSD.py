@@ -83,9 +83,6 @@ def readFileDataImp(fileOld, contentSeparate):
 	return manager.content, manager.insertContent
 
 class GSDManager():
-	textBytes = b'\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\xFF\xFF'
-	#textBytes = b'\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
-
 	#selectStr = 'select.spt'
 	#selectBytesAdd = b'\x01\x00\x00\x00\xFF\xFF\xFF\xFF'
 	charBytes = b'\x07' #None
@@ -102,6 +99,11 @@ class GSDManager():
 		self.content.clear()
 		self.insertContent.clear()
 		self.isGlobal = False
+		self.version = ExVar.version
+		if self.version == 2:
+			self.textBytes = b'\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+		else:
+			self.textBytes = b'\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\xFF\xFF'
 
 	# ----------------- global.dat -------------------
 	def readGlobal(self, data):
@@ -152,8 +154,11 @@ class GSDManager():
 	def writeGlobal(self):
 		head = None #复用上一个命令的字节块
 		for i, line in enumerate(self.content):
-			if not head:
-				head = self.infoList[i]['head']
+			info = self.infoList[i]
+			if self.version == 2:
+				head = bytearray(len(info['head']))
+			elif not head:
+				head = info['head']
 			head[0:len(line)+1] = line + b'\x00'
 			self.content[i] = bytes(head) #固定
 	
@@ -265,11 +270,17 @@ class GSDManager():
 						pos += 1
 					bs.extend(b'\x00' * (4 + pre - pos))
 					charCount += 1
-				#最后一个字符需要写入两次，单独处理
-				bs.extend(int2bytes(0x08))
-				bs.extend(int2bytes(0))
-				bs.extend(lineData[pre:])
-				bs.extend(b'\x00' * (4 + pre - pos))
+				if self.version == 2:
+					#固定
+					bs.extend(int2bytes(0x0A))
+					bs.extend(int2bytes(0x00))
+					bs.extend(int2bytes(0x00))
+				else:
+					#最后一个字符需要写入两次，单独处理
+					bs.extend(int2bytes(0x08))
+					bs.extend(int2bytes(0))
+					bs.extend(lineData[pre:])
+					bs.extend(b'\x00' * (4 + pre - pos))
 				charCount += 1
 				#恢复所有字节
 				head = info['head']
