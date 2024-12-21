@@ -84,8 +84,11 @@ def readFileDataImp(fileOld, contentSeparate):
 
 class GSDManager():
 	textBytes = b'\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\xFF\xFF'
+	#textBytes = b'\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+
 	#selectStr = 'select.spt'
 	#selectBytesAdd = b'\x01\x00\x00\x00\xFF\xFF\xFF\xFF'
+	charBytes = b'\x07' #None
 	patZero = re.compile(b'\x00')
 	patText = None
 	infoList = []
@@ -161,6 +164,9 @@ class GSDManager():
 		for m in matchs:
 			if data[m.start()] == self.textBytes[0]:
 				#文本
+				if m.start() < pre:
+					printDebug('忽略重叠', m.start())
+					break
 				pre = self.getText(data, pre, m)
 			else:
 				#选项
@@ -184,15 +190,20 @@ class GSDManager():
 		nameId = readInt(data, pos)
 		pos += 0xC
 		charCount = readInt(data, pos)
+		if charCount <= 1 or charCount > 0x300:
+			printDebug('文字个数可能不正确', pos)
+			return pre
 		pos += 0xC
 		info['head'] = bytearray(data[m.start():pos])
 		if nameId != 0xFFFFFFFF:
 			info['nameId'] = nameId
-		self.infoList.append(info)
 		end = pos + charCount * 0xC
 		#处理文本
 		bs = bytearray()
 		for i in range(charCount-1): #最后一个是结尾char
+			if self.charBytes and self.charBytes[0] != data[pos]:
+				printDebug('单字检查失败', pos)
+				return pre
 			pos += 0x8
 			for j in range(4):
 				if data[pos+j] == 0:
@@ -200,6 +211,7 @@ class GSDManager():
 				bs.append(data[pos+j])
 			pos += 0x4
 		self.content.append(bs)
+		self.infoList.append(info)
 		pre = end
 		return pre
 
