@@ -85,7 +85,7 @@ def readFileDataImp(fileOld, contentSeparate):
 class GSDManager():
 	#selectStr = 'select.spt'
 	#selectBytesAdd = b'\x01\x00\x00\x00\xFF\xFF\xFF\xFF'
-	charBytes = b'\x07' #None
+	charKey = 0x07
 	patZero = re.compile(b'\x00')
 	patText = None
 	infoList = []
@@ -102,8 +102,10 @@ class GSDManager():
 		self.version = ExVar.version
 		if self.version == 2:
 			self.textBytes = b'\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+			self.endKey = 0x0A
 		else:
 			self.textBytes = b'\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\xFF\xFF'
+			self.endKey = 0x08
 
 	# ----------------- global.dat -------------------
 	def readGlobal(self, data):
@@ -171,7 +173,7 @@ class GSDManager():
 				#文本
 				if m.start() < pre:
 					printDebug('忽略重叠', m.start())
-					break
+					continue
 				pre = self.getText(data, pre, m)
 			else:
 				#选项
@@ -206,9 +208,15 @@ class GSDManager():
 		#处理文本
 		bs = bytearray()
 		for i in range(charCount-1): #最后一个是结尾char
-			if self.charBytes and self.charBytes[0] != data[pos]:
+			if data[pos] < self.charKey or data[pos] >= self.endKey:
 				printDebug('单字检查失败', pos)
 				return pre
+			if data[pos] != self.charKey and data[pos] != self.endKey:
+				bs.append(data[pos])
+				bs.append(data[pos+4])
+				bs.append(data[pos+8])
+				pos += 0xC
+				continue
 			pos += 0x8
 			for j in range(4):
 				if data[pos+j] == 0:
@@ -258,7 +266,14 @@ class GSDManager():
 				pos = 0
 				pre = 0
 				while pos < len(lineData):
-					bs.extend(int2bytes(0x07))
+					if self.charKey < lineData[pos] < self.endKey:
+						for j in range(3):
+							one = int2bytes(lineData[pos])
+							bs.extend(one)
+							pos += 1
+						charCount += 1
+						continue
+					bs.extend(int2bytes(self.charKey))
 					bs.extend(int2bytes(0))
 					bs.append(lineData[pos])
 					pre = pos
@@ -270,15 +285,14 @@ class GSDManager():
 						pos += 1
 					bs.extend(b'\x00' * (4 + pre - pos))
 					charCount += 1
+				#结尾
+				bs.extend(int2bytes(self.endKey))
+				bs.extend(int2bytes(0))
 				if self.version == 2:
 					#固定
-					bs.extend(int2bytes(0x0A))
-					bs.extend(int2bytes(0x00))
-					bs.extend(int2bytes(0x00))
+					bs.extend(int2bytes(0))
 				else:
 					#最后一个字符需要写入两次，单独处理
-					bs.extend(int2bytes(0x08))
-					bs.extend(int2bytes(0))
 					bs.extend(lineData[pre:])
 					bs.extend(b'\x00' * (4 + pre - pos))
 				charCount += 1
