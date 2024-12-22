@@ -106,6 +106,8 @@ class GSDManager():
 		else:
 			self.textBytes = b'\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\xFF\xFF'
 			self.endKey = 0x08
+		if ExVar.endStr:
+			self.endKey = ExVar.endStr
 
 	# ----------------- global.dat -------------------
 	def readGlobal(self, data):
