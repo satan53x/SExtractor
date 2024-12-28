@@ -52,7 +52,7 @@ XorTable = {
 	# 新妻詩乃
 	22: bytearray.fromhex('8C 03 CC 55 9F 1D 41 38 A1 60 D4 12 5D 2D 85 D4'),
 
-	# 新妻こよみ
+	# 新妻こよみ (DL editon)
 	23: bytearray.fromhex('80 05 D7 40 89 15 5D 3C A7 62 D3 17 41 39 86 D0'),
 
 	# らぶ撮りハレーション
