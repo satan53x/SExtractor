@@ -109,6 +109,9 @@ XorTable = {
 	# >>>>>>> Made by `Linden10`
 	#孕神～はらかみ～	Harakami
 	81: bytearray.fromhex('67 17 21 BE 6D 27 B5 21 4A 82 39 0E AD C6 73 EE'),
+
+	# >>>>>>> Made by `blw`
+	91: bytearray.fromhex('BE 32 E2 3F EF 2A 32 08 C6 0C BF 39 2D 47 AE F3'),
 }
 
 #加密解密函数相同
