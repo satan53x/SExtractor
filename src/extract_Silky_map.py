@@ -20,11 +20,8 @@ def replaceEndImp(content):
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeparate):
 	#init
-	if isinstance(ExVar.extractKey, int):
-		lst = [ExVar.extractKey]
-	else:
-		lst = ExVar.extractKey.split(',')
-		lst = [int(i) for i in lst]
+	lst = ExVar.extractKey.split(',')
+	lst = [int(i) for i in lst]
 	manager.init(lst)
 	#读取
 	data = fileOld.read()
