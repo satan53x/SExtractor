@@ -32,7 +32,7 @@ class ConfigManager():
 			'pureText': [mainWindow.binPureTextCheck, True, False], #bin纯文本模式
 			'tunnelJis': [mainWindow.tunnelJisCheck, True, False],
 			'subsJis': [mainWindow.subsJisCheck, True, False],
-			'transReplace': [mainWindow.transReplaceCheck, True, True], #译文替换
+			'transReplace': [mainWindow.transReplaceCheck, True, False], #译文替换
 			'preReplace': [mainWindow.preReplaceCheck, True, False], #分割前替换
 			'skipIgnoreCtrl': [mainWindow.skipIgnoreCtrlCheck, True, False],
 			'skipIgnoreUnfinish': [mainWindow.skipIgnoreUnfinishCheck, True, False],

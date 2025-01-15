@@ -447,7 +447,8 @@ class Config:
 		elif version == 3:
 			self.MESSAGE_FUNCTIONS[0x01] = [0x0012]
 			self.SELECT_MODULE[0x02] = [0x0002, 0x0003]
-			
+		elif version == 4:
+			self.MESSAGE_FUNCTIONS[0x04] = [0x0000]
 
 
 
