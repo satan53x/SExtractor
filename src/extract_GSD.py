@@ -100,6 +100,7 @@ class GSDManager():
 		self.insertContent.clear()
 		self.isGlobal = False
 		self.version = ExVar.version
+		self.ctrlKey = set()
 		if self.version == 2:
 			self.textBytes = b'\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 			self.endKey = 0x0A
@@ -111,6 +112,14 @@ class GSDManager():
 				self.endKey = eval(ExVar.endStr)
 			else:
 				self.endKey = ExVar.endStr
+		if ExVar.ctrlStr:
+			if isinstance(ExVar.ctrlStr, str):
+				self.ctrlKey = set(ExVar.ctrlStr.split(','))
+			else:
+				self.ctrlKey = {ExVar.ctrlStr}
+		if self.endKey - self.charKey > 1:
+			for i in range(self.charKey, self.endKey):
+				self.ctrlKey.add(i)
 
 	# ----------------- global.dat -------------------
 	def readGlobal(self, data):
@@ -213,8 +222,8 @@ class GSDManager():
 		#处理文本
 		bs = bytearray()
 		for i in range(charCount-1): #最后一个是结尾char
-			if data[pos] < self.charKey or data[pos] >= self.endKey:
-				printDebug('单字检查失败', pos)
+			if data[pos] not in self.ctrlKey and data[pos] != self.charKey:
+				printDebug(f'单字检查失败: pos {pos:X}, byte {data[pos]:X}')
 				return pre
 			if data[pos] != self.charKey and data[pos] != self.endKey:
 				bs.append(data[pos])
@@ -271,7 +280,7 @@ class GSDManager():
 				pos = 0
 				pre = 0
 				while pos < len(lineData):
-					if self.charKey < lineData[pos] < self.endKey:
+					if lineData[pos] in self.ctrlKey:
 						for j in range(3):
 							one = int2bytes(lineData[pos])
 							bs.extend(one)
