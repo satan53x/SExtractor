@@ -14,6 +14,7 @@ Codes = [
 	{'min': 0x1F4, 'max': 0x1F4, 'sce': [0x5A], 'sel': 0x1D, 'endpara': []},
 	{'min': 0x1C2, 'max': 0x22A, 'sce': [0x5B], 'sel': 0x1D, 'endpara': []},
 	{'min': 0x22B, 'max': 0xFFF, 'sce': [0x6C], 'sel': 0x2B, 'endpara': []},
+	{'min': 0x0,   'max': 0x10,  'sce': [0x33], 'sel': 0xFF, 'endpara': [], 'retcode': 0xFF, 'nostr': [0x19, 0x26]},
 	{'min': 0x0,   'max': 0xE0,  'sce': [0x4A], 'sel': 0x16, 'endpara': [0x32], 'retcode': 0xFF, 'nostr': [0x1E, 0x32]},
 	{'min': 0x0,   'max': 0x1C1, 'sce': [0x57], 'sel': 0x1A, 'endpara': [], 'retcode': 0x3B, 'nostr': []},
 	{'min': 0x0,   'max': 0xFFF, 'sce': [0x5A], 'sel': 0x1D, 'endpara': [], 'retcode': 0xFF, 'nostr': []},
@@ -232,6 +233,7 @@ class DataManager():
 	def init(self, data):
 		#header
 		self.headerLen = 0x20
+		self.OneParaLen = 0xC
 		v = int(ExVar.version, 0)
 		if v > 0: 
 			self.version = v
@@ -251,8 +253,10 @@ class DataManager():
 			self.structType = 2
 			if self.version <= 0xE0:
 				self.OneParaLen = 0x10
+			if self.version <= 0x10:
+				self.cmdHeadLen = 0xC
 			else:
-				self.OneParaLen = 0xC
+				self.cmdHeadLen = 0x6
 		else:
 			print(f'\033[33m当前ybn版本暂不支持\033[0m: 0x{self.version:X}')
 			return None
@@ -397,8 +401,11 @@ class DataManager():
 		pos = 0
 		while pos < self.cmdLen:
 			#单个command
-			code, count = struct.unpack('<BB', self.cmdSec[pos:pos+2])
-			headLen = 6
+			headLen = self.cmdHeadLen
+			if self.cmdHeadLen == 0xC:
+				code, count = struct.unpack('<II', self.cmdSec[pos:pos+8])
+			else:
+				code, count = struct.unpack('<BB', self.cmdSec[pos:pos+2])
 			textType = -1
 			if code in self.codeSce: #文本
 				textType = 0
