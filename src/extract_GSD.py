@@ -289,7 +289,7 @@ class GSDManager():
 				pos = 0
 				pre = 0
 				while pos < len(lineData):
-					if lineData[pos] in self.ctrlKey and lineData[pos+1] <= 0x7F and lineData[pos+2] <= 0x7F:
+					if lineData[pos] in self.ctrlKey and pos+2 < len(lineData) and lineData[pos+1] <= 0x7F and lineData[pos+2] <= 0x7F:
 						for j in range(3):
 							one = int2bytes(lineData[pos])
 							bs.extend(one)
