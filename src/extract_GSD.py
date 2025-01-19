@@ -106,9 +106,11 @@ class GSDManager():
 		if self.version == 2:
 			self.textBytes = b'\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 			self.endKey = 0x0A
+			self.ctrlKey = { 0x5 }
 		elif self.version == 3:
 			self.textBytes = b'\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 			self.endKey = 0x0C
+			self.ctrlKey = { 0x5 }
 			self.selectByte = 0x25
 		else:
 			self.textBytes = b'\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\xFF\xFF'
