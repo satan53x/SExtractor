@@ -101,12 +101,17 @@ class GSDManager():
 		self.isGlobal = False
 		self.version = ExVar.version
 		self.ctrlKey = set()
+		self.endKey = 0x08
+		self.selectByte = 0x23
 		if self.version == 2:
 			self.textBytes = b'\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 			self.endKey = 0x0A
+		elif self.version == 3:
+			self.textBytes = b'\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+			self.endKey = 0x0C
+			self.selectByte = 0x25
 		else:
 			self.textBytes = b'\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\xFF\xFF'
-			self.endKey = 0x08
 		if ExVar.endStr:
 			if isinstance(ExVar.endStr, str):
 				self.endKey = eval(ExVar.endStr)
@@ -141,10 +146,10 @@ class GSDManager():
 			cmdCount = readInt(data, pos)
 			pos += 4
 			for i in range(cmdCount):
-				for j in range(3): #最多3个str
+				for j in range(2): #2个str
 					length = readInt(data, pos)
 					pos += 4 + length
-				pos += 4 * 0x22 #22个int
+				pos += 4 * 0x23 #23个int
 		#名字区域
 		cmdCount = readInt(data, pos)
 		pos += 4
@@ -171,7 +176,7 @@ class GSDManager():
 		head = None #复用上一个命令的字节块
 		for i, line in enumerate(self.content):
 			info = self.infoList[i]
-			if self.version == 2:
+			if self.version > 1:
 				head = bytearray(len(info['head']))
 			elif not head:
 				head = info['head']
@@ -237,6 +242,10 @@ class GSDManager():
 					break
 				bs.append(data[pos+j])
 			pos += 0x4
+		#检查结尾
+		if data[pos] != self.endKey:
+			printDebug('结尾检查失败', pos)
+			return pre
 		self.content.append(bs)
 		self.infoList.append(info)
 		pre = end
@@ -252,7 +261,7 @@ class GSDManager():
 				info['pre'] = b''
 			start = pos
 			code = readInt(data, pos)
-			if code != 0x23:
+			if code != self.selectByte:
 				break
 			pos += 0xC
 			strLen = readInt(data, pos)
@@ -280,7 +289,7 @@ class GSDManager():
 				pos = 0
 				pre = 0
 				while pos < len(lineData):
-					if lineData[pos] in self.ctrlKey:
+					if lineData[pos] in self.ctrlKey and lineData[pos+1] <= 0x7F and lineData[pos+2] <= 0x7F:
 						for j in range(3):
 							one = int2bytes(lineData[pos])
 							bs.extend(one)
@@ -302,7 +311,7 @@ class GSDManager():
 				#结尾
 				bs.extend(int2bytes(self.endKey))
 				bs.extend(int2bytes(0))
-				if self.version == 2:
+				if self.version > 1:
 					#固定
 					bs.extend(int2bytes(0))
 				else:
