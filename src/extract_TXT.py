@@ -95,7 +95,6 @@ def searchLine(var:ParseVar):
 							continue
 					#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 					ctrl = {'pos':[var.contentIndex, start, end]}
-					tmpDic[start] = [text, ctrl]
 					#检查命名
 					key = None
 					for name, index in r.re.groupindex.items():
@@ -108,6 +107,8 @@ def searchLine(var:ParseVar):
 						key = key.rstrip('0123456789')
 						if 'AND' in key:
 							keys = key.split('AND')
+						elif key == 'skip':
+							continue
 						else:
 							keys = [key]
 						for key in keys:
@@ -126,6 +127,7 @@ def searchLine(var:ParseVar):
 					if var.intervalFlag:
 						ctrl[var.intervalFlag] = True
 					matched = True
+					tmpDic[start] = [text, ctrl]
 			if matched :
 				#按文本中顺序处理
 				for key, value in tmpDic.items():
