@@ -153,12 +153,17 @@ function TableToStr(t)
     local rn = "\n"
     if not has_table_child then
         rn = ""
+        if type(Node_path[1]) == "string" then
+            if depth == 4 then
+                rn = "\n"
+            end
+        end
     end
     -- 拼接
     local retstr= "{"
     for i, child in pairs(children) do
         retstr = retstr..rn..child
-        if i < #children or has_table_child then
+        if i < #children or rn ~= "" then
             retstr = retstr..","
         end
     end

@@ -1,6 +1,6 @@
 -- default codepage : GBK (Windows cp936)
 
-Work_dir = "G:/work5/1"
+Work_dir = "G:/work5/1/2"
 
 Cover_name = false
 -------------------------------------------------------------
@@ -96,6 +96,10 @@ local function item_to_row_text(item)
 end
 
 local function item_to_row_select(item)
+    if not Key_exist(item, Languages[1]) then
+        print("Debug: select has no "..Languages[1])
+        return 
+    end
     for seq = 1, #item[Languages[1]] do
         local row = {
             "select",
@@ -180,6 +184,10 @@ local function row_to_item_text(item)
 end
 
 local function row_to_item_select(item)
+    if not Key_exist(item, Languages[1]) then
+        -- print("Debug: select has no "..Languages[1])
+        return 
+    end
     for seq = 1, #item[Languages[1]] do
         local row = get_text()
         for lang_index, lang in pairs(Languages) do
@@ -307,6 +315,7 @@ local function main()
             print("Write orig: " .. orig_path)
         end
         -- Éú³Énew
+        Node_path = {} -- clear
         local str = TableToStr(data)
         local new_path = New_dir .. "/" .. filename
         local f = io.open(new_path, "w")
