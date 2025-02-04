@@ -9,15 +9,15 @@ selMinCount = 10 #提取时选项函数最小参数个数
 selMaxCount = 99 #提取时选项函数最大参数个数
 #版本对应code
 Codes = [
-	{'min': 0x1DC, 'max': 0x1DC, 'sce': [0x5A], 'sel': 0x1D, 'endpara': []},
-	{'min': 0x1E1, 'max': 0x1EB, 'sce': [0x6A], 'sel': 0x2C, 'endpara': []},
-	{'min': 0x1F4, 'max': 0x1F4, 'sce': [0x5A], 'sel': 0x1D, 'endpara': []},
-	{'min': 0x1C2, 'max': 0x22A, 'sce': [0x5B], 'sel': 0x1D, 'endpara': []},
-	{'min': 0x22B, 'max': 0xFFF, 'sce': [0x6C], 'sel': 0x2B, 'endpara': []},
-	{'min': 0x0,   'max': 0x10,  'sce': [0x33], 'sel': 0x27, 'endpara': [], 'retcode': 0xFF, 'nostr': [0x19, 0x26]},
-	{'min': 0x0,   'max': 0xE0,  'sce': [0x4A], 'sel': 0x16, 'endpara': [0x32], 'retcode': 0xFF, 'nostr': [0x1E, 0x32]},
-	{'min': 0x0,   'max': 0x1C1, 'sce': [0x57], 'sel': 0x1A, 'endpara': [], 'retcode': 0x3B, 'nostr': []},
-	{'min': 0x0,   'max': 0xFFF, 'sce': [0x5A], 'sel': 0x1D, 'endpara': [], 'retcode': 0xFF, 'nostr': []},
+	{'min': 0x1DC, 'max': 0x1DC, 'sce': [0x5A], 'sel': [0x1D], 'endpara': []},
+	{'min': 0x1E1, 'max': 0x1EB, 'sce': [0x6A], 'sel': [0x2C], 'endpara': []},
+	{'min': 0x1F4, 'max': 0x1F4, 'sce': [0x5A], 'sel': [0x1D], 'endpara': []},
+	{'min': 0x1C2, 'max': 0x22A, 'sce': [0x5B], 'sel': [0x1D, 0x27], 'endpara': []},
+	{'min': 0x22B, 'max': 0xFFF, 'sce': [0x6C], 'sel': [0x2B], 'endpara': []},
+	{'min': 0x0,   'max': 0x10,  'sce': [0x33], 'sel': [0x27], 'endpara': [], 'retcode': 0xFF, 'nostr': [0x19, 0x26]},
+	{'min': 0x0,   'max': 0xE0,  'sce': [0x4A], 'sel': [0x16], 'endpara': [0x32], 'retcode': 0xFF, 'nostr': [0x1E, 0x32]},
+	{'min': 0x0,   'max': 0x1C1, 'sce': [0x57], 'sel': [0x1A], 'endpara': [], 'retcode': 0x3B, 'nostr': []},
+	{'min': 0x0,   'max': 0xFFF, 'sce': [0x5A], 'sel': [0x1D], 'endpara': [], 'retcode': 0xFF, 'nostr': []},
 ]
 Keys = [
 	{'min': 0x1E1, 'max': 0x1E8, 'key': b'\x0B\x8F\x00\xB1'},
@@ -209,8 +209,14 @@ class DataManager():
 			textType = -1
 			if code in self.codeSce: #文本
 				textType = 0
-			elif code == self.codeSel: #选项
+			elif code in self.codeSel: #选项
 				textType = 1
+			if code in self.codeEndpara: #段落结束
+				if textType == 0:
+					textType = 10
+				elif len(self.cmdList) > 0:
+					if self.cmdList[-1][textType] == 0:
+						self.cmdList[-1][textType] = 10
 			#正常保存字节
 			self.cmdList.append([code, count, textType])
 
@@ -360,7 +366,7 @@ class DataManager():
 				Codes[-1]['sce'] = [cmdCode]
 				printInfo('命令：', text, hex(cmdCode), paraCount)
 			elif text == 'GOSUB':
-				Codes[-1]['sel'] = cmdCode
+				Codes[-1]['sel'] = [cmdCode]
 				printInfo('命令：', text, hex(cmdCode), paraCount)
 			elif text == 'RETURNCODE':
 				Codes[-1]['retcode'] = cmdCode
@@ -409,7 +415,7 @@ class DataManager():
 			textType = -1
 			if code in self.codeSce: #文本
 				textType = 0
-			elif code == self.codeSel: #选项
+			elif code in self.codeSel: #选项
 				textType = 1
 			elif code == self.codeRetcode: #retcode
 				count = 0
