@@ -372,8 +372,8 @@ class DataManager():
 			elif text == 'RETURNCODE':
 				Codes[-1]['retcode'] = cmdCode
 				printInfo('命令：', text, hex(cmdCode), paraCount)
-			#else:
-				#printDebug('命令：', text, hex(cmdCode), paraCount)
+			else:
+				printDebug('命令：', text, hex(cmdCode), paraCount)
 			for paraCode in range(paraCount):
 				#参数
 				bs = readStr(data, pos)
