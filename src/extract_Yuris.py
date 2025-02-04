@@ -27,10 +27,17 @@ Keys = [
 ]
 
 insertContent = {}
+outputAll = False
 # ---------------- Engine: Yu-ris -------------------
 def initExtra():
-	global selMinCount
-	global selMaxCount
+	global selMinCount, selMaxCount
+	global outputAll
+	if ExVar.extraData == 'all':
+		selMinCount = 1
+		outputAll = True
+		return
+	else:
+		outputAll = False
 	lst = ExVar.extraData.split(',')
 	if len(lst) > 0:
 		selMinCount = int(lst[0]) or 10
@@ -48,25 +55,27 @@ def parseImp(content, listCtrl, dealOnce):
 		count, textType = cmd[1], cmd[2]
 		if textType == 0 or textType == 10:
 			#文本
-			dealStr(content, var, paraIndex, textType)
-		elif textType == 1:
+			dealStr(content, var, paraIndex, cmd)
+		elif textType == 1 or (outputAll and textType > -2):
 			#选项
 			if selMinCount <= count <= selMaxCount:
 				for j in range(count):
-					dealStr(content, var, paraIndex + j)
+					dealStr(content, var, paraIndex + j, cmd)
 		paraIndex += count
 
 #处理单个bin字符串
-def dealStr(content, var:ParseVar, paraIndex, textType=0):
+def dealStr(content, var:ParseVar, paraIndex, cmd):
 	contentIndex = manager.getContentIndex(paraIndex)
 	var.lineData = content[contentIndex]['text']
 	var.contentIndex = contentIndex
 	ctrls = searchLine(var)
 	if ctrls and len(ctrls) > 0:
 		content[contentIndex]['ref'].append(paraIndex)
-		if textType == 10:
+		if cmd[2] == 10: #textType
 			if 'unfinish' in ctrls[-1]:
 				del ctrls[-1]['unfinish']
+		if outputAll:
+			printDebug(f'Code<{cmd[0]:02X}>: {ExVar.listOrig[-1]}')
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
