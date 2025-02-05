@@ -31,5 +31,8 @@ if __name__ == "__main__":
     win.beforeShow()
     win.show()
     win.afterShow()
+    if len(sys.argv) >= 2:
+        if sys.argv[1] in ('-e', '--extract'):
+            win.extractFile()
     #程序运行，sys.exit方法确保程序完整退出。
     sys.exit(app.exec_())
