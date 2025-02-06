@@ -121,7 +121,10 @@ class GSDManager():
 				self.endKey = ExVar.endStr
 		if ExVar.ctrlStr:
 			if isinstance(ExVar.ctrlStr, str):
-				self.ctrlKey = set(ExVar.ctrlStr.split(','))
+				s = set()
+				for i in ExVar.ctrlStr.split(','):
+					s.add(int(i, 16))
+				self.ctrlKey = s
 			else:
 				self.ctrlKey = {ExVar.ctrlStr}
 		if self.endKey - self.charKey > 1:
@@ -291,7 +294,9 @@ class GSDManager():
 				pos = 0
 				pre = 0
 				while pos < len(lineData):
-					if lineData[pos] in self.ctrlKey and pos+2 < len(lineData) and lineData[pos+1] <= 0x7F and lineData[pos+2] <= 0x7F:
+					if lineData[pos] in self.ctrlKey and pos+2 < len(lineData) and \
+					lineData[pos+1] <= 0x7F and lineData[pos+2] <= 0x7F and \
+					(pos+3 >= len(lineData) or lineData[pos+3] != 0x00): #校验
 						for j in range(3):
 							one = int2bytes(lineData[pos])
 							bs.extend(one)
