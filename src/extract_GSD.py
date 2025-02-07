@@ -123,7 +123,7 @@ class GSDManager():
 			if isinstance(ExVar.ctrlStr, str):
 				s = set()
 				for i in ExVar.ctrlStr.split(','):
-					s.add(int(i, 16))
+					s.add(eval(i))
 				self.ctrlKey = s
 			else:
 				self.ctrlKey = {ExVar.ctrlStr}
