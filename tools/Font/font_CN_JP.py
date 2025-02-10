@@ -1,6 +1,11 @@
+# ------------------------------------------------------------
+# https://github.com/satan53x/SExtractor/tree/main/tools/Font
+# 安装依赖: pip install fonttools
+# ------------------------------------------------------------
 import json
 import subprocess
 import sys
+from fontTools.ttLib import TTFont
 
 FontSrc = 'MSGothic_WenQuanYi.ttf' #替换前的字体名
 SubsJson = '../../src/subs_cn_jp.json' #替换字典路径
@@ -12,7 +17,7 @@ def main():
     else:
         fnt = FontSrc
     
-    obj = json.loads(subprocess.check_output(('otfccdump.exe', '-n', '0', '--hex-cmap', '--no-bom', fnt)))
+    obj = TTFont(fnt)
 
     with open(SubsJson, encoding='utf-8') as f:
         print('读入Json', SubsJson)
@@ -27,21 +32,23 @@ def main():
                     newDic[value] = key
             data = newDic
         #替换
-        for key, value in data.items():
-            if key == value:
-                continue
-            s = f'U+{ord(key):04X}'
-            j = f'U+{ord(value):04X}'
-            try:
-                obj['cmap'][s] = obj['cmap'][j]
-            except:
-                print('字体中不存在:', key, value)
+        for table in obj['cmap'].tables:
+            if table.platformID != 1: #子表过滤：mac
+                for key, value in data.items():
+                    if key == value:
+                        continue
+                    s = ord(key)
+                    j = ord(value)
+                    try:
+                        table.cmap[s] = table.cmap[j]
+                    except:
+                        print('字体中不存在:', key, value)
         #更改定义
         #changeDef(obj)
     
-    subprocess.run(['otfccbuild.exe', '--keep-average-char-width', '-O3', '-o', '%s_cnjp.ttf' % fnt[0:fnt.rfind('.')]], input=json.dumps(obj), encoding='utf-8')
-    print('Done.')
-
+    newfile = '%s_cnjp.ttf' % fnt[0:fnt.rfind('.')]
+    obj.save(newfile)
+    print('生成font', newfile)
 
 if __name__ == '__main__':
     main()
