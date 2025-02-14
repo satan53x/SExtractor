@@ -29,16 +29,32 @@ class ParseVar():
 		self.dealOnce = dealOnce
 
 # -----------------------------------
+longText = False
+pureTextDataRel = [] #纯文本模式下，字符index对应的字节结束位置
 def GetPos(var:ParseVar, searchData:str, r:re.Match[str], i):
 	start = r.start(i)
 	end = r.end(i)
 	if var.OldEncodeName and ExVar.pureText:
 		#bin的纯文本模式
-		#从字符位置转为字节位置
-		lengthPre = len(searchData[0:start].encode(var.OldEncodeName))
-		lengthText = len(searchData[start:end].encode(var.OldEncodeName))
-		start = lengthPre
-		end = lengthPre + lengthText
+		if not longText:
+			#短文本
+			lengthPre = len(searchData[0:start].encode(var.OldEncodeName))
+			lengthText = len(searchData[start:end].encode(var.OldEncodeName))
+			start = lengthPre
+			end = lengthPre + lengthText
+		else:
+			if len(pureTextDataRel) < end:
+				#计算字符字节对应关系
+				for i in range(len(pureTextDataRel), end):
+					if i == 0:
+						pos = 0
+					else:
+						pos = pureTextDataRel[i-1]
+					pos += len(searchData[i].encode(var.OldEncodeName))
+					pureTextDataRel.append(pos)
+			#从字符位置转为字节位置
+			start = 0 if start==0 else pureTextDataRel[start-1]
+			end = 0 if end==0 else pureTextDataRel[end-1]
 	start += var.searchStart
 	end += var.searchStart
 	return start, end
@@ -51,6 +67,9 @@ def searchLine(var:ParseVar):
 	if var.OldEncodeName and ExVar.pureText:
 		#bin的纯文本模式
 		searchData = searchData.decode(var.OldEncodeName)
+		global longText
+		longText = len(searchData) > 0x400
+		pureTextDataRel.clear()
 	ctrls = []
 	for regItem in var.regList:
 		regType = regItem[1]
