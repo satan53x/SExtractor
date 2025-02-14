@@ -185,3 +185,7 @@ error
 7. [EAGLS](https://github.com/jszhtian/EAGLS)
 8. [MalieTools](https://github.com/Dir-A/MalieTools)
 9. [Garbro fork](https://github.com/satan53x/GARbro)
+
+### 详细使用教程
+* [ai2moe](https://www.ai2.moe/topic/28969-sextractor%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97)
+* [julixian-siw](https://julixian-siw.worldsystem.top/?p=229)

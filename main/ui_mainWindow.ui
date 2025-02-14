@@ -1175,7 +1175,7 @@
           <property name="title">
            <string>正则配置</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0" columnstretch="5,5,0" rowminimumheight="0,0,0">
+          <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0" columnstretch="5,5" rowminimumheight="0,0,0">
            <property name="leftMargin">
             <number>5</number>
            </property>
@@ -1620,8 +1620,9 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Microsoft YaHei UI'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;项目地址：&lt;span style=&quot; text-decoration: underline;&quot;&gt;https://github.com/satan53x/SExtractor&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;文件夹下自定义的&lt;span style=&quot; font-weight:600; color:#aa00ff;&quot;&gt;config*.ini&lt;/span&gt;都会被读取，*中不能以数字开头。(例：configTest.ini)&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;项目地址：	&lt;span style=&quot; text-decoration: underline;&quot;&gt;https://github.com/satan53x/SExtractor&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;使用教程： 	&lt;span style=&quot; text-decoration: underline;&quot;&gt;https://www.ai2.moe/topic/28969-sextractor使用心得&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;	&lt;span style=&quot; text-decoration: underline;&quot;&gt;https://julixian-siw.worldsystem.top/?p=229&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;更多预设参考根目录下 &lt;span style=&quot; font-weight:600; color:#ff0000;&quot;&gt;预设正则.fake.ini&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;&amp;gt;提取写入：&lt;/span&gt;&lt;/p&gt;
@@ -1638,8 +1639,10 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;原文不要包含\r\n&lt;/span&gt;&lt;span style=&quot; color:#000000;&quot;&gt;（如果有则需要在设置中更改段落分隔符）&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#000000;&quot;&gt;TXT默认读写utf-8；BIN默认读jis写GBK；JSON模式只会操作value&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;TXT模式截断时会临时判定原文为jis译文为GBK，如无必要不要在TXT模式下打开截断。&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#000000;&quot;&gt;BIN默认使用二进制字符串进行正则匹配，启用纯文本模式则会先decode编码为Unicode再进行正则匹配。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#000000;&quot;&gt;BIN默认使用二进制字符串进行正则匹配，启用纯文本模式则会先decode编码为字符串再进行正则匹配。&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; color:#000000;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;main文件夹下自定义的&lt;span style=&quot; font-weight:600; color:#aa00ff;&quot;&gt;config*.ini&lt;/span&gt;都会被读取，*中不能以数字开头。&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;&amp;gt;合并分割：&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;合并：会缓存子文件信息，分割时&lt;span style=&quot; font-weight:600; color:#00aa00;&quot;&gt;行数填0&lt;/span&gt;则表示使用该缓存&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;收集：合并目录 &amp;gt;&amp;gt; 提取目录&lt;/p&gt;
