@@ -8,6 +8,10 @@ python版本需要3.9及以上。（推荐使用3.11）
 * pandas
 * python-rapidjson
 
+## 详细使用教程
+* [julixian](https://www.ai2.moe/topic/28969-sextractor%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97)
+* [无聊荒芜](https://www.ai2.moe/topic/29048-sextractor%E4%BD%BF%E7%94%A8%E2%80%94%E2%80%94%E8%BF%9B%E9%98%B6%E8%AF%B4%E6%98%8E%E5%8A%A0%E9%83%A8%E5%88%86%E5%BC%95%E6%93%8E%E7%A4%BA%E4%BE%8B%EF%BC%88%E7%9C%8B%E5%AE%8Csextractor%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97%E5%86%8D%E6%9D%A5%EF%BC%89)
+
 ## 支持的引擎：
 同引擎不同游戏的格式也可能不同，请参看程序内示例使用。
 * TXT纯文本 (正则匹配。可选utf-8，utf-8-sig，utf-16(LE BOM))
@@ -186,6 +190,4 @@ error
 8. [MalieTools](https://github.com/Dir-A/MalieTools)
 9. [Garbro fork](https://github.com/satan53x/GARbro)
 
-### 详细使用教程
-* [ai2moe](https://www.ai2.moe/topic/28969-sextractor%E4%BD%BF%E7%94%A8%E5%BF%83%E5%BE%97)
-* [julixian-siw](https://julixian-siw.worldsystem.top/?p=229)
+
