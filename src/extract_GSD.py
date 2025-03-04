@@ -295,7 +295,7 @@ class GSDManager():
 				pre = 0
 				while pos < len(lineData):
 					if lineData[pos] in self.ctrlKey and pos+2 < len(lineData) and \
-					lineData[pos+1] <= 0x7F and lineData[pos+2] <= 0x7F and \
+					lineData[pos+1] <= 0x7F and \
 					(pos+3 >= len(lineData) or lineData[pos+3] != 0x00): #校验
 						for j in range(3):
 							one = int2bytes(lineData[pos])
@@ -323,8 +323,11 @@ class GSDManager():
 					bs.extend(int2bytes(0))
 				else:
 					#最后一个字符需要写入两次，单独处理
-					bs.extend(lineData[pre:])
-					bs.extend(b'\x00' * (4 + pre - pos))
+					remain = lineData[pre:]
+					if len(remain) > 2:
+						remain = remain[:2]
+					bs.extend(remain)
+					bs.extend(b'\x00' * (4 - len(remain)))
 				charCount += 1
 				#恢复所有字节
 				head = info['head']

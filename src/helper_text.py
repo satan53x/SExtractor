@@ -216,7 +216,7 @@ def splitToTransDicAuto(orig, trans):
 	if ExVar.joinAfterSplit:
 		#重新分割，但是再合并
 		sep = ExVar.splitParaSep
-		orig = sep.join(listMsgOrig)
+		#orig = sep.join(listMsgOrig) #再合并不影响orig
 		trans = sep.join(listMsgTrans)
 		if orig not in ExVar.transDic:
 			ExVar.transDic[orig] = []
