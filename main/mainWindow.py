@@ -139,10 +139,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.engineConfig.beginGroup(group)
 		#示例
 		value = self.engineConfig.value('sample')
-		if value:
-			self.sampleBrowser.setText(value)
-		else:
-			self.sampleBrowser.setText('')
+		self.setSampleText(value)
 		#名字列表
 		self.nameListConfig = self.mainConfig.value(group + '_nameList')
 		if self.nameListConfig == None:
@@ -189,16 +186,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			group = 'Engine_' + self.engineName
 			#示例
 			value = self.engineConfig.value(group+'/sample')
-			if value:
-				self.sampleBrowser.setText(value)
-			else:
-				self.sampleBrowser.setText('')
+			self.setSampleText(value)
 			return
 		if re.match(r'_*Custom', regName):
 			#优先读取自定义规则
 			textAll = self.mainConfig.value('reg' + regName)
 			if textAll:
-				self.sampleBrowser.setText(textAll)
+				self.setSampleText(textAll)
 				return
 		self.regConfig.beginGroup(regName)
 		textPart0 = ''
@@ -214,8 +208,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			else:
 				textPart1 += text
 		self.regConfig.endGroup()
-		self.sampleBrowser.setText(textPart0 + textPart1 + textPart2)
+		self.setSampleText(textPart0 + textPart1 + textPart2)
 		
+	def setSampleText(self, value):
+		if value:
+			self.sampleBrowser.setText(value)
+		else:
+			self.sampleBrowser.setText('')
+		self.configManager.oldReg = self.sampleBrowser.toPlainText()
+
 	#提取打印设置
 	def getExtractPrintSetting(self):
 		lst = []

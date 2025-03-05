@@ -1164,6 +1164,16 @@
                 </property>
                </widget>
               </item>
+              <item>
+               <widget class="QCheckBox" name="autoCustomCheck">
+                <property name="text">
+                 <string>当规则被编辑时自动转到Custom</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>

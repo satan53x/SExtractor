@@ -1,6 +1,6 @@
 import os
 import re
-from PyQt5.QtCore import QSettings
+from PyQt5.QtCore import QSettings, Qt
 
 __all__ = ['ConfigManager']
 
@@ -15,6 +15,7 @@ class ConfigManager():
 	isCheckDirIni = False
 	isChangeMainDir = True
 	builtinConfig = None #内置ini
+	oldReg = ''
 
 	def __init__(self, mw) -> None:
 		global mainWindow, checkDic, notInRunning
@@ -48,6 +49,7 @@ class ConfigManager():
 			'batchCmdCur': [mainWindow.batchCmdCurCheck, True, True], #命令在当前提取目录运行
 			'batchAutoStart': [mainWindow.batchAutoStartCheck, True, False], #批处理在提取/导入后自动运行
 			'useStructPara': [mainWindow.useStructParaCheck, True, False],
+			'autoCustom': [mainWindow.autoCustomCheck, True, True],
 		}
 		#运行中时不进行读写
 		notInRunning = ['batchCmdCur', 'batchAutoStart']
@@ -190,11 +192,19 @@ class ConfigManager():
 		self.mainConfig.setValue('maxCountPerLine', args['maxCountPerLine'])
 		if mainWindow.regNameTab.isEnabled():
 			regName = mainWindow.regNameBox.currentText()
+			textAll = mainWindow.sampleBrowser.toPlainText()
 			if re.match(r'_*Custom', regName):
 				#保存自定义规则
-				textAll = mainWindow.sampleBrowser.toPlainText()
 				if not re.match(r'sample', textAll):
 					self.mainConfig.setValue('reg' + regName, textAll)
+			elif mainWindow.autoCustomCheck.isChecked() and self.oldReg != textAll:
+				#规则有变化，自动跳转到Custom
+				index = mainWindow.regNameBox.findText('Custom', Qt.MatchContains) #包含匹配
+				if index >= 0:
+					print('规则被编辑，自动转到Custom')
+					regName = mainWindow.regNameBox.itemText(index)
+					self.mainConfig.setValue('reg' + regName, textAll)
+					mainWindow.regNameBox.setCurrentIndex(index)
 		self.mainConfig.setValue('encodeIndex', mainWindow.txtEncodeBox.currentIndex())
 		#窗口大小
 		self.mainConfig.setValue('windowSize', mainWindow.size())
