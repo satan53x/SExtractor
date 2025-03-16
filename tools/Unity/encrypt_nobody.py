@@ -1,5 +1,5 @@
 # ------------------------------------------------------------
-# 加解密Unity游戏多语言资源: 大多数 nobody
+# 加解密Unity游戏 " 大多数 nobody " 的部分资源
 # https://github.com/satan53x/SExtractor/tree/main/tools/Unity
 # ------------------------------------------------------------
 import os
@@ -16,7 +16,7 @@ PostfixCipher=''
 PostfixPlain='.json'
 EncodeName='utf-8'
 #key = b'xxxxxxxxxxxxxxxxxxxxxxxxxxxx4444' #S 存档
-key = b'xxxxxxxxxxxxxxxxxxxxxxxxxxxx8888' #T 资源
+key = b'xxxxxxxxxxxxxxxxxxxxxxxxxxxx8888' #T 翻译
 #keyFilename = b'xxxxxxxxxxxxxxxxxxxxxxxxxxxx8888' #文件名
 
 # ------------------------------------------------------------
