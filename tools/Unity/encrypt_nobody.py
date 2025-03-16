@@ -17,7 +17,7 @@ PostfixPlain='.json'
 EncodeName='utf-8'
 #key = b'xxxxxxxxxxxxxxxxxxxxxxxxxxxx4444' #S 存档
 key = b'xxxxxxxxxxxxxxxxxxxxxxxxxxxx8888' #T 翻译
-#keyFilename = b'xxxxxxxxxxxxxxxxxxxxxxxxxxxx8888' #文件名
+#keyFilename = b'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' #文件名
 
 # ------------------------------------------------------------
 #var
