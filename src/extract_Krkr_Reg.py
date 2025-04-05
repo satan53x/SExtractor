@@ -29,7 +29,7 @@ def parseImp(content, listCtrl, dealOnce):
 	lastCtrl = None
 	for contentIndex in range(len(content)):
 		if contentIndex < ExVar.startline: continue 
-		var.lineData = content[contentIndex][:-1] #忽略换行
+		var.lineData = content[contentIndex]
 		# 每行
 		var.contentIndex = contentIndex
 		ctrls = searchLine(var)

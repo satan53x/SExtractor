@@ -231,6 +231,14 @@ def setRegDic(str):
 		if pair[0] == 'separate':
 			var.contentSeparate = pair[1]
 			continue
+		elif pair[0] == 'encode':
+			lst = pair[1].split(',')
+			var.binEncodeValid = True
+			var.OldEncodeName = lst[0]
+			if len(lst) > 1:
+				var.NewEncodeName = lst[1]
+			else:
+				var.NewEncodeName = var.OldEncodeName
 		elif pair[0] == 'flag':
 			lst = pair[1].split(',')
 			for flag in lst:
@@ -324,10 +332,9 @@ def initArgs(args):
 	readCutoffDic()
 	# 编码
 	var.EncodeRead = args['encode']
-	if var.binEncodeValid:
+	if var.binEncodeValid or var.fileType != 'bin':
 		var.OldEncodeName = var.EncodeRead
 		var.NewEncodeName = var.EncodeRead
-		printWarningGreen('已启用: 编码也对BIN生效', var.EncodeRead)
 	# 分割
 	var.splitParaSepRegex = args['splitParaSep']
 	if '\\' in var.splitParaSepRegex:
@@ -352,6 +359,9 @@ def initArgs(args):
 	else:
 		WirteEncodeName = var.NewEncodeName
 	var.padding = var.padding.encode(WirteEncodeName).decode('unicode_escape').encode('latin-1')
+	# 打印
+	if var.binEncodeValid and var.fileType == 'bin':
+		printWarningGreen('已启用: 编码也对BIN生效', var.OldEncodeName, var.NewEncodeName)
 	return 0
 
 def extractDone():

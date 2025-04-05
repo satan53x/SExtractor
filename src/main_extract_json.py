@@ -9,7 +9,7 @@ def read():
 	var.listCtrl.clear()
 	#源文件
 	filepath = os.path.join(var.workpath, var.filename+var.Postfix)
-	fileOld = open(filepath, 'r', encoding=var.EncodeRead)
+	fileOld = open(filepath, 'r', encoding=var.OldEncodeName)
 	var.inputCount += 1
 	return fileOld
 
@@ -25,9 +25,9 @@ def write():
 		filepath = os.path.join(var.workpath, 'new', var.filename+var.Postfix)
 		#print(filepath)
 		if ExVar.newline != None:
-			fileNew = open(filepath, 'w', encoding=var.EncodeRead, newline=ExVar.newline)
+			fileNew = open(filepath, 'w', encoding=var.NewEncodeName, newline=ExVar.newline)
 		else:
-			fileNew = open(filepath, 'w', encoding=var.EncodeRead)
+			fileNew = open(filepath, 'w', encoding=var.NewEncodeName)
 		if var.jsonWrite == 10:
 			#除了第一层，其它WM_COMPACT
 			if isinstance(var.content, list):

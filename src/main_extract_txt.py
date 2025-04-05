@@ -10,7 +10,7 @@ def read():
 	var.listCtrl.clear()
 	#源文件
 	filepath = os.path.join(var.workpath, var.filename+var.Postfix)
-	fileOld = open(filepath, 'r', encoding=var.EncodeRead)
+	fileOld = open(filepath, 'r', encoding=var.OldEncodeName)
 	var.inputCount += 1
 	return fileOld
 
@@ -21,17 +21,22 @@ def write():
 	if var.isInput == True:
 		#写入译文
 		replace()
+		#反转义
+		separate = var.contentSeparate.encode().decode('unicode_escape')
 		#新文件
 		#print(len(content))
 		filepath = os.path.join(var.workpath, 'new', var.filename+var.Postfix)
 		#print(filepath)
 		if ExVar.newline != None:
-			fileNew = open(filepath, 'w', encoding=var.EncodeRead, newline=ExVar.newline)
+			fileNew = open(filepath, 'w', encoding=var.NewEncodeName, newline=ExVar.newline)
 		else:
-			fileNew = open(filepath, 'w', encoding=var.EncodeRead)
+			fileNew = open(filepath, 'w', encoding=var.NewEncodeName)
 		length = len(var.content)
 		for i in range(length):
 			fileNew.write(var.content[i])
+			if i < length-1:
+				if var.addSeparate:
+					fileNew.write(separate)
 		fileNew.close()
 		#print('导出:', filename+Postfix)
 		var.outputCount += 1
@@ -42,15 +47,20 @@ def parse():
 	if var.readFileDataImp:
 		var.content, _ = var.readFileDataImp(fileOld, var.contentSeparate)
 	else:
-		var.content = fileOld.readlines() #会保留换行符
+		data = fileOld.read() #文本文件读入内存后都是utf-8字符串
+		if var.contentSeparate == '' or var.contentSeparate == '\n' or var.contentSeparate == '\r\n':
+			var.content = data.splitlines()
+			if len(var.content) > 0 and var.content[-1] != '':
+				var.content.append('')
+			var.contentSeparate = '\n'
+		else:
+			#自定义分割
+			var.content = re.split(var.contentSeparate, data)
 		if var.content:
 			#签名检查
 			s = var.content[0]
 			if s[0] == '\ufeff' or s[0] == '\ufffe':
 				printWarning('请检查文件编码是否正确，疑似含有签名', var.filename)
-			if not var.content[-1].endswith('\n'):
-				printDebug('已补足文件末尾缺少的一个换行符')
-				var.content[-1] += '\n'
 	fileOld.close()
 	#print(content)
 	var.parseImp(var.content, var.listCtrl, dealOnce)
@@ -62,6 +72,12 @@ def parse():
 		#filepath = os.path.join(var.workpath, var.filename+var.Postfix)
 		#if os.path.exists(filepath):
 			#os.remove(filepath)
+
+def initDone():
+	if var.contentSeparate.startswith(b'('):
+		var.addSeparate = False
+	else:
+		var.addSeparate = True
 
 #args = {workpath, engineName, outputFormat, outputPartMode, nameList, regDic}
 def mainExtractTxt(args):

@@ -39,7 +39,7 @@ def parse(content, var:ParseVar):
 def parseText(content, var:ParseVar):
 	for contentIndex in range(len(content)):
 		if contentIndex < ExVar.startline: continue 
-		var.lineData = content[contentIndex][:-1] #不检查末尾换行
+		var.lineData = content[contentIndex]
 		var.contentIndex = contentIndex
 		ctrls = searchLine(var)
 		if ctrls == None or len(ctrls) > 0:

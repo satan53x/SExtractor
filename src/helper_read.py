@@ -46,7 +46,7 @@ def transReplace():
 			else:
 				charset = var.NewEncodeName.lower()
 		else:
-			charset = var.EncodeRead.lower()
+			charset = var.NewEncodeName.lower()
 		#译文替换
 		if 'trans_replace' in var.textConf:
 			for key, replaceDic in var.textConf['trans_replace'].items():
