@@ -5,7 +5,6 @@ from PyQt5.QtCore import QThread, pyqtSignal
 import traceback
 from src.common import ExVar
 
-import debugpy
 isDebug = True if sys.gettrace() else False
 class extractThread(QThread):
 	finished = pyqtSignal(int)  # 自定义信号，用于传递结果
@@ -16,6 +15,7 @@ class extractThread(QThread):
 
 	def run(self):
 		if isDebug:
+			#import debugpy
 			#debugpy.debug_this_thread()
 			pass
 		start = time.perf_counter()

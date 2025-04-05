@@ -2,4 +2,4 @@ pyqt5
 colorama
 pandas
 python-rapidjson
-debugpy
+# debugpy
