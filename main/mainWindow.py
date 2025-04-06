@@ -56,8 +56,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		self.batchStartButton.clicked.connect(self.batchManager.start)
 
 	def changeTab(self, index):
-		if index == 3: #readme
-			self.statusBar.showMessage(f'版本号：Ver{self.version}')
+		if index == 3 or index == 1: #readme
+			self.statusBar.showMessage(f'Ver {self.version}')
 
 	#初始化
 	def beforeShow(self):
