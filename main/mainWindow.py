@@ -233,6 +233,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 		regDic = None
 		if self.engineConfig.value(group + '/regDic'):
 			regDic = self.sampleBrowser.toPlainText()
+		encodeRead = self.encodeReadBox.currentText()
+		if self.encodeWriteBox.currentIndex() == 0:
+			#Same
+			encodeWrite = encodeRead
+		else:
+			encodeWrite = self.encodeWriteBox.currentText()
 		args = {
 			'file':fileType,
 			'workpath':self.mainDirEdit.text(),
@@ -242,7 +248,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			'nameList':self.nameListEdit.text(),
 			'regDic':regDic,
 			'outputFormatExtra':self.outputFileExtraBox.currentIndex() - 1,
-			'encode': self.txtEncodeBox.currentText(),
+			'encode': f'{encodeRead},{encodeWrite}',
 			'print': self.getExtractPrintSetting(),
 			'splitParaSep': self.splitSepEdit.text(),
 			'maxCountPerLine': int(self.splitMaxEdit.text()),

@@ -43,7 +43,7 @@ class ExtractVar():
 	#-------------------
 	engineName = ''
 	Postfix = '.txt'
-	EncodeRead = 'utf-8'
+	encode = 'cp932'
 	contentSeparate = None
 	fileType = '' #引擎类型
 	nameList = []

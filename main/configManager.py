@@ -135,7 +135,9 @@ class ConfigManager():
 		#mainWindow.regNameBox.currentIndexChanged.connect(mainWindow.selectReg)
 		# 编码
 		index = int(initValue(self.mainConfig, 'encodeIndex', 0))
-		mainWindow.txtEncodeBox.setCurrentIndex(index)
+		mainWindow.encodeReadBox.setCurrentIndex(index)
+		index = int(initValue(self.mainConfig, 'encodeWriteIndex', 0))
+		mainWindow.encodeWriteBox.setCurrentIndex(index)
 		# 译文
 		maxCountPerLine = initValue(self.mainConfig, 'maxCountPerLine', 512)
 		mainWindow.splitMaxEdit.setText(str(maxCountPerLine))
@@ -205,7 +207,8 @@ class ConfigManager():
 					regName = mainWindow.regNameBox.itemText(index)
 					self.mainConfig.setValue('reg' + regName, textAll)
 					mainWindow.regNameBox.setCurrentIndex(index)
-		self.mainConfig.setValue('encodeIndex', mainWindow.txtEncodeBox.currentIndex())
+		self.mainConfig.setValue('encodeIndex', mainWindow.encodeReadBox.currentIndex())
+		self.mainConfig.setValue('encodeWriteIndex', mainWindow.encodeWriteBox.currentIndex())
 		#窗口大小
 		self.mainConfig.setValue('windowSize', mainWindow.size())
 		self.mainConfig.setValue('splitParaSep', args['splitParaSep'])

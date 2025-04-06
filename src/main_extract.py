@@ -169,7 +169,7 @@ def chooseEngine(args):
 	strEngine = 'Engine_' + var.engineName
 	settings.beginGroup(strEngine)
 	var.Postfix = settings.value('postfix')
-	var.EncodeRead = settings.value('encode')
+	var.encode = settings.value('encode')
 	#输出格式
 	formatList = settings.value('formatList')
 	if formatList == None or str(args['outputFormat']) in formatList:
@@ -231,14 +231,6 @@ def setRegDic(str):
 		if pair[0] == 'separate':
 			var.contentSeparate = pair[1]
 			continue
-		elif pair[0] == 'encode':
-			lst = pair[1].split(',')
-			var.binEncodeValid = True
-			var.OldEncodeName = lst[0]
-			if len(lst) > 1:
-				var.NewEncodeName = lst[1]
-			else:
-				var.NewEncodeName = var.OldEncodeName
 		elif pair[0] == 'flag':
 			lst = pair[1].split(',')
 			for flag in lst:
@@ -330,11 +322,6 @@ def initArgs(args):
 		var.structure = 'paragraph'
 	# 截断
 	readCutoffDic()
-	# 编码
-	var.EncodeRead = args['encode']
-	if var.binEncodeValid or var.fileType != 'bin':
-		var.OldEncodeName = var.EncodeRead
-		var.NewEncodeName = var.EncodeRead
 	# 分割
 	var.splitParaSepRegex = args['splitParaSep']
 	if '\\' in var.splitParaSepRegex:
@@ -348,6 +335,17 @@ def initArgs(args):
 	readTextConf()
 	# 正则
 	setRegDic(args['regDic'])
+	# 编码
+	if var.binEncodeValid or var.fileType != 'bin':
+		lst = var.encode.split(',')
+		var.binEncodeValid = True
+		var.OldEncodeName = lst[0]
+		if len(lst) > 1:
+			var.NewEncodeName = lst[1]
+		else:
+			var.NewEncodeName = var.OldEncodeName
+		if var.fileType == 'bin':
+			printWarningGreen('已启用: 编码也对BIN生效', var.OldEncodeName, var.NewEncodeName)
 	# 双行标志
 	if isinstance(var.twoLineFlag, str):
 		var.twoLineFlag = var.twoLineFlag.split(',')
@@ -359,9 +357,6 @@ def initArgs(args):
 	else:
 		WirteEncodeName = var.NewEncodeName
 	var.padding = var.padding.encode(WirteEncodeName).decode('unicode_escape').encode('latin-1')
-	# 打印
-	if var.binEncodeValid and var.fileType == 'bin':
-		printWarningGreen('已启用: 编码也对BIN生效', var.OldEncodeName, var.NewEncodeName)
 	return 0
 
 def extractDone():
