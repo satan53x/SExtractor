@@ -59,7 +59,7 @@ def parse():
 		if var.content:
 			#签名检查
 			s = var.content[0]
-			if s[0] == '\ufeff' or s[0] == '\ufffe':
+			if len(s) > 0 and (s[0] == '\ufeff' or s[0] == '\ufffe'):
 				printWarning('请检查文件编码是否正确，疑似含有签名', var.filename)
 	fileOld.close()
 	#print(content)

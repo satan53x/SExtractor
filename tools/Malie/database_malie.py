@@ -896,7 +896,7 @@ database_malie = {
       894073449,
       1785492272
     ],
-    "Align": 4096
+    "Align": 1024
   },
   "Kimi to Hajimeru Dasanteki na Love Come": {
     "Key": "pKemoaCjoqyvrqmoq6q0t7axsLOyvL++ubi7uqGpsbk=",
