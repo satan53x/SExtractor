@@ -87,6 +87,8 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		strOld = content.iat[contentIndex, colIndex + writeOffset]
 		if writeOffset != 0:
 			if pd.isnull(strOld):
+				#col_name = content.columns[colIndex + writeOffset]
+				#content[col_name] = content[col_name].astype('str')
 				content.iat[contentIndex, colIndex + writeOffset] = content.iat[contentIndex, colIndex]
 				strOld = content.iat[contentIndex, colIndex + writeOffset]
 		strNew = strOld[:start] + trans + strOld[end:]
@@ -108,10 +110,8 @@ def replaceEndImp(content):
 # -----------------------------------
 import csv
 def init(fileOld):
-	global writeOffset
 	global separate
 	separate = ExVar.contentSeparate.encode().decode('unicode_escape')
-	writeOffset = int(ExVar.writeOffset)
 	if ExVar.extraData == 'nohead':
 		content = pd.read_csv(fileOld, header=None, sep=separate, quoting=csv.QUOTE_MINIMAL)
 		contentNames = None
@@ -136,6 +136,8 @@ def initText(content):
 	setValid(contentNames)
 
 def setValid(contentNames, colMax=9999):
+	global writeOffset
+	writeOffset = int(ExVar.writeOffset)
 	#有效列
 	validCols.clear()
 	nameCols.clear()
