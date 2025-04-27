@@ -113,12 +113,12 @@ def init(fileOld):
 	global separate
 	separate = ExVar.contentSeparate.encode().decode('unicode_escape')
 	if ExVar.extraData == 'nohead':
-		content = pd.read_csv(fileOld, header=None, sep=separate, quoting=csv.QUOTE_MINIMAL)
+		content = pd.read_csv(fileOld, header=None, sep=separate, quoting=csv.QUOTE_MINIMAL, dtype=str)
 		contentNames = None
 		row = content.iloc[0]
 		colMax = len(row)
 	else:
-		content = pd.read_csv(fileOld, sep=separate, quoting=csv.QUOTE_MINIMAL)
+		content = pd.read_csv(fileOld, sep=separate, quoting=csv.QUOTE_MINIMAL, dtype=str)
 		contentNames = content.columns.tolist()
 		colMax = len(contentNames)
 	setValid(contentNames, colMax)
@@ -163,6 +163,7 @@ def setValid(contentNames, colMax=9999):
 def readFileDataImp(fileOld, contentSeparate):
 	if ExVar.pureText:
 		#TXT模式
+		ExVar.addSeparate = False
 		content = fileOld.readlines()
 		initText(content)
 	else:
