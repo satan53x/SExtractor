@@ -1,7 +1,7 @@
 import re
 import struct
 from common import *
-from extract_TXT import ParseVar, searchLine, initParseVar
+from extract_TXT import ParseVar, searchLine, initParseVar, dealLastCtrl
 from helper_text import generateBytes
 
 
@@ -69,6 +69,8 @@ def dealStr(content, var:ParseVar, paraIndex, cmd):
 	var.lineData = content[contentIndex]['text']
 	var.contentIndex = contentIndex
 	ctrls = searchLine(var)
+	if var.checkLast:
+		var.lastCtrl = dealLastCtrl(var.lastCtrl, ctrls, contentIndex)
 	if ctrls and len(ctrls) > 0:
 		content[contentIndex]['ref'].append(paraIndex)
 		if cmd[2] == 10: #textType
