@@ -252,6 +252,7 @@ class DataManager():
 		#header
 		self.headerLen = 0x20
 		self.OneParaLen = 0xC
+		self.retCodeLen = 0x8
 		v = int(ExVar.version, 0)
 		if v > 0: 
 			self.version = v
@@ -275,6 +276,8 @@ class DataManager():
 				self.cmdHeadLen = 0xC
 			else:
 				self.cmdHeadLen = 0x6
+			if self.version == 0x115:
+				self.retCodeLen = 0x4
 		else:
 			print(f'\033[33m当前ybn版本暂不支持\033[0m: 0x{self.version:X}')
 			return None
@@ -431,7 +434,7 @@ class DataManager():
 				textType = 1
 			elif code == self.codeRetcode: #retcode
 				count = 0
-				headLen += 8
+				headLen += self.retCodeLen
 			elif code in self.codeNostr: #无str
 				textType = -2
 			if code in self.codeEndpara: #段落结束
