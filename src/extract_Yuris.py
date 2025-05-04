@@ -341,11 +341,14 @@ class DataManager():
 		#解密验证
 		#第一个偏移，一般应该为0
 		if self.structType == 2:
-			bOffset = xorBytes(self.cmdSec[self.OneParaLen+2:self.OneParaLen+6], self.xorKey)
+			oldBytes = self.cmdSec[self.OneParaLen+2:self.OneParaLen+6]
+			remain = (self.OneParaLen+2) % 4 #对齐
+			oldBytes = oldBytes[remain:] + oldBytes[0:remain] #循环
 		else:
-			bOffset = xorBytes(self.paraSec[0x8:0xC], self.xorKey) 
-		if readInt(bOffset, 0) != 0:
-			key = xorBytes(bOffset, self.xorKey)
+			oldBytes = self.paraSec[0x8:0xC]
+		newBytes = xorBytes(oldBytes, self.xorKey)
+		if readInt(newBytes, 0) != 0:
+			key = oldBytes
 			keyStr = f'\\x{key[0]:02X}\\x{key[1]:02X}\\x{key[2]:02X}\\x{key[3]:02X}'
 			if ExVar.decrypt == 'auto':
 				self.xorKey = key
