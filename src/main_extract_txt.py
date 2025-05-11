@@ -33,7 +33,14 @@ def write():
 			fileNew = open(filepath, 'w', encoding=var.NewEncodeName)
 		length = len(var.content)
 		for i in range(length):
-			fileNew.write(var.content[i])
+			try:
+				fileNew.write(var.content[i])
+			except:
+				printError(f'无法编码为{var.NewEncodeName}', var.content[i])
+				if var.ignoreDecodeError:
+					fileNew.write('// Error: Encoding')
+				else:
+					raise
 			if i < length-1:
 				if var.addSeparate:
 					fileNew.write(separate)
