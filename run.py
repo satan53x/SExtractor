@@ -14,6 +14,8 @@ if __name__ == "__main__":
     QCoreApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
     #固定的，PyQt5程序都需要QApplication对象。sys.argv是命令行参数列表，确保程序可以双击运行
     app = QApplication(sys.argv)
+    #import qdarkstyle #依赖：pip install qdarkstyle
+    #app.setStyleSheet(qdarkstyle.load_stylesheet())
 
     translator = QTranslator()
     lang_code = QLocale.system().name()

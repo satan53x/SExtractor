@@ -4,7 +4,10 @@ from typing import Type
 
 __author__ = "Matthieu Gallet"
 
-def to_dict(obj):
+class Config:
+    KeepBytesClassName = []
+
+def to_dict(obj, ruby_class=None):
     if isinstance(obj, RubyObject):
         return obj.to_dict()
     elif isinstance(obj, Symbol):
@@ -12,8 +15,13 @@ def to_dict(obj):
     elif isinstance(obj, dict):
         return {to_dict(k): to_dict(v) for k, v in obj.items()}
     elif isinstance(obj, list):
-        return [to_dict(item) for item in obj]
+        return [to_dict(item, ruby_class) for item in obj]
     elif isinstance(obj, bytes):
+        if ruby_class not in Config.KeepBytesClassName:
+            try:
+                return { "bytes_str": obj.decode("utf-8")}
+            except Exception as e:
+                print(f"'{ruby_class}' cannot trans into utf-8 string, may to add class name to 'Config.KeepBytesClassName'.")
         return { "bytes": base64.b64encode(obj).decode('ascii') }
     else:
         return obj
@@ -33,6 +41,8 @@ def from_dict(data):
             if len(data) != 1:
                 raise ValueError("Invalid format for bytes field")
             return base64.b64decode(data['bytes'])
+        elif 'bytes_str' in data:
+            return data['bytes_str'].encode("utf-8")
         else:
             return { k: from_dict(v) for k, v in data.items() }
     elif isinstance(data, list):
@@ -70,7 +80,7 @@ class RubyObject:
 
     def to_dict(self):
         data = { "ruby_class": self.ruby_class_name }
-        attrs = to_dict(self.attributes)
+        attrs = to_dict(self.attributes, self.ruby_class_name)
         for k, v in attrs.items():
             data[k] = v
         return data
@@ -165,7 +175,7 @@ class UsrMarshal(RubyObject):
 
     def to_dict(self):
         data = super().to_dict()
-        data["data"] = to_dict(self._private_data)
+        data["data"] = to_dict(self._private_data, self.ruby_class_name)
         data["class"] = "UsrMarshal"
         return data
     
@@ -194,7 +204,7 @@ class UserDef(RubyObject):
     
     def to_dict(self):
         data = super().to_dict()
-        data["data"] = to_dict(self._private_data)
+        data["data"] = to_dict(self._private_data, self.ruby_class_name)
         data["class"] = "UserDef"
         return data
     

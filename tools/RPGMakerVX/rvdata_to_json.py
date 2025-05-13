@@ -6,11 +6,12 @@ import os
 import json
 from tkinter import filedialog
 from rubymarshal import reader, writer
-from rubymarshal.classes import RubyObject, Symbol, to_dict, from_dict
+from rubymarshal.classes import RubyObject, Symbol, to_dict, from_dict, Config
 
 DefaultPath = ''
-Postfix = ['.rvdata2', '.rvdata', 'rxdata'] #允许的后缀
+Postfix = ['.rvdata2', '.rvdata', '.rxdata'] #允许的后缀
 SkipFile = ['Scripts'] #Scripts.rvdata2不进行转换
+Config.KeepBytesClassName = [ 'Table', 'Color', 'Tone' ]
 
 # ------------------------------------------------------------
 #var
