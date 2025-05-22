@@ -142,6 +142,8 @@ def searchLine(var:ParseVar):
 							elif key.startswith('end_'):
 								var.intervalFlag = None
 							else: #name, unfinish
+								if key == 'un':
+									key = 'unfinish'
 								ctrl[key] = True #标记
 					if var.intervalFlag:
 						ctrl[var.intervalFlag] = True
