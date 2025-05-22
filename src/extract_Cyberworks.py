@@ -84,7 +84,7 @@ def replaceEndImp(content):
 					xorKey = None
 					printWarningGreen('文本长度超过0x100', ExVar.filename, lineData)
 			#文本加密
-			if decrypt:
+			if decrypt and ExVar.encrypt:
 				bs = xorBytes(lineData, xorKey)
 			else:
 				bs = lineData
@@ -99,7 +99,7 @@ def replaceEndImp(content):
 			#xor密钥
 			xorKey = bs[0:2]
 			#文本加密
-			if decrypt:
+			if decrypt and ExVar.encrypt:
 				bs = xorBytes(lineData, xorKey)
 			else:
 				bs = lineData

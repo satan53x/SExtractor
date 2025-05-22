@@ -69,8 +69,9 @@ def replaceEndImp(content):
 		saveAddr = realAddr - manager.cmdStart
 		data[pointAddr:pointAddr+4] = int2bytes(saveAddr)
 	#加密
-	if isinstance(ExVar.decrypt, int):
-		data = fixSeenSub(data, ExVar.decrypt)
+	if ExVar.encrypt:
+		if isinstance(ExVar.decrypt, int):
+			data = fixSeenSub(data, ExVar.decrypt)
 	#恢复
 	content.clear()
 	content.append(data)

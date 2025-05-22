@@ -106,6 +106,7 @@ class ExtractVar():
 		self.sepStr = None #分割控制段和文本
 		self.version = '0' #版本
 		self.decrypt = '' #加解密密钥
+		self.encrypt = True #导入时是否加密，默认为True
 		self.pureText = False #bin模式下如果为纯文本，则会先转为utf再进行正则
 		self.writeOffset = '0' #写入偏移
 		self.keepFormat = True #保持格式

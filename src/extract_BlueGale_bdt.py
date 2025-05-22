@@ -33,7 +33,7 @@ def replaceEndImp(content):
 		data.extend(lineData)
 		if i < len(content)-1:
 			data.extend(separate)
-	if ExVar.decrypt & 2 == 2:
+	if ExVar.encrypt:
 		data = decrypt(data) #加密
 	content.clear()
 	content.append(data)
@@ -67,7 +67,7 @@ def readFileDataImp(fileOld, contentSeparate):
 		lst = ExVar.extraData.split(',')
 		exportIndex = 'exportIndex' in lst
 	data = bytearray(fileOld.read())
-	if ExVar.decrypt & 1 == 1:
+	if ExVar.decrypt:
 		data = decrypt(data)
 	content = re.split(contentSeparate, data)
 	return content, {}

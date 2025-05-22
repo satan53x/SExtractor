@@ -110,7 +110,8 @@ class Script:
 		#恢复字符串区
 		self.strAddrList = generateAddrList(self.strList)
 		self.strSec = self.StrSep.join(self.strList)
-		self.strSec = xorBytes(self.strSec, self.XorKey) #加密
+		if ExVar.encrypt:
+			self.strSec = xorBytes(self.strSec, self.XorKey) #加密
 		#恢复指令区
 		lst = []
 		for cmd in self.cmdList:

@@ -37,7 +37,8 @@ def replaceEndImp(content:list):
 			if header['roleLen'] > 0:
 				bs.extend(header['role'])
 			#文本
-			lineData = xorBytes(lineData, XorKey) #加密
+			if ExVar.encrypt:
+				lineData = xorBytes(lineData, XorKey) #加密
 			bs.extend(lineData)
 		elif header['segType'] == 0x0E:
 			#选项

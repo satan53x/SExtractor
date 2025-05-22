@@ -243,7 +243,8 @@ class DataManager():
 		for i, data in enumerate(content):
 			self.strSec.extend(data['text'])
 		#加密
-		self.decodeAll()
+		if ExVar.encrypt:
+			self.decodeAll()
 		#设置content
 		content.clear()
 		content.append(self.strSec)

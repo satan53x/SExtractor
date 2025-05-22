@@ -65,7 +65,8 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		if transData == None:
 			return False
 		#加密
-		transData = xorBytes(transData, XorTable)
+		if ExVar.encrypt:
+			transData = xorBytes(transData, XorTable)
 		textType, length, id = headerList[contentIndex]
 		lineData = content[contentIndex]
 		#修正长度
