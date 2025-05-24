@@ -51,7 +51,8 @@ def replaceOnceImp(content, lCtrl, lTrans):
 def replaceEndImp(content):
 	strSec = b''.join(content)
 	data = headSec + strSec
-	data = encrypt(data) #加密
+	if ExVar.encrypt:
+		data = encrypt(data) #加密
 	content.clear()
 	content.append(data)
 
