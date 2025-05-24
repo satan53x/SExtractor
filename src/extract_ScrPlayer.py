@@ -5,7 +5,9 @@ from extract_BIN import parseImp as parseImpBIN
 from extract_TXT import ParseVar, searchLine, initParseVar, dealLastCtrl
 
 MessageCode = 0x5E
-StrCode = { #0不修正且不提取 -1修正但不提取 1修正且提取
+StrCodeConfig = [ #0不修正且不提取 -1修正但不提取 1修正且提取
+None,
+{
 	0x5E: [1, -1, 1], #对话
 	0x65: [0, 1], #选项
 	0x6B: [-1],
@@ -14,8 +16,18 @@ StrCode = { #0不修正且不提取 -1修正但不提取 1修正且提取
 	0x70: [-1],
 	0x72: [-1],
 	0x84: [-1],
+},
+{ 
+	0x5E: [1, -1, 1], #对话
+	0x65: [0, 1], #选项
+	0x6A: [1, 1, 0, -1, -1], #选项
+	0x6B: [-1],
+	0x6C: [-1],
+	0x6D: [-1],
+	0x6E: [-1],
+	0x80: [-1],
 }
-StrCodeList = StrCode.keys()
+]
 # ---------------- Engine: ScrPlayer -------------------
 def parseImp(content, listCtrl, dealOnce):
 	lastCtrl = None
@@ -24,7 +36,7 @@ def parseImp(content, listCtrl, dealOnce):
 	initParseVar(var)
 	for cmd in manager.cmdList:
 		for i, param in enumerate(cmd.params):
-			if StrCode[cmd.code][i] != 1: #不需要提取的文本
+			if manager.StrCode[cmd.code][i] != 1: #不需要提取的文本
 				continue
 			if param == cmd.IgnoreParam: #无效参数
 				lastCtrl = None
@@ -48,6 +60,14 @@ def replaceEndImp(content):
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeparate):
 	data = fileOld.read()
+	version = int(ExVar.version)
+	if StrCodeConfig[0] == None:
+		StrCodeConfig[0] = {}
+		for i in range(1, len(StrCodeConfig)):
+			for k, v in StrCodeConfig[i].items():
+				StrCodeConfig[0][k] = v
+	manager.StrCode = StrCodeConfig[version]
+	manager.StrCodeList = tuple(manager.StrCode.keys())
 	manager.read(data)
 	content = manager.strList
 	return content, {}
@@ -66,6 +86,8 @@ class Script:
 	#config
 	XorKey = b'\x7F'
 	StrSep = b'\0'
+	StrCode = None
+	StrCodeList = None
 	#var
 	headSec = None
 	cmdSec = None
@@ -141,11 +163,11 @@ class Command:
 		pos += self.length
 		self.params = []
 		#索引
-		if self.code in StrCodeList:
+		if self.code in manager.StrCodeList:
 			for i in range(0, self.length//4-1):
 				p = (i+1) * 4
 				param = readInt(self.data, p)
-				if StrCode[self.code][i] != 0:
+				if manager.StrCode[self.code][i] != 0:
 					#需要进行偏移修正
 					if param != self.IgnoreParam:
 						#查询地址对应索引
@@ -156,11 +178,11 @@ class Command:
 
 	def write(self):
 		#索引
-		if self.code in StrCodeList:
+		if self.code in manager.StrCodeList:
 			for i in range(0, self.length//4-1):
 				p = (i+1) * 4
 				param = self.params[i]
-				if StrCode[self.code][i] != 0:
+				if manager.StrCode[self.code][i] != 0:
 					#需要进行偏移修正
 					if param != self.IgnoreParam:
 						#恢复索引对应地址
