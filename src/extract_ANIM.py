@@ -29,7 +29,7 @@ def parseImp(content, listCtrl, dealOnce):
 		if guessName and ctrls:
 			if addName:
 				text = ExVar.listOrig[-1]
-				printWarningGreen('尝试加入名字自动转换字典', addName, text)
+				printTip('尝试加入名字自动转换字典', addName, text)
 				if InvalidNamePattern.search(text):
 					printWarning('名字可能不正确，取消加入', text)
 				else:

@@ -220,9 +220,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 	#提取打印设置
 	def getExtractPrintSetting(self):
 		lst = []
-		lst.append(self.printCheck0.isChecked()) #info
+		lst.append(self.printCheck0.isChecked()) #debug
 		lst.append(self.printCheck1.isChecked()) #info
-		lst.append(self.printCheck2.isChecked()) #warningGreen
+		lst.append(self.printCheck2.isChecked()) #tip
 		lst.append(self.printCheck3.isChecked()) #warning
 		lst.append(self.printCheck4.isChecked()) #error
 		return lst

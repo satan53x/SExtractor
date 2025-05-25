@@ -26,7 +26,7 @@ def printWarning(tip, *args):
         print(arg, end=' ')
     print('')
 
-def printWarningGreen(tip, *args):
+def printTip(tip, *args):
     if not ExVar.printSetting[2]: return
     print(f'\033[32m{tip}\033[0m', end=' ')
     for arg in args:

@@ -1002,7 +1002,7 @@
            <item>
             <widget class="QCheckBox" name="printCheck2">
              <property name="text">
-              <string>WarningGreen</string>
+              <string>Tip</string>
              </property>
              <property name="checked">
               <bool>true</bool>

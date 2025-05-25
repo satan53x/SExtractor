@@ -195,7 +195,7 @@
     </message>
     <message>
         <location filename="../ui_mainWindow.py" line="749"/>
-        <source>WarningGreen</source>
+        <source>Tip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

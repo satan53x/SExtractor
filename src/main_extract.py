@@ -123,7 +123,7 @@ def replace():
 			else:
 				newStr = trans.pop()
 		if newStr == '':
-			printWarningGreen('译文为空, 不替换', var.filename, orig)
+			printTip('译文为空, 不替换', var.filename, orig)
 			#trans = 'te'.format(listIndex) #测试
 			continue
 		#开始处理段落
@@ -212,7 +212,7 @@ def chooseEngine(args):
 
 def setNameList(str):
 	if str:
-		printWarningGreen('进行强制设定名字')
+		printTip('进行强制设定名字')
 	l = str.split(',')
 	var.nameList = [x for x in l if x != '']
 
@@ -345,7 +345,7 @@ def initArgs(args):
 		else:
 			var.NewEncodeName = var.OldEncodeName
 		if var.fileType == 'bin':
-			printWarningGreen('已启用: 编码也对BIN生效', var.OldEncodeName, var.NewEncodeName)
+			printTip('已启用: 编码也对BIN生效', var.OldEncodeName, var.NewEncodeName)
 	# 双行标志
 	if isinstance(var.twoLineFlag, str):
 		var.twoLineFlag = var.twoLineFlag.split(',')

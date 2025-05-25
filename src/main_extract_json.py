@@ -80,7 +80,7 @@ def parse():
 	num = len(var.listOrig)
 	#print('count:', num, len(transDic))
 	if num == 0:
-		printWarningGreen('该文件没有提取到文本', var.filename)
+		printTip('该文件没有提取到文本', var.filename)
 		#filepath = os.path.join(var.workpath, var.filename+var.Postfix)
 		#if os.path.exists(filepath):
 			#os.remove(filepath)

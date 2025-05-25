@@ -171,7 +171,7 @@ def readFileDataImp(fileOld, contentSeparate):
 	if len(data) - pos == comLen:
 		data = uncompress(data[pos:pos+comLen], uncomLen)
 	else:
-		printWarningGreen('压缩长度与头部定义不同，不进行解压')
+		printTip('压缩长度与头部定义不同，不进行解压')
 		data = data[pos:]
 	if uncomLen != len(data):
 		printWarning('解压长度与头部定义不同', uncomLen, len(data))

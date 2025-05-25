@@ -368,7 +368,7 @@ class DataManager():
 	codeDic = {}
 	#ysc.bin初始化配置
 	def initConfig(self, data):
-		printWarningGreen('尝试从ysc.bin读取指令配置')
+		printTip('尝试从ysc.bin读取指令配置')
 		self.codeDic.clear()
 		pos = 0x8
 		codeNum = readInt(data, pos)

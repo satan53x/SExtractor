@@ -19,7 +19,7 @@ def parseImp(content, listCtrl, dealOnce):
 					preline = re.sub('(\\s*)old', '\\1new', preline)
 					content[contentIndex] = preline
 				else:
-					printWarningGreen('强制复制', preline)
+					printTip('强制复制', preline)
 					content[contentIndex] = str(preline)
 	parseImpTXT(content, listCtrl, dealOnce)
 

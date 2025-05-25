@@ -313,7 +313,7 @@ def redistributeTrans(orig:str, trans:str):
 	for end in transSepList:
 		if start == end:
 			transList.append(ExVar.addSpace)
-			#printWarningGreen('添加空行', trans)
+			#printTip('添加空行', trans)
 		else:
 			transList.append(newTrans[start:end])
 		start = end
@@ -378,7 +378,7 @@ def generateTunnelJisMap(filepath=''):
 		fileOutput = open(filepath, 'wb')
 		fileOutput.write(data)
 		fileOutput.close()
-		printWarningGreen('在ctrl文件夹下生成了sjis_ext.bin')
+		printTip('在ctrl文件夹下生成了sjis_ext.bin')
 	#subs配置
 	readSubsConfig()
 	subsConfig['tunnel_decoder']['mapping'] = ''.join(tunnelUnicodeList)
@@ -487,7 +487,7 @@ def writeSubsConfig(filepath=''):
 	fileOutput = open(filepath, 'w', encoding='utf-8')
 	json.dump(subsConfig, fileOutput, ensure_ascii=False, indent=2)
 	fileOutput.close()
-	printWarningGreen('在ctrl文件夹下生成了uif_config.json')
+	printTip('在ctrl文件夹下生成了uif_config.json')
 	
 # ------------------------------------------------------------
 def replaceValue(transDic, replaceDic):

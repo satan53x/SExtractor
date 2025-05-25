@@ -746,7 +746,7 @@ class Ui_MainWindow(object):
         self.groupBox_5.setTitle(_translate("MainWindow", "打印信息"))
         self.printCheck0.setText(_translate("MainWindow", "Debug"))
         self.printCheck1.setText(_translate("MainWindow", "Info"))
-        self.printCheck2.setText(_translate("MainWindow", "WarningGreen"))
+        self.printCheck2.setText(_translate("MainWindow", "Tip"))
         self.printCheck3.setText(_translate("MainWindow", "Warning"))
         self.printCheck4.setText(_translate("MainWindow", "Error"))
         self.groupBox_12.setTitle(_translate("MainWindow", "其它"))
