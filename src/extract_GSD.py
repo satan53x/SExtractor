@@ -93,6 +93,7 @@ class GSDManager():
 	insertContent = {}
 	nameDic = {}
 	isGlobal = False
+	guessEnd = None
 
 	def clear(self):
 		self.infoList.clear()
@@ -130,14 +131,18 @@ class GSDManager():
 		if self.endKey - self.charKey > 1:
 			for i in range(self.charKey, self.endKey):
 				self.ctrlKey.add(i)
+		if ExVar.extraData == 'guessEnd':
+			self.guessEnd = []
+		else:
+			self.guessEnd = None
 
 	# ----------------- global.dat -------------------
 	def readGlobal(self, data):
 		self.isGlobal = True
 		pos = 8
 		secMax = -1 #14 #名字之前，需要跳过的区域数量
-		if ExVar.extraData:
-			secMax = int(ExVar.extraData)
+		if ExVar.sepStr:
+			secMax = int(ExVar.sepStr)
 		#跳过区域
 		for secIndex in range(0x100):
 			if secMax > 0:
@@ -248,8 +253,13 @@ class GSDManager():
 				bs.append(data[pos+j])
 			pos += 0x4
 		#检查结尾
-		if data[pos] != self.endKey:
+		endByte = data[pos]
+		if endByte != self.endKey:
 			printDebug('结尾检查失败', pos)
+			if manager.guessEnd != None:
+				if endByte not in manager.guessEnd:
+					printWarning(f'endStr可能为: 0x{endByte:X}')
+					manager.guessEnd.append(endByte)
 			return pre
 		self.content.append(bs)
 		self.infoList.append(info)
