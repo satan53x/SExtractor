@@ -450,6 +450,16 @@ class Config:
 			self.SELECT_MODULE[0x02] = [0x0002, 0x0003]
 		elif version == 4:
 			self.MESSAGE_FUNCTIONS[0x04] = [0x0000]
+		elif version == 5:
+			for c in [
+				self.GOTO_FUNCTIONS, 
+				self.PARAMETERLESS_GOTO_FUNCTIONS, 
+				self.GOTO_ON_FUNCTIONS, 
+				self.GOTO_CASE_FUNCTIONS
+			]:
+				value = c.pop(0x05)
+				c[0x06] = value
+			self.GOTO_FUNCTIONS[0x06].append(0x10)
 
 
 
