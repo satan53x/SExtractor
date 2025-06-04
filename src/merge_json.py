@@ -354,7 +354,8 @@ def distFilesTool(args):
 		extractPath = path 
 	count = 0
 	for newname in os.listdir(extractPath):
-		if os.path.isdir(newname):
+		newpath = os.path.join(extractPath, newname)
+		if os.path.isdir(newpath):
 			continue
 		filename = newname
 		if filenameReg:
@@ -365,7 +366,6 @@ def distFilesTool(args):
 		lst = newname.split(collectSep)
 		relativePath = os.path.join(*lst)
 		#分发
-		newpath = os.path.join(extractPath, newname)
 		oldpath = os.path.join(mergePath, relativePath)
 		print('分发文件:', relativePath)
 		olddir = os.path.dirname(oldpath)
