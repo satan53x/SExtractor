@@ -81,7 +81,7 @@ def parse():
 			#os.remove(filepath)
 
 def initDone():
-	if var.contentSeparate.startswith(b'('):
+	if var.contentSeparate.startswith('('):
 		var.addSeparate = False
 	else:
 		var.addSeparate = True
@@ -90,6 +90,6 @@ def initDone():
 def mainExtractTxt(args):
 	outputPartMode = args['outputPartMode']
 	if outputPartMode == 0:
-		mainExtract(args, parse)
+		mainExtract(args, parse, initDone)
 	else:
-		mainExtractPart(args, parse)
+		mainExtractPart(args, parse, initDone)
