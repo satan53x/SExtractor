@@ -77,9 +77,11 @@ def readFileDataImp(fileOld, contentSeparate):
 			if length == textLen - 1 and int.from_bytes(data[end:end+3]) == 0:
 				#最后1字节是下个字符串长度
 				end -= 1
+				textLen -= 1
 			elif length == textLen - 2 and int.from_bytes(data[end:end+2]) == 0:
 				#最后2字节是下个字符串长度
 				end -= 2
+				textLen -= 2
 			else:
 				pos = m.end()
 				continue
