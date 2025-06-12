@@ -72,16 +72,24 @@ def readFileDataImp(fileOld, contentSeparate):
 		pos = m.start()
 		length = int.from_bytes(data[pos-4:pos], byteorder='little')
 		textLen = m.end() - m.start()
+		end = m.end()
 		if length != textLen:
-			pos = m.end()
-			continue
+			if length == textLen - 1 and int.from_bytes(data[end:end+3]) == 0:
+				#最后1字节是下个字符串长度
+				end -= 1
+			elif length == textLen - 2 and int.from_bytes(data[end:end+2]) == 0:
+				#最后2字节是下个字符串长度
+				end -= 2
+			else:
+				pos = m.end()
+				continue
 		#分块
 		info = {'oldLen':textLen, 'pre':b''}
 		if oldPos < pos:
 			info['pre'] = bytearray(data[oldPos:pos])
 		infoList.append(info)
-		content.append(data[pos:m.end()])
-		pos = m.end()
+		content.append(data[pos:end])
+		pos = end
 		oldPos = pos
 	#结尾
 	info = {'oldLen':0, 'pre':b''}
