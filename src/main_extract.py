@@ -114,6 +114,7 @@ def replace():
 		orig = var.listOrig[listIndex]
 		ctrl = var.listCtrl[listIndex]
 		trans:list = var.transDic[orig]
+		var.curOrig = orig
 		if len(trans) == 0:
 			printError('译文列表中元素个数不足:', var.filename, orig)
 			newStr = ''

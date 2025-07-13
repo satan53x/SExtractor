@@ -82,17 +82,22 @@ def generateBytes(text, lenOrig, NewEncodeName):
 	#diff为预计最终差值，即原文字节长度减去不截断时的译文字节长度
 	if diff < 0:
 		dic = ExVar.cutoffDic
-		if text not in dic:
+		if ExVar.cutoffByOrig:
+			#orig为key
+			key = ExVar.curOrig
+		else:
+			#trans为key
+			key = text
+		if key not in dic:
 			if ExVar.cutoffCopy:
-				dic[text] = [text, diff]
+				dic[key] = [text, diff]
 			else:
-				dic[text] = ['', diff]
-		elif dic[text][0] != '':
+				dic[key] = ['', diff]
+		elif dic[key][0] != '':
 			#从cutoff字典读取
-			oldText = text
-			text = dic[oldText][0]
+			text = dic[key][0]
 			transData, diff = getBytesMax(text, NewEncodeName, lenOrig)
-			dic[oldText][1] = diff #刷新长度
+			dic[key][1] = diff #刷新长度
 		if diff < 0:
 			#进行了截断
 			printWarning('译文长度超出原文，部分截断', text)

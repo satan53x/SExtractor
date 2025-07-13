@@ -29,6 +29,7 @@ class ExtractVar():
 	transDic = {} #字典的value为字符串list
 	transDicIO = {} #读取写入时的原本字典，不参与write()，模式01则不需要
 	allOrig = []
+	curOrig = '' #当前原文
 
 	filename = ''
 	content = None
@@ -83,6 +84,7 @@ class ExtractVar():
 	nameKeepCtrl = False #name分组保留lastCtrl
 	binEncodeValid = False #bin模式下是否应用编码
 	useStructPara = False #默认开启struct=para
+	cutoffByOrig = False #截断字典以orig为key
 
 	#-------------------
 	def clear(self):

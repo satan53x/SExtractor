@@ -50,6 +50,7 @@ class ConfigManager():
 			'batchAutoStart': [mainWindow.batchAutoStartCheck, True, False], #批处理在提取/导入后自动运行
 			'useStructPara': [mainWindow.useStructParaCheck, True, False],
 			'autoCustom': [mainWindow.autoCustomCheck, True, True],
+			'cutoffByOrig': [mainWindow.cutoffByOrigCheck, True, False],
 		}
 		#运行中时不进行读写
 		notInRunning = ['batchCmdCur', 'batchAutoStart']
