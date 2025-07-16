@@ -69,8 +69,13 @@ def readFileDataImp(fileOld, contentSeparate):
 		m = pattern.search(data, pos)
 		if m is None:
 			break
+		tmp = pos
 		pos = m.start()
 		length = int.from_bytes(data[pos-4:pos], byteorder='little')
+		if length == 0:
+			#长度错误
+			pos = tmp + 1
+			continue
 		textLen = m.end() - m.start()
 		end = m.end()
 		if length != textLen:

@@ -16,7 +16,7 @@ class ParseVar():
 	dealOnce = None
 	regList = []
 	nameList = []
-	OldEncodeName = None
+	OldEncodeName = None #只有bin才设置该值
 	ignoreDecodeError = False
 	postSkip = None
 	checkJIS = None
@@ -90,6 +90,10 @@ def searchLine(var:ParseVar):
 				for i in range(1, len(r.groups())+1):
 					if r.group(i) == None: continue
 					start, end = GetPos(var, searchData, r, i)
+					if ExVar.preLen != 0 and start >= ExVar.preLen:
+						length = var.lineData[start-ExVar.preLen:start]
+						length = int.from_bytes(length, 'little')
+						end = start + length
 					data = var.lineData[start:end]
 					if var.OldEncodeName: # bin
 						try:

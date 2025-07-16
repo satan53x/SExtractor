@@ -85,6 +85,7 @@ class ExtractVar():
 	binEncodeValid = False #bin模式下是否应用编码
 	useStructPara = False #默认开启struct=para
 	cutoffByOrig = False #截断字典以orig为key
+	preLen = 0 #分组位置之前，记录分组长度的字节个数
 
 	#-------------------
 	def clear(self):
