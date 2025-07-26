@@ -86,6 +86,8 @@ class ExtractVar():
 	useStructPara = False #默认开启struct=para
 	cutoffByOrig = False #截断字典以orig为key
 	preLen = 0 #分组位置之前，记录分组长度的字节个数
+	addrFix = '' #地址修正的正则，仅用于bin
+	addrBase = 0 #地址基础偏移，可以为字符串如addr4,0x10
 
 	#-------------------
 	def clear(self):
@@ -96,6 +98,8 @@ class ExtractVar():
 		self.insertContent = {} #需要插入的内容
 		self.inputCount = 0 #导出文件个数
 		self.outputCount = 0 #导出文件个数
+		self.addrList = []
+		self.addrFixer = None #地址修正器
 		#各引擎参数
 		self.startline = 0 #起始行数
 		self.extractKey = ''

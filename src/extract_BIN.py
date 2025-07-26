@@ -39,4 +39,10 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		#写入new
 		strNew = content[contentIndex][:start] + transData + content[contentIndex][end:]
 		content[contentIndex] = strNew
+		if ExVar.addrFixer:
+			diff = len(transData) - (end - start)
+			if diff != 0:
+				#需要修正
+				addrStart = ExVar.addrList[contentIndex] + start
+				ExVar.addrFixer.fix(addrStart, diff)
 	return True
