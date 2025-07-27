@@ -98,6 +98,7 @@ def parse():
 			iter = var.addrFix.finditer(data)
 			for r in iter:
 				for i in range(1, len(r.groups())+1):
+					if r.group(i) == None: continue
 					start = r.start(i)
 					end = r.end(i)
 					addr = data[start:end]

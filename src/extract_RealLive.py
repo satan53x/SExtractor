@@ -351,7 +351,8 @@ class Command():
 
 	def read_select_item(self):
 		self.skip_debug_markers()
-		if read(1, False) == b'(':
+		c = read(1, False)
+		if c == b'(':
 			read(1)
 			if read(1, False) == b'(':
 				# Read condition
@@ -362,6 +363,8 @@ class Command():
 			while read(1, False) != b')':
 				Command().init()
 			read(1)
+		elif c == b'#':
+			Command().init()
 		# Read text
 		self.read_string_any()
 		self.skip_debug_markers()
