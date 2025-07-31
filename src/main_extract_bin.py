@@ -50,6 +50,8 @@ def write():
 		var.outputCount += 1
 
 def parse():
+	var.addrFix = []
+	var.addrFixer = None
 	#print('解析文件: '+var.filename)
 	fileOld = read()
 	if var.readFileDataImp:
