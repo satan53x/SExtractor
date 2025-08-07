@@ -358,6 +358,16 @@ def initArgs(args):
 	else:
 		WirteEncodeName = var.NewEncodeName
 	var.padding = var.padding.encode(WirteEncodeName).decode('unicode_escape').encode('latin-1')
+	# 处理preLen
+	if var.preLen != None:
+		if isinstance(var.preLen, str):
+			lst = var.preLen.split(',')
+			if len(lst) > 0:
+				var.preLen = eval(lst[0])
+			if len(lst) > 1:
+				var.preLenScale = eval(lst[1])
+			if len(lst) > 2:
+				var.preLenFix = lst[2] not in ('0', 'False', 'false')
 	return 0
 
 def extractDone():

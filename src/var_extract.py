@@ -85,7 +85,6 @@ class ExtractVar():
 	binEncodeValid = False #bin模式下是否应用编码
 	useStructPara = False #默认开启struct=para
 	cutoffByOrig = False #截断字典以orig为key
-	preLen = 0 #分组位置之前，记录分组长度的字节个数
 	addrFix = '' #地址修正的正则，仅用于bin
 	addrBase = 0 #地址基础偏移，可以为字符串如addr4,0x10
 
@@ -122,5 +121,8 @@ class ExtractVar():
 		self.keepBytes = '' #保留字节
 		self.padding = '　' #截断填充默认为全角空格,最后有剩余字节再用半角空格补全
 		self.twoLineFlag = ['☆', '★'] #双行分割符
+		self.preLen = 0 #字节个数（分组位置之前，记录分组长度）
+		self.preLenScale = 1 #长度scale
+		self.preLenFix = False #是否修正
 		
 gExtractVar = ExtractVar()

@@ -37,7 +37,12 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		if transData == None:
 			return False
 		#写入new
-		strNew = content[contentIndex][:start] + transData + content[contentIndex][end:]
+		preData = content[contentIndex][:start]
+		if ExVar.preLen and ExVar.preLenFix:
+			preData = bytearray(preData)
+			length = len(transData) // ExVar.preLenScale
+			preData[-ExVar.preLen:] = length.to_bytes(ExVar.preLen, 'little')
+		strNew = preData + transData + content[contentIndex][end:]
 		content[contentIndex] = strNew
 		if ExVar.addrFixer:
 			diff = len(transData) - (end - start)
