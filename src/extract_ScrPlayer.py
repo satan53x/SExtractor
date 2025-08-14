@@ -26,7 +26,18 @@ None,
 	0x6D: [-1],
 	0x6E: [-1],
 	0x80: [-1],
-}
+},
+{
+	0x5E: [0, 0, -1, 1], #对话
+	0x65: [0, 1], #选项
+	0x6B: [-1],
+	0x6D: [-1],
+	0x6F: [-1],
+	0x70: [-1],
+	0x72: [-1],
+	0x7A: [-1],
+	0x86: [-1],
+},
 ]
 # ---------------- Engine: ScrPlayer -------------------
 def parseImp(content, listCtrl, dealOnce):
@@ -81,7 +92,7 @@ def generateAddrList(dataList, padLen=1):
 		addr += len(data) + padLen
 	return addrList
 
-#Count = []
+Count = []
 class Script:
 	#config
 	XorKey = b'\x7F'
