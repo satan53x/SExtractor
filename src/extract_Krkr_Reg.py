@@ -1,7 +1,4 @@
 import re
-import sys
-import os
-import struct
 from common import *
 
 from extract_TXT import ParseVar, searchLine, initParseVar
@@ -11,6 +8,7 @@ def initExtra():
 	endStr = ExVar.endStr
 	ctrlStr = ExVar.ctrlStr
 	sepStr = ExVar.sepStr
+	extractKey = ExVar.extractKey
 	if not endStr:
 		endStr = 'np'
 	if not endStr.startswith('^'):
@@ -18,49 +16,84 @@ def initExtra():
 	if not ctrlStr:
 		ctrlStr = '^[A-Za-z]'
 	if not sepStr:
-		sepStr = '[^\\[\\]]+'
-	return re.compile(endStr), re.compile(ctrlStr), re.compile(sepStr)
+		sepList = ['[', ']']
+	elif isinstance(sepStr, str):
+		sepList = sepStr.split(',')
+	if not extractKey:
+		extractKey = '^(?P<unfinish>[\\S\\s]+)$'
+	regList = [
+		[re.compile(extractKey), 'search']
+	]
+	return re.compile(endStr), re.compile(ctrlStr), sepList, regList
 
 # ---------------- Group: Krkr Split -------------------
 def parseImp(content, listCtrl, dealOnce):
-	endStr, ctrlStr, sepStr = initExtra()
+	endStr, ctrlStr, sepList, inlineRegList = initExtra()
+	addSep = ExVar.extraData == 'addSep'
 	var = ParseVar(listCtrl, dealOnce)
 	initParseVar(var)
-	lastCtrl = None
+	regList = var.regList
 	for contentIndex in range(len(content)):
 		if contentIndex < ExVar.startline: continue 
-		var.lineData = content[contentIndex]
 		# 每行
+		var.lineData = content[contentIndex]
 		var.contentIndex = contentIndex
+		var.searchStart = 0
+		var.searchEnd = -1
+		var.regList = regList #原始正则
 		ctrls = searchLine(var)
 		if ctrls == None or len(ctrls) > 0:
 			#要求段落结束后一定有skip
-			if lastCtrl and 'unfinish' in lastCtrl:
-				del lastCtrl['unfinish'] 
-			lastCtrl = None
+			if var.lastCtrl and 'unfinish' in var.lastCtrl:
+				del var.lastCtrl['unfinish'] 
+			var.lastCtrl = None
 			continue
 		#print(var.lineData)
 		#搜索
-		iter = sepStr.finditer(var.lineData)
-		for r in iter:
-			text = r.group()
+		matches = findNested(var.lineData, open_char=sepList[0], close_char=sepList[1], add_outer=True, add_sep=addSep)
+		for start, end in matches:
+			text = var.lineData[start:end]
 			if endStr.search(text):
-				if lastCtrl and 'unfinish' in lastCtrl:
-					del lastCtrl['unfinish'] 
-				lastCtrl = None
+				if var.lastCtrl and 'unfinish' in var.lastCtrl:
+					del var.lastCtrl['unfinish'] 
+				var.lastCtrl = None
 				continue
 			if ctrlStr.search(text):
 				continue
-			start = r.start()
-			end = r.end()
-			lastCtrl = {'pos':[contentIndex, start, end]}
-			if text in var.nameList: #强制检查名字
-				lastCtrl['name'] = True #名字标记
-			else:
-				lastCtrl['unfinish'] = True
-			if dealOnce(text, lastCtrl):
-				listCtrl.append(lastCtrl)
+			var.searchStart = start
+			var.searchEnd = end
+			var.regList = inlineRegList #内部正则
+			ctrls = searchLine(var)
+			if ctrls and len(ctrls) > 0:
+				var.lastCtrl = ctrls[-1]
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
 	return replaceOnceImpTXT(content, lCtrl, lTrans)
+
+def findNested(text, open_char='[', close_char=']', add_outer=False, add_sep=False):
+	start = 0
+	count = 0
+	pre = 0
+	pos = 0
+	results = []
+	for pos, char in enumerate(text):
+		if char == open_char:
+			if count == 0:
+				start = pos
+				if add_outer and pre < pos:
+					results.append((pre, pos))
+					pre = pos
+			count += 1
+		elif char == close_char:
+			count -= 1
+			if count == 0:
+				if add_sep:
+					results.append((start, pos + 1))
+				else:
+					results.append((start + 1, pos))
+				pre = pos + 1
+	if add_outer and pre < pos:
+		results.append((pre, pos + 1))
+		pre = pos + 1
+	return results
