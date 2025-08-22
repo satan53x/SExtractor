@@ -123,6 +123,6 @@ class ExtractVar():
 		self.twoLineFlag = ['☆', '★'] #双行分割符
 		self.preLen = 0 #字节个数（分组位置之前，记录分组长度）
 		self.preLenScale = 1 #长度scale
-		self.preLenFix = False #是否修正
+		self.preLenFix = True #是否修正
 		
 gExtractVar = ExtractVar()
