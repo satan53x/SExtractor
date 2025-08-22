@@ -168,7 +168,7 @@ class Ui_MainWindow(object):
         font.setBold(False)
         font.setWeight(50)
         self.regNameBox.setFont(font)
-        self.regNameBox.setMaxVisibleItems(25)
+        self.regNameBox.setMaxVisibleItems(28)
         self.regNameBox.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToContentsOnFirstShow)
         self.regNameBox.setObjectName("regNameBox")
         self.verticalLayout_5.addWidget(self.regNameBox)

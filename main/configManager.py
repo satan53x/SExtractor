@@ -132,6 +132,11 @@ class ConfigManager():
 		mainWindow.collectSepEdit.setText(collectSep)
 		# 设置匹配规则
 		mainWindow.regIndex = int(initValue(self.mainConfig, 'regIndex', 0))
+		mainWindow.regName = initValue(self.mainConfig, 'regName', '__Custom0')
+		if mainWindow.regName != '':
+			index = getQComboBoxIndex(mainWindow.regNameBox, mainWindow.regName)
+			if index >= 0:
+				mainWindow.regIndex = index
 		mainWindow.regNameBox.setCurrentIndex(mainWindow.regIndex)
 		#mainWindow.regNameBox.currentIndexChanged.connect(mainWindow.selectReg)
 		# 编码
@@ -192,6 +197,7 @@ class ConfigManager():
 		else:
 			self.mainConfig.remove(group+'_nameList')
 		self.mainConfig.setValue('regIndex', mainWindow.regIndex)
+		self.mainConfig.setValue('regName', mainWindow.regName)
 		self.mainConfig.setValue('maxCountPerLine', args['maxCountPerLine'])
 		if mainWindow.regNameTab.isEnabled():
 			regName = mainWindow.regNameBox.currentText()

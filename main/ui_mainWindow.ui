@@ -416,7 +416,7 @@
                </font>
               </property>
               <property name="maxVisibleItems">
-               <number>25</number>
+               <number>28</number>
               </property>
               <property name="sizeAdjustPolicy">
                <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
