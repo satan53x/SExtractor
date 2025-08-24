@@ -123,7 +123,7 @@ def readFileDataImp(fileOld, contentSeparate):
 	headerList.clear()
 	while pos < len(data):
 		length = readInt(data, pos)
-		if length == 0:
+		if length == 0 or length > 0xFFFF:
 			break
 		pos += 4
 		end = pos + length
