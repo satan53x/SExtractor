@@ -28,7 +28,7 @@ def replaceEndImp(content:list):
 		header = headerList[contentIndex]
 		bs = bytearray()
 		if header['segType'] == 0x08:
-			#对话/旁边
+			#对话/旁白
 			diffLen = len(lineData) - header['textLen']
 			header['textLen'] += diffLen
 			header['segLen'] += diffLen
@@ -69,7 +69,7 @@ def readFileDataImp(fileOld, contentSeparate):
 		pos += 4
 		header = {'segType':segType, 'segLen':segLen}
 		if segType == 0x08:
-			#对话/旁边
+			#对话/旁白
 			header['pre'] = data[pos:pos+0x0C]
 			pos += 0x0C
 			roleLen = readInt(data, pos)
@@ -93,6 +93,16 @@ def readFileDataImp(fileOld, contentSeparate):
 			#选项
 			header['pre'] = data[pos:pos+0x08]
 			pos += 0x08
+			textLen = readInt(data, pos)
+			header['textLen'] = textLen
+			pos += 4
+			#文本
+			bs = data[pos:pos+textLen]
+			pos += textLen
+			content.append(bs)
+		elif segType in [0x1D, 0x1E]:
+			#存档标题
+			header['pre'] = b''
 			textLen = readInt(data, pos)
 			header['textLen'] = textLen
 			pos += 4
