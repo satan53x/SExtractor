@@ -4,6 +4,7 @@ from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_BIN import parseImp as parseImpBIN
 from extract_TXT import ParseVar, searchLine, initParseVar, dealLastCtrl
 
+Check = False
 MessageCode = 0x5E
 StrCodeConfig = [ #0不修正且不提取 -1修正但不提取 1修正且提取
 None,
@@ -37,6 +38,16 @@ None,
 	0x72: [-1],
 	0x7A: [-1],
 	0x86: [-1],
+},
+{
+	0x5E: [1, -1, 1], #对话
+	0x65: [0, 1], #选项
+	0x6D: [-1],
+	0x6F: [-1],
+	0x71: [-1],
+	0x72: [-1],
+	0x74: [-1],
+	0x8A: [-1],
 },
 ]
 # ---------------- Engine: ScrPlayer -------------------
@@ -126,18 +137,19 @@ class Script:
 		#解析指令区
 		self.cmdList.clear()
 		pos = 0
-		#Count.clear()
+		Count.clear()
 		while pos < len(self.cmdSec):
 			cmd = Command()
 			pos = cmd.read(self.cmdSec, pos)
 			self.cmdList.append(cmd)
-		# #校验
-		# j = 0
-		# for i in range(0, len(self.strList) - 1):
-		# 	if j >= len(Count) or i != Count[j]:
-		# 		printError('缺少', i, hex(self.strAddrList[i]), self.strList[i])
-		# 		continue
-		# 	j += 1
+		#校验
+		if Check:
+			j = 0
+			for i in range(0, len(self.strList) - 1):
+				if j >= len(Count) or i != Count[j]:
+					printError('缺少', i, hex(self.strAddrList[i]), self.strList[i])
+					continue
+				j += 1
 			
 	def write(self):
 		#恢复字符串区
@@ -183,7 +195,8 @@ class Command:
 					if param != self.IgnoreParam:
 						#查询地址对应索引
 						param = manager.strAddrList.index(param)
-						#Count.append(param)
+						if Check:
+							Count.append(param)
 				self.params.append(param)
 		return pos
 
