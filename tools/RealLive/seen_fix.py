@@ -87,6 +87,9 @@ XorTable = {
 	#娼姫レティシア～今宵、王女は春を売る～
 	56: bytearray.fromhex('6B C3 28 ED 6F 32 B5 D2 4A 69 39 26 AD DF 71 DE'),
 
+	#姉はエロコミ編集者～淫汁ぶっかけ生指導～
+	57: bytearray.fromhex('66 02 20 56 6E 1B B4 31 4B 6F 38 1D AC 24 70 D7'),
+
 	# >>>>>>> Made by `Summer_Adrenk` & `先依`
 	#巨乳JKアイドル声優寝取られスタジオ
 	61: bytearray.fromhex('EF 66 B0 2E 82 13 5D 38 BE 68 E5 1D 5A 3E AD C6'),	
