@@ -97,9 +97,12 @@ def readFormat():
 		for i in range(1, 100, 1):
 			name = f'append{i}'
 			path = os.path.join(inputDirpath, name)
-			if os.path.isdir(path) and len(os.listdir(path)) != 0:
-				var.appendDirList.append(name)
-			break
+			if not os.path.isdir(path):
+				break
+			path = os.path.join(path, var.curIO.inputFileName)
+			if not os.path.isfile(path): #检查译文是否存在
+				break
+			var.appendDirList.append(name)
 	if var.noInput: #不读取译文
 		return
 	global filepathOrig, filepathTrans
