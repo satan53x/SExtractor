@@ -67,7 +67,7 @@ def readFileDataImp(fileOld, contentSeparate):
 		lst = ExVar.extraData.split(',')
 		exportIndex = 'exportIndex' in lst
 	data = bytearray(fileOld.read())
-	if ExVar.decrypt:
+	if ExVar.decrypt or ExVar.decrypt == '':
 		data = decrypt(data)
 	content = re.split(contentSeparate, data)
 	return content, {}

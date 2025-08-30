@@ -59,7 +59,8 @@ def replaceEndImp(content):
 # -----------------------------------
 def readFileDataImp(fileOld, contentSeparate):
 	data = bytearray(fileOld.read())
-	data = decrypt(data)
+	if ExVar.decrypt or ExVar.decrypt == '':
+		data = decrypt(data)
 	if ExVar.filename.endswith('sce'):
 		pos = readInt(data, 0x18) + 0x14 #文本区起始地址
 	else:
