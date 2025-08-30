@@ -83,18 +83,35 @@ def transReplace():
 def readFormat():
 	setIOFileName(var.io)
 	setIOFileName(var.ioExtra)
-	fmt = var.curIO.outputFormat
 	var.isInput = False
 	var.transDic.clear()
-	var.transDicIO.clear()
+	var.transDicRN.clear()
 	var.allOrig.clear()
-	global filepathOrig, filepathTrans
-	filepathOrig = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
-	filepathTrans = os.path.join(var.workpath, var.inputDir, var.curIO.inputFileName)
+	var.transDicAppend.clear()
+	var.transDicRNAppend.clear()
+	var.allOrigAppend.clear()
+	var.appendDirList = ['']
+	inputDirpath = os.path.join(var.workpath, var.inputDir)
+	if var.textAppend:
+		#检查是否存在append, 最大99
+		for i in range(1, 100, 1):
+			name = f'append{i}'
+			path = os.path.join(inputDirpath, name)
+			if os.path.isdir(path) and len(os.listdir(path)) != 0:
+				var.appendDirList.append(name)
+			break
 	if var.noInput: #不读取译文
 		return
-	if not os.path.isfile(filepathTrans):
-		return
+	global filepathOrig, filepathTrans
+	for appendName in var.appendDirList:
+		filepathOrig = os.path.join(var.workpath, var.outputDir, appendName, var.curIO.ouputFileName)
+		filepathTrans = os.path.join(var.workpath, var.inputDir, appendName, var.curIO.inputFileName)
+		if not os.path.isfile(filepathTrans):
+			return
+		readDiffFromat()
+
+def readDiffFromat():
+	fmt = var.curIO.outputFormat
 	if fmt == 0 or fmt == 1:
 		readFormatDic()
 	elif fmt == 2:
@@ -119,22 +136,22 @@ def readFormat():
 def readFormatDic():
 	#读入transDic字典
 	fileTransDic = open(filepathTrans, 'r', encoding='utf-8')
-	var.transDic = json.load(fileTransDic)
-	printInfo('读入Json: ', len(var.transDic), var.curIO.inputFileName)
+	dic = json.load(fileTransDic)
+	printInfo('读入Json: ', len(dic), var.curIO.inputFileName)
 	var.isInput = True
 	#print(list(var.transDic.values())[0])
-	for orig, trans in var.transDic.items():
+	for orig, trans in dic.items():
 		var.transDic[orig] = [trans]
 
 def readFormatDicIO():
-	#读入带换行文本的transDicIO字典
+	#读入带换行文本的transDicRN字典
 	fileTransDic = open(filepathTrans, 'r', encoding='utf-8')
-	var.transDicIO = json.load(fileTransDic)
-	printInfo('读入Json: ', len(var.transDicIO), var.curIO.inputFileName)
+	dic = json.load(fileTransDic)
+	printInfo('读入Json: ', len(dic), var.curIO.inputFileName)
 	var.isInput = True
 	#print(list(var.transDic.values())[0])
 	#还原transDic
-	for orig, trans in var.transDicIO.items():
+	for orig, trans in dic.items():
 		splitToTransDic(orig, trans)
 
 def readFormatTxt(boolSplit):

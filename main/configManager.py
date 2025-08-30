@@ -51,6 +51,7 @@ class ConfigManager():
 			'useStructPara': [mainWindow.useStructParaCheck, True, False],
 			'autoCustom': [mainWindow.autoCustomCheck, True, True],
 			'cutoffByOrig': [mainWindow.cutoffByOrigCheck, True, False],
+			'textAppend': [mainWindow.textAppendCheck, True, False],
 		}
 		#运行中时不进行读写
 		notInRunning = ['batchCmdCur', 'batchAutoStart']

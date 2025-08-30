@@ -6,20 +6,20 @@ from helper_text import *
 var = ExVar
 filepathOrig = ''
 # --------------------------- 写 ---------------------------------
-def getAllOrig():
+def getAllOrig(varAllOrig):
 	if var.nameMoveUp:
 		#名字上移
 		allOrig = []
-		for i in range(len(var.allOrig)):
+		for i in range(len(varAllOrig)):
 			item = {}
-			if i < len(var.allOrig)-1 and 'name' in var.allOrig[i+1]:
-				item['name'] = var.allOrig[i+1]['name']
-			if 'message' in var.allOrig[i]:
-				item['message'] = var.allOrig[i]['message']
+			if i < len(varAllOrig)-1 and 'name' in varAllOrig[i+1]:
+				item['name'] = varAllOrig[i+1]['name']
+			if 'message' in varAllOrig[i]:
+				item['message'] = varAllOrig[i]['message']
 			if item:
 				allOrig.append(item)
 		return allOrig
-	return var.allOrig
+	return varAllOrig
 	
 # --------------------------- 写 ---------------------------------
 def writeFormat():
@@ -32,10 +32,24 @@ def writeFormat():
 	if var.ignoreEmptyFile:
 		if not var.allOrig:
 			return
-	allOrig = getAllOrig()
-	transDic = keepFirstTrans(var.transDic) #value转为单字符串
+	if var.textAppend and not var.allOrigAppend:
+		#printInfo('没有新增提取')
+		return
+	if var.textAppend:
+		allOrig = getAllOrig(var.allOrigAppend)
+		transDic = keepFirstTrans(var.transDicAppend)
+		transDicRN = var.transDicRNAppend
+		seq = len(var.appendDirList)
+		outputDirpath = os.path.join(var.workpath, var.outputDir, f'append{seq}')
+		if not os.path.exists(outputDirpath):
+			os.makedirs(outputDirpath)
+	else:
+		allOrig = getAllOrig(var.allOrig)
+		transDic = keepFirstTrans(var.transDic) #value转为单字符串
+		transDicRN = var.transDicRN
+		outputDirpath = os.path.join(var.workpath, var.outputDir)
 	global filepathOrig
-	filepathOrig = os.path.join(var.workpath, var.outputDir, var.curIO.ouputFileName)
+	filepathOrig = os.path.join(outputDirpath, var.curIO.ouputFileName)
 	if fmt == 0:
 		writeFormatDirect(transDic)
 	elif fmt == 1:
@@ -43,9 +57,9 @@ def writeFormat():
 	elif fmt == 2:
 		writeFormatDirect(allOrig)
 	elif fmt == 3:
-		writeFormatDirect(var.transDicIO)
+		writeFormatDirect(transDicRN)
 	elif fmt == 4:
-		writeFormatCopyKey(var.transDicIO)
+		writeFormatCopyKey(transDicRN)
 	elif fmt == 5:
 		writeFormatTxt(transDic)
 	elif fmt == 6:

@@ -13,6 +13,8 @@ from helper_write import writeFormat
 var = ExVar
 
 # ------------------------------------------------------------
+allOrig = []
+allOrigAppend = []
 def keepAllOrig(insertBegin=False):
 	# if len(var.listCtrl) > 0:
 	# 	if 'name' in var.listCtrl[-1] or 'unfinish' in var.listCtrl[-1]:
@@ -21,7 +23,9 @@ def keepAllOrig(insertBegin=False):
 	item = {}
 	ctrl = {}
 	checkRN = 1
-	allOrig = []
+	allOrig.clear()
+	allOrigAppend.clear()
+	needAppend = 0
 	if not var.splitParaSep == '\r\n' or (var.splitAuto and var.joinAfterSplit):
 		checkRN = 0
 	while(listIndex < len(var.listOrig) - 1):
@@ -32,13 +36,20 @@ def keepAllOrig(insertBegin=False):
 			checkRN = -1
 		#print(listIndex, orig, ctrl)
 		if 'name'in ctrl:
-			item = tryAddToDic(item, ctrl, allOrig) #前一个结束
+			item = tryAddToDic(item, ctrl, needAppend) #前一个结束
+			needAppend = 0
 			item['name'] = orig
+			#判断是否需要追加
+			if var.textAppend and orig in var.transDicAppend:
+				needAppend |= 0x1
 			continue
 		else:
 			if 'message' not in item:
 				item['message'] = ""
 			item['message'] += orig
+			#判断是否需要追加
+			if var.textAppend and orig in var.transDicAppend:
+				needAppend |= 0x10
 			if var.outputTextType:
 				#导出文本类型标记
 				if 'type' in ctrl:
@@ -52,27 +63,37 @@ def keepAllOrig(insertBegin=False):
 					continue #最后一行
 				item['message'] += var.splitParaSep
 				continue
-			item = tryAddToDic(item, ctrl, allOrig)
-	item = tryAddToDic(item, ctrl, allOrig)
+			item = tryAddToDic(item, ctrl, needAppend)
+			needAppend = 0
+	item = tryAddToDic(item, ctrl, needAppend)
 	if checkRN < 0:
 		printWarning('文本内容与段落分隔符重复，建议修改设置中分隔符', repr(var.splitParaSep))
 	if insertBegin:
 		var.allOrig = allOrig + var.allOrig
+		var.allOrigAppend = allOrigAppend + var.allOrigAppend
 	else:
 		var.allOrig = var.allOrig + allOrig
+		var.allOrigAppend = var.allOrigAppend + allOrigAppend
 
-def tryAddToDic(item:dict, ctrl, allOrig):
+def tryAddToDic(item:dict, ctrl, needAppend):
 	if item != {}:
 		allOrig.append(item)
-		#加入transDicIO
+		if needAppend:
+			#if needAppend&0x10 or 'message' not in item:
+			allOrigAppend.append(item)
+		#加入transDicRN
 		if 'name' in item:
-			if item['name'] not in var.transDicIO:
-				#print('Add to transDicIO', orig, listIndex, var.filename)
-				var.transDicIO[item['name']] = ''
+			if item['name'] not in var.transDicRN:
+				#print('Add to transDicRN', orig, listIndex, var.filename)
+				var.transDicRN[item['name']] = ''
+			if needAppend and item['name'] not in var.transDicRNAppend:
+				var.transDicRNAppend[item['name']] = ''
 		if 'message' in item:
-			if item['message'] not in var.transDicIO:
-				#print('Add to transDicIO', orig, listIndex, var.filename)
-				var.transDicIO[item['message']] = ''
+			if item['message'] not in var.transDicRN:
+				#print('Add to transDicRN', orig, listIndex, var.filename)
+				var.transDicRN[item['message']] = ''
+			if needAppend and item['message'] not in var.transDicRNAppend:
+				var.transDicRNAppend[item['message']] = ''
 		else:
 			printWarning('message为空', var.filename, ctrl, item['name'])
 			item['message'] = '' #message为空时补一个空字符串
@@ -105,8 +126,9 @@ def dealOnce(text, ctrl):
 	#print(orig)
 	if orig not in var.transDic:
 		#print('Add to transDic', orig, var.filename, str(contentIndex))
-		var.transDic[orig] = []
-		var.transDic[orig].append('')
+		var.transDic[orig] = ['']
+		if var.textAppend:
+			var.transDicAppend[orig] = ['']
 	return True
 
 def replace():
@@ -225,7 +247,7 @@ def setRegDic(str):
 		# 结束
 		if line == '' or line.startswith('sample'): 
 			break
-		elif line.startswith('<') or line.startswith(';'):
+		elif line[0] in ['<', ';', '/', '#']:
 			continue
 		pair = line.split('=', 1)
 		# 控制

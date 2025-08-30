@@ -24,12 +24,16 @@ class ExtractVar():
 	partMode = 0 # 0 单json; 1 多json
 	outputDir = 'ctrl'
 	inputDir = 'ctrl'
+	appendDirList = []
 
 	#-------------------
 	transDic = {} #字典的value为字符串list
-	transDicIO = {} #读取写入时的原本字典，不参与write()，模式01则不需要
+	transDicRN = {} #读取写入时的原本字典，不参与write()，模式01则不需要
 	allOrig = []
 	curOrig = '' #当前原文
+	transDicAppend = {}
+	transDicRNAppend = {}
+	allOrigAppend = []
 
 	filename = ''
 	content = None
@@ -87,6 +91,7 @@ class ExtractVar():
 	cutoffByOrig = False #截断字典以orig为key
 	addrFix = '' #地址修正的正则，仅用于bin
 	addrBase = 0 #地址基础偏移，可以为字符串如addr4,0x10
+	textAppend = False #文本追加模式
 
 	#-------------------
 	def clear(self):

@@ -619,7 +619,7 @@
            </item>
            <item>
             <widget class="QWidget" name="widget_19" native="true">
-             <layout class="QHBoxLayout" name="horizontalLayout_32">
+             <layout class="QHBoxLayout" name="horizontalLayout_32" stretch="10,8">
               <property name="leftMargin">
                <number>5</number>
               </property>
@@ -636,6 +636,13 @@
                <widget class="QCheckBox" name="dontExportCheck">
                 <property name="text">
                  <string>写入时不再导出原文文件</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="textAppendCheck">
+                <property name="text">
+                 <string>文本追加模式（复用当前trans）</string>
                 </property>
                </widget>
               </item>
