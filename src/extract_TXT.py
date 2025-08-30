@@ -89,11 +89,15 @@ def searchLine(var:ParseVar):
 				#print(r.groups())
 				for i in range(1, len(r.groups())+1):
 					if r.group(i) == None: continue
+					ctrl = {}
 					start, end = GetPos(var, searchData, r, i)
-					if ExVar.preLen and start >= ExVar.preLen:
-						length = var.lineData[start-ExVar.preLen:start]
-						length = int.from_bytes(length, 'little') * ExVar.preLenScale
-						end = start + length
+					if ExVar.preLen:
+						lenPos = start + ExVar.preLenOffset
+						length = int.from_bytes(var.lineData[lenPos:lenPos+ExVar.preLen], 'little')
+						ctrl['preLen'] = length #原始记录的长度
+						length = length * ExVar.preLenScale + ExVar.preLenAdd #实际需要提取的文本长度
+						if ExVar.preLenStrict: #严格按照长度提取
+							end = start + length 
 					data = var.lineData[start:end]
 					if var.OldEncodeName: # bin
 						try:
@@ -117,7 +121,7 @@ def searchLine(var:ParseVar):
 							#print('postSkip', text)
 							continue
 					#0行数，1起始字符下标（包含），2结束字符下标（不包含）
-					ctrl = {'pos':[var.contentIndex, start, end]}
+					ctrl['pos'] = [var.contentIndex, start, end]
 					#检查命名
 					key = None
 					for name, index in r.re.groupindex.items():

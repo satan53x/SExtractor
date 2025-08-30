@@ -382,14 +382,14 @@ def initArgs(args):
 	var.padding = var.padding.encode(WirteEncodeName).decode('unicode_escape').encode('latin-1')
 	# 处理preLen
 	if var.preLen != None:
-		if isinstance(var.preLen, str):
-			lst = var.preLen.split(',')
-			if len(lst) > 0:
-				var.preLen = eval(lst[0])
-			if len(lst) > 1:
-				var.preLenScale = eval(lst[1])
-			if len(lst) > 2:
-				var.preLenFix = lst[2] not in ('0', 'False', 'false')
+		if var.preLenOffset == None:
+			var.preLenOffset = -var.preLen
+		elif isinstance(var.preLenOffset, str):
+			var.preLenOffset = int(var.preLenOffset)
+		if isinstance(var.preLenScale, str):
+			var.preLenScale = eval(var.preLenScale)
+		if isinstance(var.preLenAdd, str):
+			var.preLenAdd = eval(var.preLenAdd)
 	return 0
 
 def extractDone():

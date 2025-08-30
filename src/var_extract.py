@@ -127,7 +127,10 @@ class ExtractVar():
 		self.padding = '　' #截断填充默认为全角空格,最后有剩余字节再用半角空格补全
 		self.twoLineFlag = ['☆', '★'] #双行分割符
 		self.preLen = 0 #字节个数（分组位置之前，记录分组长度）
+		self.preLenOffset = None #偏移量
 		self.preLenScale = 1 #长度scale
+		self.preLenAdd = 0 #长度add
 		self.preLenFix = True #是否修正
+		self.preLenStrict = True #是否严格按长度提取
 		
 gExtractVar = ExtractVar()
