@@ -40,7 +40,7 @@ def replaceEndImp(content:list):
 			if ExVar.encrypt:
 				lineData = xorBytes(lineData, XorKey) #加密
 			bs.extend(lineData)
-		elif header['segType'] == 0x0E:
+		elif header['segType'] in [0x0E, 0x1D, 0x1E]:
 			#选项
 			diffLen = len(lineData) - header['textLen']
 			header['textLen'] += diffLen
