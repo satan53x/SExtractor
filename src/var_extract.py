@@ -92,6 +92,7 @@ class ExtractVar():
 	addrFix = '' #地址修正的正则，仅用于bin
 	addrBase = 0 #地址基础偏移，可以为字符串如addr4,0x10
 	textAppend = False #文本追加模式
+	serialSearch = True #使用顺序搜索，而不是finditer
 
 	#-------------------
 	def clear(self):

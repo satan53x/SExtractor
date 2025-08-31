@@ -1225,6 +1225,13 @@
                 </property>
                </widget>
               </item>
+              <item>
+               <widget class="QCheckBox" name="serialSearchCheck">
+                <property name="text">
+                 <string>启用顺序查找而不是finditer</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>

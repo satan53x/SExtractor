@@ -31,9 +31,7 @@ class ParseVar():
 # -----------------------------------
 longText = False
 pureTextDataRel = [] #纯文本模式下，字符index对应的字节结束位置
-def GetPos(var:ParseVar, searchData:str, r:re.Match[str], i):
-	start = r.start(i)
-	end = r.end(i)
+def GetPos(var:ParseVar, searchData:str, start, end):
 	if var.OldEncodeName and ExVar.pureText:
 		#bin的纯文本模式
 		if not longText:
@@ -84,22 +82,51 @@ def searchLine(var:ParseVar):
 			# 搜索
 			tmpDic = OrderedDict()
 			matched = False
-			iter = pattern.finditer(searchData) 
-			for r in iter:
+			end = 0
+			#lastCtrl = None
+			if not ExVar.serialSearch:
+				iter = pattern.finditer(searchData)
+			else:
+				iter = None #顺序搜索
+			while True:
+				if iter: 
+					try:
+						r = next(iter)
+					except:
+						break
+				else:
+					r = pattern.search(searchData, pos=end) #从上一个end开始
+					if not r:
+						break
 				#print(r.groups())
+				diff = 0
 				for i in range(1, len(r.groups())+1):
 					if r.group(i) == None: continue
 					ctrl = {}
-					start, end = GetPos(var, searchData, r, i)
+					start, end = GetPos(var, searchData, r.start(i), r.end(i))
 					if ExVar.preLen:
 						lenPos = start + ExVar.preLenOffset
 						length = int.from_bytes(var.lineData[lenPos:lenPos+ExVar.preLen], 'little')
 						ctrl['preLen'] = length #原始记录的长度
 						length = length * ExVar.preLenScale + ExVar.preLenAdd #实际需要提取的文本长度
+						oldEnd = end
 						if ExVar.preLenStrict: #严格按照长度提取
-							end = start + length 
+							end = start + length
+							if end < start or end > len(var.lineData):
+								break
+						diff += end - oldEnd
 					data = var.lineData[start:end]
-					if var.OldEncodeName: # bin
+					#检查分组名
+					key:str = None
+					if i in regItem[2]:
+						key = regItem[2][i]
+					if key and key.startswith('skip'):
+						#if len(key) >= 6 and lastCtrl:
+						#	if 'unfinish' in lastCtrl:
+						#		del lastCtrl['unfinish']
+						continue
+					#bin模式
+					if var.OldEncodeName:
 						try:
 							if ExVar.keepBytes:
 								data = keepBytes(data, ExVar.keepBytes)
@@ -123,19 +150,12 @@ def searchLine(var:ParseVar):
 					#0行数，1起始字符下标（包含），2结束字符下标（不包含）
 					ctrl['pos'] = [var.contentIndex, start, end]
 					#检查命名
-					key = None
-					for name, index in r.re.groupindex.items():
-						if i == index: key = name
 					if text in var.nameList: #强制检查名字
 						ctrl['name'] = True #名字标记
-					elif not key:
-						pass
-					else:
+					elif key:
 						key = key.rstrip('0123456789')
 						if 'AND' in key:
 							keys = key.split('AND')
-						elif key == 'skip':
-							continue
 						else:
 							keys = [key]
 						for key in keys:
@@ -157,6 +177,8 @@ def searchLine(var:ParseVar):
 						ctrl[var.intervalFlag] = True
 					matched = True
 					tmpDic[start] = [text, ctrl]
+					#lastCtrl = ctrl
+				end = r.end(0) + diff #单次search的最终end
 			if matched :
 				#按文本中顺序处理
 				for key, value in tmpDic.items():
@@ -177,27 +199,38 @@ def GetRegList(items, OldEncodeName):
 		if re.search('skip', key):
 			lst.append([re.compile(value), 'skip'])
 		elif re.search('search', key):
-			lst.append([re.compile(value), 'search'])
+			p = re.compile(value)
+			dic = {}
+			for name, index in p.groupindex.items(): #分组名信息
+				dic[index] = name
+			lst.append([p, 'search', dic]) 
 	return lst
 
 def dealLastCtrl(lastCtrl, ctrls, contentIndex=-1):
-	flags = []
 	ctrl = None
 	if ctrls == None: #skip匹配
+		flags = []
 		if not ExVar.skipIgnoreUnfinish:
 			flags.append('predel_unfinish')
 		if ExVar.skipIgnoreCtrl:
 			ctrl = lastCtrl
+		dealFlags(flags, lastCtrl)
 	elif len(ctrls) == 0:
 		ctrl = lastCtrl
 	else:
-		ctrl = ctrls[-1]
-		if 'flags' in ctrl:
-			flags.extend(ctrl['flags'])
-		if 'name' in ctrl: #name匹配
-			flags.append('predel_unfinish')
-			if not ExVar.nameKeepCtrl:
-				ctrl = None
+		for ctrl in ctrls:
+			flags = []
+			if 'flags' in ctrl:
+				flags.extend(ctrl['flags'])
+			if 'name' in ctrl: #name匹配
+				flags.append('predel_unfinish')
+				if not ExVar.nameKeepCtrl:
+					ctrl = None
+			dealFlags(flags, lastCtrl)
+			lastCtrl = ctrl
+	return ctrl
+
+def dealFlags(flags, lastCtrl):
 	#处理flags
 	for flag in flags:
 		if lastCtrl:
@@ -208,7 +241,6 @@ def dealLastCtrl(lastCtrl, ctrls, contentIndex=-1):
 				key = flag[7:]
 				if key in lastCtrl:
 					del lastCtrl[key] #删除
-	return ctrl
 
 def initParseVar(var:ParseVar, regDic=None):
 	if regDic == None:

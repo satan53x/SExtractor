@@ -52,6 +52,7 @@ class ConfigManager():
 			'autoCustom': [mainWindow.autoCustomCheck, True, True],
 			'cutoffByOrig': [mainWindow.cutoffByOrigCheck, True, False],
 			'textAppend': [mainWindow.textAppendCheck, True, False],
+			'serialSearch': [mainWindow.serialSearchCheck, True, False],
 		}
 		#运行中时不进行读写
 		notInRunning = ['batchCmdCur', 'batchAutoStart']
