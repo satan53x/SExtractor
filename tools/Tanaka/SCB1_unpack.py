@@ -63,19 +63,16 @@ def main():
 	if path:
 		pass
 	elif len(sys.argv) < 2:
-		path = filedialog.askdirectory(initialdir=path)
+		path = filedialog.askopenfilename(initialdir=path)
 	else:
 		path = sys.argv[1]
 	#print(path)
-	if os.path.isdir(path):
-		var.dirpath = path
+	if os.path.isfile(path):
+		var.filepath = path
+		var.dirpath = os.path.dirname(path)
+		filename = os.path.basename(path)
+		name, post = os.path.splitext(filename)
+		var.out_dirpath = os.path.join(var.dirpath, name)
 		#print(dirpath)
-		for filename in os.listdir(var.dirpath):
-			#print(name)
-			name, post = os.path.splitext(filename)
-			if post.lower() != Postfix.lower():
-				continue
-			var.filepath = os.path.join(var.dirpath, filename)
-			var.out_dirpath = os.path.join(var.dirpath, name)
-			unpack()
+		unpack()
 main()

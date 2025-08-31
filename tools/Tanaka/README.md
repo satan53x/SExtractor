@@ -3,7 +3,7 @@
 * 封包命令：`python ARCG_pack.py -r 原封包文件.scb patch out.scb`
 
 ### SCB1_unpack.py
-* 运行脚本，在弹窗选择: `.SCB`所在文件夹
+* 运行脚本，在弹窗选择: `.SCB`包文件
 * 默认解压到同名文件夹下
 
 ### SCB1_pack.py
