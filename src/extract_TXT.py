@@ -104,7 +104,11 @@ def searchLine(var:ParseVar):
 					if r.group(i) == None: continue
 					ctrl = {}
 					start, end = GetPos(var, searchData, r.start(i), r.end(i))
-					if ExVar.preLen:
+					#分组名
+					key:str = None
+					if i in regItem[2]:
+						key = regItem[2][i]
+					if ExVar.preLen and not (key and key.startswith('nolen')):
 						lenPos = start + ExVar.preLenOffset
 						length = int.from_bytes(var.lineData[lenPos:lenPos+ExVar.preLen], 'little')
 						ctrl['preLen'] = length #原始记录的长度
@@ -116,10 +120,7 @@ def searchLine(var:ParseVar):
 								break
 						diff += end - oldEnd
 					data = var.lineData[start:end]
-					#检查分组名
-					key:str = None
-					if i in regItem[2]:
-						key = regItem[2][i]
+					#检查
 					if key and key.startswith('skip'):
 						#if len(key) >= 6 and lastCtrl:
 						#	if 'unfinish' in lastCtrl:

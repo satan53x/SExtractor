@@ -40,7 +40,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		diff = len(transData) - (end - start)
 		preData = content[contentIndex][:start]
 		if ExVar.preLen and ExVar.preLenFix:
-			if diff != 0:
+			if diff != 0 and 'preLen' in ctrl:
 				#需要修正
 				preData = bytearray(preData)
 				length = diff // ExVar.preLenScale + ctrl['preLen']
