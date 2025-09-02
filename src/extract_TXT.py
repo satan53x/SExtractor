@@ -201,9 +201,7 @@ def GetRegList(items, OldEncodeName):
 			lst.append([re.compile(value), 'skip'])
 		elif re.search('search', key):
 			p = re.compile(value)
-			dic = {}
-			for name, index in p.groupindex.items(): #分组名信息
-				dic[index] = name
+			dic = getPatternGroupDict(p)
 			lst.append([p, 'search', dic]) 
 	return lst
 

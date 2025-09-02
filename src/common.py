@@ -155,6 +155,12 @@ def getMatchItem(lst, target):
             return item
     return None
 
+def getPatternGroupDict(p:re.Pattern):
+    dic = {}
+    for name, index in p.groupindex.items(): #分组名信息
+        dic[index] = name #序号为key
+    return dic
+
 #----------------------------------------------------------
 def listFiles(start_path):
 	file_list = []

@@ -83,24 +83,18 @@ def parse():
 			#计算基础地址
 			baseAddr = 0
 			if isinstance(var.addrBase, str):
-				lst = var.addrBase.split(',')
-				for item in lst:
-					if item.startswith('addr'):
-						start, end = item[4:].split(':')
-						start = eval(start)
-						end = eval(end)
-						value = int.from_bytes(data[start:end], 'little')
-					else:
-						value = eval(item)
-					baseAddr += value
+				baseAddr = eval(var.addrBase) #比如字符串data[4:8]
 			else:
 				baseAddr = var.addrBase
 			#查找地址指针
 			var.addrFixer = AddrFixer(baseAddr)
+			groupDic = getPatternGroupDict(var.addrFix)
 			iter = var.addrFix.finditer(data)
 			for r in iter:
 				for i in range(1, len(r.groups())+1):
 					if r.group(i) == None: continue
+					if i in groupDic and groupDic[i].startswith('skip'):
+						continue
 					start = r.start(i)
 					end = r.end(i)
 					addr = data[start:end]
