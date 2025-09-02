@@ -1,9 +1,9 @@
 # ------------------------------------------------------------
 # https://github.com/satan53x/SExtractor/tree/main/tools/Font
 # 安装依赖: pip install fonttools
+# 会尝试写入多个平台和编码，有部分编码提示不存在是正常现象
 # ------------------------------------------------------------
 import json
-import subprocess
 import sys
 from fontTools.ttLib import TTFont
 
@@ -33,22 +33,24 @@ def main():
             data = newDic
         #替换
         for table in obj['cmap'].tables:
-            if table.platformID != 1: #子表过滤：mac
-                for key, value in data.items():
-                    if key == value:
-                        continue
-                    s = ord(key)
-                    j = ord(value)
-                    try:
-                        table.cmap[s] = table.cmap[j]
-                    except:
-                        print('字体中不存在:', key, value)
+            if table.platformID == 1: continue #平台过滤：mac
+            for key, value in data.items():
+                if key == value:
+                    continue
+                s = ord(key)
+                j = ord(value)
+                try:
+                    table.cmap[s] = table.cmap[j]
+                except:
+                    print(f'平台{table.platformID} 编码{table.platEncID} 不存在: {key} {value}')
+            #break
         #更改定义
         #changeDef(obj)
     
     newfile = '%s_cnjp.ttf' % fnt[0:fnt.rfind('.')]
     obj.save(newfile)
-    print('生成font', newfile)
+    print('会尝试写入多个平台和编码，有部分编码提示不存在是正常现象')
+    print('生成font:', newfile)
 
 if __name__ == '__main__':
     main()
