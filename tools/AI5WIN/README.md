@@ -9,5 +9,9 @@
 * 最后添加纯绿色的背景层，合并，图像改为索引颜色，局部调板，16个颜色，纯绿占1个表示透明。导出为8位`char_list.png`。
 * 运行`png_to_FNT.py`，会读取`char_list.txt`/`char_list.png`，生成最终的`.FNT/.PAL/.TBL`
 
-### 游戏和资源
-* `Refrain Blue`对应资源：`FONT.7z`
+### 测试游戏`Refrain Blue`
+* 对应资源：`FONT.7z`
+* 因为FNT和TBL大小都增加了很多，exe里原始的缓冲区严重不足，所以直接把TBL和FNT追加到了exe文件末尾，并修复Header。（TBL物理地址18C600，对齐长度3800；FNT物理地址18FE00，对齐长度2C0400）
+* 修改exe的`sub_449570`和`sub_449EE0`函数内buffer赋值语句，直接把指令mov指向上述追加区域的虚拟地址（不是物理地址）。
+* 因为地址是硬编码，如果运行有问题可能需要关闭windows的ASLR功能。
+
