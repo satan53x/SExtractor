@@ -5,6 +5,43 @@ from helper_text import *
 
 var = ExVar
 filepathOrig = ''
+# ------------------------ 处理原文 ------------------------------
+def replaceOrig(orig, ctrl):
+	if var.engineName in TextConfig['orig_fix']:
+		dic = TextConfig['orig_fix'][var.engineName]
+		for old, new in dic.items():
+			orig = re.sub(old, new, orig)
+	if var.dynamicReplace:
+		#动态替换
+		end = 0
+		while True:
+			r = var.dynamicReplace.search(orig, pos=end)
+			if not r:
+				break
+			start = r.start()
+			end = r.end()
+			old = orig[start:end]
+			if old in var.dynamicReplaceOldList:
+				index = var.dynamicReplaceOldList.index(old)
+			else:
+				index = len(var.dynamicReplaceOldList)
+				var.dynamicReplaceOldList.append(old)
+			if index >= len(var.dynamicReplaceNewList):
+				#可用元素不足
+				continue
+			new = var.dynamicReplaceNewList[index]
+			orig = orig[:start] + new + orig[end:]
+			end = start + len(new)
+	if var.transReplace:
+		if 'orig_replace' in var.textConf:
+			for old, new in var.textConf['orig_replace'].items():
+				orig = orig.replace(old, new)
+		if 'name' in ctrl and 'name_replace' in var.textConf:
+			for old, new in var.textConf['name_replace'].items():
+				if orig == old:
+					orig = new
+	return orig
+
 # --------------------------- 写 ---------------------------------
 def getAllOrig(varAllOrig):
 	if var.nameMoveUp:
@@ -22,58 +59,62 @@ def getAllOrig(varAllOrig):
 	return varAllOrig
 	
 # --------------------------- 写 ---------------------------------
-def writeFormat():
-	if var.isInput:
-		if var.dontExportWhenImport:
-			return
+class TMP:
+	allOrig = None
+	transDic = None
+	transDicRN = None
+def writeFormat(recalc=True):
+	if var.isInput and var.dontExportWhenImport:
+		return
 	fmt = var.curIO.outputFormat
 	if fmt < 0:
 		return
-	if var.ignoreEmptyFile:
-		if not var.allOrig:
-			return
+	if var.ignoreEmptyFile and not var.allOrig:
+		return
 	if var.textAppend and not var.allOrigAppend:
 		#printInfo('没有新增提取')
 		return
 	if var.textAppend:
-		allOrig = getAllOrig(var.allOrigAppend)
-		transDic = keepFirstTrans(var.transDicAppend)
-		transDicRN = var.transDicRNAppend
+		if recalc:
+			TMP.allOrig = getAllOrig(var.allOrigAppend)
+			TMP.transDic = keepFirstTrans(var.transDicAppend)
+			TMP.transDicRN = var.transDicRNAppend
 		seq = len(var.appendDirList)
 		outputDirpath = os.path.join(var.workpath, var.outputDir, f'append{seq}')
 		if not os.path.exists(outputDirpath):
 			os.makedirs(outputDirpath)
 	else:
-		allOrig = getAllOrig(var.allOrig)
-		transDic = keepFirstTrans(var.transDic) #value转为单字符串
-		transDicRN = var.transDicRN
+		if recalc:
+			TMP.allOrig = getAllOrig(var.allOrig)
+			TMP.transDic = keepFirstTrans(var.transDic) #value转为单字符串
+			TMP.transDicRN = var.transDicRN
 		outputDirpath = os.path.join(var.workpath, var.outputDir)
 	global filepathOrig
 	filepathOrig = os.path.join(outputDirpath, var.curIO.ouputFileName)
 	if fmt == 0:
-		writeFormatDirect(transDic)
+		writeFormatDirect(TMP.transDic)
 	elif fmt == 1:
-		writeFormatCopyKey(transDic)
+		writeFormatCopyKey(TMP.transDic)
 	elif fmt == 2:
-		writeFormatDirect(allOrig)
+		writeFormatDirect(TMP.allOrig)
 	elif fmt == 3:
-		writeFormatDirect(transDicRN)
+		writeFormatDirect(TMP.transDicRN)
 	elif fmt == 4:
-		writeFormatCopyKey(transDicRN)
+		writeFormatCopyKey(TMP.transDicRN)
 	elif fmt == 5:
-		writeFormatTxt(transDic)
+		writeFormatTxt(TMP.transDic)
 	elif fmt == 6:
-		writeFormatTxtByItem(allOrig)
+		writeFormatTxtByItem(TMP.allOrig)
 	elif fmt == 7:
-		writeFormatListByItem(allOrig)
+		writeFormatListByItem(TMP.allOrig)
 	elif fmt == 8:
-		writeFormatXlsx(transDic)
+		writeFormatXlsx(TMP.transDic)
 	elif fmt == 9:
-		writeFormatTxtTwoLineByItem(allOrig)
+		writeFormatTxtTwoLineByItem(TMP.allOrig)
 	elif fmt == 10:
-		writeFormatListCopyKey(allOrig, True)
+		writeFormatListCopyKey(TMP.allOrig, True)
 	elif fmt == 11:
-		writeFormatListCopyKey(allOrig, False)
+		writeFormatListCopyKey(TMP.allOrig, False)
 
 def writeFormatDirect(targetJson):
 	printInfo('输出Json:', len(targetJson), var.curIO.ouputFileName)

@@ -38,7 +38,7 @@ def setIOFileName(io:IOConfig):
 	io.inputFileName = io.prefix + io.inputFileName
 
 #修正译文
-def transReplace():
+def replaceTransAll():
 	if var.transReplace:
 		if var.fileType == 'bin':
 			if var.tunnelJis or var.subsJis:
@@ -70,6 +70,15 @@ def transReplace():
 						if keep == orig:
 							for i, t in enumerate(trans):
 								trans[i] = ''
+	if var.dynamicReplace:
+		printDebug('进行动态还原')
+		replaceDic = {}
+		count = min(len(var.dynamicReplaceOldList), len(var.dynamicReplaceNewList))
+		for i in range(count):
+			old = var.dynamicReplaceOldList[i]
+			new = var.dynamicReplaceNewList[i]
+			replaceDic[new] = old
+		replaceValue(var.transDic, replaceDic)
 	if var.toFullWidth:
 		printDebug('进行半角转全角')
 		replaceDic = var.fullWidthDic
@@ -80,7 +89,8 @@ def transReplace():
 		replaceValueRE(var.transDic, replaceDic)
 
 # --------------------------- 读 ---------------------------------
-def readFormat():
+def readInit():
+	#var.dynamicReplaceOldList.clear() #暂时不清空，可以跨文件
 	setIOFileName(var.io)
 	setIOFileName(var.ioExtra)
 	var.isInput = False
@@ -91,6 +101,9 @@ def readFormat():
 	var.transDicRNAppend.clear()
 	var.allOrigAppend.clear()
 	var.appendDirList = ['']
+
+def readFormat():
+	readInit()
 	inputDirpath = os.path.join(var.workpath, var.inputDir)
 	if var.textAppend:
 		#检查是否存在append, 最大99
@@ -133,8 +146,6 @@ def readDiffFromat():
 		readFormatTxtTwoLine()
 	elif fmt == 10 or fmt == 11:
 		readFormatDicList()
-	#修正译文
-	transReplace()
 
 def readFormatDic():
 	#读入transDic字典

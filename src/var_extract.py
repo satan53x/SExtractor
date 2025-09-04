@@ -44,6 +44,8 @@ class ExtractVar():
 	cutoffDic = {}
 	textConf = {}
 	fullWidthDic = {} #全角转半角字典
+	dynamicReplaceOldList = []
+	dynamicReplaceNewList = []
 
 	#-------------------
 	engineName = ''
@@ -133,5 +135,6 @@ class ExtractVar():
 		self.preLenAdd = 0 #长度add
 		self.preLenFix = True #是否修正
 		self.preLenStrict = True #是否严格按长度提取
+		self.dynamicReplace = None #原文动态替换和还原
 		
 gExtractVar = ExtractVar()

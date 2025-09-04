@@ -40,7 +40,8 @@ def mainExtractPart(args, parseImp, initDone=None):
 			keepAllOrig()
 			writeFormat()
 			var.curIO = var.ioExtra
-			writeFormat()
+			writeFormat(False)
+			outputDone()
 			#break #测试
 		showProgress(100)
 		printInfo('读取文件数:', var.inputCount)

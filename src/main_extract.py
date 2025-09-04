@@ -7,8 +7,8 @@ from importlib import import_module
 from var_extract import *
 from common import *
 from helper_text import *
-from helper_read import readFormat
-from helper_write import writeFormat
+from helper_read import readFormat, replaceTransAll
+from helper_write import writeFormat, replaceOrig
 
 var = ExVar
 
@@ -109,18 +109,7 @@ def dealOnce(text, ctrl):
 		printWarning('提取时原文为空', var.filename, str(ctrl))
 		return False
 	#if orig.isspace(): return False
-	if var.engineName in TextConfig['orig_fix']:
-		dic = TextConfig['orig_fix'][var.engineName]
-		for old, new in dic.items():
-			orig = re.sub(old, new, orig)
-	if var.transReplace:
-		if 'orig_replace' in var.textConf:
-			for old, new in var.textConf['orig_replace'].items():
-				orig = orig.replace(old, new)
-		if 'name' in ctrl and 'name_replace' in var.textConf:
-			for old, new in var.textConf['name_replace'].items():
-				if orig == old:
-					orig = new
+	orig = replaceOrig(orig, ctrl)
 	#输出原文
 	var.listOrig.append(orig)
 	#print(orig)
@@ -132,6 +121,7 @@ def dealOnce(text, ctrl):
 	return True
 
 def replace():
+	replaceTransAll()
 	for listIndex in range(len(var.listOrig)-1, -1, -1): #倒序
 		orig = var.listOrig[listIndex]
 		ctrl = var.listCtrl[listIndex]
@@ -302,7 +292,7 @@ def writeCutoffDic():
 	fileOutput.close()
 
 def readTextConf():
-	if not var.transReplace and not var.preReplace: return
+	if not (var.transReplace or var.preReplace or var.dynamicReplace): return
 	filepath = os.path.join(var.workpath, 'ctrl', 'text_conf.json')
 	if not os.path.isfile(filepath):
 		filepath = os.path.join('.', 'text_conf.json')
@@ -311,6 +301,12 @@ def readTextConf():
 	fileOld = open(filepath, 'r', encoding='utf-8')
 	var.textConf = json.load(fileOld)
 	fileOld.close()
+	if 'dynamic_replace' not in var.textConf:
+		var.textConf['dynamic_replace'] = ['', []] 
+	if var.dynamicReplace == True:
+		var.dynamicReplace = var.textConf['dynamic_replace'][0]
+	var.dynamicReplaceOldList = []
+	var.dynamicReplaceNewList = var.textConf['dynamic_replace'][1] #元素不多时list查询效率更高
 
 def readFullWidthDic():
 	if not var.toFullWidth: return
@@ -355,7 +351,6 @@ def initArgs(args):
 		generateJisList()
 	elif var.subsJis:
 		generateSubsDic()
-	readTextConf()
 	# 正则
 	setRegDic(args['regDic'])
 	# 编码
@@ -391,9 +386,29 @@ def initArgs(args):
 			var.preLenScale = eval(var.preLenScale)
 		if isinstance(var.preLenAdd, str):
 			var.preLenAdd = eval(var.preLenAdd)
+	readTextConf()
+	# 处理动态替换
+	if var.dynamicReplace and isinstance(var.dynamicReplace, str):
+		#printTip('已开启动态替换')
+		var.dynamicReplace = re.compile(var.dynamicReplace)
+	else:
+		var.dynamicReplace = None
 	return 0
 
+def outputDone():
+	#if var.dynamicReplace:
+	#	printTip('动态替换原文:', var.dynamicReplaceOldList)
+	pass
+
 def extractDone():
+	if var.dynamicReplace:
+		count = len(var.dynamicReplaceOldList)
+		countNew = len(var.dynamicReplaceNewList)
+		if count > countNew:
+			printWarning(f'替换表可用元素不足，请在text_conf中添加{count - countNew}个')
+			count = countNew
+		printTip('动态替换:', var.dynamicReplaceOldList)
+		printTip('　　　　>', var.dynamicReplaceNewList[:count])
 	if var.tunnelJis:
 		generateTunnelJisMap()
 	elif var.subsJis:
@@ -472,7 +487,8 @@ def mainExtract(args, parseImp, initDone=None):
 		writeFormat()
 		printInfo('新建文件数:', var.outputCount)
 		var.curIO = var.ioExtra
-		writeFormat()
+		writeFormat(False)
+		outputDone()
 		writeCutoffDic()
 	else:
 		printError('未找到主目录')

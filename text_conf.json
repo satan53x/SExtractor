@@ -1,4 +1,5 @@
 {
+  "comment": "优先读取ctrl目录下的text_conf.json",
   "replace_before_split": {
       "[\r\n]+": "\r\n"
   },
@@ -9,5 +10,9 @@
     }
   },
   "orig_replace": {
-  }
+  },
+  "dynamic_replace": [
+    "",
+    ["➀", "➁", "➂", "➃", "➄", "➅", "➆", "➇", "➈"]
+  ]
 }

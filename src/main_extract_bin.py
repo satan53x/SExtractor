@@ -102,7 +102,7 @@ def parse():
 					if addr > len(data):
 						continue
 					var.addrFixer.listen(start, addr)
-					printDebug('发现地址:', f'{start:08X}: {addr:08X}')
+					#printDebug('发现地址:', f'{start:08X}: {addr:08X}')
 			if var.addrFixer.isEmpty():
 				var.addrFixer = None
 			else:
