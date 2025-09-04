@@ -43,8 +43,8 @@ def replaceOnceImp(content, lCtrl, lTrans):
 			if diff != 0 and 'preLen' in ctrl:
 				#需要修正
 				preData = bytearray(preData)
-				length = diff // ExVar.preLenScale + ctrl['preLen']
-				lenPos = start + ExVar.preLenOffset
+				length = diff // ExVar.preLenScale + ctrl['preLen'][0]
+				lenPos = ctrl['preLen'][1]
 				preData[lenPos:lenPos+ExVar.preLen] = length.to_bytes(ExVar.preLen, 'little')
 		strNew = preData + transData + content[contentIndex][end:]
 		content[contentIndex] = strNew

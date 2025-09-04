@@ -385,7 +385,8 @@ def initArgs(args):
 		if var.preLenOffset == None:
 			var.preLenOffset = -var.preLen
 		elif isinstance(var.preLenOffset, str):
-			var.preLenOffset = int(var.preLenOffset)
+			if var.preLenOffset not in ['start']:
+				var.preLenOffset = int(var.preLenOffset)
 		if isinstance(var.preLenScale, str):
 			var.preLenScale = eval(var.preLenScale)
 		if isinstance(var.preLenAdd, str):

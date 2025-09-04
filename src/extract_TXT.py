@@ -109,9 +109,14 @@ def searchLine(var:ParseVar):
 					if i in regItem[2]:
 						key = regItem[2][i]
 					if ExVar.preLen and not (key and key.startswith('nolen')):
-						lenPos = start + ExVar.preLenOffset
+						if ExVar.preLenOffset == 'start':
+							lenPos = r.start(0) #gourp 0为整个匹配，不仅是捕获分组
+						else:
+							lenPos = start + ExVar.preLenOffset
 						length = int.from_bytes(var.lineData[lenPos:lenPos+ExVar.preLen], 'little')
-						ctrl['preLen'] = length #原始记录的长度
+						# length 原始记录的长度
+						# lenPos 因为导入是从后往前，后边不会影响前边pos
+						ctrl['preLen'] = [length, lenPos] 
 						length = length * ExVar.preLenScale + ExVar.preLenAdd #实际需要提取的文本长度
 						oldEnd = end
 						if ExVar.preLenStrict: #严格按照长度提取
