@@ -1,0 +1,277 @@
+AST:
+    sample: |
+        00_skip=^$
+        01_skip=^[;*]
+        10_search=<WINDOW .*?NAME="(?P<name>.+?)"
+        11_search=<SELECT TEXT="(.+?)"
+        15_skip=^(?:<[^<>]+>)+$
+        20_search=(?P<unfinish>[^<>]+)
+        postSkip=^[A-Z;]
+        struct=para
+        sample=
+        <WINDOW NAME="春臣" IMAGE="name01.png">
+        「ちょっ……待って…………！」
+
+Artemis:
+    sample: |
+        00_skip=^\s*[*/]
+        01_skip=^\s*\[(?!name|sel_text)
+        02_skip=^\s*$
+        10_search=^\[name (?P<name>.+?)\]
+        11_search=^\[sel_text.*text="(.+?)"
+        12_search=^(?P<unfinish>.+)$
+        struct=para
+        sample=
+        [name 野真口]
+        「ここか……」
+Artemis_1:
+    sample: |
+        00_skip=^$
+        01_skip=^\s*(?!\s|"|name|{"rt2"|{"txruby")
+        15_search=^\s*name = {".+?", "(?P<name>.+?)"}
+        16_search=^\s*name = {"(?P<name>.+?)"}
+        20_search=^\s*"(?P<unfinish>.+?)"
+        struct=para
+        sample=
+            {
+                name = {虎鉄, 少年},
+                「んっ……？　開かない？」,
+                {rt2},
+            },
+
+CSV_Livemaker:
+    sample: |
+        00_skip=^$
+        10_search=^【(?P<name>.+?)】|(?P<unfinish>.+)\n|(.+)$
+        extractKey=^Original text$
+        writeOffset=1
+        pureText=0
+
+Cyberworks_JIS:
+    sample: |
+        00_skip=^$
+        10_search=^(?P<name>【.+?】)
+        15_search=^(?P<unfinish>[\S\s]+?)[\xFE]{0,1}$
+        extraData=readJIS
+        struct=para
+        sample=
+        <读取旧版JIS，本预设不处理控制段，提取后请自行处理\u>
+        <GBK写入不能保留控制段，需要保留请使用JIS隧道或替换，或修改提取正则在提取时排除>
+
+EntisGLS:
+    sample: |
+        00_skip=^"[\x00-\x7F]
+        01_search=^"(.*[。！…？「」、『―].*)"$
+        sample=
+        TXT二次提取去除控制文本，如果之前不是Tiny需要去掉首尾引号
+
+Krkr:
+    sample: |
+        00_skip=^\s*[;#/]
+        01_search=^【(?P<name>.*?)】(.+)$
+        02_search=^(.+)$
+        sample=
+        #voice snk0096
+        【悠】「……ごくり」
+Krkr_1:
+    sample: |
+        00_skip=^[*;]
+        01_skip=^\[(?!ns|sel)
+        02_search=^\[ns\]【(?P<name>.+?)】\[nse\]$
+        03_search=^\[sel\d+ text=\'(.+?)\'
+        04_search=^(?P<unfinish>.+?)\[r\]$
+        05_search=^(.+?)\[pcms\]$
+        sample=
+        [ns]【哲也】[nse]
+        「……さて、そろそろ行くか」[pcms]
+Krkr_Orcsoft:
+    sample: |
+        01_skip=^[*;]
+        02_skip=^\[(?!￥|名前|「|（)
+        10_search=^\[名前.+?id=【(?P<name>.+?)】
+        endStr=￥
+        ctrlStr=^[A-Za-z]|^シンボル|^――$|^「|^（
+        sample=
+        [名前 id=【？？】 file=m0001]
+        [「]隆彦さん、隆彦さん……」
+        [￥]
+
+RPGMV_RPGVX_System:
+    sample: |
+        00_skip=^<.+?>$
+        01_skip=^<code
+        02_skip=^<(?=bgm|bgs|se|battleb)
+        20_search=^<.+?>([^ -~][\S\s]*)$
+        extractKey=all
+        postSkip=_
+RPGVX_RPGMV_NotMap:
+    sample: |
+        00_skip=^<.+?>$
+        01_skip=^<code
+        02_skip=^<(?=bgm|bgs|se|battleb)
+        20_search=^<.+?>([^ -~][\S\s]*)$
+        extractKey=name,description,nickname,note,message1,message2,message3,message4
+        postSkip=_
+
+RenPy:
+    sample: |
+        00_skip=^\s*[#]
+        01_skip=^\s*(?:translate |old |voice )
+        10_search=^\s*new "(.+)"$
+        11_search=^\s*"?(?P<name>[^ "]+?)"? "(.+)"$
+        20_search=^\s*"(.+)"$
+
+SFA_AOS:
+    sample: |
+        00_skip=^\s*[#:ac-zA-Z0-9^%]
+        01_skip=^$
+        10_search=^\s*btnset.*?"slctwnd".*?"(.+?)"
+        11_skip=^\s*b
+        20_search=^\[(?P<name>.+?)\](.+)$
+        21_search=^(.+)$
+        sample=
+        cvon( "ba0000" )
+        [？？？]「鏑木亮様でお間違いないでしょうか」
+        <使用BIN引擎时需要勾选纯文本模式>
+
+U-MeSoft:
+    sample: |
+        01_skip=^$
+        10_search=^mes\("(?P<name>[^"]+)"
+        11_search=^saveset\("([^"]+)"
+        12_search=^menu\(.*?"([^"]+)"
+        13_search=^mesname\(.*?"([^"]+)"
+        15_skip=^[^"]
+        20_search=^"(.+)\$L"
+        21_search=^"(?P<unfinish>.+)\\n"
+        22_search=^"(.+)\\x0"
+
+Valkyria_dat_txt:
+    sample: |
+        00_skip=^$
+        10_search=^【(?P<name>.+?)】
+        11_search=^　(?P<predel_unfinish>.+)$
+        15_search=^(.+)(?<=」|）)$
+        16_search=^(?P<unfinish>.+)$
+        postSkip=^\\u
+        struct=para
+        sample=<tiny提取为txt后进行二次提取>
+Valkyria_odn:
+    sample: |
+        00_skip=^$
+        01_skip=^(?!【|%SetMessage|%SetSelect)
+        10_search=^【(?P<name>.+?)】
+        15_skip=^(?=【)
+        20_search=(?P<unfinish>(?:[\x81-\xFE].)+)
+        struct=para
+        sample=
+        %SetMessage( "/s――この物語に描かれているオナニーは、/r/s全て実践可能である――", 255, 255, 255 );
+
+Yuris_txt:
+    sample: |
+        00_skip=^[/#*]|^【
+        01_skip=^\\(?!VO|SEL\()
+        03_search=^.*\(ID:\d+\)(?P<name>【.+?】)(?P<msg>.+)$
+        04_search=^.*\(ID:\d+\)(?P<msg>.+)$
+        11_skip=^\\VO
+        12_search=(?<=\(|,)(?P<msg>[^,)]+)
+        sample=
+        \VO(RAS_MAHOEX2_01_0001)(ID:6363)【らすか＠？？？】「〜〜〜〜」
+
+_BIN_AdvSys3:
+    sample: |
+        00_skip=^[\S\s]{0,3}$
+        10_search=^[\S\s]{2}(?P<name>【[\S\s]+?】)\x00
+        20_search=^[\S\s]{2}([\x81-\xFC][\S\s]+?)\x00
+        preLen=2
+        separate=(\x53\x73)
+        addrFix=[\x00-\x03]\x4C([\x00-\xFF]{2}[\x00-\x10]\x00)
+        sample=
+        <preLen表示捕获分组之前记录的长度字节个数，需要符合分组内容的长度>
+        <addrFix仅影响导入，用于全文件匹配跳转字节，需要separate=(捕获分组)>
+
+_BIN_NSystem:
+    sample: |
+        10_search=^[\S\s][\x00-\x01][\S\s]{5}\x03(?P<nolenANDname>[A-Z]+)_[0-9]+\x00
+        20_search=^[\S\s][\x00-\x01][\S\s]{15}\x03([\x81-\xFC][\x20-\xFC]+?)\x00
+        preLen=2
+        preLenOffset=-18
+        preLenAdd=-27
+        separate=(\xDA\x07|\xD8\x07)
+        addrFix=^(?P<skip>[\S\s]{1112})|(?P<skip2>\xED\x03[\S\s]\x00\x03[\S\s]+)$|([\S\s]{3}\x00)
+        addrBase=0x458 + (readInt(data,0x14)+readInt(data,0x18)) * 4
+        
+        <addrBase支持语句>
+
+_BIN_Nexas:
+    sample: |
+        01_skip=^[\S\s]{0,3}$
+        02_skip=^[^@\x81-\xFC]
+        10_search=^[0-~]*(?P<pre_name>「[ 0-\xFC]+?)$
+        20_search=^[0-~]*([\x81-\xFC][ 0-\xFC]+?)$
+        checkJIS=[ 0-~]
+        ignoreDecodeError=1
+        postSkip=_.*[^」a-zA-Z]$|[0-9]$
+        separate=\x00
+        struct=para
+        sample=
+        <暴力匹配，日文仅允许双字节，每行结尾限定字符>
+
+_BIN_RealLive:
+    sample: |
+        00_skip=[^\x40-\xFE\x0A]{2}$
+        10_search=\x40[\x00-\xFF][\x00-\x3F]【(?P<name>[\x40-\xFE]+?)】([\x40-\xFE\x0A]*)$
+        11_search=\x40[\x00-\xFF][\x00-\x3F]([\x40-\xFE\x0A]+)$
+        20_search=^【(?P<name>[\x40-\xFE]+?)】([\x40-\xFE\x0A]*)$
+        21_search=^([\x40-\xFE\x0A]{4,})$
+        ignoreDecodeError=1
+        separate=\x23\x00
+        <引擎选RealLive时不要用这个正则，这是BIN暴力提取用的，RealLive引擎提取不到时才用这个>
+        <暴力匹配文本需要截断，如果需要变长，推荐在脚本解密后用VNT提取>
+        <仅匹配全角日文, 单个文件文本序号不超0x4040>
+
+_BIN_Tanaka:
+    sample: |
+        00_skip=^[\S\s]{0,3}$
+        10_search=[\S\s]\x25(?P<name>[\x81-\xFC][\x20-\xFC]+?)\x00|[\x01-\xFF]\x09(?P<unfinish>[ \[<\x81-\xFC][\x20-\xFC]{1,}?)\x00|[\S\s]\x24(\x00{4}[\x81-\xFC][\x20-\xFC]+?)\x00
+        postSkip=^　$
+        preLen=1
+        preLenOffset=-2
+        preLenStrict=False
+        separate=(\x02\x0A)
+        struct=para
+
+        <选项是以4个\x00开头，翻译需要进行保留>
+        <preLenStrict表示是否在提取时严格按照preLen的实际值设定分组长度>
+
+_BIN_Violent:
+    sample: |
+        00_skip=^[\S\s]{0,3}$
+        10_search=^([\x81-\xFC][\S\s]+)$
+        checkJIS=[\r\n]
+        ignoreDecodeError=1
+        separate=\x00
+        
+        <暴力匹配，日文仅允许双字节，单字节默认仅支持换行，如需更多半角字符请修改[\r\n]>
+
+_TXT_TwoLine:
+    sample: |
+        01_search=^●.+?●(.+)$
+        sample=
+        ○B000004C○「ふぅ、やっと昼休みか……」
+        ●B000004C●「ふぅ、やっと昼休みか……」
+
+_OutputAll:
+    sample: |
+        00_skip=^$
+        20_search=^([\s\S]+)$
+
+__Custom0:
+    sample: |
+        <Custom规则进行提取时会自动保存在config.ini中>
+
+__None:
+    sample: |
+        <还原为引擎预设>
+
+

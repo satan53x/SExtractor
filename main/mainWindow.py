@@ -8,6 +8,7 @@ import re
 import sys
 import ctypes
 import platform
+import yaml
 sys.path.append('./src')
 from main_extract_txt import mainExtractTxt
 from main_extract_bin import mainExtractBin
@@ -82,12 +83,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 					self.outputFileExtraBox.addItem(value)
 			self.engineConfig.endGroup()
 		# 设置匹配规则
-		self.regConfig = QSettings('src/reg.ini', QSettings.IniFormat)
-		self.regConfig.setIniCodec('utf-8')
-		groupList = self.regConfig.childGroups()
-		for group in groupList: 
-			#print(group)
-			self.regNameBox.addItem(group)
+		with open('src/reg.yaml', 'r', encoding='utf-8') as f:
+			self.regConfig = yaml.safe_load(f)
+		for name in self.regConfig.keys(): 
+			self.regNameBox.addItem(name)
 		#刷新
 		self.configManager.changeConfigSeq(0)
 
@@ -194,21 +193,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 			if textAll:
 				self.setSampleText(textAll)
 				return
-		self.regConfig.beginGroup(regName)
-		textPart0 = ''
-		textPart1 = ''
-		textPart2 = ''
-		for key in self.regConfig.childKeys():
-			value = self.regConfig.value(key)
-			text = key + '=' + value + '\n'
-			if re.match(r'\d', key):
-				textPart0 += text
-			elif key.startswith('sample'):
-				textPart2 += text
-			else:
-				textPart1 += text
-		self.regConfig.endGroup()
-		self.setSampleText(textPart0 + textPart1 + textPart2)
+		item = self.regConfig[regName]
+		self.setSampleText(item['sample'])
 		
 	def setSampleText(self, value):
 		if value:
