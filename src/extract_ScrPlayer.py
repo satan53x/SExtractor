@@ -52,7 +52,16 @@ None,
 },
 ]
 # ---------------- Engine: ScrPlayer -------------------
+def init():
+	charTable = None
+	if ExVar.extraData == 'fixOrig':
+		key = '!?｡｢｣､･ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝﾞﾟ'
+		value = '！？　。「」、…をぁぃぅぇぉゃゅょっーあいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわん゛゜'
+		charTable = str.maketrans(key, value)
+	return charTable
+
 def parseImp(content, listCtrl, dealOnce):
+	CharTable = init()
 	lastCtrl = None
 	var = ParseVar(listCtrl, dealOnce)
 	var.OldEncodeName = ExVar.OldEncodeName
@@ -70,6 +79,9 @@ def parseImp(content, listCtrl, dealOnce):
 			if cmd.code == MessageCode and i == 0 and len(ctrls) == 1:
 				ctrls[0]['name'] = True # 对话的参数0指向名字
 			lastCtrl = dealLastCtrl(lastCtrl, ctrls, var.contentIndex)
+			if CharTable and ctrls and len(ctrls) >= 1:
+				text = ExVar.listOrig[-1].translate(CharTable)
+				ExVar.listOrig[-1] = text
 
 # -----------------------------------
 def replaceOnceImp(content, lCtrl, lTrans):
