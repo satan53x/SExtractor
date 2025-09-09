@@ -325,7 +325,7 @@ def showProgress(value, max=100):
 		var.window.statusBar.sendProgress(value, max)
 
 def initArgs(args):
-	var.clear()
+	var.clearBeforeExtract()
 	# 打印
 	var.printSetting = args['print']
 	ret = chooseEngine(args)
@@ -433,6 +433,7 @@ def getFiles(dirpath, reverse=False):
 	return files
 
 def parse(parseImp):
+	var.clearBeforeParse()
 	try:
 		parseImp()
 	except Exception as ex:

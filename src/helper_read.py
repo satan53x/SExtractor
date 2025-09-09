@@ -89,21 +89,10 @@ def replaceTransAll():
 		replaceValueRE(var.transDic, replaceDic)
 
 # --------------------------- 读 ---------------------------------
-def readInit():
-	#var.dynamicReplaceOldList.clear() #暂时不清空，可以跨文件
+def readFormat():
+	var.clearBeforeRead()
 	setIOFileName(var.io)
 	setIOFileName(var.ioExtra)
-	var.isInput = False
-	var.transDic.clear()
-	var.transDicRN.clear()
-	var.allOrig.clear()
-	var.transDicAppend.clear()
-	var.transDicRNAppend.clear()
-	var.allOrigAppend.clear()
-	var.appendDirList = ['']
-
-def readFormat():
-	readInit()
 	inputDirpath = os.path.join(var.workpath, var.inputDir)
 	if var.textAppend:
 		#检查是否存在append, 最大99

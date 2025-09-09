@@ -50,8 +50,6 @@ def write():
 		var.outputCount += 1
 
 def parse():
-	var.addrList = []
-	var.addrFixer = None
 	#print('解析文件: '+var.filename)
 	fileOld = read()
 	if var.readFileDataImp:
@@ -65,9 +63,6 @@ def parse():
 		var.insertContent.clear()
 	fileOld.close()
 	if var.addrFix:
-		if isinstance(var.addrFix, str):
-			var.addrFix = var.addrFix.encode(var.OldEncodeName)
-			var.addrFix = re.compile(var.addrFix)
 		#进行地址修正的检测
 		if not var.addrList:
 			if not var.addSeparate:
@@ -81,28 +76,25 @@ def parse():
 		if var.addrList:
 			data = b''.join(var.content) #重组
 			#计算基础地址
-			baseAddr = 0
+			addrBase = 0
 			if isinstance(var.addrBase, str):
-				baseAddr = eval(var.addrBase) #比如字符串data[4:8]
+				addrBase = eval(var.addrBase) #比如字符串data[4:8]
 			else:
-				baseAddr = var.addrBase
-			#查找地址指针
-			var.addrFixer = AddrFixer(baseAddr)
-			groupDic = getPatternGroupDict(var.addrFix)
-			iter = var.addrFix.finditer(data)
-			for r in iter:
-				for i in range(1, len(r.groups())+1):
-					if r.group(i) == None: continue
-					if i in groupDic and groupDic[i].startswith('skip'):
-						continue
-					start = r.start(i)
-					end = r.end(i)
-					addr = data[start:end]
-					addr = int.from_bytes(addr, 'little')
-					if addr > len(data):
-						continue
-					var.addrFixer.listen(start, addr)
-					#printDebug('发现地址:', f'{start:08X}: {addr:08X}')
+				addrBase = var.addrBase
+			printDebug('基础地址:', f'{addrBase:X}')
+			var.addrFixer = AddrFixer(addrBase)
+			#第一次匹配
+			if var.addrFix:
+				if isinstance(var.addrFix, str):
+					var.addrFix = var.addrFix.encode(var.OldEncodeName)
+					var.addrFix = re.compile(var.addrFix)
+				dealAddrFix(data, var.addrFix)
+			#第二次
+			if var.addrFix2:
+				if isinstance(var.addrFix2, str):
+					var.addrFix2 = var.addrFix2.encode(var.OldEncodeName)
+					var.addrFix2 = re.compile(var.addrFix2)
+				dealAddrFix(data, var.addrFix2)
 			if var.addrFixer.isEmpty():
 				var.addrFixer = None
 			else:
@@ -117,6 +109,24 @@ def parse():
 		#filepath = os.path.join(var.workpath, var.filename+var.Postfix)
 		#if os.path.exists(filepath):
 			#os.remove(filepath)
+
+def dealAddrFix(data, addrFix):
+	#查找地址指针
+	groupDic = getPatternGroupDict(addrFix)
+	iter = addrFix.finditer(data)
+	for r in iter:
+		for i in range(1, len(r.groups())+1):
+			if r.group(i) == None: continue
+			if i in groupDic and groupDic[i].startswith('skip'):
+				continue
+			start = r.start(i)
+			end = r.end(i)
+			addr = data[start:end]
+			addr = int.from_bytes(addr, 'little')
+			if addr > len(data):
+				continue
+			var.addrFixer.listen(start, addr)
+			#printDebug('发现地址:', f'{start:08X}: {addr:08X}')
 
 def initDone():
 	var.contentSeparate = var.contentSeparate.encode('latin-1')

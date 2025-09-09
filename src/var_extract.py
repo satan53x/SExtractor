@@ -24,20 +24,12 @@ class ExtractVar():
 	partMode = 0 # 0 单json; 1 多json
 	outputDir = 'ctrl'
 	inputDir = 'ctrl'
-	appendDirList = []
 
 	#-------------------
-	transDic = {} #字典的value为字符串list
-	transDicRN = {} #读取写入时的原本字典，不参与write()，模式01则不需要
-	allOrig = []
 	curOrig = '' #当前原文
-	transDicAppend = {}
-	transDicRNAppend = {}
-	allOrigAppend = []
 
 	filename = ''
 	content = None
-	isInput = False #是否写入译文
 	isStart = 0 #1-提取第一个文件 2-提取中 3-提取最后一个文件 0-提取结束
 	listOrig = [] #原文表
 	listCtrl = [] #控制表
@@ -46,6 +38,20 @@ class ExtractVar():
 	fullWidthDic = {} #全角转半角字典
 	dynamicReplaceOldList = []
 	dynamicReplaceNewList = []
+
+	def clearBeforeRead(self): #每次读取前清除
+		self.isInput = False #是否写入译文
+		self.transDic = {} #字典的value为字符串list
+		self.transDicRN = {} #读取写入时的原本字典，不参与write()，模式01则不需要
+		self.allOrig = []
+		self.transDicAppend = {}
+		self.transDicRNAppend = {}
+		self.allOrigAppend = []
+		self.appendDirList = ['']
+	
+	def clearBeforeParse(self): #每个文件开始解析前清除
+		self.addrList = []
+		self.addrFixer = None #地址修正器
 
 	#-------------------
 	engineName = ''
@@ -91,13 +97,11 @@ class ExtractVar():
 	binEncodeValid = False #bin模式下是否应用编码
 	useStructPara = False #默认开启struct=para
 	cutoffByOrig = False #截断字典以orig为key
-	addrFix = '' #地址修正的正则，仅用于bin
-	addrBase = 0 #地址基础偏移，可以为字符串如addr4,0x10
 	textAppend = False #文本追加模式
 	serialSearch = True #使用顺序搜索，而不是finditer
 
 	#-------------------
-	def clear(self):
+	def clearBeforeExtract(self): #每次提取前清除
 		self.OldEncodeName = 'cp932'
 		self.NewEncodeName = 'gbk'
 		self.newline = None
@@ -105,8 +109,6 @@ class ExtractVar():
 		self.insertContent = {} #需要插入的内容
 		self.inputCount = 0 #导出文件个数
 		self.outputCount = 0 #导出文件个数
-		self.addrList = []
-		self.addrFixer = None #地址修正器
 		#各引擎参数
 		self.startline = 0 #起始行数
 		self.extractKey = ''
@@ -136,5 +138,8 @@ class ExtractVar():
 		self.preLenFix = True #是否修正
 		self.preLenStrict = True #是否严格按长度提取
 		self.dynamicReplace = None #原文动态替换和还原
+		self.addrFix = '' #地址修正的正则，仅用于bin
+		self.addrFix2 = '' #地址修正2
+		self.addrBase = 0 #地址基础偏移，可以为字符串如addr4,0x10
 		
 gExtractVar = ExtractVar()
