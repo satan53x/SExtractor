@@ -208,7 +208,10 @@ def readFormatItemList():
 			orig = itemOrig['name']
 			if orig not in var.transDic:
 				var.transDic[orig] = []
-			var.transDic[orig].append(itemTrans['name'])
+			if 'name' in itemTrans:
+				var.transDic[orig].append(itemTrans['name'])
+			else:
+				printError('译文中缺少name:', orig)
 		if 'message' in itemOrig: #对话
 			splitToTransDic(itemOrig['message'], itemTrans['message'])
 	fileAllOrig.close()

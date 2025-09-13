@@ -88,13 +88,13 @@ def parse():
 				if isinstance(var.addrFix, str):
 					var.addrFix = var.addrFix.encode(var.OldEncodeName)
 					var.addrFix = re.compile(var.addrFix)
-				dealAddrFix(data, var.addrFix)
+				searchAddr(data, var.addrFix)
 			#第二次
 			if var.addrFix2:
 				if isinstance(var.addrFix2, str):
 					var.addrFix2 = var.addrFix2.encode(var.OldEncodeName)
 					var.addrFix2 = re.compile(var.addrFix2)
-				dealAddrFix(data, var.addrFix2)
+				searchAddr(data, var.addrFix2)
 			if var.addrFixer.isEmpty():
 				var.addrFixer = None
 			else:
@@ -110,7 +110,7 @@ def parse():
 		#if os.path.exists(filepath):
 			#os.remove(filepath)
 
-def dealAddrFix(data, addrFix):
+def searchAddr(data, addrFix):
 	#查找地址指针
 	groupDic = getPatternGroupDict(addrFix)
 	iter = addrFix.finditer(data)
