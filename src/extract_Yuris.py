@@ -227,8 +227,8 @@ class DataManager():
 				if textType == 0:
 					textType = 10
 				elif len(self.cmdList) > 0:
-					if self.cmdList[-1][textType] == 0:
-						self.cmdList[-1][textType] = 10
+					if self.cmdList[-1][2] == 0:
+						self.cmdList[-1][2] = 10
 			#正常保存字节
 			self.cmdList.append([code, count, textType])
 
@@ -301,6 +301,7 @@ class DataManager():
 		if ExVar.endStr:
 			lst = ExVar.endStr.split(',')
 			self.codeEndpara = [int(c, 16) for c in lst]
+		#self.codeEndpara.extend(self.codeSel) #sel也会中断段落
 		#header
 		start = 0
 		end = self.headerLen
@@ -445,8 +446,8 @@ class DataManager():
 				if textType == 0:
 					textType = 10
 				elif len(self.cmdList) > 0:
-					if self.cmdList[-1][textType] == 0:
-						self.cmdList[-1][textType] = 10
+					if self.cmdList[-1][2] == 0:
+						self.cmdList[-1][2] = 10
 			pos += headLen
 			pos += count * self.OneParaLen
 			#正常保存字节
