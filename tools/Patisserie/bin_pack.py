@@ -104,8 +104,8 @@ def pack_files_to_bin(input_folder, output_file, compress=True):
 def main():
     """主函数"""
     if len(sys.argv) != 3:
-        print("用法: python 1.py 需要封包文件夹 封包文件名.bin")
-        print("示例: python 1.py ./images output.bin")
+        print("用法: python bin_pack.py 需要封包文件夹 封包文件名.bin")
+        print("示例: python bin_pack.py ./images output.bin")
         sys.exit(1)
     
     input_folder = sys.argv[1]
