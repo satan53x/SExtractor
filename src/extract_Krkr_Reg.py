@@ -1,7 +1,7 @@
 import re
 from common import *
 
-from extract_TXT import ParseVar, searchLine, initParseVar
+from extract_TXT import ParseVar, searchLine, initParseVar, GetRegList
 from extract_TXT import replaceOnceImp as replaceOnceImpTXT
 
 def initExtra():
@@ -21,9 +21,9 @@ def initExtra():
 		sepList = sepStr.split(',')
 	if not extractKey:
 		extractKey = '^(?P<unfinish>[\\S\\s]+)$'
-	regList = [
-		[re.compile(extractKey), 'search']
-	]
+	regList = GetRegList({
+		'10_search': extractKey
+	}.items())
 	return re.compile(endStr), re.compile(ctrlStr), sepList, regList
 
 # ---------------- Group: Krkr Split -------------------

@@ -194,7 +194,7 @@ def searchLine(var:ParseVar):
 				break #已匹配则停止
 	return ctrls
 
-def GetRegList(items, OldEncodeName):
+def GetRegList(items, OldEncodeName=None):
 	lst = []
 	for key, value in items:
 		if OldEncodeName and ExVar.pureText == False:

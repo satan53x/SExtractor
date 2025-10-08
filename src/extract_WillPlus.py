@@ -1,7 +1,7 @@
 import re
 from common import *
 from extract_BIN import replaceOnceImp as replaceOnceImpBIN
-from extract_TXT import searchLine, ParseVar
+from extract_TXT import searchLine, ParseVar, GetRegList
 
 # ---------------- Engine: WillPlus -------------------
 def parseImp(content, listCtrl, dealOnce):
@@ -9,13 +9,13 @@ def parseImp(content, listCtrl, dealOnce):
 	var.OldEncodeName = ExVar.OldEncodeName
 	#print(len(content))
 	regLists = [None, None]
-	regLists[0] = [
-		[re.compile(b'^[^\0](?P<name>.*?)\0'), 'search']
-	]
-	regLists[1] = [
-		[re.compile(b'^%[A-Z0-9]+(.*?)%[A-Z0-9]+%K'), 'search'],
-		[re.compile(b'^(.*?)%K'), 'search']
-	]
+	regLists[0] = GetRegList({
+		'10_search': '^[^\0](?P<name>.*?)\0'
+	}.items(), var.OldEncodeName)
+	regLists[1] = GetRegList({
+		'10_search': '^%[A-Z0-9]+(.*?)%[A-Z0-9]+%K',
+		'11_search': '^(.*?)%K',
+	}.items(), var.OldEncodeName)
 	ExVar.startline = 1
 	textType = -1
 	for contentIndex in range(len(content)):
