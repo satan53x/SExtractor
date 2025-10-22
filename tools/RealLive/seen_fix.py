@@ -93,6 +93,9 @@ XorTable = {
 	#ANGEL MAGISTER
 	58: bytearray.fromhex('E9 0F C9 5D 9F 09 51 30 A1 60 DE 16 5A 23 81 DD'),
 
+	#Scramble Heart
+	59: bytearray.fromhex('62 0E 26 6E 6F F0 A6 18 CB EB A9 74 2D E6 F3 1E'),
+
 	# >>>>>>> Made by `Summer_Adrenk` & `先依`
 	#巨乳JKアイドル声優寝取られスタジオ
 	61: bytearray.fromhex('EF 66 B0 2E 82 13 5D 38 BE 68 E5 1D 5A 3E AD C6'),	
