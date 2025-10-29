@@ -115,6 +115,8 @@ def writeFormat(recalc=True):
 		writeFormatListCopyKey(TMP.allOrig, True)
 	elif fmt == 11:
 		writeFormatListCopyKey(TMP.allOrig, False)
+	elif fmt == 12:
+		writeFormatXlsxListOrigTrans(TMP.allOrig)
 
 def writeFormatDirect(targetJson):
 	printInfo('输出Json:', len(targetJson), var.curIO.ouputFileName)
@@ -222,3 +224,13 @@ def writeFormatListCopyKey(targetJson, mergeName):
 			tmpList.append(newItem)
 	json.dump(tmpList, fileOutput, ensure_ascii=False, indent=2)
 	fileOutput.close()
+
+def writeFormatXlsxListOrigTrans(targetJson):
+	printInfo('输出Xlsx:', len(targetJson), var.curIO.ouputFileName)
+	data = []
+	for item in targetJson:
+		name = item['name'] if 'name' in item else ''
+		message = item['message'] if 'message' in item else ''
+		data.append([name, message, name, message])
+	df = pandas.DataFrame(data, columns=['Name', 'Text', 'Trans Name', 'Trans Text'], dtype=str)
+	df.to_excel(filepathOrig, index=False, engine='openpyxl')

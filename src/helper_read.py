@@ -15,7 +15,7 @@ def setIOFileName(io:IOConfig):
 		elif io.outputFormat == 2 or io.outputFormat == 7:
 			io.ouputFileName = 'all.orig.json'
 			io.inputFileName = 'all.trans.json'
-		elif io.outputFormat == 8:
+		elif io.outputFormat == 8 or io.outputFormat == 12:
 			io.ouputFileName = 'transDic.output.xlsx'
 			io.inputFileName = 'transDic.xlsx'
 		elif io.outputFormat == 9:
@@ -28,7 +28,7 @@ def setIOFileName(io:IOConfig):
 		if io.isTxt:
 			io.ouputFileName = var.filename + '.txt'
 			io.inputFileName = var.filename + '.txt'
-		elif io.outputFormat == 8:
+		elif io.outputFormat == 8 or io.outputFormat == 12:
 			io.ouputFileName = var.filename + '.xlsx'
 			io.inputFileName = var.filename + '.xlsx'
 		else:
@@ -135,6 +135,8 @@ def readDiffFromat():
 		readFormatTxtTwoLine()
 	elif fmt == 10 or fmt == 11:
 		readFormatDicList()
+	elif fmt == 12:
+		readFormatXlsxListOrigTrans()
 
 def readFormatDic():
 	#读入transDic字典
@@ -242,7 +244,7 @@ def readFormatList():
 
 def readFormatXlsx():
 	#读入transDic字典的xlsx
-	df = pandas.read_excel(filepathTrans)
+	df = pandas.read_excel(filepathTrans, dtype=str)
 	for index, row in df.iterrows():
 		value = row['Value']
 		if pandas.notna(value):
@@ -310,3 +312,20 @@ def readFormatDicList():
 		for orig, trans in item.items():
 			splitToTransDic(orig, trans)
 	fileAll.close()
+
+def readFormatXlsxListOrigTrans():
+	#读入allOrig的xlsx
+	df = pandas.read_excel(filepathTrans, dtype=str)
+	for index, row in df.iterrows():
+		for i in (0, 1): #列: name, msg
+			orig = row.iloc[i]
+			trans = row.iloc[i + 2]
+			if pandas.notna(orig):
+				if pandas.isna(trans):
+					trans = ''
+				if orig not in var.transDic:
+					var.transDic[orig] = [trans]
+				else:
+					var.transDic[orig].append(trans)
+	printInfo('读入Xlsx: ', len(var.transDic), var.curIO.inputFileName)
+	var.isInput = True

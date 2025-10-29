@@ -32,12 +32,12 @@ def initXlsx(fileOld):
 	sheetName = xls.sheet_names[0]
 	fileOld.seek(0)
 	if ExVar.extraData == 'nohead':
-		content = pd.read_excel(fileOld, header=None)
+		content = pd.read_excel(fileOld, header=None, dtype=str)
 		contentNames = None
 		row = content.iloc[0]
 		colMax = len(row)
 	else:
-		content = pd.read_excel(fileOld)
+		content = pd.read_excel(fileOld, dtype=str)
 		contentNames = content.columns.tolist()
 		colMax = len(contentNames)
 	setValid(contentNames, colMax)
