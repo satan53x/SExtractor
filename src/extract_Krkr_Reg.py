@@ -8,6 +8,7 @@ def initExtra():
 	endStr = ExVar.endStr
 	ctrlStr = ExVar.ctrlStr
 	sepStr = ExVar.sepStr
+	mergeStr = ExVar.mergeStr
 	extractKey = ExVar.extractKey
 	if not endStr:
 		endStr = 'np'
@@ -19,16 +20,18 @@ def initExtra():
 		sepList = ['[', ']']
 	elif isinstance(sepStr, str):
 		sepList = sepStr.split(',')
+	if mergeStr: #可以为None
+		mergeStr = re.compile(mergeStr)
 	if not extractKey:
 		extractKey = '^(?P<unfinish>[\\S\\s]+)$'
 	regList = GetRegList({
 		'10_search': extractKey
 	}.items())
-	return re.compile(endStr), re.compile(ctrlStr), sepList, regList
+	return re.compile(endStr), re.compile(ctrlStr), mergeStr, sepList, regList
 
 # ---------------- Group: Krkr Split -------------------
 def parseImp(content, listCtrl, dealOnce):
-	endStr, ctrlStr, sepList, inlineRegList = initExtra()
+	endStr, ctrlStr, mergeStr, sepList, inlineRegList = initExtra()
 	addSep = ExVar.extraData == 'addSep'
 	var = ParseVar(listCtrl, dealOnce)
 	initParseVar(var)
@@ -50,7 +53,7 @@ def parseImp(content, listCtrl, dealOnce):
 			continue
 		#print(var.lineData)
 		#搜索
-		matches = findNested(var.lineData, open_char=sepList[0], close_char=sepList[1], add_outer=True, add_sep=addSep)
+		matches = findNested(var.lineData, open_char=sepList[0], close_char=sepList[1], add_outer=True, add_sep=addSep, check_inner=mergeStr)
 		for start, end in matches:
 			text = var.lineData[start:end]
 			if endStr.search(text):
@@ -71,28 +74,35 @@ def parseImp(content, listCtrl, dealOnce):
 def replaceOnceImp(content, lCtrl, lTrans):
 	return replaceOnceImpTXT(content, lCtrl, lTrans)
 
-def findNested(text, open_char='[', close_char=']', add_outer=False, add_sep=False):
+def findNested(text, open_char='[', close_char=']', add_outer=False, add_sep=False, check_inner=None):
 	start = 0
 	count = 0
 	pre = 0
 	pos = 0
+	skip_next = False
 	results = []
 	for pos, char in enumerate(text):
 		if char == open_char:
 			if count == 0:
-				start = pos
-				if add_outer and pre < pos:
-					results.append((pre, pos))
-					pre = pos
+				if check_inner and check_inner.search(text[pos+1:]):
+					skip_next = True #不进行加入
+				else:
+					start = pos
+					if add_outer and pre < pos:
+						results.append((pre, pos))
+						pre = pos
 			count += 1
 		elif char == close_char:
 			count -= 1
 			if count == 0:
-				if add_sep:
-					results.append((start, pos + 1))
+				if skip_next:
+					skip_next = False
 				else:
-					results.append((start + 1, pos))
-				pre = pos + 1
+					if add_sep:
+						results.append((start, pos + 1))
+					else:
+						results.append((start + 1, pos))
+					pre = pos + 1
 	if add_outer and pre < pos:
 		results.append((pre, pos + 1))
 		pre = pos + 1
