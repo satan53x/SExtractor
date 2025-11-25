@@ -199,7 +199,6 @@ class ConfigManager():
 		else:
 			self.mainConfig.remove(group+'_nameList')
 		self.mainConfig.setValue('regIndex', mainWindow.regIndex)
-		self.mainConfig.setValue('regName', mainWindow.regName)
 		self.mainConfig.setValue('maxCountPerLine', args['maxCountPerLine'])
 		if mainWindow.regNameTab.isEnabled():
 			regName = mainWindow.regNameBox.currentText()
@@ -216,6 +215,8 @@ class ConfigManager():
 					regName = mainWindow.regNameBox.itemText(index)
 					self.mainConfig.setValue('reg' + regName, textAll)
 					mainWindow.regNameBox.setCurrentIndex(index)
+		mainWindow.regName = regName
+		self.mainConfig.setValue('regName', mainWindow.regName)
 		self.mainConfig.setValue('encodeIndex', mainWindow.encodeReadBox.currentIndex())
 		self.mainConfig.setValue('encodeWriteIndex', mainWindow.encodeWriteBox.currentIndex())
 		#窗口大小
