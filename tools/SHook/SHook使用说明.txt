@@ -1,5 +1,5 @@
 只需要复制SHook.dll和SHook.ini。
-用类似Xenos的注入工具注入即可；也可和其他插件配合使用，比如支持Plugin文件夹的kDays.dll可以自动注入。
+用注入工具注入即可（简单的提供一个Loader.exe，也可以自行下载其他类似工具）；也可和其他插件配合使用，比如支持Plugin文件夹的kDays.dll可以自动注入。
 调试信息可用DebugView工具查看。
 
 ini配置：
