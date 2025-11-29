@@ -230,6 +230,20 @@ _BIN_RealLive:
         <暴力匹配文本需要截断，如果需要变长，推荐在脚本解密后用VNT提取>
         <仅匹配全角日文, 单个文件文本序号不超0x4040>
 
+_BIN_SYSTEM-ε:
+    sample: |
+        00_skip=^\x00
+        19_search=^[^\x00]\x81\x94(?P<name>[\S\s]+?)\x00
+        20_search=^[^\x00]([\S\s]+?)\x00
+        preLen=1
+        separate=(\x00\x04\x00)
+        preLenStrict=0
+        preLenOffset=start
+        addrFix=\x1d\x08[^\x00][\s\S]([\S\s]{3}\x00)|\x30\x08\x00\x00([\S\s]{3}\x00)[^\x00]|\x2e\x0c[\s\S]{6}([\S\s]{3}\x00)|\x2f\x08\x00\x00([\S\s]{3}\x00)\x1c
+        addrFix2=(?<!\x0c\x08\x00\x00)\x0d\x08[\s\S]{2}([\S\s]{3}\x00)|\x00\x00([\S\s]{3}\x00)\x24\x08
+        ignoreDecodeError=1
+        startline=1
+
 _BIN_Tanaka:
     sample: |
         00_skip=^[\S\s]{0,3}$
