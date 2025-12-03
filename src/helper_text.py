@@ -8,7 +8,7 @@ __all__ = ['splitToTransDic', 'splitToTransDicAuto',
 		'generateJisList', 'generateTunnelJis', 'generateTunnelJisMap',
 		'generateSubsDic', 'generateSubsJis', 'generateSubsConfig',
 		'writeSubsConfig',
-		'replaceValue', 'replaceValueRE', 'replaceValueFull', 
+		'replaceValue', 'replaceValueRE', 'replaceValueFull', 'replaceValueTranslate',
 		'keepFirstTrans',
 		'getBytes', #'OldEncodeName',
 		'keepBytes', 'TextConfig'
@@ -513,6 +513,12 @@ def replaceValueFull(transDic, replaceDic):
 			for i, t in enumerate(trans):
 				if t == old:
 					trans[i] = new
+
+def replaceValueTranslate(transDic, replaceDic):
+	transTable = str.maketrans(replaceDic)
+	for orig, trans in transDic.items():
+		for i, t in enumerate(trans):
+			trans[i] = t.translate(transTable)
 
 #只保留第一个，用于输出
 def keepFirstTrans(transDic):
