@@ -1,0 +1,39 @@
+GRP.vfa 结构（当前文件）
+-----------------------
+
+文件总长: 0x1D1B4B79 (488,328,057)
+
+布局（偏移 = 十六进制）：
+0x00000000  "RIFF"
+0x00000004  RIFF size = 0x1D1B4B71 (总长 - 8)
+0x00000008  "VFA1"
+
+0x0000000C  Chunk "hdri"
+0x00000010  size = 0x00000010
+0x00000014  payload:
+             0x00010000
+             0x00000001
+             "dent"
+             "data"
+
+0x00000024  Chunk "data"
+0x00000028  size = 0x1D18378D (488,126,349)
+0x0000002C  payload起点（数据区基准） —— 所有文件内容顺序拼接
+            payload末尾 = 0x1D1837B9
+
+0x1D1837B9  Chunk "dent"
+0x1D1837BD  size = 0x000313B8 (201,656)
+0x1D1837C1  payload起点（目录表）
+            payload末尾 = 0x1D1B4B79 (= 文件末尾)
+
+目录表项格式
+- 每项: 4 字节 tag + 4 字节 size + payload[size]
+- tag = "dir "：payload 为 UTF-16LE 路径（含末尾 0）；首项 size=2，表示根目录空串。
+- tag = "file"：payload = UTF-16LE 名字（含末尾 0） + 4 个 dword。
+  dword 顺序: [data_offset, data_length, timestamp_like, flags]
+  · offset 相对 data 负载起点 (0x2C)
+  · flags 在本文件均为 0
+
+脚本参考
+- `extract.py` 将 data 按目录表拆到 `extracted/`，并输出 `index.json`（记录上述字段）。
+- `repack.py` 用 `extracted/` 与 `index.json` 重建 `grp_repack.vfa`，应与原始文件字节一致。
