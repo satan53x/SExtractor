@@ -148,14 +148,14 @@ U-MeSoft:
 
 Valkyria_dat_txt:
     sample: |
-        00_skip=^$
-        10_search=^【(?P<name>.+?)】
-        11_search=^　(?P<predel_unfinish>.+)$
-        15_search=^(.+)(?<=」|）)$
-        16_search=^(?P<unfinish>.+)$
+        10_search=^【(?P<name>.+?)】$
+        20_search=^(?P<end_unfinish>.*[」）])$
+        21_search=^(?P<start_unfinish>[「（].*)$
+        30_search=^　?(.+)$
         postSkip=^\\u
-        struct=para
-        sample=<tiny提取为txt后进行二次提取>
+        
+        <用tools/Valkyria工具提取为json后进行二次提取，引擎选择JSON>
+
 Valkyria_odn:
     sample: |
         00_skip=^$
