@@ -142,5 +142,6 @@ class ExtractVar():
 		self.addrFix = '' #地址修正的正则，仅用于bin
 		self.addrFix2 = '' #地址修正2
 		self.addrBase = 0 #地址基础偏移，可以为字符串如addr4,0x10
+		self.section = None #内容分区区间，eval字符串
 		
 gExtractVar = ExtractVar()

@@ -14,6 +14,23 @@ def read():
 	var.inputCount += 1
 	return fileOld
 
+def rebuildContent():
+	#反转义
+	separate = var.contentSeparate.decode('unicode_escape').encode('latin-1')
+	#重组
+	data = bytearray()
+	length = len(var.content)
+	for i in range(length):
+		if i in var.insertContent:
+			data.extend(var.insertContent[i])
+		data.extend(var.content[i])
+		if i < length-1:
+			if var.addSeparate:
+				data.extend(separate)
+	if length in var.insertContent:
+		data.extend(var.insertContent[length])
+	return data
+
 def write():
 	#print('write bin')
 	#if len(var.listOrig) == 0:
@@ -23,24 +40,12 @@ def write():
 	if var.isInput == True:
 		#写入译文
 		replace()
-		#反转义
-		separate = var.contentSeparate.decode('unicode_escape').encode('latin-1')
 		#新文件
 		#print(len(var.content))
 		filepath = os.path.join(var.workpath, 'new', var.filename+var.Postfix)
 		#print(filepath)
 		fileNew = open(filepath, 'wb')
-		data = bytearray()
-		length = len(var.content)
-		for i in range(length):
-			if i in var.insertContent:
-				data.extend(var.insertContent[i])
-			data.extend(var.content[i])
-			if i < length-1:
-				if var.addSeparate:
-					data.extend(separate)
-		if length in var.insertContent:
-			data.extend(var.insertContent[length])
+		data = rebuildContent()
 		if var.addrFixer:
 			var.addrFixer.apply(data)
 			var.addrFixer = None
@@ -55,12 +60,22 @@ def parse():
 	if var.readFileDataImp:
 		var.content, var.insertContent = var.readFileDataImp(fileOld, var.contentSeparate)
 	else:
+		var.insertContent.clear()
 		data = fileOld.read()
 		if var.contentSeparate == b'':
 			var.content = [bytearray(data)]
+		elif var.section:
+			result = eval(var.section)
+			if isinstance(result, int):
+				start = result
+				end = len(data)
+			else:
+				start, end = result
+			var.content = re.split(var.contentSeparate, data[start:end])
+			var.insertContent[0] = data[:start]
+			var.insertContent[len(var.content)] = data[end:]
 		else:
 			var.content = re.split(var.contentSeparate, data)
-		var.insertContent.clear()
 	fileOld.close()
 	if var.addrFix:
 		#进行地址修正的检测
@@ -74,7 +89,7 @@ def parse():
 			else:
 				printWarning('addrFix仅在separate是捕获分组时有效')
 		if var.addrList:
-			data = b''.join(var.content) #重组
+			data = rebuildContent() #重组
 			#计算基础地址
 			addrBase = 0
 			if isinstance(var.addrBase, str):
