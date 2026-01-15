@@ -84,6 +84,8 @@ def parse():
 				#自动生成addr list，仅在addSeparate为False时
 				addr = 0
 				for i, lineData in enumerate(var.content):
+					if i in var.insertContent:
+						addr += len(var.insertContent[i])
 					var.addrList.append(addr)
 					addr += len(lineData)
 			else:
