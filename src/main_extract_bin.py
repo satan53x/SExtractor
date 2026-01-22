@@ -62,18 +62,21 @@ def parse():
 	else:
 		var.insertContent.clear()
 		data = fileOld.read()
-		if var.contentSeparate == b'':
-			var.content = [bytearray(data)]
-		elif var.section:
+		if var.section:
 			result = eval(var.section)
 			if isinstance(result, int):
 				start = result
 				end = len(data)
 			else:
 				start, end = result
-			var.content = re.split(var.contentSeparate, data[start:end])
+			if var.contentSeparate == b'':
+				var.content = [bytearray(data[start:end])]
+			else:
+				var.content = re.split(var.contentSeparate, data[start:end])
 			var.insertContent[0] = data[:start]
 			var.insertContent[len(var.content)] = data[end:]
+		elif var.contentSeparate == b'':
+			var.content = [bytearray(data)]
 		else:
 			var.content = re.split(var.contentSeparate, data)
 	fileOld.close()

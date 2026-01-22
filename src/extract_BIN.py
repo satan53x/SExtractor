@@ -6,7 +6,7 @@ from common import *
 from extract_TXT import searchLine, ParseVar, dealLastCtrl, initParseVar
 from helper_text import generateBytes
 
-
+BytePadding = ord(b'\x00')
 
 # ---------------- Group: BIN -------------------
 def parseImp(content, listCtrl, dealOnce):
@@ -42,6 +42,15 @@ def replaceOnceImp(content, lCtrl, lTrans):
 		if ExVar.preLen and ExVar.preLenFix:
 			if diff != 0 and 'preLen' in ctrl:
 				#需要修正
+				if ExVar.preLenScale > 1:
+					#取整
+					remain = diff % ExVar.preLenScale
+					if remain != 0:
+						count = ExVar.preLenScale - remain
+						diff += count
+						transData = bytearray(transData)
+						for i in range(count):
+							transData.append(BytePadding)
 				preData = bytearray(preData)
 				length = diff // ExVar.preLenScale + ctrl['preLen'][0]
 				lenPos = ctrl['preLen'][1]
