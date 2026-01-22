@@ -4,11 +4,11 @@ from extract_BIN import replaceOnceImp as replaceOnceImpBIN
 from extract_BIN import parseImp as parseImpBIN
 from extract_TXT import ParseVar, searchLine, initParseVar, dealLastCtrl
 
-Check = False
+Check = True
 MessageCode = 0x5E
 StrCodeConfig = [ #0不修正且不提取 -1修正但不提取 1修正且提取
 None,
-{
+{ #1
 	0x5E: [1, -1, 1], #对话
 	0x65: [0, 1], #选项
 	0x6B: [-1],
@@ -19,7 +19,7 @@ None,
 	0x84: [-1],
 	0xAA: [1, 1, 1, 1, 1], #选项2
 },
-{ 
+{ #2
 	0x5E: [1, -1, 1], #对话
 	0x65: [0, 1], #选项
 	0x6A: [1, 1, 0, -1, -1], #选项2
@@ -29,7 +29,7 @@ None,
 	0x6E: [-1],
 	0x80: [-1],
 },
-{
+{ #3
 	0x5E: [0, 0, -1, 1], #对话
 	0x65: [0, 1], #选项
 	0x6B: [-1],
@@ -40,7 +40,7 @@ None,
 	0x7A: [-1],
 	0x86: [-1],
 },
-{
+{ #4
 	0x5E: [1, -1, 1], #对话
 	0x65: [0, 1], #选项
 	0x6D: [-1],
@@ -48,6 +48,19 @@ None,
 	0x71: [-1],
 	0x72: [-1],
 	0x74: [-1],
+	0x8A: [-1],
+},
+{ #5
+	0x5E: [1, -1, 1], #对话
+	0x64: [0, 1], #选项
+	0x60: [-1],
+	0x6D: [-1],
+	0x6F: [-1],
+	0x71: [-1],
+	0x72: [-1],
+	0x74: [-1],
+	0x7C: [-1],
+	0x7D: [-1],
 	0x8A: [-1],
 },
 ]
