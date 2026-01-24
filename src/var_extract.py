@@ -99,6 +99,7 @@ class ExtractVar():
 	cutoffByOrig = False #截断字典以orig为key
 	textAppend = False #文本追加模式
 	serialSearch = True #使用顺序搜索，而不是finditer
+	allowEmpty = False #是否允许译文为空
 
 	#-------------------
 	def clearBeforeExtract(self): #每次提取前清除

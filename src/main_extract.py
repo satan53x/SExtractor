@@ -136,9 +136,12 @@ def replace():
 			else:
 				newStr = trans.pop()
 		if newStr == '':
-			printTip('译文为空, 不替换', var.filename, orig)
-			#trans = 'te'.format(listIndex) #测试
-			continue
+			if ExVar.allowEmpty:
+				printTip('译文为空，仍然进行导入', var.filename, orig)
+			else:
+				printWarning('译文为空, 保持原文不变', var.filename, orig)
+				#trans = 'te'.format(listIndex) #测试
+				continue
 		#开始处理段落
 		if 'name' in ctrl:
 			if var.dontImportName: #不导入名字

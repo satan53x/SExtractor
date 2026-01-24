@@ -174,7 +174,7 @@ def replaceEndImp(content):
 def getNode(content, nodePath, replace=None, start=0, end=1):
 	node = content
 	for i, index in enumerate(nodePath):
-		if replace and i == len(nodePath) - 1:
+		if replace != None and i == len(nodePath) - 1:
 			#替换
 			oldStr = node[index]
 			newStr = oldStr[0:start] + replace + oldStr[end:]
