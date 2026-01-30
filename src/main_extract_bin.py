@@ -63,12 +63,7 @@ def parse():
 		var.insertContent.clear()
 		data = fileOld.read()
 		if var.section:
-			result = eval(var.section)
-			if isinstance(result, int):
-				start = result
-				end = len(data)
-			else:
-				start, end = result
+			start, end = getInterval(var.section, data)
 			if var.contentSeparate == b'':
 				var.content = [bytearray(data[start:end])]
 			else:
@@ -130,14 +125,17 @@ def searchAddr(data, addrFix):
 		addrFix = re.compile(addrFix)
 	#查找地址指针
 	groupDic = getPatternGroupDict(addrFix)
-	iter = addrFix.finditer(data)
+	searchStart, searchEnd = 0, len(data)
+	if var.addrSection:
+		searchStart, searchEnd = getInterval(var.addrSection, data)
+	iter = addrFix.finditer(data[searchStart:searchEnd])
 	for r in iter:
 		for i in range(1, len(r.groups())+1):
 			if r.group(i) == None: continue
 			if i in groupDic and groupDic[i].startswith('skip'):
 				continue
-			start = r.start(i)
-			end = r.end(i)
+			start = r.start(i) + searchStart
+			end = r.end(i) + searchStart
 			addr = data[start:end]
 			addr = int.from_bytes(addr, 'little')
 			if addr > len(data):

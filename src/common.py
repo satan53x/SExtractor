@@ -161,6 +161,15 @@ def getPatternGroupDict(p:re.Pattern):
         dic[index] = name #序号为key
     return dic
 
+def getInterval(s, data):
+    result = eval(s)
+    if isinstance(result, int):
+        start = result
+        end = len(data)
+    else:
+        start, end = result
+    return start, end
+
 #----------------------------------------------------------
 def listFiles(start_path):
 	file_list = []
