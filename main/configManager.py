@@ -135,7 +135,7 @@ class ConfigManager():
 		mainWindow.collectSepEdit.setText(collectSep)
 		# 设置匹配规则
 		mainWindow.regIndex = int(initValue(self.mainConfig, 'regIndex', 0))
-		mainWindow.regName = initValue(self.mainConfig, 'regName', '__Custom0')
+		mainWindow.regName = initValue(self.mainConfig, 'regName', '__None')
 		if mainWindow.regName != '':
 			index = getQComboBoxIndex(mainWindow.regNameBox, mainWindow.regName)
 			if index >= 0:
