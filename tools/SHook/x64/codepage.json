@@ -1,0 +1,21 @@
+{
+  "Common" : {
+    "DebugPrint": 0,
+    "Delay": 0
+  },
+  "Font" : {
+    "CharSet": 134,
+    "CodePage": 936,
+    "FontWidth": 21.5,
+    "Font": "WenQuanYi",
+    "FontFile": "WenQuanYi.ttf",
+    "Locale": "zh",
+    "CreateFontA": false,
+    "CreateFontIndirectA": false,
+    "MultiByteToWideChar": false,
+    "CreateFontW": false,
+    "CreateFontIndirectW": false,
+    "EnumFontFamiliesExW": false,
+    "DWriteCreateFactory": true
+  }
+}
