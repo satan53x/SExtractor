@@ -219,9 +219,10 @@ def pack_fga_huffman(source_folder, output_fga):
         file_entries = []
         
         for i, (filename, data, original_size) in enumerate(file_data_list):
-            if len(filename) > 11:
+            # 文件名最多12字节，超过才截断
+            if len(filename) > 12:
                 print(f"警告: 文件名 '{filename}' 过长，将被截断")
-                filename = filename[:11]
+                filename = filename[:12]
             
             compressed_size = len(data)
             
@@ -246,8 +247,9 @@ def pack_fga_huffman(source_folder, output_fga):
                 
                 for i in range(start_idx, end_idx):
                     filename, data, original_size = file_data_list[i]
-                    if len(filename) > 11:
-                        filename = filename[:11]
+                    # 文件名最多12字节，超过才截断
+                    if len(filename) > 12:
+                        filename = filename[:12]
                     
                     compressed_size = len(data)
                     
