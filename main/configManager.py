@@ -140,6 +140,8 @@ class ConfigManager():
 			index = getQComboBoxIndex(mainWindow.regNameBox, mainWindow.regName)
 			if index >= 0:
 				mainWindow.regIndex = index
+				if index > 10:
+					mainWindow.regNameBox.view().scrollToBottom()
 		mainWindow.regNameBox.setCurrentIndex(mainWindow.regIndex)
 		#mainWindow.regNameBox.currentIndexChanged.connect(mainWindow.selectReg)
 		# 编码

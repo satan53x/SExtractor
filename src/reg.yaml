@@ -190,6 +190,15 @@ _BIN_AdvSys3:
         <preLen表示捕获分组之前记录的长度字节个数，需要符合分组内容的长度>
         <addrFix仅影响导入，用于全文件匹配跳转字节，需要separate=(捕获分组)>
 
+_BIN_Melonpan:
+    sample: |
+        00_skip=^[\S\s]{0,3}$
+        10_search=\x00\xff【(?P<name>.+?)】\\n([\S\s]+?)[\x40\x00]\x00|\x00\xff([\x81-\xFC][\S\s]+?)[\x40\x00]\x00
+        ignoreDecodeError=1
+
+        <文本可变长>
+        <剧本可以用tools/Melonpan/xorff.py进行加解密>
+
 _BIN_NSystem:
     sample: |
         10_search=^[\S\s][\x00-\x01][\S\s]{5}\x03(?P<nolenANDname>[A-Z]+)_[0-9]+\x00
