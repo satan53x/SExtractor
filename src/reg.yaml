@@ -192,10 +192,12 @@ _BIN_AdvSys3:
 
 _BIN_Melonpan:
     sample: |
-        00_skip=^[\S\s]{0,3}$
-        10_search=\x00\xff【(?P<name>.+?)】\\n([\S\s]+?)[\x40\x00]\x00|\x00\xff([\x81-\xFC][\S\s]+?)[\x40\x00]\x00
+        00_skip=^[\S\s]{0,2}$
+        10_search=^\x1C(?P<name>[\x81-\xFC].+?)$
+        19_search=^\xFF【(?P<name>.+?)】\\n([\S\s]+?)@?$
+        20_search=^\xFF([\S\s]+?)@?$
         ignoreDecodeError=1
-
+        separate=(\x00+)
         <文本可变长>
         <剧本可以用tools/Melonpan/xorff.py进行加解密>
 
