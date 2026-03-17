@@ -247,6 +247,7 @@ def dealText(data, pos, header):
 	dig = readInt(data, pos)
 	if dig != 0:
 		return None, 0
+	header['hasText'] = True
 	return lineData, pos
 
 #选项
@@ -272,6 +273,7 @@ def dealSel(data, pos, header):
 		pos += msgLen
 	#选项后的0A,0A
 	#pos += (3+count) * 4
+	header['hasText'] = True
 	return lineData, pos
 
 #名字和对话：sig 0
