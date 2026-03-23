@@ -11,3 +11,6 @@
 ### 说明
 * dat和obj都有不同的版本，但是dat的version与obj的version不是绑定关系。
 * 如果dat是V2，则需使用上述的改版Garbro才能正常解包。（当Garbro左下角显示V2时，封包也需要使用`dat_repack_v2.py`）
+
+### 补充说明
+* tools/Overflow文件夹下有单独按游戏分类的提取导入脚本
