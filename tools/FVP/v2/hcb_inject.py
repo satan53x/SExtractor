@@ -2,7 +2,7 @@
 """
 hcb_inject.py — HCB脚本文本注入工具
 引擎: アトリエかぐや/ωstar HCB字节码 (v26)
-游戏: BOIN 等
+游戏: BOIN, クラ☆クラ CLASSY☆CRANBERRY'S 等
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   用法
@@ -295,6 +295,232 @@ def filter_jp_text(results):
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#  智能分行
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+def _enc_len(text, encoding='cp932'):
+    """计算文本编码后的字节长度(不含\0)"""
+    try:
+        return len(text.encode(encoding))
+    except UnicodeEncodeError:
+        return len(text.encode(encoding, errors='replace'))
+
+
+def _split_sentences(text):
+    """将文本拆分为语义句子单元
+    
+    规则:
+      1. 「」() 完整包裹的内容 → 不可拆分的整体
+      2. 「开头但本行没有」→ 向后扫描直到找到」
+      3. 句号。、感叹号！、问号？后可断句
+      4. 逗号、后在必要时可断句(优先级低)
+    
+    返回: 句子单元列表
+    """
+    if not text:
+        return []
+    
+    # 先按翻译中可能存在的\n拆分
+    raw_lines = text.replace('\r\n', '\n').split('\n')
+    
+    units = []
+    i = 0
+    while i < len(raw_lines):
+        line = raw_lines[i]
+        
+        # 检查是否以「或（开头且括号不完整
+        if line and line[0] in '「（(':
+            close_char = '」' if line[0] == '「' else ('）' if line[0] == '（' else ')')
+            combined = line
+            while close_char not in combined and i + 1 < len(raw_lines):
+                i += 1
+                combined += raw_lines[i]
+            units.append(combined)
+        else:
+            units.append(line)
+        i += 1
+    
+    return units
+
+
+def _smart_split(message, parts, encoding='cp932'):
+    """智能分行: 将翻译文本拆分填入多个parts
+    
+    核心规则:
+      1. 「」完整括号内容 → 整体放入一个part (即使跨越原始分行)
+      2. 完整的（）括号内容 → 同上
+      3. 非括号散句 → 按max_bytes约束灵活分配
+      4. 单个part最多容纳3个散句的合并
+      5. 超出max_bytes时用trampoline处理(下游自动)
+    
+    参数:
+      message:  翻译后的完整message文本
+      parts:    [{"offset": "0x...", "max_bytes": N}, ...]
+      encoding: 目标编码
+    
+    返回: 与parts等长的字符串列表, 每个元素对应一个part的内容
+    """
+    n_parts = len(parts)
+    if n_parts == 0:
+        return []
+    if n_parts == 1:
+        return [message]
+    
+    # 获取每个part的max_bytes
+    capacities = [p['max_bytes'] for p in parts]
+    
+    # 拆分为语义单元
+    units = _split_sentences(message)
+    
+    if not units:
+        return [''] * n_parts
+    
+    # 如果单元数刚好等于parts数, 直接一一对应
+    if len(units) == n_parts:
+        return units
+    
+    # 如果只有1个单元(整段没有分行), 全部放入part[0], 其余清空
+    # 但先检查能否按标点断句来更好地分配
+    if len(units) == 1:
+        text = units[0]
+        # 尝试按标点拆分以适配多个parts
+        sub_units = _break_by_punctuation(text, capacities, encoding)
+        if len(sub_units) > 1:
+            units = sub_units
+    
+    # 贪心分配: 尝试将units填入parts
+    result = [''] * n_parts
+    ui = 0  # 当前unit索引
+    
+    for pi in range(n_parts):
+        if ui >= len(units):
+            break
+        
+        # 当前part先放一个unit
+        result[pi] = units[ui]
+        ui += 1
+        
+        # 如果是最后一个part, 把剩余全部合并进来
+        if pi == n_parts - 1:
+            while ui < len(units):
+                result[pi] += units[ui]
+                ui += 1
+            break
+        
+        # 非最后part: 尝试合并后续散句(最多合并到3句, 且不超容量)
+        merged_count = 1
+        while (ui < len(units) and merged_count < 3 and
+               pi < n_parts - 1):  # 确保后面的parts还有内容可填
+            # 散句才合并(不以「开头的)
+            next_unit = units[ui]
+            if next_unit and next_unit[0] in '「（(':
+                break  # 括号句不合并到前面
+            
+            # 检查合并后是否超容量
+            tentative = result[pi] + next_unit
+            if _enc_len(tentative, encoding) > capacities[pi]:
+                break  # 超容量, 不合并
+            
+            # 检查剩余units是否够填剩余parts
+            remaining_units = len(units) - ui - 1
+            remaining_parts = n_parts - pi - 1
+            if remaining_units < remaining_parts:
+                break  # 后面不够分了, 不合并
+            
+            result[pi] += next_unit
+            ui += 1
+            merged_count += 1
+    
+    return result
+
+
+def _break_by_punctuation(text, capacities, encoding='cp932'):
+    """按标点将一段文本拆分, 尽量适配parts容量
+    
+    优先在句末标点(。！？」）)处断开,
+    其次在逗号(，、)处断开
+    不在「」括号内部断开
+    """
+    n_parts = len(capacities)
+    if n_parts <= 1:
+        return [text]
+    
+    # 标记哪些位置在「」括号内
+    in_bracket = [False] * len(text)
+    depth = 0
+    for i, c in enumerate(text):
+        if c == '「':
+            depth += 1
+        in_bracket[i] = depth > 0
+        if c == '」' and depth > 0:
+            depth -= 1
+    
+    # 找所有可断点(标点后的位置), 排除括号内部
+    break_points = []
+    # 高优先级断点: 句末标点
+    for i, c in enumerate(text):
+        if c in '。！？!?）)' and i + 1 < len(text) and not in_bracket[i]:
+            break_points.append((i + 1, 'high'))
+        # 」本身也是断点(括号结束)
+        if c == '」' and i + 1 < len(text):
+            break_points.append((i + 1, 'high'))
+    # 低优先级断点: 逗号(仅括号外)
+    for i, c in enumerate(text):
+        if c in '，、,;；' and i + 1 < len(text) and not in_bracket[i]:
+            break_points.append((i + 1, 'low'))
+    
+    if not break_points:
+        return [text]
+    
+    # 按位置排序, 同位置高优先级在前
+    break_points.sort(key=lambda x: (x[0], 0 if x[1] == 'high' else 1))
+    # 去重位置
+    seen = set()
+    unique_bps = []
+    for pos, pri in break_points:
+        if pos not in seen:
+            seen.add(pos)
+            unique_bps.append(pos)
+    
+    # 贪心: 从前往后, 在容量范围内找最远的断点
+    result = []
+    start = 0
+    for pi in range(n_parts):
+        if start >= len(text):
+            result.append('')
+            continue
+        if pi == n_parts - 1:
+            result.append(text[start:])
+            break
+        
+        cap = capacities[pi]
+        # 找在容量内的最远断点
+        best = None
+        for bp in unique_bps:
+            if bp <= start:
+                continue
+            segment = text[start:bp]
+            if _enc_len(segment, encoding) <= cap:
+                best = bp
+            else:
+                break
+        
+        if best is not None and best > start:
+            result.append(text[start:best])
+            start = best
+        else:
+            # 没有合适断点, 硬塞整段
+            result.append(text[start:])
+            start = len(text)
+    
+    # 清理尾部空串
+    while len(result) < n_parts:
+        result.append('')
+    
+    return result
+
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #  注入核心逻辑
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -333,18 +559,16 @@ def inject_texts(orig_data, translations, encoding='cp932'):
 
     for entry in translations:
         if 'parts' in entry and 'message' in entry:
-            # ── 合并格式: message用\n连接, parts记录各子行 ──
+            # ── 合并格式: 智能分行填充各part ──
             parts = entry['parts']
             orig_message = entry.get('_orig_message', '')
             new_message = entry['message']
             if new_message == orig_message:
                 continue  # 未翻译
-            
-            new_lines = new_message.replace('\r\n', '\n').split('\n')
-            
-            # 对齐: 翻译行数可能与原始不同
-            # 策略: 按顺序填充parts, 多余的行追加到最后一个part,
-            #        不足的part填空字符串(保留原文)
+
+            # 智能分行: 根据「」括号和max_bytes约束拆分翻译文本
+            split_lines = _smart_split(new_message, parts, encoding)
+
             for pi, part in enumerate(parts):
                 off_val = part['offset']
                 if isinstance(off_val, str):
@@ -352,23 +576,16 @@ def inject_texts(orig_data, translations, encoding='cp932'):
                 else:
                     p_off = int(off_val)
                 p_orig_len = part['max_bytes'] + 1  # 含\0
-                
+
                 if p_off not in off_to_loc:
                     continue
                 _, _, p_orig_text = off_to_loc[p_off]
-                
-                if pi < len(new_lines):
-                    if pi == len(parts) - 1 and len(new_lines) > len(parts):
-                        # 最后一个part: 合并剩余所有翻译行
-                        p_new_text = '\n'.join(new_lines[pi:])
-                    else:
-                        p_new_text = new_lines[pi]
-                else:
-                    p_new_text = p_orig_text  # 不足时保留原文
-                
+
+                p_new_text = split_lines[pi] if pi < len(split_lines) else ''
+
                 if p_new_text == p_orig_text:
                     continue
-                
+
                 try:
                     new_bytes = p_new_text.encode(encoding) + b'\x00'
                 except UnicodeEncodeError:

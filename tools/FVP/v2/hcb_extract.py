@@ -2,7 +2,7 @@
 """
 hcb_extract.py — HCB脚本文本提取工具
 引擎: アトリエかぐや/ωstar HCB字节码 (v26)
-游戏: BOIN 等
+游戏: BOIN, クラ☆クラ CLASSY☆CRANBERRY'S 等
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   用法
@@ -353,50 +353,102 @@ def filter_jp_text(results):
 
 
 def _merge_lines(jp_lines):
-    """合并同一speaker连续的多行为一条
+    """智能合并同一speaker连续的多行为一条
     
-    用\\r\\n连接同一speaker的连续文本行。
-    speaker切换时断开为新条目。
+    合并规则:
+      1. 「」完整包裹(首尾都有) → 单独成一条, 即使后面同speaker也断开
+      2. 「开头没有」→ 向后合并同speaker行直到找到」(跨行括号)
+      3. 非「」散句 → 与相邻同speaker散句合并, 最多合并3行
+      4. speaker切换 → 强制断开
     
     例如:
       id=27 一条大介 「ご、ごめん。...あわててたん
       id=28 一条大介 だ。悪かった。よっ、と……」
     合并为:
-      message = 「ご、ごめん。...あわててたん\\r\\nだ。悪かった。...」
+      message = 「ご、ごめん。...あわててたん\r\nだ。悪かった。...」
       parts = [{"offset":"0x...", "max_bytes":50}, {"offset":"0x...", "max_bytes":28}]
     
-    注入时根据parts按\\r\\n拆回各子行
+    注入时根据parts + 智能分行逻辑拆回各子行
     """
     if not jp_lines:
         return []
     
-    merged = []
-    cur_name = jp_lines[0][3]   # speaker
-    cur_texts = [jp_lines[0][2]]
-    cur_parts = [{"offset": f"0x{jp_lines[0][0]:06X}", "max_bytes": jp_lines[0][1] - 1}]
+    def _has_open(text):
+        """以「或（开头"""
+        return text and text[0] in '「（('
     
-    for off, sl, text, spk, _pg in jp_lines[1:]:
-        if spk == cur_name:
-            # 同speaker → 追加
-            cur_texts.append(text)
-            cur_parts.append({"offset": f"0x{off:06X}", "max_bytes": sl - 1})
-        else:
-            # speaker切换 → 输出当前组
+    def _has_close(text):
+        """文本中包含对应的闭合括号」或）(不要求在末尾)"""
+        if not text:
+            return False
+        return '」' in text or '）' in text or ')' in text
+    
+    def _is_complete_bracket(text):
+        """「」完整配对"""
+        if not _has_open(text):
+            return False
+        open_c = text[0]
+        close_c = '」' if open_c == '「' else ('）' if open_c == '（' else ')')
+        return close_c in text
+    
+    def _flush(cur_texts, cur_parts, cur_name, merged):
+        """输出当前累积的组"""
+        if cur_texts:
             merged.append({
                 "name": cur_name if cur_name else None,
                 "message": "\r\n".join(cur_texts),
-                "parts": cur_parts,
+                "parts": list(cur_parts),
             })
-            cur_name = spk
-            cur_texts = [text]
-            cur_parts = [{"offset": f"0x{off:06X}", "max_bytes": sl - 1}]
     
-    # 最后一组
-    merged.append({
-        "name": cur_name if cur_name else None,
-        "message": "\r\n".join(cur_texts),
-        "parts": cur_parts,
-    })
+    merged = []
+    i = 0
+    
+    while i < len(jp_lines):
+        off, sl, text, spk, _pg = jp_lines[i]
+        part_info = {"offset": f"0x{off:06X}", "max_bytes": sl - 1}
+        
+        # ── Case 1: 「开头, 括号完整 → 单独成一条 ──
+        if _is_complete_bracket(text):
+            _flush([text], [part_info], spk, merged)
+            i += 1
+            continue
+        
+        # ── Case 2: 「开头, 括号不完整 → 向后找」合并 ──
+        if _has_open(text) and not _has_close(text):
+            cur_texts = [text]
+            cur_parts = [part_info]
+            j = i + 1
+            while j < len(jp_lines):
+                n_off, n_sl, n_text, n_spk, _ = jp_lines[j]
+                if n_spk != spk:
+                    break  # speaker变了, 强制断开
+                cur_texts.append(n_text)
+                cur_parts.append({"offset": f"0x{n_off:06X}", "max_bytes": n_sl - 1})
+                if _has_close(n_text):
+                    j += 1
+                    break  # 找到闭合括号
+                j += 1
+            _flush(cur_texts, cur_parts, spk, merged)
+            i = j
+            continue
+        
+        # ── Case 3: 非括号散句 → 合并相邻同speaker散句, 最多3行 ──
+        cur_texts = [text]
+        cur_parts = [part_info]
+        merge_count = 1
+        j = i + 1
+        while j < len(jp_lines) and merge_count < 3:
+            n_off, n_sl, n_text, n_spk, _ = jp_lines[j]
+            if n_spk != spk:
+                break  # speaker变了
+            if _has_open(n_text):
+                break  # 下一行是括号句, 不合并进散句
+            cur_texts.append(n_text)
+            cur_parts.append({"offset": f"0x{n_off:06X}", "max_bytes": n_sl - 1})
+            merge_count += 1
+            j += 1
+        _flush(cur_texts, cur_parts, spk, merged)
+        i = j
     
     return merged
 
