@@ -7,7 +7,7 @@ from tkinter import filedialog
 import zlib 
 DefaultPath = ''
 Postfix = '.asb'
-InitKey = 0x9E370001
+InitKey = 0xAF20179F
 
 # ------------------------------------------------------------
 #var
@@ -16,7 +16,7 @@ filename = ''
 
 content = []
 # ------------------------------------------------------------
-def decryptFile():
+def encryptFile():
 	#print(filename)
 	filepath = os.path.join(dirpath, filename+Postfix)
 	fileOld = open(filepath, 'rb')
@@ -24,30 +24,33 @@ def decryptFile():
 	fileOld.close()
 	#处理
 	pos = 4
-	comSize = int.from_bytes(data[pos:pos+4], byteorder='little')
+	#comSize = int.from_bytes(data[pos:pos+4], byteorder='little')
 	pos += 4
-	uncomSize = int.from_bytes(data[pos:pos+4], byteorder='little')
+	#uncomSize = int.from_bytes(data[pos:pos+4], byteorder='little')
 	pos += 8
-	com = data[pos:]
-	uncom = bytearray(uncomSize)
-	com = decryptData(com, uncom)
-	uncom = zlib.decompress(com)
-	if len(uncom) != uncomSize:
-		print('Decompress Error:', filename)
-		return
+	uncom = data[pos:]
+	uncomSize = len(uncom)
+	com = zlib.compress(uncom, level=zlib.Z_BEST_COMPRESSION)
+	crc = zlib.crc32(com).to_bytes(4, 'little')
+	crc_com = crc + com
+	crc_com = encryptData(crc_com, uncom)
+	crc = crc_com[0:4]
+	com = crc_com[4:]
+	comSize = len(com)
 	#导出
 	content.clear()
-	header = data[0:16]
+	header = data[0:4] + int.to_bytes(comSize+4, 4, byteorder='little') + int.to_bytes(uncomSize, 4, byteorder='little') + crc
 	content.append(header)
-	content.append(uncom)
+	content.append(com)
 	write()
 
-def decryptData(com, uncom):
+def encryptData(com, uncom):
 	com = bytearray(com)
 	key = len(uncom) ^ InitKey
+	key = (((key | (key << 12)) << 11) ^ key) & 0xFFFFFFFF
 	for pos in range(0, len(com)//4*4, 4):
 		d = int.from_bytes(com[pos:pos+4], byteorder='little')
-		d = (d - key) % 0x100000000
+		d = (d + key) % 0x100000000
 		bs = int.to_bytes(d, 4, byteorder='little')
 		com[pos:pos+4] = bs
 	return com
@@ -82,7 +85,7 @@ def main():
 			filepath = os.path.join(dirpath, filename+Postfix)
 			if os.path.isfile(filepath):
 				#print(filepath)
-				decryptFile()
+				encryptFile()
 				#break
 
 main()

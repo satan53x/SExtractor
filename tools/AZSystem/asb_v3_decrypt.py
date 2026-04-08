@@ -7,7 +7,7 @@ from tkinter import filedialog
 import zlib 
 DefaultPath = ''
 Postfix = '.asb'
-InitKey = 0x9E370001
+InitKey = 0xAF20179F
 
 # ------------------------------------------------------------
 #var
@@ -27,10 +27,14 @@ def decryptFile():
 	comSize = int.from_bytes(data[pos:pos+4], byteorder='little')
 	pos += 4
 	uncomSize = int.from_bytes(data[pos:pos+4], byteorder='little')
-	pos += 8
-	com = data[pos:]
+	pos += 4
+	#crc和com需要一起进行解密
+	crc_com = data[pos:]
 	uncom = bytearray(uncomSize)
-	com = decryptData(com, uncom)
+	crc_com = decryptData(crc_com, uncom)
+	crc = int.from_bytes(crc_com[0:4], byteorder='little')
+	#print(f'crc: {crc:08X}')
+	com = crc_com[4:]
 	uncom = zlib.decompress(com)
 	if len(uncom) != uncomSize:
 		print('Decompress Error:', filename)
@@ -45,6 +49,7 @@ def decryptFile():
 def decryptData(com, uncom):
 	com = bytearray(com)
 	key = len(uncom) ^ InitKey
+	key = (((key | (key << 12)) << 11) ^ key) & 0xFFFFFFFF
 	for pos in range(0, len(com)//4*4, 4):
 		d = int.from_bytes(com[pos:pos+4], byteorder='little')
 		d = (d - key) % 0x100000000
