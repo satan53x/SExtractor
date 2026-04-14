@@ -379,7 +379,7 @@ def initArgs(args):
 		WirteEncodeName = var.NewEncodeName
 	var.padding = var.padding.encode(WirteEncodeName).decode('unicode_escape').encode('latin-1')
 	# 处理preLen
-	if var.preLen != None:
+	if var.preLen:
 		var.serialSearch = True #强制启用序列搜索
 		if var.preLenOffset == None:
 			var.preLenOffset = -var.preLen

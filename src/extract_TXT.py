@@ -185,6 +185,10 @@ def searchLine(var:ParseVar):
 					tmpDic[start] = [text, ctrl]
 					#lastCtrl = ctrl
 				end = r.end(0) + diff #单次search的最终end
+				if end == start:
+					end = end + 1
+					if end >= len(var.lineData): 
+						break
 			if matched :
 				#按文本中顺序处理
 				for key, value in tmpDic.items():
