@@ -203,13 +203,14 @@ _BIN_Melonpan:
 
 _BIN_NSystem:
     sample: |
-        10_search=^[\S\s][\x00-\x01][\S\s]{5}\x03(?P<nolenANDname>[A-Z]+)_[0-9]+\x00
+        10_search=^[\S\s][\x00-\x01][\S\s]{5}\x03(?P<nolenANDname>[A-Z]+)_*[0-9]+\x00
         20_search=^[\S\s][\x00-\x01][\S\s]{15}\x03([\x81-\xFC][\x20-\xFC]+?)\x00
         preLen=2
         preLenOffset=-18
         preLenAdd=-27
         separate=(\xDA\x07|\xD8\x07)
-        addrFix=^(?P<skip>[\S\s]{1112})|(?P<skip2>\xED\x03[\S\s]\x00\x03[\S\s]+)$|([\S\s]{3}\x00)
+        addrFix=([\S\s]{4})
+        addrSection=[0x458, 0x458 + (readInt(data,0x14)+readInt(data,0x18)) * 4]
         addrBase=0x458 + (readInt(data,0x14)+readInt(data,0x18)) * 4
         
         <addrBase支持语句>
