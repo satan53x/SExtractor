@@ -256,6 +256,14 @@ _BIN_SYSTEM-ε:
         ignoreDecodeError=1
         startline=1
 
+_BIN_SystemC:
+    sample: |
+        00_skip=^[A-Za-z/\*]
+        01_skip=^$
+        10_search=^(?P<name>.+?)　（(?=０|１|２|３|４|５|６|７|８|９)
+        11_search=^(?P<unfinish>.+)$
+        struct=para
+
 _BIN_Tanaka:
     sample: |
         00_skip=^[\S\s]{0,3}$
