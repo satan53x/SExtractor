@@ -1,0 +1,1 @@
+Note: this engine can read normal bmp.
