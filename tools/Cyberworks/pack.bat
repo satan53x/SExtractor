@@ -1,2 +1,2 @@
-.\CSystemArc.exe pack 23 text\new .\Arc01.dat .\Arc04.dat
+.\CSystemArc.exe pack text .\Arc01.dat .\Arc04.dat -i 1
 pause
