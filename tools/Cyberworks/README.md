@@ -1,9 +1,12 @@
-### CSystemArc
-* Arc00.dat仅限UTF-16编码
-* Arc04.dat不再转换b0到png，而是直接导出raw。
-* unpack时缓存未知字节到cache.xml，封包时需使用相同xml。
-* `-v 23`可以指定资源版本`21-24`，pack时存在cache.xml则无需指定。
+### CSystemArc: unpack & pack
+* 不再转换b0到png，而是直接导出raw。
+* unpack时缓存未知字节到cache.xml，pack时需使用相同xml
+* pack时存在cache.xml，则无需指定-v和-i
+* `-v 23`可以指定资源版本`21-24`
 * `-i 2`可以指定索引版本`1-2`，测试游戏：`ムジナ・臭`
+
+### CSystemArc: config
+* 仅限UTF-16编码。（JIS编码的config需要使用下述exe）
 
 ### CSystemArc_JIS
 原版地址：https://github.com/arcusmaximus/CSystemTools
