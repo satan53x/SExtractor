@@ -426,6 +426,8 @@ class IKURAToolbox(QMainWindow):
         if split_mode:
             print("[*] 检测到全局人名表为空，将开启【剧本内置人名】自动分离模式。")
 
+        apply_space_clean = False    
+
 
         # 智能整合：一键解析 start.isf 获取人物字典
         if auto_name:
@@ -448,6 +450,11 @@ class IKURAToolbox(QMainWindow):
                 nameidx_dict = {str(i): name for i, name in enumerate(all_names)}
                 save_json("nameidx.json", nameidx_dict)
                 print(f"[+] 成功生成 nameidx.json，共截获 {len(all_names)} 个人物名。")
+
+                if engine_type == "MPX" and len(all_names) > 0:
+                    apply_space_clean = True
+                    print("[*] 满足条件 (MPX引擎且成功提取人名)，已开启全角空格智能清洗。")
+
             else:
                 print("[-] 警告: 未找到 start.isf，无法自动生成人名表。")
         else:
@@ -497,10 +504,14 @@ class IKURAToolbox(QMainWindow):
                             textcount += len(item["message"])
                         continue
                         
-                    if "ori" in item and isinstance(item["ori"], str):
-                        item["ori"] = punct_pattern.sub('', item["ori"])
+                    if apply_space_clean:
+                        if "ori" in item and isinstance(item["ori"], str):
+                            item["ori"] = punct_pattern.sub('', item["ori"])
+                        if "message" in item and isinstance(item["message"], str):
+                            item["message"] = punct_pattern.sub('', item["message"])
+                    
+                    # 无论是否替换，都正常统计字数
                     if "message" in item and isinstance(item["message"], str):
-                        item["message"] = punct_pattern.sub('', item["message"])
                         textcount += len(item["message"])
                 # ========================================================
                 

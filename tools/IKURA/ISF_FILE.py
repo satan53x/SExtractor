@@ -280,6 +280,20 @@ class ISF_FILE():
                         for _ in range(i1 + i2):
                             dec = decode_ikuar_text(c.read_utill_zero())
                             savetitles[dec] = dec
+                            
+                    # 👇 新增：MPX 引擎下的 0x5b 提取支持 👇
+                    elif op["op"] == 0x5b and len(op["content"]) >= 17:
+                        content = op["content"]
+                        # 彻底放宽：只要索引 16 是 FF 就视为文本
+                        if content[16] == 0xFF:
+                            start = 17
+                            end = start
+                            while end < len(content) and content[end] != 0x00:
+                                end += 1
+                            text_bytes = content[start:end]
+                            if len(text_bytes) > 0:
+                                dec = decode_ikuar_text(text_bytes)
+                                savetitles[dec] = dec
             except Exception:
                 pass
 
@@ -341,7 +355,26 @@ class ISF_FILE():
                             text_end = offset
                             
                             while text_end < len(content):
-                                # 1. 遇到句中换行符 00 06 FF，当作文本整体跳过（保留给后面的 replace 删掉）
+                                # ================= 新增：字符边界跨越逻辑 =================
+                                # 0. 处理特殊的转义字符，防止将附带的数据字节误判为控制码
+                                if content[text_end] == 0x5C:
+                                    text_end += 1
+                                    if text_end < len(content) and content[text_end] != 0x00:
+                                        text_end += 2
+                                    else:
+                                        text_end += 1
+                                    continue
+                                    
+                                if content[text_end] == 0x7F:
+                                    text_end += 2
+                                    continue
+                                    
+                                if content[text_end] > 0x7F: # Shift-JIS 双字节
+                                    text_end += 2
+                                    continue
+                                # ========================================================
+
+                                # 1. 遇到句中换行符 00 06 FF，当作文本整体跳过
                                 if text_end + 2 < len(content) and content[text_end:text_end+3] == b'\x00\x06\xFF':
                                     text_end += 3
                                     continue
@@ -351,7 +384,7 @@ class ISF_FILE():
                                     if text_end + 1 < len(content):
                                         next_byte = content[text_end + 1]
                                         # 如果下一个字节是 00, 05, 06, FF 等引擎专属控制符，直接切断！
-                                        if next_byte in (0x00, 0x01, 0x04, 0x05, 0x06, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x10, 0x11, 0xFF):
+                                        if next_byte in (0x00, 0x01,0x02, 0x04, 0x05, 0x06, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x10, 0x11, 0xFF):
                                             break
                                     else:
                                         break
@@ -480,16 +513,17 @@ class ISF_FILE():
                         new = stdict[res].encode("932")
                         op["content"] = op["content"].replace(ori_bytes + b'\x00', new + b'\x00')
                         
-            elif op["op"] == 0x5b and self.engine == "DRS" and len(op["content"]) >= 17:
+            elif op["op"] == 0x5b and len(op["content"]) >= 17:
                 content = op["content"]
-                if content[0:4] == b'\x0A\x00\x00\x00' and content[12] == 0x01:
+                if content[16] == 0xFF:
                     start = 17
                     end = start
                     while end < len(content) and content[end] != 0x00:
                         end += 1
                     ori_bytes = content[start:end]
                     if len(ori_bytes) > 0:
-                        ori = decode_DRS_text(ori_bytes)
+                        # 动态解码：根据当前引擎选择合适的解码方式
+                        ori = decode_DRS_text(ori_bytes) if self.engine == "DRS" else decode_ikuar_text(ori_bytes)
                         if ori in stdict:
                             new_bytes = stdict[ori].encode("932")
                             op["content"] = content[:start] + new_bytes + b'\x00' + content[end+1:]
