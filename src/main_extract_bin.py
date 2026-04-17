@@ -121,7 +121,7 @@ def parse():
 
 def searchAddr(data, addrFix):
 	if isinstance(addrFix, str):
-		addrFix = addrFix.encode(var.OldEncodeName)
+		addrFix = addrFix.encode()
 		addrFix = re.compile(addrFix)
 	#查找地址指针
 	groupDic = getPatternGroupDict(addrFix)

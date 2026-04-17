@@ -99,10 +99,7 @@ def replaceOnceImp(content, lCtrl, lTrans):
 def replaceEndImp(content):
 	if ExVar.pureText: return content
 	#需要改变外部content
-	if ExVar.extraData == 'nohead':
-		data = content.to_csv(index=False, header=None, sep=separate)
-	else:
-		data = content.to_csv(index=False, sep=separate)
+	data = content.to_csv(index=False, header=(ExVar.extraData!='nohead'), sep=separate, quoting=csv.QUOTE_MINIMAL)
 	ExVar.newline = ''
 	ExVar.content = [data]
 
