@@ -2,6 +2,9 @@ import struct
 import sys
 import json
 import os
+import re
+
+line_start_skip = re.compile(r"^(●|//|'|!|◎|○|sys_|[a-z]+\\)")
 
 class uGOSPatcher:
     def __init__(self, filepath):
@@ -13,11 +16,11 @@ class uGOSPatcher:
         if not text:
             return False
             
-        ignore_prefixes = ('●', '//', "'", '!', '◎', '○', 'sys_')
-        if text.startswith(ignore_prefixes):
+        #ignore_prefixes = ('●', '//', "'", '!', '◎', '○', 'sys_')
+        if line_start_skip.match(text):
             return False
             
-        path_indicators = ['\\', '/', '.dat', '.bmp', '.png', '.ogg', '.wav', '.txt']
+        path_indicators = ['.dat', '.bmp', '.png', '.ogg', '.wav', '.txt'] # need '/' ?
         if any(indicator in text for indicator in path_indicators):
             return False
             
@@ -101,19 +104,16 @@ class uGOSPatcher:
                     elif mode == "import" and json_data and json_idx < len(json_data):
                         trans_entry = json_data[json_idx]
                         json_idx += 1
-                        
                         # Reconstruct text without forcing brackets (they are already in trans_entry['message'])
                         if "name" in trans_entry and trans_entry["name"]:
                             new_text = f"{trans_entry['name']}　{trans_entry['message']}"
                         else:
                             new_text = trans_entry['message']
-                            
                         try:
                             new_bytes = new_text.encode('cp932')
                         except UnicodeEncodeError as e:
                             print(f"[!] Encoding error on '{new_text}'. Ensure characters are Shift-JIS compatible.")
                             continue
-                            
                         idx = raw_data.find(orig_bytes)
                         if idx != -1:
                             prefix = raw_data[:idx]
@@ -147,40 +147,72 @@ class uGOSPatcher:
         return extracted_data
 
     def export_json(self, output_path):
-        print("[*] Sweeping bytecode for strings...")
         data = self.sweep_bytecode(mode="export")
-        with open(output_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        print(f"[+] Exported {len(data)} translatable lines to {output_path}")
+        if data:
+            with open(output_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+            return len(data)
+        return 0
 
     def import_json(self, json_path, output_o_path):
-        print(f"[*] Loading translations from {json_path}...")
         with open(json_path, 'r', encoding='utf-8') as f:
             json_data = json.load(f)
-            
-        print("[*] Patching .o file...")
         self.sweep_bytecode(mode="import", json_data=json_data)
-        
         with open(output_o_path, 'wb') as f:
             f.write(self.bytecode)
-        print(f"[+] Successfully patched bytecode! Saved to {output_o_path}")
 
+# ==========================================
+# Batch（adapt .json）
+# ==========================================
+
+def batch_export(input_dir, output_dir):
+    os.makedirs(output_dir, exist_ok=True)
+    files = [f for f in os.listdir(input_dir) if f.endswith(".o")]
+    print(f"[*] Found {len(files)} .o files. Starting export...")
+    
+    for filename in files:
+        input_path = os.path.join(input_dir, filename)
+        json_filename = filename[0:-2] + ".json"  # 1_pro01.json
+        output_path = os.path.join(output_dir, json_filename)
+        
+        patcher = uGOSPatcher(input_path)
+        count = patcher.export_json(output_path)
+        print(f"[+] {filename} -> {json_filename} ({count} lines)")
+
+def batch_import(input_o_dir, json_dir, output_dir):
+    os.makedirs(output_dir, exist_ok=True)
+    files = [f for f in os.listdir(input_o_dir) if f.endswith(".o")]
+    print(f"[*] Found {len(files)} .o files. Starting import...")
+    
+    for filename in files:
+        input_o_path = os.path.join(input_o_dir, filename)
+        json_filename = filename[0:-2] + ".json" # 1_pro01.json
+        json_path = os.path.join(json_dir, json_filename)
+        output_o_path = os.path.join(output_dir, filename)
+        
+        if os.path.exists(json_path):
+            patcher = uGOSPatcher(input_o_path)
+            patcher.import_json(json_path, output_o_path)
+            print(f"[+] Patched: {filename}")
+        else:
+            print(f"[!] Skip: {filename} (Missing {json_filename})")
 
 if __name__ == "__main__":
-    if len(sys.argv) < 4:
+    if len(sys.argv) < 2:
         print("Usage:")
-        print("  Export: OTool.py export <input.o> <output.json>")
-        print("  Import: OTool.py import <input.o> <translated.json> <output.o>")
+        print("  Batch Export: python o_tool.py export-dir <in_folder> <out_json_folder>")
+        print("  Batch Import: python o_tool.py import-dir <in_folder> <trans_json_folder> <out_folder>")
         sys.exit(1)
         
     mode = sys.argv[1].lower()
     
     if mode in ('export', '-e'):
-        patcher = uGOSPatcher(sys.argv[2])
-        patcher.export_json(sys.argv[3])
+        uGOSPatcher(sys.argv[2]).export_json(sys.argv[3])
     elif mode in ('import', '-i'):
-        if len(sys.argv) < 5:
-            print("Usage: OTool.py import <input.o> <translated.json> <output.o>")
-            sys.exit(1)
-        patcher = uGOSPatcher(sys.argv[2])
-        patcher.import_json(sys.argv[3], sys.argv[4])
+        uGOSPatcher(sys.argv[2]).import_json(sys.argv[3], sys.argv[4])
+    elif mode in ('export-dir', '-ed'):
+        batch_export(sys.argv[2], sys.argv[3])
+    elif mode in ('import-dir', '-id'):
+        batch_import(sys.argv[2], sys.argv[3], sys.argv[4])
+    else:
+        print("Unknown mode.")

@@ -248,8 +248,8 @@ def pack_det(in_dir: str, base_name: str):
 if __name__ == "__main__":
     if len(sys.argv) < 4:
         print("Usage:")
-        print("  Unpack: python det_tool.py -u <archive_base_name> <output_folder>")
-        print("  Pack:   python det_tool.py -p <input_folder> <archive_base_name>")
+        print("  Unpack: python DetTool.py -u <archive_base_name> <output_folder>")
+        print("  Pack:   python DetTool.py -p <input_folder> <archive_base_name>")
         sys.exit(1)
         
     mode = sys.argv[1].lower()
