@@ -275,6 +275,43 @@ ikuar_KANA = bytes([
     0x83, 0x77, 0x83, 0x7a, 0x83, 0x7d, 0x83, 0x7e, 0x83, 0x80, 0x83, 0x81, 0x83, 0x82, 0x83, 0x84
 ])
 
+def _build_ikuar_reverse_map():
+    rev = {}
+    for b in range(0x80):
+        pair = bytes(ikuar_KANA[b * 2:b * 2 + 2])
+        ch = pair.decode('932', errors='ignore')
+        if ch:
+            # 只保留第一个命中的字节，避免出现同字符多编码歧义时覆盖
+            rev.setdefault(ch, b)
+    return rev
+
+_IKUAR_REVERSE_MAP = None
+
+
+def encode_ikuar_text(text: str) -> bytes:
+    """将已解码的文本尽量按 ikura 引擎原始规则重新编码。"""
+    global _IKUAR_REVERSE_MAP
+    if _IKUAR_REVERSE_MAP is None:
+        _IKUAR_REVERSE_MAP = _build_ikuar_reverse_map()
+
+    out = bytearray()
+    for ch in text:
+        # 优先恢复引擎自己的单字节字典压缩
+        mapped = _IKUAR_REVERSE_MAP.get(ch)
+        if mapped is not None:
+            out.append(mapped)
+            continue
+
+        enc = ch.encode('932', errors='ignore')
+        if len(enc) == 1 and (enc[0] < 0x80 or 0xA1 <= enc[0] <= 0xDF or enc[0] == 0x7F):
+            # 单字节字符按引擎惯用的 0x7F 逃逸方式保存，避免把原本的转义字节丢掉
+            out.extend((0x7F, enc[0]))
+        else:
+            out.extend(enc)
+
+    return bytes(out)
+
+
 def decode_ikuar_text(byte_data):
     """完全匹配官方 C# 引擎逻辑的终极解码函数"""
     decoded_bytes = bytearray()

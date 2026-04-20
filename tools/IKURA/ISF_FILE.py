@@ -150,8 +150,9 @@ def parse_pm_content(content, trans_func=None, engine="MPX"):
 
 
 class ISF_FILE():
-    def __init__(self, engine="MPX") -> None:
+    def __init__(self, engine="MPX", pack_profile="eng") -> None:
         self.engine = engine # 存储引擎模式
+        self.pack_profile = pack_profile # "original" or "eng"
         self.head_len = 0
         self.version_info = b""
         self.offsetlist = []
@@ -197,14 +198,19 @@ class ISF_FILE():
             
             op_code = reader.readU8()
             l = reader.readU8()
+            raw_len_bytes = bytes([l])
             if l < 0x80:
                 length = l
                 head_bytes = 2
             elif l == 0x80:
-                length = reader.readU8()
+                extra = reader.readU8()
+                raw_len_bytes += bytes([extra])
+                length = extra
                 head_bytes = 3
             elif l == 0x81:
-                length = reader.readU8() + 0x100
+                extra = reader.readU8()
+                raw_len_bytes += bytes([extra])
+                length = extra + 0x100
                 head_bytes = 3
             else:
                 raise ValueError(f"Invalid length byte {l}")
@@ -212,7 +218,9 @@ class ISF_FILE():
             content = reader.read(length - head_bytes)
             self.ops.append({
                 "op": op_code,
-                "content": content
+                "content": content,
+                "_raw_len_bytes": raw_len_bytes,
+                "_orig_content_len": len(content),
             })
             idx += 1
             
@@ -450,6 +458,11 @@ class ISF_FILE():
         return outlist, savetitles
 
     def trans(self, trans_iter, stdict):
+        def encode_text(text: str) -> bytes:
+            if self.pack_profile == "original":
+                return text.encode("932", errors="ignore")
+            return encode_ikuar_text(text)
+
         for op in self.ops:
             if op["op"] in (0x2b, 0x2c):
                 def get_new_text(old_bytes):
@@ -457,7 +470,7 @@ class ISF_FILE():
                     # 解包元组：如果 GUI 传来的是元组就拆解，纯文本就默认 False 增强容错
                     text_str, has_br = nxt if isinstance(nxt, tuple) else (nxt, False)
                     
-                    new_bytes = text_str.encode("932", errors="ignore")
+                    new_bytes = encode_text(text_str)
                     
                     if has_br:
                         # === 恢复排版！在第一个 】(81 7A) 后面插入 00 06 FF ===
@@ -472,35 +485,35 @@ class ISF_FILE():
                 if len(name_bytes) > 0:
                     nxt = trans_iter.__next__()
                     text_str = nxt[0] if isinstance(nxt, tuple) else nxt
-                    new_name = text_str.encode("932", errors="ignore")
+                    new_name = encode_text(text_str)
                     op["content"] = op["content"][:0x12] + new_name + b'\x00'
             elif op["op"] == 0x25 and self.engine == "DRS":
                 name_bytes = op["content"][0x02:].rstrip(b'\x00')
                 if len(name_bytes) > 0:
                     nxt = trans_iter.__next__()
                     text_str = nxt[0] if isinstance(nxt, tuple) else nxt
-                    new_name = text_str.encode("932", errors="ignore")
+                    new_name = encode_text(text_str)
                     op["content"] = op["content"][:0x02] + new_name + b'\x00'        
                     
             elif op["op"] in [0xf7]:
                 ori = op["content"][:-1].decode("932", errors="ignore") if self.engine == "DRS" else decode_ikuar_text(op["content"][:-1])
-                if ori in stdict:
-                    new = stdict[ori].encode("932")
+                if (ori in stdict and self.pack_profile != "original" and stdict[ori] != ori) or (self.pack_profile == "original" and ori in stdict):
+                    new = encode_text(stdict[ori])
                     op["content"] = new + b'\x00'
             elif op["op"] in [0xe0]:
                 ori = op["content"][1:-1].decode("932", errors="ignore") if self.engine == "DRS" else decode_ikuar_text(op["content"][1:-1])
-                if ori in stdict:
-                    new = stdict[ori].encode("932")
+                if (ori in stdict and self.pack_profile != "original" and stdict[ori] != ori) or (self.pack_profile == "original" and ori in stdict):
+                    new = encode_text(stdict[ori])
                     op["content"] = op["content"][:1] + new + b'\x00'
             elif op["op"] in [0xe1]:
                 ori = op["content"][2:-1].decode("932", errors="ignore") if self.engine == "DRS" else decode_ikuar_text(op["content"][2:-1])
-                if ori in stdict:
-                    new = stdict[ori].encode("932")
+                if (ori in stdict and self.pack_profile != "original" and stdict[ori] != ori) or (self.pack_profile == "original" and ori in stdict):
+                    new = encode_text(stdict[ori])
                     op["content"] = op["content"][:2] + new + b'\x00'
             elif op["op"] in [0xe2, 0xe3]:
                 ori = op["content"][5:-1].decode("932", errors="ignore") if self.engine == "DRS" else decode_ikuar_text(op["content"][5:-1])
-                if ori in stdict:
-                    new = stdict[ori].encode("932")
+                if (ori in stdict and self.pack_profile != "original" and stdict[ori] != ori) or (self.pack_profile == "original" and ori in stdict):
+                    new = encode_text(stdict[ori])
                     op["content"] = op["content"][:5] + new + b'\x00'
             elif op["op"] in [0xe4]:
                 i1 = op["content"][0]
@@ -509,8 +522,8 @@ class ISF_FILE():
                 for _ in range(i1 + i2):
                     ori_bytes = c.read_utill_zero()
                     res = ori_bytes.decode("932", errors="ignore") if self.engine == "DRS" else decode_ikuar_text(ori_bytes)
-                    if res in stdict:
-                        new = stdict[res].encode("932")
+                    if (res in stdict and self.pack_profile != "original" and stdict[res] != res) or (self.pack_profile == "original" and res in stdict):
+                        new = encode_text(stdict[res])
                         op["content"] = op["content"].replace(ori_bytes + b'\x00', new + b'\x00')
                         
             elif op["op"] == 0x5b and len(op["content"]) >= 17:
@@ -524,13 +537,23 @@ class ISF_FILE():
                     if len(ori_bytes) > 0:
                         # 动态解码：根据当前引擎选择合适的解码方式
                         ori = decode_DRS_text(ori_bytes) if self.engine == "DRS" else decode_ikuar_text(ori_bytes)
-                        if ori in stdict:
-                            new_bytes = stdict[ori].encode("932")
+                        if (ori in stdict and self.pack_profile != "original" and stdict[ori] != ori) or (self.pack_profile == "original" and ori in stdict):
+                            new_bytes = encode_text(stdict[ori])
                             op["content"] = content[:start] + new_bytes + b'\x00' + content[end+1:]
 
     def get_op_bytes(self, op) -> bytes:
         res = [to_bytes(op["op"], 1)]
-        l = len(op["content"]) + 2
+        content = op["content"]
+        orig_len_bytes = op.get("_raw_len_bytes")
+        orig_content_len = op.get("_orig_content_len")
+
+        # 内容长度没有变化时，尽量复用原始长度字节，确保零长度块、0x80/0x81 编码等完全回写
+        if self.pack_profile == "eng" and orig_len_bytes is not None and orig_content_len == len(content):
+            res.append(orig_len_bytes)
+            res.append(content)
+            return b''.join(res)
+
+        l = len(content) + 2
         if l < 0x80:
             res.append(to_bytes(l, 1))
         else:
@@ -546,7 +569,7 @@ class ISF_FILE():
                 res.append(to_bytes(l - 0x200, 1))
             else:
                 raise ValueError(f"Invalid length {l}")
-        res.append(op["content"])
+        res.append(content)
         return b''.join(res)
 
     def savefile(self, outpath, isEnc=True):
