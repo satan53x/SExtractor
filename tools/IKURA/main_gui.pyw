@@ -34,6 +34,7 @@ UI_TRANSLATIONS = {
         "已解包的 ISF 目录:": "Unpacked ISF folder:",
         "JSON 翻译导出目录:": "JSON export folder:",
         "智能提取：自动解析 start.isf 并生成人名表 (nameidx.json)": "Smart extract: parse start.isf and generate the name table (nameidx.json)",
+        "不要转换 nameidx.json 中的原始名字": "Don't convert original names in nameidx.json",
         ">> 执行文本批量导出 <<": ">> Export Text Batch <<",
         "原始 ISF 目录 (解包后的文件夹):": "Original ISF folder (unpacked files):",
         "翻译好的 JSON 目录:": "Translated JSON folder:",
@@ -325,6 +326,8 @@ class IKURAToolbox(QMainWindow):
             self.lbl_b_out.setText(self.tr_ui("JSON 翻译导出目录:"))
         if hasattr(self, "chk_auto_name"):
             self.chk_auto_name.setText(self.tr_ui("智能提取：自动解析 start.isf 并生成人名表 (nameidx.json)"))
+        if hasattr(self, "chk_keep_original_names"):
+            self.chk_keep_original_names.setText(self.tr_ui("不要转换 nameidx.json 中的原始名字"))
         if hasattr(self, "btn_dump"):
             self.btn_dump.setText(self.tr_ui(">> 执行文本批量导出 <<"))
 
@@ -454,6 +457,11 @@ class IKURAToolbox(QMainWindow):
         self.chk_auto_name.setChecked(True)
         self.chk_auto_name.setStyleSheet("font-weight: bold; color: #0078D7;")
         layout.addWidget(self.chk_auto_name)
+
+        self.chk_keep_original_names = QCheckBox("不要转换 nameidx.json 中的原始名字")
+        self.chk_keep_original_names.setChecked(False)
+        self.chk_keep_original_names.setStyleSheet("font-weight: bold; color: #0078D7;")
+        layout.addWidget(self.chk_keep_original_names)
 
         # 执行按钮
         self.btn_dump = QPushButton(">> 执行文本批量导出 <<")
@@ -649,6 +657,7 @@ class IKURAToolbox(QMainWindow):
         in_dir = self.b_in_input.text().strip()
         out_dir = self.b_out_input.text().strip()
         auto_name = self.chk_auto_name.isChecked()
+        keep_original_names = self.chk_keep_original_names.isChecked()
         
         if not os.path.isdir(in_dir):
             print("[-] 错误：找不到解包后的 ISF 目录，请检查路径！")
@@ -658,12 +667,12 @@ class IKURAToolbox(QMainWindow):
         print("\n" + "="*50)
         print("开始执行模块 B: 文本导出任务...")
 
-        self.thread = WorkerThread(self.real_dump_task, in_dir, out_dir, auto_name)
+        self.thread = WorkerThread(self.real_dump_task, in_dir, out_dir, auto_name, keep_original_names)
         self.thread.finished_signal.connect(lambda: self.btn_dump.setEnabled(True))
         self.thread.error_signal.connect(lambda e: print(f"[-] 发生严重异常: {e}"))
         self.thread.start()
 
-    def real_dump_task(self, in_dir, out_dir, auto_name):
+    def real_dump_task(self, in_dir, out_dir, auto_name, keep_original_names):
         # ========== 新增：高级字典解析器 ==========
         def parse_advanced_nameidx(raw_dict):
             flat_dict = {}
@@ -722,7 +731,7 @@ class IKURAToolbox(QMainWindow):
             if os.path.exists(start_isf_path):
                 f = ISF_FILE(engine=engine_type) # 记得这里也要带上引擎参数
                 f.load_from_path(start_isf_path)
-                outlist, _ = f.dumptext({}) # 第一次空跑，专门抓取 System_CNS
+                outlist, _ = f.dumptext({}, convert_original_names=not keep_original_names) # 第一次空跑，专门抓取 System_CNS
                 
                 # ====== 彻底替换为你脚本里的绝对顺序逻辑 ======
                 all_names = []
