@@ -228,7 +228,7 @@ class ISF_FILE():
 
 
 
-    def dumptext(self, nameidx_dict, split_embedded=False):
+    def dumptext(self, nameidx_dict, split_embedded=False, convert_original_names=True):
         outlist = []
         savetitles = {}
         current_name_id = 0  
@@ -452,7 +452,10 @@ class ISF_FILE():
             elif op["op"] == 0x25: 
                 name_bytes = op["content"][0x02:].rstrip(b'\x00')
                 if len(name_bytes) > 0:
-                    dec = name_bytes.decode("932", errors="ignore") if self.engine == "DRS" else decode_ikuar_text(name_bytes)
+                    if convert_original_names:
+                        dec = name_bytes.decode("932", errors="ignore") if self.engine == "DRS" else decode_ikuar_text(name_bytes)
+                    else:
+                        dec = name_bytes.decode("cp932", errors="replace")
                     outlist.append({"name": "System_CNS", "ori": dec, "message": dec})        
 
         return outlist, savetitles
