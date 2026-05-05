@@ -1,0 +1,63 @@
+nexas_extract.py: 文本提取器。将引擎 .bin 脚本中的对话、选项等文本提取为兼容 GalTransl 的标准 JSON 格式。
+
+nexas_inject.py: 文本注入器。将翻译好的 JSON 文本重新打包回 .bin，支持 GBK/CP932 编码切换，未修改的文本保证字节级原样保留（Byte-perfect）。
+
+nexas_disasm.py: 脚本反汇编器。用于逆向分析，将二进制指令输出为高可读性的 .asm 伪代码，支持生成全目录指令统计报表。
+
+nexas_common.py: 核心逻辑库。负责底层的结构解析、指令折叠、控制符（@v, @h 等）抽离与还原、对话分块合并。
+
+第一步：提取原文 (Extract)
+将原始的游戏 mes/ 目录中的 .bin 文件批量提取为 .json 文本文件。
+
+Bash
+# 默认提取，输出到 mes_json/ 目录
+python nexas_extract.py mes/
+
+# 指定输出目录为 text_jp/
+python nexas_extract.py mes/ -o text_jp/
+第二步：文本翻译 (Translate)
+使用 GalTransl 或人工翻译得到的 JSON 文件。翻译时只需修改 message 和 name 字段。
+注：JSON 数据中带有 "_choice": true 的条目为游戏选项，同样通过修改 message 字段进行翻译。
+
+JSON 格式示例：
+
+JSON
+[
+  {
+    "name": "大和",
+    "message": "啊ー，咖喱真好吃。",
+    "_site": 3128,
+    "_idx": 3,
+    "_msg_sid": 12,
+    "_name_sid": 11
+  },
+  {
+    "name": "",
+    "message": "亲吻她",
+    "_site": 42517,
+    "_idx": 110,
+    "_choice": true,
+    "_msg_sid": 55,
+    "_name_sid": -1
+  }
+]
+第三步：注入译文 (Inject)
+将翻译后的 JSON 文件批量注入回新的 .bin 文件中。对于中文汉化，请务必指定 --encoding gbk。
+
+Bash
+# 将 text_zh/ 下的中文 JSON 注入，并输出到 mes_zh/ 目录
+python nexas_inject.py mes/ --json text_zh/ -o mes_zh/ --encoding gbk
+注入过程会自动比对原始数据，未被修改的条目将使用原始字节写回，避免 CP932 双向映射可能导致的非对称乱码问题。
+
+🔧 高级工具：反汇编分析 (Disasm)
+在处理特殊文本表现或逆向研究未知指令时，可以使用反汇编工具。
+
+Bash
+# 生成全目录的 .asm 反汇编文件
+python nexas_disasm.py mes/ -o disasm_out/
+
+# 精简输出：跳过变量声明区和字符串区，只看控制流
+python nexas_disasm.py mes/ --no-extras --no-strings
+
+# 快速分析：不生成 .asm，仅在 10 秒内生成全目录文件的统计报表 (_summary.csv)
+python nexas_disasm.py mes/ --summary-only
