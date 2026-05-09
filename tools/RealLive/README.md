@@ -10,3 +10,8 @@ seen_fix.py 如果没有GameType预设则需要自行寻找码表：（任选其
 ## arc_conv
 * 项目地址：https://github.com/amayra/arc_conv
 * 说明：`formats.txt`
+
+## Rldev_python
+由`Cosetto`提供，rldev的python版本
+* 项目地址: https://github.com/Cosetto/Rldev-python
+* 尽量去上述地址下载使用最新版本
