@@ -17,6 +17,7 @@ Codes = [
 	{'min': 0x000, 'max': 0x010, 'sce': [0x33], 'sel': [0x27], 'endpara': [], 'retcode': 0xFF, 'nostr': [0x19, 0x26]},
 	{'min': 0x000, 'max': 0x0E0, 'sce': [0x4A], 'sel': [0x16], 'endpara': [0x32], 'retcode': 0xFF, 'nostr': [0x1E, 0x32]},
 	{'min': 0x0EE, 'max': 0x0EE, 'sce': [0x25], 'sel': [0x14], 'endpara': [], 'retcode': 0x2D, 'nostr': []},
+	{'min': 0x11E, 'max': 0x11E, 'sce': [0x54], 'sel': [0x19], 'endpara': [], 'retcode': 0x38, 'nostr': [], '1str': [0x1A]},
 	{'min': 0x000, 'max': 0x1C1, 'sce': [0x57], 'sel': [0x1A], 'endpara': [], 'retcode': 0x3B, 'nostr': []},
 	{'min': 0x000, 'max': 0xFFF, 'sce': [0x5A], 'sel': [0x1D], 'endpara': [], 'retcode': 0xFF, 'nostr': []},
 ]
@@ -218,7 +219,7 @@ class DataManager():
 			pos += 1
 			count = readInt(self.cmdSec, pos, 1)
 			pos += 3
-			textType = -1
+			textType = -1 #>=0:有str -1:有str但无需提取 -2:无str -3:只有第一个是str
 			if code in self.codeSce: #文本
 				textType = 0
 			elif code in self.codeSel: #选项
@@ -277,7 +278,7 @@ class DataManager():
 				self.cmdHeadLen = 0xC
 			else:
 				self.cmdHeadLen = 0x6
-			if self.version == 0x115:
+			if 0x115 <= self.version <= 0x11E:
 				self.retCodeLen = 0x4
 		else:
 			print(f'\033[33m当前ybn版本暂不支持\033[0m: 0x{self.version:X}')
@@ -298,6 +299,8 @@ class DataManager():
 				self.codeRetcode = item['retcode']
 			if 'nostr' in item:
 				self.codeNostr = item['nostr']
+			if '1str' in item:
+				self.code1str = item['1str']
 		if ExVar.endStr:
 			lst = ExVar.endStr.split(',')
 			self.codeEndpara = [int(c, 16) for c in lst]
@@ -411,7 +414,8 @@ class DataManager():
 			for i in range(count):
 				#单个para对应单个str
 				item = ParaItem()
-				item.unpack(self.cmdSec[pos:pos+self.OneParaLen], textType <= -2)
+				nostr = textType == -2 or (textType == -3 and i > 0)
+				item.unpack(self.cmdSec[pos:pos+self.OneParaLen], nostr)
 				pos += self.OneParaLen
 				#正常保存字节
 				self.paraList.append(item)
@@ -442,6 +446,8 @@ class DataManager():
 				headLen += self.retCodeLen
 			elif code in self.codeNostr: #无str
 				textType = -2
+			elif code in self.code1str: #只有第一个是str
+				textType = -3
 			if code in self.codeEndpara: #段落结束
 				if textType == 0:
 					textType = 10
@@ -481,7 +487,10 @@ class ParaItem():
 			else:
 				self.pre, self.length, self.offset = struct.unpack('<8sII', data)
 		else:
-			self.pre, self.length, self.offset  = struct.unpack('<4sII', data)
+			if nostr:
+				self.pre = struct.unpack('<12s', data)[0] #pre
+			else:
+				self.pre, self.length, self.offset  = struct.unpack('<4sII', data)
 
 	def pack(self):
 		if manager.OneParaLen == 0x10:
@@ -490,7 +499,10 @@ class ParaItem():
 			else:
 				bs = struct.pack('<8sII', self.pre, self.length, self.offset)
 		else:
-			bs = struct.pack('<4sII', self.pre, self.length, self.offset)
+			if self.length < 0:
+				bs = struct.pack('<12s', self.pre)
+			else:
+				bs = struct.pack('<4sII', self.pre, self.length, self.offset)
 		return bs
 
 manager = DataManager()
