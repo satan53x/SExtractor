@@ -182,7 +182,7 @@ def listFiles(start_path):
 
 #----------------------------------------------------------
 class AddrFixer:
-	def __init__(self, baseAddr=0, addrLen=2) -> None:
+	def __init__(self, baseAddr=0, addrLen=4) -> None:
 		self.pointList = []
 		self.realList = []
 		self.baseAddr = baseAddr

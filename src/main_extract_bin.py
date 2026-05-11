@@ -97,17 +97,19 @@ def parse():
 			else:
 				addrBase = var.addrBase
 			printDebug('基础地址:', f'{addrBase:X}')
-			var.addrFixer = AddrFixer(addrBase, var.addrLen)
+			var.addrFixer = AddrFixer(addrBase)
+			addrLen, addrLen2 = 0, 0
 			#第一次，正则匹配
 			if var.addrFix:
-				var.addrFix = searchAddr(data, var.addrFix)
+				var.addrFix, addrLen = searchAddr(data, var.addrFix)
 			#第二次，正则匹配
 			if var.addrFix2:
-				var.addrFix2 = searchAddr(data, var.addrFix2)
+				var.addrFix2, addrLen2 = searchAddr(data, var.addrFix2)
 			if var.addrFixer.isEmpty():
 				var.addrFixer = None
 			else:
 				printTip('发现地址个数:', len(var.addrFixer.pointList))
+				var.addrFixer.addrLen = max(addrLen, addrLen2)
 	#print(var.content)
 	var.parseImp(var.content, var.listCtrl, dealOnce)
 	write() #写入
@@ -129,6 +131,7 @@ def searchAddr(data, addrFix):
 	if var.addrSection:
 		searchStart, searchEnd = getInterval(var.addrSection, data)
 	iter = addrFix.finditer(data[searchStart:searchEnd])
+	start, end = 0, 0
 	for r in iter:
 		for i in range(1, len(r.groups())+1):
 			if r.group(i) == None: continue
@@ -142,7 +145,7 @@ def searchAddr(data, addrFix):
 				continue
 			var.addrFixer.listen(start, addr)
 			#printDebug('发现地址:', f'{start:08X}: {addr:08X}')
-	return addrFix
+	return addrFix, end - start
 
 def initDone():
 	var.contentSeparate = var.contentSeparate.encode('latin-1')
