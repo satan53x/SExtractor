@@ -182,10 +182,11 @@ def listFiles(start_path):
 
 #----------------------------------------------------------
 class AddrFixer:
-	def __init__(self, baseAddr=0) -> None:
+	def __init__(self, baseAddr=0, addrLen=2) -> None:
 		self.pointList = []
 		self.realList = []
 		self.baseAddr = baseAddr
+		self.addrLen = addrLen
 
 	def isEmpty(self) -> None:
 		return not self.pointList and not self.realList
@@ -211,5 +212,5 @@ class AddrFixer:
 		for i, pointAddr in enumerate(self.pointList):
 			realAddr = self.realList[i]
 			saveAddr = realAddr - self.baseAddr
-			data[pointAddr:pointAddr+4] = int2bytes(saveAddr)
+			data[pointAddr:pointAddr+self.addrLen] = int2bytes(saveAddr, self.addrLen)
 			printDebug('地址修正:', f'{pointAddr:08X}: {saveAddr:08X}')

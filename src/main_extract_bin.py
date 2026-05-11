@@ -97,7 +97,7 @@ def parse():
 			else:
 				addrBase = var.addrBase
 			printDebug('基础地址:', f'{addrBase:X}')
-			var.addrFixer = AddrFixer(addrBase)
+			var.addrFixer = AddrFixer(addrBase, var.addrLen)
 			#第一次，正则匹配
 			if var.addrFix:
 				var.addrFix = searchAddr(data, var.addrFix)
