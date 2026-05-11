@@ -217,17 +217,15 @@ _BIN_NSystem:
 
 _BIN_Nexas:
     sample: |
-        01_skip=^[\S\s]{0,3}$
-        02_skip=^[^@\x81-\xFC]
-        10_search=^[0-~]*(?P<pre_name>「[ 0-\xFC]+?)$
-        20_search=^[0-~]*([\x81-\xFC][ 0-\xFC]+?)$
-        checkJIS=[ 0-~]
-        ignoreDecodeError=1
-        postSkip=_.*[^」a-zA-Z]$|[0-9]$
+        01_skip=^[ -~]+$
+        10_search=^@v[a-zA-Z0-9_]+(?P<pre_name>[\S\s]+?)$
+        11_search=^[0-~]*(?P<pre_name>「[\S\s]+?)$
+        20_search=^(?P<not_name>[\S\s]{20,})$
+        21_search=^([\S\s]+)$
         separate=\x00
+        section=readInt(data,0)*8+8
         struct=para
-        sample=
-        <暴力匹配，日文仅允许双字节，每行结尾限定字符>
+        <如果name有问题可以删掉?P<pre_name>自行强制设定>
 
 _BIN_RealLive:
     sample: |

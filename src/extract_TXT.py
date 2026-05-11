@@ -175,6 +175,8 @@ def searchLine(var:ParseVar):
 								var.intervalFlag = key[6:]
 							elif key.startswith('end_'):
 								var.intervalFlag = None
+							elif key.startswith('not_'):
+								ctrl['not'] = key[4:]
 							else: #name, unfinish
 								if key == 'un':
 									key = 'unfinish'
@@ -235,20 +237,21 @@ def dealLastCtrl(lastCtrl, ctrls, contentIndex=-1):
 				if not ExVar.nameKeepCtrl:
 					ctrl = None
 			dealFlags(flags, lastCtrl)
-			lastCtrl = ctrl
 	return ctrl
 
 def dealFlags(flags, lastCtrl):
+	if lastCtrl == None: return
 	#处理flags
 	for flag in flags:
-		if lastCtrl:
-			if flag.startswith('pre_'):
-				key = flag[4:]
-				lastCtrl[key] = True #添加
-			elif flag.startswith('predel_'):
-				key = flag[7:]
-				if key in lastCtrl:
-					del lastCtrl[key] #删除
+		if flag.startswith('pre_'):
+			key = flag[4:]
+			if 'not' in lastCtrl and key in lastCtrl['not']:
+				continue
+			lastCtrl[key] = True #添加
+		elif flag.startswith('predel_'):
+			key = flag[7:]
+			if key in lastCtrl:
+				del lastCtrl[key] #删除
 
 def initParseVar(var:ParseVar, regDic=None):
 	if regDic == None:
