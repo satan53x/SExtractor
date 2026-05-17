@@ -2,6 +2,7 @@
 # https://github.com/satan53x/SExtractor/tree/main/tools/U-MeSoft
 # ------------------------------------------------------------
 import io
+import re
 import sys
 import os
 from tkinter import filedialog
@@ -33,14 +34,18 @@ def pack():
 		fileOld = open(filepath, 'rb')
 		data = fileOld.read()
 		fileOld.close()
-		#写入解压长度
-		data = bytearray(data)
-		data = align(data)
-		bs = int.to_bytes(len(data), 4, byteorder='little')
-		content.append(bs)
-		#写入文件
-		data = encrypt(data)
-		data = compress(data)
+		if re.search(r'\.(scr|tbl)$', filename.lower()):
+			#写入解压长度
+			data = bytearray(data)
+			data = align(data)
+			bs = int.to_bytes(len(data), 4, byteorder='little')
+			content.append(bs)
+			#写入文件
+			data = encrypt(data)
+			data = compress(data)
+			addLen = 4
+		else:
+			addLen = 0
 		content.append(data)
 		#写入索引
 		bs = bytearray()
@@ -51,7 +56,7 @@ def pack():
 			bs.extend(IndexBytesDic[filename])
 		else:
 			bs.extend(BytesAfterName)
-		size = int.to_bytes(len(data)+4, 4, byteorder='little')
+		size = int.to_bytes(len(data)+addLen, 4, byteorder='little')
 		offset = int.to_bytes(addr, 4, byteorder='little')
 		bs.extend(size)
 		bs.extend(offset)
