@@ -77,7 +77,7 @@ def replaceEndImp(content):
 	content.append(data)
 
 # -----------------------------------
-NotePattern = re.compile(rb'\x23\x00\x03\x78\x00(?:\x00\x00\x01|\x01\x00\x00\x28[^\x29]*?\x29)(?:\x40[\x00-\xFF]{2})?')
+NotePattern = re.compile(rb'\x23\x00\x03\x78\x00(?:\x00\x00\x01\x2C?|\x01\x00\x00\x28[^\x29]*?\x29)(?:\x40[\x00-\xFF]{2})?')
 LinebreakPattern = re.compile(rb'\x23\x00\x03\xC9\x00\x00\x00\x00(?:\x40[\x00-\xFF]{2})?')
 
 def readFileDataImp(fileOld, contentSeparate):
