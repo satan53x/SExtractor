@@ -6,3 +6,4 @@
 * 剧本编码: python ocb.py -c <input_dir> <output.ocb>
 * 图片解码: python sg.py -d <input_sg> <output_png>
 * 图片编码: python sg.py -e <input_png> <output_sg>
+* 测试游戏: `ネトッテヤ`
