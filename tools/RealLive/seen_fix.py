@@ -127,6 +127,20 @@ XorTable = {
 
 	# >>>>>>> Made by `blw`
 	91: bytearray.fromhex('BE 32 E2 3F EF 2A 32 08 C6 0C BF 39 2D 47 AE F3'),
+
+	# >>>>>>> Made by `aerovista`
+	# Little Busters Perfect Edition（全年龄）
+	92: bytearray.fromhex('A8 28 FD 64 A9 23 77 06 FA 39 88 3F 6C 13 A2 F0'),
+
+	# Little Busters！EX（18+）
+	93: [
+		bytearray.fromhex('A8 28 FD 71 B4 23 64 15 96 48 8A 43 62 0E AD F0'),
+		bytearray.fromhex('DE D9 4A 18 AF 23 1D 9A AC 23 25 48 D8 D4 8F A7'),
+		bytearray.fromhex('F1 B7 69 1B 00 79 8F 3A 6B AF 0B BA DA 22 57 76'),
+	],
+
+	# Kud Wafter（全年龄）
+	94: bytearray.fromhex('AF 3F E6 63 AD 3A 69 18 85 45 E5 40 1E 7E B9 E0'),
 }
 
 #加密解密函数相同
