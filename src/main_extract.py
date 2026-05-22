@@ -115,6 +115,8 @@ def dealOnce(text, ctrl):
 	#print(orig)
 	if orig not in var.transDic:
 		#print('Add to transDic', orig, var.filename, str(contentIndex))
+		if var.isInput:
+			printWarning('译文字典未找到对应原文', var.filename, orig)
 		var.transDic[orig] = ['']
 		if var.textAppend:
 			var.transDicAppend[orig] = ['']
@@ -137,9 +139,10 @@ def replace():
 				newStr = trans.pop()
 		if newStr == '':
 			if ExVar.allowEmpty:
-				printTip('译文为空，仍然进行导入', var.filename, orig)
+				#printDebug('译文为空，仍然进行导入', var.filename, orig)
+				pass
 			else:
-				printWarning('译文为空, 保持原文不变', var.filename, orig)
+				printTip('译文为空, 保持原文不变', var.filename, orig)
 				#trans = 'te'.format(listIndex) #测试
 				continue
 		#开始处理段落
