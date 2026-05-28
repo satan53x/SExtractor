@@ -121,6 +121,13 @@ XorTable = {
 	#双淫セレブ妻 狂乱の果て
 	67: bytearray.fromhex('8A 0F C9 5B 82 13 5D 38 BE 68 D4 16 45 23 9C DA'),
 
+	# >>>>>>> Made by `朝比奈真冬`
+	# 聖戦姫ヴァルキュア・シスターズ～淫闇に堕ちたアイドル～
+	71: bytearray.fromhex('E5 3C A3 C8 EF DD B4 94 4A 9D 39 33 AD C7 71 F9'),
+
+	# 仕舞妻マリッジディスク 仕舞妻ぶぶづけ
+	72: bytearray.fromhex('FB 2B A7 3F E1 31 70 55 CB 58 F3 37 6E 4B F4 B8'),
+
 	# >>>>>>> Made by `Linden10`
 	#孕神～はらかみ～	Harakami
 	81: bytearray.fromhex('67 17 21 BE 6D 27 B5 21 4A 82 39 0E AD C6 73 EE'),
