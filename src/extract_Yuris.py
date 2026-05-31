@@ -7,6 +7,8 @@ from helper_text import generateBytes
 
 selMinCount = 10 #提取时选项函数最小参数个数
 selMaxCount = 99 #提取时选项函数最大参数个数
+StuctTypeLine = 0x1C2 #结构类型分界线，大于等于则是结构1，新版
+StuctTypeList1 = [ 0x19C ] #这些版本号强制指定为结构1
 #版本对应code
 Codes = [
 	{'min': 0x1DC, 'max': 0x1DC, 'sce': [0x5A], 'sel': [0x1D], 'endpara': []},
@@ -162,7 +164,7 @@ def readFileDataImp(fileOld, contentSeparate):
 #管理器
 class DataManager():
 	OneParaLen = 0xC
-	structType = 1 #文件结构 1:v>=1C2, 2:v<1C2
+	structType = 1 #文件结构 1:v>=StuctTypeLine, 2:v<StuctTypeLine
 
 	def splitParaStr(self):
 		self.splitCmd()
@@ -260,13 +262,13 @@ class DataManager():
 			self.version = v
 		else:
 			self.version = readInt(data, 4)
-		if self.version >= 0x1C2:
+		if self.version >= StuctTypeLine or self.version in StuctTypeList1:
 			self.cmdLen = readInt(data, 0xC)
 			self.paraLen = readInt(data, 0x10)
 			self.strLen = readInt(data, 0x14)
 			self.otherLen = readInt(data, 0x18)
 			self.structType = 1
-		elif self.version < 0x1C2:
+		elif self.version < StuctTypeLine:
 			self.cmdLen = readInt(data, 0x8)
 			self.paraLen = 0
 			self.strLen = readInt(data, 0xC)
@@ -286,6 +288,10 @@ class DataManager():
 		#code
 		self.codeSce = 0
 		self.codeSel = 0
+		self.codeEndpara = []
+		self.codeRetcode = 0
+		self.codeNostr = []
+		self.code1str = []
 		if self.codeDic != {}:
 			#从ysc设置
 			item = Codes[-1]
