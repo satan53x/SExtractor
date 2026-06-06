@@ -100,6 +100,7 @@ class ExtractVar():
 	textAppend = False #文本追加模式
 	serialSearch = True #使用顺序搜索，而不是finditer
 	allowEmpty = False #是否允许译文为空
+	maxLineCount = 3 #最大行数
 
 	#-------------------
 	def clearBeforeExtract(self): #每次提取前清除
@@ -146,5 +147,6 @@ class ExtractVar():
 		self.addrSection = None #地址分区区间，eval字符串
 		#self.addrLen = 4 #地址字节数
 		self.section = None #内容分区区间，eval字符串
+		self.addBytes = None #尾部追加字节，当trans的message分割后小于maxLineCount时使用
 		
 gExtractVar = ExtractVar()

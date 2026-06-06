@@ -142,7 +142,7 @@ def keepBytes(data, reg):
 
 #encode
 def encodeText(text, NewEncodeName, maxLen=0):
-	if ExVar.keepBytes or ExVar.cutoff:
+	if ExVar.keepBytes or ExVar.addBytes or ExVar.cutoff:
 		cutoffLen = 0
 		data = bytearray()
 		pos = 0
@@ -160,7 +160,7 @@ def encodeText(text, NewEncodeName, maxLen=0):
 keepBytesSearch = re.compile(r'<[0-9a-zA-Z]+?>')
 def encodeChar(text, NewEncodeName, pos):
 	wchar = text[pos]
-	if ExVar.keepBytes:
+	if ExVar.keepBytes or ExVar.addBytes:
 		if wchar == '<':
 			#字节还原
 			match = keepBytesSearch.match(text, pos=pos)
@@ -211,6 +211,11 @@ def splitToTransDic(orig, trans):
 				msgTrans = listMsgTrans[j]
 		if msgOrig not in ExVar.transDic:
 			ExVar.transDic[msgOrig] = []
+		if ExVar.addBytes and j == len(listMsgOrig) - 1 and len(listMsgOrig) < ExVar.maxLineCount:
+			#最后一行且行数不足时追加字节
+			addBytes = ExVar.addBytes
+			addCount = ExVar.maxLineCount - len(listMsgOrig)
+			msgTrans = msgTrans + addBytes * addCount
 		ExVar.transDic[msgOrig].append(msgTrans)
 		if len(msgTrans) > ExVar.maxCountPerLine:
 			printWarning('长度超过设置阈值', msgTrans)
