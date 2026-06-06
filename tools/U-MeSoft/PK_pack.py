@@ -37,7 +37,11 @@ def pack():
 		if re.search(r'\.(scr|tbl)$', filename.lower()):
 			#写入解压长度
 			data = bytearray(data)
-			data = align(data)
+			if re.search(r'\.(scr)$', filename.lower()):
+				data = align(data)
+			elif re.search(r'\.(tbl)$', filename.lower()):
+				data = align(data, b'\x00')
+				pass
 			bs = int.to_bytes(len(data), 4, byteorder='little')
 			content.append(bs)
 			#写入文件
@@ -61,7 +65,7 @@ def pack():
 		bs.extend(size)
 		bs.extend(offset)
 		indexSection.extend(bs)
-		addr += 4 + len(data)
+		addr += addLen + len(data)
 	#写入index
 	#indexSection.extend(b'\0\0')
 	content.append(indexSection)
@@ -80,9 +84,9 @@ def encrypt(data):
 		data[i] ^= 0x42
 	return data
 
-def align(data):
+def align(data, padding_byte=b' '):
 	padding = 8 - len(data) % 8
-	data.extend(b' ' * padding)
+	data.extend(padding_byte * padding)
 	return data
 
 def lz_fake(data):
