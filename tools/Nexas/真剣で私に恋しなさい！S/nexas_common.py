@@ -97,8 +97,8 @@ def parse_script(data):
         raise ParseError(f"文件太小 ({len(data)} bytes)")
 
     magic = struct.unpack_from('<I', data, 0)[0]
-    if magic < 0x100 or magic > 0xFFFF:
-        raise ParseError(f"magic=0x{magic:X} 不像有效的 NeXAS 脚本")
+    if magic <= 0 or magic > 0xFFFF:
+        raise ParseError(f"magic=0x{magic:X} 不像有效的 NeXAS 脚本/extras_count")
 
     pos = 4
     # extras
