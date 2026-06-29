@@ -82,6 +82,7 @@ def searchLine(var:ParseVar):
 			# 搜索
 			tmpDic = OrderedDict()
 			matched = False
+			start = 0
 			end = 0
 			#lastCtrl = None
 			if not ExVar.serialSearch:
