@@ -1,0 +1,5 @@
+python pac_unpack.py srp.pac srp_extracted
+python pac_pack.py srp_extracted srp_repack.pac
+
+python disassembler.py srp_extracted srp_asm
+python assembler.py srp_asm srp_rebuild
