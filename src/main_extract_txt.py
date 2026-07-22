@@ -10,10 +10,11 @@ def read():
 	var.listCtrl.clear()
 	#源文件
 	filepath = os.path.join(var.workpath, var.filename+var.Postfix)
-	fileOld = open(filepath, 'r', encoding=var.OldEncodeName)
+	fileOld = open(filepath, 'r', encoding=var.OldEncodeName, newline='')
 	var.inputCount += 1
 	return fileOld
 
+NewLine = '\r\n'
 def write():
 	#if len(var.listOrig) == 0:
 		#print('No orig', filename)
@@ -22,15 +23,18 @@ def write():
 		#写入译文
 		replace()
 		#反转义
-		separate = var.contentSeparate.encode().decode('unicode_escape')
+		if var.contentSeparate == '':
+			separate = '\n'
+			newline = NewLine
+		else:
+			separate = var.contentSeparate.encode().decode('unicode_escape')
+		if ExVar.newline != None:
+			newline = ExVar.newline.encode().decode('unicode_escape')
 		#新文件
 		#print(len(content))
 		filepath = os.path.join(var.workpath, 'new', var.filename+var.Postfix)
 		#print(filepath)
-		if ExVar.newline != None:
-			fileNew = open(filepath, 'w', encoding=var.NewEncodeName, newline=ExVar.newline)
-		else:
-			fileNew = open(filepath, 'w', encoding=var.NewEncodeName)
+		fileNew = open(filepath, 'w', encoding=var.NewEncodeName, newline=newline)
 		length = len(var.content)
 		for i in range(length):
 			try:
@@ -55,11 +59,22 @@ def parse():
 		var.content, _ = var.readFileDataImp(fileOld, var.contentSeparate)
 	else:
 		data = fileOld.read() #文本文件读入内存后都是utf-8字符串
-		if var.contentSeparate == '' or var.contentSeparate == '\n' or var.contentSeparate == '\r\n':
-			var.content = data.splitlines()
-			if len(var.content) > 0 and var.content[-1] != '':
-				var.content.append('')
-			var.contentSeparate = '\n'
+		if var.contentSeparate == '':
+			parts = data.split('\r\n')
+			rn_count = len(parts) - 1
+			n_count = 0
+			var.content = []
+			for part in parts:
+				lst = part.split('\n')
+				n_count += len(lst) - 1
+				var.content.extend(lst)
+			#if len(var.content) > 0 and var.content[-1] != '':
+			#	var.content.append('')
+			global NewLine
+			if rn_count >= n_count: #根据个数决定使用rn还是n
+				NewLine = '\r\n'
+			else:
+				NewLine = '\n'
 		else:
 			#自定义分割
 			var.content = re.split(var.contentSeparate, data)

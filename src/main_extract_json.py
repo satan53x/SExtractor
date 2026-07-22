@@ -24,10 +24,7 @@ def write():
 		#print(len(content))
 		filepath = os.path.join(var.workpath, 'new', var.filename+var.Postfix)
 		#print(filepath)
-		if ExVar.newline != None:
-			fileNew = open(filepath, 'w', encoding=var.NewEncodeName, newline=ExVar.newline)
-		else:
-			fileNew = open(filepath, 'w', encoding=var.NewEncodeName)
+		fileNew = open(filepath, 'w', encoding=var.NewEncodeName, newline=ExVar.newline)
 		if var.jsonWrite == 10:
 			#除了第一层，其它WM_COMPACT
 			if isinstance(var.content, list):
