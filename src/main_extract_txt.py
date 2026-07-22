@@ -10,7 +10,11 @@ def read():
 	var.listCtrl.clear()
 	#源文件
 	filepath = os.path.join(var.workpath, var.filename+var.Postfix)
-	fileOld = open(filepath, 'r', encoding=var.OldEncodeName, newline='')
+	if var.contentSeparate == '':
+		newline = '' #保留原始
+	else:
+		newline = None #全转为\n
+	fileOld = open(filepath, 'r', encoding=var.OldEncodeName, newline=newline)
 	var.inputCount += 1
 	return fileOld
 
@@ -28,8 +32,9 @@ def write():
 			newline = NewLine
 		else:
 			separate = var.contentSeparate.encode().decode('unicode_escape')
-		if ExVar.newline != None:
-			newline = ExVar.newline.encode().decode('unicode_escape')
+			newline = None
+		if var.newline != None:
+			newline = var.newline.encode().decode('unicode_escape')
 		#新文件
 		#print(len(content))
 		filepath = os.path.join(var.workpath, 'new', var.filename+var.Postfix)
