@@ -1,0 +1,9 @@
+python 1.py key Megu.exe
+python 1.py dump Megu.exe Meg out
+python 1.py import Megu.exe new out
+python 1.py Megu.exe new out
+
+python 1.py dump Megu.exe Meg meg_dec
+python disassembler.py meg_dec txt
+python assembler.py txt meg_plain
+python 1.py import Megu.exe meg_plain meg_out
