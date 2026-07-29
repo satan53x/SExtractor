@@ -1,5 +1,5 @@
 ﻿# MEG tools
-由`Steins;Gate`提供
+由`Steins;Gate`提供，测试游戏：machine maiden外伝 ～シンシア
 
 ## 1.py (string XOR dump/import)
 ```bat
