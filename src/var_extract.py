@@ -10,7 +10,9 @@ class IOConfig():
 		self.isList = self.outputFormat in (2, 6, 7, 9, 10, 11)
 
 class ExtractVar():
-	parseImp = None
+	mainParse = None #主解析
+	mainWrite = None #主写入
+	parseImp = None #引擎解析
 	replaceOnceImp = None
 	readFileDataImp = None
 	replaceEndImp = None
@@ -52,6 +54,7 @@ class ExtractVar():
 	def clearBeforeParse(self): #每个文件开始解析前清除
 		self.addrList = []
 		self.addrFixer = None #地址修正器
+		self.contentInfos = {} #内容信息表 单个元素: [是否合并段落]
 
 	#-------------------
 	engineName = ''
@@ -101,6 +104,7 @@ class ExtractVar():
 	serialSearch = True #使用顺序搜索，而不是finditer
 	allowEmpty = False #是否允许译文为空
 	maxLineCount = 3 #最大行数
+	mergePara = False #强制合并段落
 
 	#-------------------
 	def clearBeforeExtract(self): #每次提取前清除

@@ -6,7 +6,7 @@ from common import *
 from main_extract import *
 
 #多文档导出：单独处理每个文件的json
-def mainExtractPart(args, parseImp, initDone=None):
+def mainExtractPart(args, initDone=None):
 	if len(args) < 4:
 		printError("main_extract参数错误", args)
 		return
@@ -36,8 +36,9 @@ def mainExtractPart(args, parseImp, initDone=None):
 			var.curIO = var.io
 			readFormat() #读入译文
 			printDebug('读取文件:', var.filename)
-			parse(parseImp)
+			parse()
 			keepAllOrig()
+			var.mainWrite()
 			writeFormat()
 			var.curIO = var.ioExtra
 			writeFormat(False)

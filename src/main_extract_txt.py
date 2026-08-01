@@ -52,6 +52,8 @@ def write():
 					raise
 			if i < length-1:
 				if var.addSeparate:
+					if var.mergePara and i in var.contentInfos and var.contentInfos[i][0] == True:
+						continue #合并段落则不需要写入separate
 					fileNew.write(separate)
 		fileNew.close()
 		#print('导出:', filename+Postfix)
@@ -91,7 +93,7 @@ def parse():
 	fileOld.close()
 	#print(content)
 	var.parseImp(var.content, var.listCtrl, dealOnce)
-	write() #写入
+	#write() #写入
 	num = len(var.listOrig)
 	#print('count:', num, len(transDic))
 	if num == 0:
@@ -109,7 +111,9 @@ def initDone():
 #args = {workpath, engineName, outputFormat, outputPartMode, nameList, regDic}
 def mainExtractTxt(args):
 	outputPartMode = args['outputPartMode']
+	var.mainParse = parse
+	var.mainWrite = write
 	if outputPartMode == 0:
-		mainExtract(args, parse, initDone)
+		mainExtract(args, initDone)
 	else:
-		mainExtractPart(args, parse, initDone)
+		mainExtractPart(args, initDone)

@@ -62,6 +62,10 @@ def keepAllOrig(insertBegin=False):
 				elif listIndex == len(var.listCtrl) - 1:
 					continue #最后一行
 				item['message'] += var.splitParaSep
+				#生成信息
+				lineIndex = ctrl['pos'][0]
+				if lineIndex not in var.contentInfos:
+					var.contentInfos[lineIndex] = [True]
 				continue
 			item = tryAddToDic(item, ctrl, needAppend)
 			needAppend = 0
@@ -439,10 +443,10 @@ def getFiles(dirpath, reverse=False):
 		files = list(reversed(files))
 	return files
 
-def parse(parseImp):
+def parse():
 	var.clearBeforeParse()
 	try:
-		parseImp()
+		var.mainParse()
 	except Exception as ex:
 		if ExVar.dontInterrupt:
 			print('\033[31m---------------------------提取时发生错误---------------------------\033[0m')
@@ -453,7 +457,7 @@ def parse(parseImp):
 			raise
 
 #合并为单文档导出
-def mainExtract(args, parseImp, initDone=None):
+def mainExtract(args, initDone=None):
 	if len(args) < 4:
 		printError("main_extract参数错误", args)
 		return
@@ -487,8 +491,9 @@ def mainExtract(args, parseImp, initDone=None):
 				var.isStart = 2
 			var.filename = name
 			printDebug('读取文件:', var.filename)
-			parse(parseImp)
+			parse()
 			keepAllOrig(needReverse)
+			var.mainWrite()
 			#break #测试
 		showProgress(100)
 		printInfo('读取文件数:', var.inputCount)

@@ -54,6 +54,7 @@ class ConfigManager():
 			'textAppend': [mainWindow.textAppendCheck, True, False],
 			'serialSearch': [mainWindow.serialSearchCheck, True, False],
 			'allowEmpty': [mainWindow.allowEmptyCheck, True, False],
+			'mergePara': [mainWindow.mergeParaCheck, True, False],
 		}
 		#运行中时不进行读写
 		notInRunning = ['batchCmdCur', 'batchAutoStart']

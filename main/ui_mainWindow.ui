@@ -1237,7 +1237,7 @@
           <property name="title">
            <string>正则配置</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0" columnstretch="5,5" rowminimumheight="0,0,0">
+          <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0" columnstretch="5,5" rowminimumheight="0,0,0,0">
            <property name="leftMargin">
             <number>5</number>
            </property>
@@ -1250,6 +1250,13 @@
            <property name="bottomMargin">
             <number>5</number>
            </property>
+           <item row="0" column="1">
+            <widget class="QCheckBox" name="skipIgnoreUnfinishCheck">
+             <property name="text">
+              <string>段落：skip不影响上一个unfinish</string>
+             </property>
+            </widget>
+           </item>
            <item row="2" column="0">
             <widget class="QCheckBox" name="nameKeepCtrlCheck">
              <property name="text">
@@ -1271,10 +1278,10 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
-            <widget class="QCheckBox" name="skipIgnoreUnfinishCheck">
+           <item row="3" column="0">
+            <widget class="QCheckBox" name="mergeParaCheck">
              <property name="text">
-              <string>段落：skip不影响上一个unfinish</string>
+              <string>段落：强制合并</string>
              </property>
             </widget>
            </item>

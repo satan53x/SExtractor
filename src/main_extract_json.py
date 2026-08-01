@@ -73,7 +73,7 @@ def parse():
 	fileOld.close()
 	#print(content)
 	var.parseImp(var.content, var.listCtrl, dealOnce)
-	write() #写入
+	#write() #写入
 	num = len(var.listOrig)
 	#print('count:', num, len(transDic))
 	if num == 0:
@@ -85,7 +85,9 @@ def parse():
 #args = {workpath, engineName, outputFormat, outputPartMode, nameList, regDic}
 def mainExtractJson(args):
 	outputPartMode = args['outputPartMode']
+	var.mainParse = parse
+	var.mainWrite = write
 	if outputPartMode == 0:
-		mainExtract(args, parse)
+		mainExtract(args)
 	else:
-		mainExtractPart(args, parse)
+		mainExtractPart(args)
