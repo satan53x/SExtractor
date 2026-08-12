@@ -106,7 +106,11 @@ class ConfigManager():
 			mainWindow.batchCmdListEdit.setText(text)
 		# 主目录
 		if self.isChangeMainDir:
-			mainWindow.mainDirPath = initValue(self.mainConfig, 'mainDirPath', '.')
+			if mainWindow.defaultDirPath:
+				mainWindow.mainDirPath = mainWindow.defaultDirPath
+				mainWindow.defaultDirPath = None
+			else:
+				mainWindow.mainDirPath = initValue(self.mainConfig, 'mainDirPath', '.')
 			mainWindow.mainDirEdit.setText(mainWindow.mainDirPath)
 		self.isChangeMainDir = True
 		# 当前引擎

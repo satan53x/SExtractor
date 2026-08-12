@@ -21,6 +21,9 @@ from main.statusBar import StatusBar
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 
+	silentMode = False #静默运行模式
+	defaultDirPath = None #默认工作路径
+
 	def __init__(self, parent=None, version='1.0.0'):
 		super(MainWindow, self).__init__(parent)
 		self.version = version

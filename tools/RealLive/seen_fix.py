@@ -49,6 +49,9 @@ XorTable = {
 	# 智代アフター PE版 （ME全年龄版没有二次加密）
 	10: bytearray.fromhex('B0 25 EF 7B B5 33 69 09 8C 56 8B 45 1B 18 BD F8'),
 
+	# 孕ませ王
+	11: bytearray.fromhex('83 05 D7 50 8D 08 57 32 AC 7A D2 1A 49 23 87 D1'),
+
 	# >>>>>>> Made by `Cosetto`
 	# 3Ping Lovers！☆一夫二妻の世界へようこそ♪
 	21: bytearray.fromhex('66 8A 20 D4 6E C3 B4 B8 4B F8 38 93 AC AC 70 0A'),

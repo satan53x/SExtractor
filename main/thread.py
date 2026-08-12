@@ -36,3 +36,5 @@ class extractThread(QThread):
 		interval = (end - start) * 1000 // 1 / 1000
 		print(f"运行时间：{interval} 秒")
 		self.finished.emit(ret)
+		if self.window.silentMode:
+			self.window.close()

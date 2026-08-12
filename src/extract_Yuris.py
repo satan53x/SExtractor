@@ -9,6 +9,7 @@ selMinCount = 10 #提取时选项函数最小参数个数
 selMaxCount = 99 #提取时选项函数最大参数个数
 StuctTypeLine = 0x1C2 #结构类型分界线，大于等于则是结构1，新版
 StuctTypeList1 = [ 0x19C ] #这些版本号强制指定为结构1
+OnlyDecrypt = False #测试用
 #版本对应code
 Codes = [
 	{'min': 0x1DC, 'max': 0x1DC, 'sce': [0x5A], 'sel': [0x1D], 'endpara': []},
@@ -19,7 +20,7 @@ Codes = [
 	{'min': 0x000, 'max': 0x010, 'sce': [0x33], 'sel': [0x27], 'endpara': [], 'retcode': 0xFF, 'nostr': [0x19, 0x26]},
 	{'min': 0x000, 'max': 0x0E0, 'sce': [0x4A], 'sel': [0x16], 'endpara': [0x32], 'retcode': 0xFF, 'nostr': [0x1E, 0x32]},
 	{'min': 0x0EE, 'max': 0x0EE, 'sce': [0x25], 'sel': [0x14], 'endpara': [], 'retcode': 0x2D, 'nostr': []},
-	{'min': 0x11E, 'max': 0x11E, 'sce': [0x54], 'sel': [0x19], 'endpara': [], 'retcode': 0x38, 'nostr': [], '1str': [0x1A]},
+	{'min': 0x11E, 'max': 0x124, 'sce': [0x54], 'sel': [0x19], 'endpara': [], 'retcode': 0x38, 'nostr': [], '1str': [0x1A]},
 	{'min': 0x000, 'max': 0x1C1, 'sce': [0x57], 'sel': [0x1A], 'endpara': [], 'retcode': 0x3B, 'nostr': []},
 	{'min': 0x000, 'max': 0xFFF, 'sce': [0x5A], 'sel': [0x1D], 'endpara': [], 'retcode': 0xFF, 'nostr': []},
 ]
@@ -99,6 +100,9 @@ def replaceOnceImp(content, lCtrl, lTrans):
 
 #修正长度与偏移
 def replaceEndImp(content):
+	if OnlyDecrypt:
+		insertContent[0] = manager.headerSec + manager.cmdSec + manager.paraSec + manager.strSec + manager.otherSec
+		return
 	if not content: return
 	#重新计算str区偏移
 	offset = 0
@@ -149,14 +153,16 @@ def readFileDataImp(fileOld, contentSeparate):
 			manager.initConfig(data)
 		return [], {0:data}
 	#解析
+	insertContent.clear()
+	insertContent[0] = b''
 	if not manager.init(data):
 		return [], {0:data}
+	if OnlyDecrypt:
+		return [], insertContent
 	if manager.structType == 2:
 		content = manager.splitParaStr2()
 	else:
 		content = manager.splitParaStr()
-	insertContent.clear()
-	insertContent[0] = b''
 	#insertContent[len(content)] = manager.otherSec
 	return content, insertContent
 
@@ -280,7 +286,7 @@ class DataManager():
 				self.cmdHeadLen = 0xC
 			else:
 				self.cmdHeadLen = 0x6
-			if 0x115 <= self.version <= 0x11E:
+			if 0x115 <= self.version <= 0x124:
 				self.retCodeLen = 0x4
 		else:
 			print(f'\033[33m当前ybn版本暂不支持\033[0m: 0x{self.version:X}')

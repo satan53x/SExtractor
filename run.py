@@ -6,7 +6,15 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QLocale, QTranslator
 from main.mainWindow import MainWindow
 
-Version = '5.1.5' #软件版本号
+Version = '5.2.0' #软件版本号
+
+def checkArgs(win):
+    if len(sys.argv) >= 2:
+        if sys.argv[1] in ('-e', '--extract'):
+            win.silentMode = True
+        if len(sys.argv) >= 3:
+            path = sys.argv[2]
+            win.defaultDirPath = path
 
 if __name__ == "__main__":
     # 使程序按系统比例放大，免得字体变形
@@ -29,9 +37,11 @@ if __name__ == "__main__":
 
     #初始化
     win = MainWindow(version=Version)
+    checkArgs(win)
     #将窗口控件显示在屏幕上
     win.beforeShow()
-    win.show()
+    if not win.silentMode:
+        win.show()
     win.afterShow()
     if len(sys.argv) >= 2:
         if sys.argv[1] in ('-e', '--extract'):
