@@ -316,6 +316,8 @@ class DataManager():
 		if ExVar.endStr:
 			lst = ExVar.endStr.split(',')
 			self.codeEndpara = [int(c, 16) for c in lst]
+		if ExVar.extractKey:
+			self.codeSel = eval(ExVar.extractKey)
 		#self.codeEndpara.extend(self.codeSel) #sel也会中断段落
 		#header
 		start = 0

@@ -17,3 +17,4 @@ build/
 config*.ini
 .backup/
 tmp/
+obj/
